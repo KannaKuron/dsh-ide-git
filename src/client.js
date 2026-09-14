@@ -56,6 +56,7 @@ window.__ModuleLoader__.load({
       'branches.tags': '标签',
       'branches.head': 'HEAD(当前分支)',
       'branches.favorites': '收藏',
+      'branches.pickHint': '单击选中,双击签出',
       'action.stash': '贮藏',
       'action.favorite': '收藏/取消收藏当前分支',
       'action.newTagHere': '在当前提交新建标签...',
@@ -208,6 +209,7 @@ window.__ModuleLoader__.load({
       'branches.tags': 'Tags',
       'branches.head': 'HEAD (current branch)',
       'branches.favorites': 'Favorites',
+      'branches.pickHint': 'Click to select, double-click to check out',
       'action.stash': 'Stash',
       'action.favorite': 'Favorite / unfavorite current branch',
       'action.newTagHere': 'New tag on current commit...',
@@ -921,19 +923,26 @@ window.__ModuleLoader__.load({
     /* ============================== branch tree ============================== */
 
     function BranchRow(props) {
+      const t = props.t
       const entry = props.entry
       const isHead = entry.head === true
       const kind = entry.tag === true ? 'tag' : entry.remote === true ? 'remote' : isHead ? 'head' : 'local'
       const tone = kind === 'tag' ? 'warn' : kind === 'remote' ? 'violet' : kind === 'head' ? 'success' : 'accent'
       const glyph = kind === 'tag' ? 'tag' : kind === 'remote' ? 'fetch' : kind === 'head' ? 'star' : 'branch'
+      const where = entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream
+      // A single click only SELECTS: checking a branch out is a real change of
+      // working tree, and a stray click in a long list must not do that (reported
+      // on v0.3.7). Double-click checks out, right-click has the whole menu.
       return E('div', {
-        className: 'dig-row dig-row-' + kind,
-        title: entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream,
-        onClick: () => props.onCheckout(entry),
+        className: 'dig-row dig-row-' + kind + (props.picked === true ? ' dig-row-picked' : ''),
+        style: props.depth === undefined || props.depth === 0 ? undefined : { paddingLeft: (8 + props.depth * 12) + 'px' },
+        title: where + ' · ' + t('branches.pickHint'),
+        onClick: () => props.onPick(entry),
+        onDoubleClick: () => props.onCheckout(entry),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
       },
         E('span', { className: 'dig-row-icon dig-tone-' + tone }, E(Icon, { name: glyph, size: 12 })),
-        E('span', { className: 'dig-row-label' }, entry.name),
+        E('span', { className: 'dig-row-label' }, props.label === undefined ? entry.name : props.label),
         entry.worktree === null || entry.worktree === undefined ? null : E('span', { className: 'dig-badge dig-badge-muted', title: entry.worktree }, 'W'),
         entry.ahead > 0 ? E('span', { className: 'dig-badge' }, '↑' + entry.ahead) : null,
         entry.behind > 0 ? E('span', { className: 'dig-badge' }, '↓' + entry.behind) : null)
@@ -943,6 +952,8 @@ window.__ModuleLoader__.load({
       const t = props.t
       const [filter, setFilter] = useState('')
       const [collapsed, setCollapsed] = useState({ favorites: false, remote: false, tags: true })
+      const [picked, setPicked] = useState('')
+      const [foldedFolders, setFoldedFolders] = useState({})
       const branches = props.branches
       const needle = filter.trim().toLowerCase()
       const match = (name) => needle === '' || String(name).toLowerCase().indexOf(needle) >= 0
@@ -950,7 +961,52 @@ window.__ModuleLoader__.load({
       const remotes = (branches === null ? [] : branches.remote).filter((entry) => match(entry.name))
       const tags = (branches === null ? [] : branches.tags).filter((entry) => match(entry.name))
       const favorites = Array.isArray(props.favorites) ? props.favorites : []
-      const section = (key, title, entries, decorate) => E('div', { className: 'dig-section', key: key },
+      /**
+       * Branch names nest on '/', the way an IDE shows a branch namespace: clicking a
+       * row only SELECTS it (checking out rewrites the working tree), so the row
+       * carries the selection and a double-click does the checkout.
+       */
+      const forestOf = (entries) => {
+        const root = { folders: new Map(), leaves: [] }
+        for (const entry of entries) {
+          const parts = String(entry.name).split('/')
+          let node = root
+          for (let index = 0; index < parts.length - 1; index += 1) {
+            const key = parts[index]
+            if (node.folders.has(key) === false) node.folders.set(key, { folders: new Map(), leaves: [] })
+            node = node.folders.get(key)
+          }
+          node.leaves.push({ entry: entry, label: parts[parts.length - 1] })
+        }
+        return root
+      }
+      const countLeaves = (node) => node.leaves.length + Array.from(node.folders.values()).reduce((sum, child) => sum + countLeaves(child), 0)
+      const branchRow = (entry, label, depth) => E(BranchRow, {
+        key: 'row:' + entry.name, entry: entry, label: label, depth: depth, t: t,
+        picked: picked === entry.name,
+        onPick: (target) => setPicked(target.name),
+        onCheckout: props.onCheckout, onMenu: props.onBranchMenu,
+      })
+      const rowsOf = (node, prefix, depth) => {
+        const out = []
+        for (const name of Array.from(node.folders.keys()).sort()) {
+          const id = prefix === '' ? name : prefix + '/' + name
+          const open = foldedFolders[id] !== true
+          const child = node.folders.get(name)
+          out.push(E('div', { className: 'dig-branch-folder', key: 'dir:' + id },
+            E('button', {
+              type: 'button', className: 'dig-folder-head',
+              onClick: () => setFoldedFolders((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
+            },
+              E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+              E('span', { className: 'dig-folder-name' }, name),
+              E('span', { className: 'dig-count' }, String(countLeaves(child)))),
+            open ? rowsOf(child, id, depth + 1) : null))
+        }
+        for (const leaf of node.leaves) out.push(branchRow(leaf.entry, leaf.label, depth))
+        return out
+      }
+      const section = (key, title, entries, decorate, grouped) => E('div', { className: 'dig-section', key: key },
         E('button', {
           type: 'button', className: 'dig-section-head',
           onClick: () => setCollapsed((previous) => Object.assign({}, previous, { [key]: !previous[key] })),
@@ -959,9 +1015,9 @@ window.__ModuleLoader__.load({
           E('span', null, title),
           E('span', { className: 'dig-count' }, String(entries.length))),
         collapsed[key] === true ? null : E('div', { className: 'dig-section-body' },
-          entries.map((entry) => E(BranchRow, {
-            key: entry.name, entry: decorate(entry), onCheckout: props.onCheckout, onMenu: props.onBranchMenu,
-          }))))
+          grouped === true
+            ? rowsOf(forestOf(entries.map((entry) => decorate(entry))), '', 0)
+            : entries.map((entry) => branchRow(decorate(entry), undefined, 0))))
       return E('div', { className: 'dig-tree' },
         E('div', { className: 'dig-search' },
           E('input', {
@@ -972,7 +1028,7 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-tree-scroll' },
           E('div', { className: 'dig-section-head dig-section-head-static' }, t('branches.head')),
           favorites.length === 0 ? null : section('favorites', t('branches.favorites'), locals.filter((entry) => favorites.indexOf(entry.name) >= 0), (entry) => entry),
-          section('local', t('branches.local'), locals, (entry) => entry),
+          section('local', t('branches.local'), locals, (entry) => entry, true),
           section('remote', t('branches.remote'), remotes, (entry) => Object.assign({}, entry, { remote: true })),
           section('tags', t('branches.tags'), tags, (entry) => Object.assign({}, entry, { tag: true }))))
     }
@@ -2292,6 +2348,8 @@ window.__ModuleLoader__.load({
       '.dig-changes-head{cursor:default;gap:2px}',
       '.dig-section-toggle{display:flex;align-items:center;gap:4px;flex:1;min-width:0;padding:0;border:none;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-folder{display:flex;flex-direction:column}',
+      '.dig-branch-folder{display:flex;flex-direction:column}',
+      '.dig-row-picked{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
       '.dig-folder-head{display:flex;align-items:center;gap:6px;width:100%;padding:1px 8px 1px 4px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;cursor:pointer;text-align:left}',
       '.dig-folder-head:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',

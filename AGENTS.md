@@ -11,7 +11,7 @@
 - GitHub 操作一律用 gh(已认证 KannaKuron)。**本仓库当前不接 npm 发包**:没有 npm-publish 工作流,也不要在没有明确指令时新增发布工作流(用户明确要求:功能稳定后再谈发版)。
 - CI(`.github/workflows/ci.yml`)只跑 `npm test`(冒烟 + api 两层),不发布任何东西。
 - 本机联调:把包名加进 profile 的 `dsh.profile.bundles`(依赖指向仓库里的 tarball)→ 客户端半改动硬刷新页面即可,宿主半改动必须重启 `dsh web`(见不变量 11)。
-- 客户端半改动后跑 `node scripts/ssr-check.mjs`(用本地 web profile 的 react 真渲染一次 Tab 组件),它能抓住「一渲染就抛」的回归;`npm test` 的 30 例之外就靠它。
+- **两道自检,覆盖面不同**:`scripts/ssr-check.mjs` 渲染的是「还没解析出仓库」的初始态——它**显式不覆盖** rail / 分支树 / 历史 / 变更这些要有数据才出现的 chrome;`scripts/layout-probe.mjs` 才是带真数据的真机渲染(它会捕获 pageerror,面板一崩就以非零码退出)。2026-09-14 的教训:`BranchRow` 里写了 `t('branches.pickHint')` 却没有 `const t = props.t`——空态根本不渲染分支行,所以 ssr-check 全绿,而真机上整个面板被 better-sidebar 的错误边界吞掉、`.dig-root` 压根不出现。**改到「有数据才出现」的代码,必须跑 layout-probe**。
 
 ## 截图与演示仓库
 

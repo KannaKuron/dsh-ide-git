@@ -50,6 +50,16 @@ const browser = await chromium.launch({ headless: true, channel: process.env.DSH
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 1 })
 
 const log = (message) => console.log('[probe] ' + message)
+
+// ssr-check only renders the empty state (no repository resolved), so a crash in
+// the data-driven chrome — branch rows, changes, history — only ever shows up on a
+// real page. An uncaught error means the panel fell back to better-sidebar's error
+// boundary, which is exactly the regression this probe exists to catch.
+const pageErrors = []
+page.on('pageerror', (error) => {
+  pageErrors.push(String(error.message))
+  log('PAGEERROR ' + String(error.message).slice(0, 300))
+})
 const settle = (ms) => page.waitForTimeout(ms === undefined ? 1200 : ms)
 
 async function clickText(text, options) {
@@ -171,6 +181,12 @@ try {
   const sidebar = await chromeOf()
   await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'right-sidebar.png') })
   log('native right sidebar → ' + sidebar.width + 'x' + sidebar.height + ', chrome=' + sidebar.chrome)
+
+  if (pageErrors.length > 0) {
+    log('FAILED: the panel raised ' + pageErrors.length + ' uncaught error(s) — the chrome crashed')
+    for (const line of pageErrors.slice(0, 5)) log('  ' + line.slice(0, 200))
+    process.exitCode = 1
+  }
 } finally {
   await browser.close()
 }
