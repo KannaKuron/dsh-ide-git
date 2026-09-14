@@ -17,6 +17,7 @@
  * same posture dsh-better-sidebar's own /sidebar/api routes take.
  */
 import { spawn } from 'node:child_process'
+import { existsSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
 export const name = 'dsh-ide-git'
@@ -155,7 +156,13 @@ function cwdOf(payload) {
 
 async function repoRootOf(cwd, payload) {
   if (payload !== undefined && payload.repoRoot !== undefined) return requireAbsolute(payload.repoRoot, 'repoRoot')
-  const top = (await git(cwd, ['rev-parse', '--show-toplevel'])).trim()
+  const result = await runGit(cwd, ['rev-parse', '--show-toplevel'])
+  if (result.code !== 0) {
+    // A workspace that is not a repository is a normal state, not a failure:
+    // the client answers it with a repo picker instead of an error banner.
+    throw new PanelError('not-a-repo', 'not a git repository: ' + cwd, 409)
+  }
+  const top = result.stdout.trim()
   return top === '' ? cwd : top
 }
 
@@ -767,6 +774,57 @@ async function compare(payload) {
   return { base, head, files, commits: parseLog(logOut) }
 }
 
+/** Directories never descended into while looking for repositories. */
+const REPO_SCAN_SKIP = new Set(['node_modules', 'dist', 'build', 'out', 'target', 'vendor', 'venv', '.venv', '__pycache__', 'coverage', 'tmp', 'temp'])
+
+/** Depth-capped search for repositories nested in a workspace. */
+function findNestedRepos(root, maxDepth) {
+  const found = []
+  const walk = (dir, depth) => {
+    if (found.length >= 40 || depth > maxDepth) return
+    let entries
+    try { entries = readdirSync(dir, { withFileTypes: true }) } catch { return }
+    for (const entry of entries) {
+      if (!entry.isDirectory() || entry.name.startsWith('.') || REPO_SCAN_SKIP.has(entry.name)) continue
+      const child = path.join(dir, entry.name)
+      if (existsSync(path.join(child, '.git'))) { found.push(child); continue }
+      if (depth < maxDepth) walk(child, depth + 1)
+    }
+  }
+  walk(root, 1)
+  return found
+}
+
+async function branchOrNull(root) {
+  const result = await runGit(root, ['rev-parse', '--abbrev-ref', 'HEAD'])
+  if (result.code !== 0) return null
+  const name = result.stdout.trim()
+  return name === '' ? null : name
+}
+
+/**
+ * Repositories this panel may bind to: the session workspace itself when it is
+ * one, plus repositories nested inside it (a sandbox holding many checkouts).
+ * The client turns this into the repo picker — an empty workspace is answered
+ * with the picker, not with an error.
+ */
+async function repos(payload) {
+  const cwd = cwdOf(payload)
+  const list = []
+  const self = await runGit(cwd, ['rev-parse', '--show-toplevel'])
+  const isRepo = self.code === 0
+  if (isRepo) {
+    const top = self.stdout.trim()
+    list.push({ path: top, name: path.basename(top), branch: await branchOrNull(top), kind: 'workspace' })
+  }
+  for (const dir of findNestedRepos(cwd, 2)) {
+    if (list.some((entry) => entry.path === dir)) continue
+    list.push({ path: dir, name: path.basename(dir), branch: await branchOrNull(dir), kind: 'nested' })
+  }
+  list.sort((a, b) => (a.kind === b.kind ? a.name.localeCompare(b.name) : a.kind === 'workspace' ? -1 : 1))
+  return { cwd, isRepo, repos: list }
+}
+
 async function version() {
   const result = await runGit(process.cwd(), ['--version'])
   const raw = result.code === 0 ? result.stdout.trim() : ''
@@ -789,6 +847,7 @@ function clampInt(value, min, max, fallback) {
 
 const METHODS = {
   version,
+  repos,
   summary,
   branches,
   log,

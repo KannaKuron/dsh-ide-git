@@ -3,17 +3,18 @@
  *
  * Registers ONE dsh-better-sidebar tab: an IDE-style Git tool window.
  *
- * Layout reality (better-sidebar 0.19.x): one registration appears on two very
- * different surfaces — the DSH NATIVE right sidebar (narrow + tall) and
- * better-sidebar's own bottom workbench (wide + flat). Both go through the same
- * ctx.betterSidebar.registerTab contract, so the panel never asks where it is:
- * it measures itself (ResizeObserver) and switches between
+ * Two surfaces, one registration (better-sidebar 0.19.x): the DSH NATIVE right
+ * sidebar (narrow, tall) and the plugin's bottom workbench (wide, flat). The
+ * panel never asks which one it is in — it measures its container and picks a
+ * chrome:
  *
- *   columns — wide and flat (bottom workbench): tree | graph | changes
- *   stack   — narrow and tall (native right sidebar): changes over graph
+ *   columns  wide and tall enough : repo/branch bar | tree | graph | changes
+ *   stack    narrow and tall      : changes over graph, collapsible tree
+ *   compact  short or very narrow : one header row + a Changes/History switch
  *
- * Every require below is a dsh client baseline module (see
- * @deepseek-ai/dsh-client-web seed.ts): react only.
+ * Theming: no hard-coded surfaces. Every surface is a --dsw-alias-* token, so
+ * transparent themes and background plugins (dsh-any-background) show through,
+ * exactly like better-sidebar's own panels do.
  */
 window.__ModuleLoader__.load({
   id: 'dsh-ide-git',
@@ -31,12 +32,25 @@ window.__ModuleLoader__.load({
     const LANE_WIDTH = 14
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
+    const REPO_KEY = 'dsh-ide-git.repo.v1'
+    const COMPACT_MAX_HEIGHT = 330
+    const COMPACT_MAX_WIDTH = 470
 
     /* ============================== i18n ============================== */
 
     const ZH = {
       'title': 'Git',
       'description': 'IDE 级 Git 面板:分支树 / 提交图谱 / 变更与提交',
+      'repo.label': '仓库',
+      'repo.workspace': '工作区',
+      'repo.nested': '子仓库',
+      'repo.none': '当前工作区不是 Git 仓库',
+      'repo.pick': '选择要查看的仓库',
+      'repo.empty': '这个工作区下没有找到 Git 仓库',
+      'repo.switch': '切换仓库',
+      'branch.switch': '切换分支',
+      'seg.changes': '变更 {n}',
+      'seg.history': '历史',
       'branches.local': '本地',
       'branches.remote': '远程',
       'branches.tags': '标签',
@@ -50,7 +64,7 @@ window.__ModuleLoader__.load({
       'changes.empty': '没有未提交的变更',
       'changes.commitPlaceholder': '提交信息(Ctrl+Enter 提交)',
       'changes.commit': '提交',
-      'changes.amend': '修补上次提交',
+      'changes.amend': '修补',
       'changes.stageAll': '全部暂存',
       'changes.unstageAll': '全部取消暂存',
       'action.stage': '暂存',
@@ -89,8 +103,7 @@ window.__ModuleLoader__.load({
       'toolbar.fetch': '抓取(Fetch)',
       'toolbar.pull': '拉取(Pull)',
       'toolbar.push': '推送(Push)',
-      'toolbar.collapseTree': '收起分支栏',
-      'toolbar.expandTree': '展开分支栏',
+      'toolbar.tree': '分支栏',
       'confirm.title': '确认操作',
       'confirm.cancel': '取消',
       'confirm.ok': '确定',
@@ -99,8 +112,7 @@ window.__ModuleLoader__.load({
       'prompt.newTag': '新标签名',
       'prompt.fromHead': '当前 HEAD',
       'error.dismiss': '关闭',
-      'status.loading': '正在读取仓库...',
-      'status.notRepo': '当前会话没有可用的工作区目录',
+      'status.loading': '正在读取...',
       'status.busy': '处理中...',
       'counts.staged': '已暂存 {n}',
       'counts.unstaged': '更改 {n}',
@@ -117,6 +129,16 @@ window.__ModuleLoader__.load({
     const EN = {
       'title': 'Git',
       'description': 'IDE-grade Git panel: branch tree / commit graph / changes',
+      'repo.label': 'Repository',
+      'repo.workspace': 'workspace',
+      'repo.nested': 'nested',
+      'repo.none': 'This workspace is not a Git repository',
+      'repo.pick': 'Pick a repository to inspect',
+      'repo.empty': 'No Git repository found in this workspace',
+      'repo.switch': 'Switch repository',
+      'branch.switch': 'Switch branch',
+      'seg.changes': 'Changes {n}',
+      'seg.history': 'History',
       'branches.local': 'Local',
       'branches.remote': 'Remote',
       'branches.tags': 'Tags',
@@ -128,9 +150,9 @@ window.__ModuleLoader__.load({
       'changes.untracked': 'Untracked',
       'changes.conflicted': 'Conflicts',
       'changes.empty': 'No pending changes',
-      'changes.commitPlaceholder': 'Commit message (Ctrl+Enter to commit)',
+      'changes.commitPlaceholder': 'Commit message (Ctrl+Enter)',
       'changes.commit': 'Commit',
-      'changes.amend': 'Amend last commit',
+      'changes.amend': 'Amend',
       'changes.stageAll': 'Stage all',
       'changes.unstageAll': 'Unstage all',
       'action.stage': 'Stage',
@@ -169,8 +191,7 @@ window.__ModuleLoader__.load({
       'toolbar.fetch': 'Fetch',
       'toolbar.pull': 'Pull',
       'toolbar.push': 'Push',
-      'toolbar.collapseTree': 'Collapse branch pane',
-      'toolbar.expandTree': 'Expand branch pane',
+      'toolbar.tree': 'Branch pane',
       'confirm.title': 'Confirm',
       'confirm.cancel': 'Cancel',
       'confirm.ok': 'OK',
@@ -179,8 +200,7 @@ window.__ModuleLoader__.load({
       'prompt.newTag': 'New tag name',
       'prompt.fromHead': 'current HEAD',
       'error.dismiss': 'Dismiss',
-      'status.loading': 'Reading repository...',
-      'status.notRepo': 'This session has no workspace directory',
+      'status.loading': 'Reading...',
       'status.busy': 'Working...',
       'counts.staged': 'Staged {n}',
       'counts.unstaged': 'Changes {n}',
@@ -226,10 +246,36 @@ window.__ModuleLoader__.load({
       try { body = await response.json() } catch (error) { void error }
       if (body === null || typeof body !== 'object') throw new Error('HTTP ' + response.status)
       if (body.ok !== true) {
-        const detail = body.error === undefined || body.error === null ? undefined : body.error.message
-        throw new Error(typeof detail === 'string' && detail !== '' ? detail : 'HTTP ' + response.status)
+        const error = body.error === undefined || body.error === null ? {} : body.error
+        const failure = new Error(typeof error.message === 'string' && error.message !== '' ? error.message : 'HTTP ' + response.status)
+        failure.code = typeof error.code === 'string' ? error.code : 'unknown'
+        throw failure
       }
       return body.data
+    }
+
+    /* ============================== storage ============================== */
+
+    function readRememberedRepo(sessionId) {
+      try {
+        const raw = window.localStorage.getItem(REPO_KEY)
+        if (raw === null || raw === '') return undefined
+        const parsed = JSON.parse(raw)
+        if (parsed === null || typeof parsed !== 'object') return undefined
+        const value = parsed[sessionId]
+        return typeof value === 'string' && value !== '' ? value : undefined
+      } catch (error) { void error }
+      return undefined
+    }
+
+    function rememberRepo(sessionId, repoPath) {
+      try {
+        const raw = window.localStorage.getItem(REPO_KEY)
+        const parsed = raw === null || raw === '' ? {} : JSON.parse(raw)
+        const next = parsed !== null && typeof parsed === 'object' ? parsed : {}
+        next[sessionId] = repoPath
+        window.localStorage.setItem(REPO_KEY, JSON.stringify(next))
+      } catch (error) { void error }
     }
 
     /* ============================== formatting ============================== */
@@ -273,7 +319,6 @@ window.__ModuleLoader__.load({
 
     /* ============================== commit graph ============================== */
 
-    /** Assign one lane per commit, in the order git log returned them. */
     function buildRows(commits) {
       const lanes = []
       const rows = []
@@ -332,12 +377,7 @@ window.__ModuleLoader__.load({
           strokeWidth: 1.6,
         }))
       }
-      children.push(E('circle', {
-        key: 'dot',
-        cx: x(row.lane), cy: height / 2, r: 4,
-        fill: LANE_COLORS[row.lane % LANE_COLORS.length],
-        stroke: 'var(--dsw-alias-bg-base, #16161a)', strokeWidth: 1.5,
-      }))
+      children.push(E('circle', { key: 'dot', cx: x(row.lane), cy: height / 2, r: 4, fill: LANE_COLORS[row.lane % LANE_COLORS.length] }))
       return E('svg', { className: 'dig-graph', width: width, height: height, viewBox: '0 0 ' + width + ' ' + height }, children)
     }
 
@@ -387,7 +427,6 @@ window.__ModuleLoader__.load({
 
     const ICONS = {
       branch: ['M4 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M12 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M4 6.5v3a3 3 0 0 0 3 3h2', 'M12 6.5v1a3 3 0 0 1-3 3'],
-      tag: ['M2.5 7.5 7.5 2.5h6v6l-5 5z', 'M10.5 5.5h.01'],
       commit: ['M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z', 'M8 1.5v4', 'M8 10.5v4'],
       refresh: ['M13 8a5 5 0 1 1-1.6-3.7', 'M13 3v3h-3'],
       fetch: ['M8 2v8', 'M4.5 6.5 8 10l3.5-3.5', 'M3 13h10'],
@@ -399,6 +438,7 @@ window.__ModuleLoader__.load({
       chevron: ['M5 6.5 8 9.5l3-3'],
       close: ['M4 4l8 8', 'M12 4l-8 8'],
       star: ['M8 2.2l1.8 3.8 4 .5-2.9 2.7.8 4-3.7-2.1-3.7 2.1.8-4L2.2 6.5l4-.5z'],
+      folder: ['M2 4.5h4l1.2 1.5H14v6.5H2z'],
     }
 
     function Icon(props) {
@@ -481,15 +521,61 @@ window.__ModuleLoader__.load({
             E('button', { type: 'button', className: 'dig-btn dig-btn-danger', onClick: props.onConfirm }, props.okLabel))))
     }
 
+    function Segmented(props) {
+      return E('div', { className: 'dig-seg' },
+        props.items.map((item) => E('button', {
+          key: item.id,
+          type: 'button',
+          className: 'dig-seg-item',
+          'data-active': props.value === item.id ? 'true' : 'false',
+          onClick: () => props.onChange(item.id),
+        }, item.label)))
+    }
+
+    function RepoSelect(props) {
+      const t = props.t
+      if (props.repos.length <= 1) {
+        const only = props.repos.length === 1 ? props.repos[0] : null
+        return E('span', { className: 'dig-repo-static', title: only === null ? '' : only.path },
+          E(Icon, { name: 'folder', size: 12 }),
+          E('span', { className: 'dig-repo-name' }, only === null ? t('repo.empty') : only.name))
+      }
+      return E('span', { className: 'dig-select-wrap', title: t('repo.switch') },
+        E(Icon, { name: 'folder', size: 12 }),
+        E('select', {
+          className: 'dig-select dig-select-repo',
+          value: props.value === null ? '' : props.value,
+          onChange: (event) => props.onChange(event.target.value),
+        }, props.repos.map((repo) => E('option', { key: repo.path, value: repo.path },
+          repo.name + (repo.branch === null || repo.branch === undefined ? '' : ' · ' + repo.branch)))))
+    }
+
+    function RepoPicker(props) {
+      const t = props.t
+      const repos = props.repos
+      return E('div', { className: 'dig-picker' },
+        E('div', { className: 'dig-picker-title' }, repos.length === 0 ? t('repo.empty') : t('repo.pick')),
+        E('div', { className: 'dig-picker-sub' }, props.cwd),
+        repos.map((repo) => E('button', {
+          key: repo.path,
+          type: 'button',
+          className: 'dig-picker-row',
+          onClick: () => props.onPick(repo.path),
+        },
+          E('span', { className: 'dig-picker-icon' }, E(Icon, { name: 'folder', size: 13 })),
+          E('span', { className: 'dig-picker-name' }, repo.name),
+          repo.branch === null || repo.branch === undefined ? null : E('span', { className: 'dig-badge' }, repo.branch),
+          E('span', { className: 'dig-picker-kind' }, repo.kind === 'workspace' ? t('repo.workspace') : t('repo.nested')),
+          E('span', { className: 'dig-picker-path' }, repo.path))))
+    }
+
     /* ============================== branch tree ============================== */
 
     function BranchRow(props) {
       const entry = props.entry
       const isHead = entry.head === true
-      const classes = ['dig-row']
-      if (isHead) classes.push('dig-row-head')
       return E('div', {
-        className: classes.join(' '),
+        className: 'dig-row' + (isHead ? ' dig-row-head' : ''),
         title: entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream,
         onClick: () => props.onCheckout(entry),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
@@ -588,22 +674,22 @@ window.__ModuleLoader__.load({
           key: key + ':' + item.path, item: item, group: key, t: t,
           onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
         })))
-      return E('div', { className: 'dig-changes' },
-        E('button', {
-          type: 'button', className: 'dig-section-head',
-          onClick: () => setCollapsed((value) => !value),
-        },
-          E('span', { className: 'dig-chevron' + (collapsed ? '' : ' dig-chevron-open') }, E(Icon, { name: 'chevron', size: 12 })),
-          E('span', null, t('changes.title')),
-          E('span', { className: 'dig-count' }, String(total))),
-        collapsed ? null : E('div', { className: 'dig-changes-body' },
-          E('div', { className: 'dig-changes-list' },
-            total === 0 ? E('div', { className: 'dig-empty' }, t('changes.empty')) : null,
-            group('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted),
-            group('staged', fill(t('counts.staged'), { n: staged.length }), staged),
-            group('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged),
-            group('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)),
-          E('div', { className: 'dig-commit-box' },
+      const composer = props.compact === true
+        ? E('div', { className: 'dig-commit-box dig-commit-box-compact' },
+            E('input', {
+              className: 'dig-input dig-input-compact', value: message, spellCheck: false,
+              placeholder: t('changes.commitPlaceholder'),
+              onChange: (event) => setMessage(event.target.value),
+              onKeyDown: (event) => {
+                if (event.key === 'Enter') { event.preventDefault(); submit() }
+              },
+            }),
+            E('button', {
+              type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
+              disabled: message.trim() === '' || props.busy === true,
+              onClick: submit,
+            }, t('changes.commit')))
+        : E('div', { className: 'dig-commit-box' },
             E('textarea', {
               className: 'dig-textarea', value: message, spellCheck: false,
               placeholder: t('changes.commitPlaceholder'),
@@ -620,7 +706,24 @@ window.__ModuleLoader__.load({
                 type: 'button', className: 'dig-btn dig-btn-primary',
                 disabled: message.trim() === '' || props.busy === true,
                 onClick: submit,
-              }, t('changes.commit'))))))
+              }, t('changes.commit'))))
+      const showBody = props.hideHeader === true || collapsed === false
+      return E('div', { className: 'dig-changes' },
+        props.hideHeader === true ? null : E('button', {
+          type: 'button', className: 'dig-section-head',
+          onClick: () => setCollapsed((value) => !value),
+        },
+          E('span', { className: 'dig-chevron' + (collapsed ? '' : ' dig-chevron-open') }, E(Icon, { name: 'chevron', size: 12 })),
+          E('span', null, t('changes.title')),
+          E('span', { className: 'dig-count' }, String(total))),
+        showBody ? E('div', { className: 'dig-changes-body' },
+          E('div', { className: 'dig-changes-list' },
+            total === 0 ? E('div', { className: 'dig-empty' }, t('changes.empty')) : null,
+            group('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted),
+            group('staged', fill(t('counts.staged'), { n: staged.length }), staged),
+            group('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged),
+            group('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)),
+          composer) : null)
     }
 
     /* ============================== history ============================== */
@@ -640,7 +743,7 @@ window.__ModuleLoader__.load({
         })
       }, [rows, needle])
       return E('div', { className: 'dig-history' },
-        E('div', { className: 'dig-search' },
+        props.hideSearch === true ? null : E('div', { className: 'dig-search' },
           E('input', {
             className: 'dig-input dig-input-compact', value: filter, spellCheck: false,
             placeholder: t('history.filter'),
@@ -704,6 +807,8 @@ window.__ModuleLoader__.load({
       const t = props.t
       const hostRef = useRef(null)
       const [size, setSize] = useState({ width: 0, height: 0 })
+      const [repoState, setRepoState] = useState(null)
+      const [repoRoot, setRepoRoot] = useState(null)
       const [summary, setSummary] = useState(null)
       const [branches, setBranches] = useState(null)
       const [commits, setCommits] = useState([])
@@ -723,7 +828,8 @@ window.__ModuleLoader__.load({
       const [tick, setTick] = useState(0)
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
-      const base = useMemo(() => ({ cwd: cwd }), [cwd])
+      const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
+      const base = useMemo(() => ({ cwd: cwd, repoRoot: repoRoot === null ? undefined : repoRoot }), [cwd, repoRoot])
 
       useEffect(() => {
         const element = hostRef.current
@@ -742,8 +848,8 @@ window.__ModuleLoader__.load({
         return () => window.removeEventListener('resize', measure)
       }, [])
 
-      /** Wide + flat => the bottom workbench; narrow + tall => the native sidebar. */
-      const wide = size.width >= 640 && size.width >= size.height * 1.5
+      const compact = size.height > 0 && (size.height < COMPACT_MAX_HEIGHT || size.width < COMPACT_MAX_WIDTH)
+      const columns = !compact && size.width >= 640 && size.width >= size.height * 1.4
 
       const guard = useCallback(async (work) => {
         setBusy(true)
@@ -757,6 +863,28 @@ window.__ModuleLoader__.load({
           setBusy(false)
         }
       }, [])
+
+      useEffect(() => {
+        if (cwd === undefined) return undefined
+        let cancelled = false
+        void (async () => {
+          try {
+            const data = await request('repos', { cwd: cwd })
+            if (cancelled) return
+            setRepoState(data)
+            const paths = data.repos.map((repo) => repo.path)
+            const remembered = readRememberedRepo(sessionId)
+            let pick = null
+            if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
+            else if (data.isRepo === true) pick = data.cwd
+            else if (paths.length > 0) pick = paths[0]
+            setRepoRoot(pick)
+          } catch (caught) {
+            if (!cancelled) setError(caught instanceof Error ? caught.message : String(caught))
+          }
+        })()
+        return () => { cancelled = true }
+      }, [cwd, sessionId, tick])
 
       const loadSummary = useCallback(async () => {
         const data = await request('summary', base)
@@ -775,32 +903,45 @@ window.__ModuleLoader__.load({
       }, [base])
 
       const refresh = useCallback(async () => {
+        if (repoRoot === null) return
         await guard(async () => {
           await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
         })
-      }, [guard, loadSummary, loadBranches, loadCommits])
+      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot])
 
       useEffect(() => {
-        if (cwd === undefined) return undefined
+        if (repoRoot === null) return undefined
         void refresh()
         return undefined
-      }, [cwd, refresh, tick])
+      }, [repoRoot, refresh, tick])
 
       useEffect(() => {
-        if (props.visible !== true || cwd === undefined) return undefined
+        if (props.visible !== true || repoRoot === null) return undefined
         const timer = setInterval(() => {
           void (async () => {
             try { await loadSummary() } catch (error) { void error }
           })()
         }, AUTO_REFRESH_MS)
         return () => clearInterval(timer)
-      }, [props.visible, cwd, loadSummary])
+      }, [props.visible, repoRoot, loadSummary])
 
       const run = useCallback(async (method, payload) => {
         const result = await guard(() => request(method, Object.assign({}, base, payload)))
         if (result !== undefined) await refresh()
         return result
       }, [base, guard, refresh])
+
+      const pickRepo = useCallback((path) => {
+        setRepoRoot(path)
+        rememberRepo(sessionId, path)
+        setSummary(null)
+        setBranches(null)
+        setCommits([])
+        setDetail(null)
+        setSelectedHash(null)
+        setPatch('')
+        setView('history')
+      }, [sessionId])
 
       const openDiff = useCallback(async (seed) => {
         setPatchLoading(true)
@@ -829,16 +970,15 @@ window.__ModuleLoader__.load({
       }, [base])
 
       const checkout = useCallback(async (entry) => {
-        if (entry.tag === true) {
-          void run('checkout', { branch: entry.name })
-          return
-        }
-        if (entry.remote === true) {
-          const local = entry.name.slice(entry.name.indexOf('/') + 1)
-          void run('checkout', { branch: local })
-          return
-        }
+        if (entry.tag === true) { void run('checkout', { branch: entry.name }); return }
+        if (entry.remote === true) { void run('checkout', { branch: entry.name.slice(entry.name.indexOf('/') + 1) }); return }
         void run('checkout', { branch: entry.name })
+      }, [run])
+
+      const compareWith = useCallback(async (baseRef, headRef) => {
+        const data = await run('compare', { base: baseRef, head: headRef })
+        if (data === undefined) return
+        setNote(baseRef + ' ... ' + headRef + ' · ' + String(data.files.length) + ' files / ' + String(data.commits.length) + ' commits')
       }, [run])
 
       const branchMenu = useCallback((event, entry) => {
@@ -858,7 +998,7 @@ window.__ModuleLoader__.load({
           { id: 'push', label: t('action.push'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
         setMenu({ x: event.clientX, y: event.clientY, items: items })
-      }, [branches, checkout, run, t])
+      }, [branches, checkout, run, t, compareWith])
 
       const commitMenu = useCallback((event, commit) => {
         const items = [
@@ -892,12 +1032,6 @@ window.__ModuleLoader__.load({
         setMenu({ x: event.clientX, y: event.clientY, items: items })
       }, [openDiff, run, t])
 
-      const compareWith = useCallback(async (baseRef, headRef) => {
-        const data = await run('compare', { base: baseRef, head: headRef })
-        if (data === undefined) return
-        setNote(baseRef + ' ... ' + headRef + ' · ' + String(data.files.length) + ' files / ' + String(data.commits.length) + ' commits')
-      }, [run])
-
       const submitDialog = useCallback(async (state, value) => {
         setDialog(null)
         if (state.kind === 'newBranch') { await run('checkout', { branch: value, create: true, startPoint: state.from }); return }
@@ -905,35 +1039,53 @@ window.__ModuleLoader__.load({
         if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
       }, [run])
 
-      if (cwd === undefined) return E('div', { className: 'dig-root dig-root-center' }, t('status.notRepo'))
+      /* ---------- shared pieces ---------- */
 
-      const toolbar = E('div', { className: 'dig-toolbar' },
+      const repoOptions = repoState === null ? [] : repoState.repos
+      const dirty = summary === null ? 0 : summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length + summary.changes.conflicted.length
+
+      const topBar = E('div', { className: 'dig-topbar' },
+        E(RepoSelect, { t: t, repos: repoOptions, value: repoRoot, onChange: pickRepo }),
+        branches === null || branches.local.length === 0 ? null : E('span', { className: 'dig-select-wrap', title: t('branch.switch') },
+          E(Icon, { name: 'branch', size: 12 }),
+          E('select', {
+            className: 'dig-select dig-select-branch',
+            value: branches.branch,
+            onChange: (event) => { void run('checkout', { branch: event.target.value }) },
+          }, branches.local.map((entry) => E('option', { key: entry.name, value: entry.name }, entry.name)))),
+        summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
+          (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
+        E('span', { className: 'dig-topbar-spacer' }),
+        busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null,
         E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.refresh'), onClick: () => setTick((value) => value + 1) }, E(Icon, { name: 'refresh' })),
         E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.newBranch'), onClick: () => setDialog({ kind: 'newBranch' }) }, E(Icon, { name: 'plus' })),
         E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.fetch'), disabled: busy, onClick: () => { void run('fetch', { prune: true }) } }, E(Icon, { name: 'fetch' })),
-        E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.pull'), disabled: busy, onClick: () => { void run('pull', { mode: 'ff-only' }) } }, E(Icon, { name: 'pull' })),
+        compact ? null : E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.pull'), disabled: busy, onClick: () => { void run('pull', { mode: 'ff-only' }) } }, E(Icon, { name: 'pull' })),
         E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.push'), disabled: busy, onClick: () => setDialog({ kind: 'push' }) }, E(Icon, { name: 'push' })),
-        E('span', { className: 'dig-toolbar-spacer' }),
-        E('button', {
-          type: 'button', className: 'dig-icon-btn',
-          title: treeOpen ? t('toolbar.collapseTree') : t('toolbar.expandTree'),
+        compact ? null : E('button', {
+          type: 'button', className: 'dig-icon-btn' + (treeOpen ? ' dig-icon-btn-active' : ''), title: t('toolbar.tree'),
           onClick: () => setTreeOpen((value) => !value),
         }, E(Icon, { name: 'branch' })))
 
-      const status = E('div', { className: 'dig-status' },
-        E('span', { className: 'dig-status-branch' }, E(Icon, { name: 'branch', size: 12 }), summary === null ? t('status.loading') : summary.branch),
-        summary === null || summary.detached === true ? null : E('span', { className: 'dig-status-sub' },
-          (summary.upstream === null ? '' : summary.upstream + ' ') + (summary.ahead > 0 ? '↑' + summary.ahead + ' ' : '') + (summary.behind > 0 ? '↓' + summary.behind : '')),
-        summary !== null && summary.stashCount > 0 ? E('span', { className: 'dig-status-sub' }, 'stash ' + summary.stashCount) : null,
-        busy ? E('span', { className: 'dig-status-sub' }, t('status.busy')) : null)
-
       const banner = error === null ? null : E('div', { className: 'dig-banner' },
-        E('span', null, error),
+        E('span', { className: 'dig-banner-text' }, error),
         E('button', { type: 'button', className: 'dig-link', onClick: () => setError(null) }, t('error.dismiss')))
 
       const noteBanner = note === null ? null : E('div', { className: 'dig-note' },
-        E('span', null, note),
+        E('span', { className: 'dig-banner-text' }, note),
         E('button', { type: 'button', className: 'dig-link', onClick: () => setNote(null) }, t('error.dismiss')))
+
+      const changesPane = E(ChangesPanel, {
+        t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
+        onCommit: (message, amend) => { void run('commit', { message: message, amend: amend }) },
+        onStage: (item) => { void run('stage', { paths: [item.path] }) },
+        onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
+        onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
+        onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
+        onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
+        onDiff: (item, group) => { void openDiff({ path: item.path, staged: group === 'staged' }) },
+        onChangeMenu: changeMenu,
+      })
 
       const historyPane = view === 'detail'
         ? E(CommitDetail, {
@@ -945,7 +1097,7 @@ window.__ModuleLoader__.load({
             },
           })
         : E(HistoryList, {
-            t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
+            t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash, hideSearch: compact,
             onSelect: (commit) => { void selectCommit(commit) },
             onMenu: commitMenu,
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
@@ -953,31 +1105,45 @@ window.__ModuleLoader__.load({
 
       const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane' },
         E('div', { className: 'dig-diff-head' },
-          E('span', { className: 'dig-mono' }, selectedPath === null ? '' : selectedPath),
+          E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
           E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null) } }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
 
-      const changesPane = E(ChangesPanel, {
-        t: t, summary: summary, busy: busy,
-        onCommit: (message, amend) => { void run('commit', { message: message, amend: amend }) },
-        onStage: (item) => { void run('stage', { paths: [item.path] }) },
-        onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
-        onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
-        onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
-        onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
-        onDiff: (item, group) => { void openDiff({ path: item.path, staged: group === 'staged' }) },
-        onChangeMenu: changeMenu,
-      })
+      /* ---------- body per chrome ---------- */
 
-      const body = wide
-        ? E('div', { className: 'dig-body dig-body-columns' },
-            treeOpen ? E('div', { className: 'dig-pane dig-pane-tree' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
-            E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane),
-            E('div', { className: 'dig-pane dig-pane-changes' }, changesPane))
-        : E('div', { className: 'dig-body dig-body-stack' },
-            treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
-            E('div', { className: 'dig-pane dig-pane-changes-stack' }, changesPane),
-            E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
+      let body
+      if (repoRoot === null) {
+        body = E('div', { className: 'dig-body' }, E(RepoPicker, {
+          t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo,
+        }))
+      } else if (compact) {
+        body = E('div', { className: 'dig-body dig-body-compact' },
+          E('div', { className: 'dig-compact-bar' },
+            E(Segmented, {
+              value: view === 'detail' ? 'history' : view,
+              onChange: (next) => { setView(next); setPatch('') },
+              items: [
+                { id: 'changes', label: fill(t('seg.changes'), { n: dirty }) },
+                { id: 'history', label: t('seg.history') },
+              ],
+            }),
+            E('span', { className: 'dig-topbar-spacer' }),
+            treeOpen ? E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-active', title: t('toolbar.tree'), onClick: () => setTreeOpen(false) }, E(Icon, { name: 'branch' })) : null),
+          treeOpen ? E('div', { className: 'dig-compact-tree' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
+      } else if (columns) {
+        body = E('div', { className: 'dig-body dig-body-columns' },
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane),
+          E('div', { className: 'dig-pane dig-pane-changes' }, changesPane))
+      } else {
+        body = E('div', { className: 'dig-body dig-body-stack' },
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          E('div', { className: 'dig-pane dig-pane-changes-stack' }, changesPane),
+          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
+      }
+
+      /* ---------- overlays ---------- */
 
       const overlays = []
       if (menu !== null) {
@@ -1047,7 +1213,7 @@ window.__ModuleLoader__.load({
         }))
       }
 
-      return E('div', { className: 'dig-root', ref: hostRef }, toolbar, status, banner, noteBanner, body, overlays)
+      return E('div', { className: 'dig-root', ref: hostRef }, topBar, banner, noteBanner, body, overlays)
     }
 
     function copyText(text) {
@@ -1057,127 +1223,157 @@ window.__ModuleLoader__.load({
     }
 
     /* ============================== styles ============================== */
+    /* Tokens only (--dsw-alias-*): transparent themes and background plugins
+       (dsh-any-background) keep showing through, like the host's own panels. */
 
     const CSS = [
-      '.dig-root{display:flex;flex-direction:column;height:100%;min-height:0;background:var(--dsw-alias-bg-base,#16161a);color:var(--dsw-alias-label-primary,#e6e6e6);font:var(--dsw-font-xs-12,12px/1.45 system-ui,sans-serif);overflow:hidden}',
-      '.dig-root-center{align-items:center;justify-content:center;color:var(--dsw-alias-label-secondary,#9aa0a6);padding:24px;text-align:center}',
-      '.dig-toolbar{display:flex;align-items:center;gap:2px;padding:4px 6px;border-bottom:1px solid var(--dsw-alias-border-l1,#2a2a30);flex:none}',
-      '.dig-toolbar-spacer{flex:1}',
-      '.dig-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa0a6);cursor:pointer;padding:0;flex:none}',
-      '.dig-icon-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.08));color:var(--dsw-alias-label-primary,#e6e6e6)}',
+      '.dig-root{display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font:var(--dsw-font-xs-12,12px/1.5 system-ui,sans-serif);overflow:hidden}',
+      '.dig-topbar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));overflow:hidden}',
+      '.dig-topbar-spacer{flex:1;min-width:4px}',
+      '.dig-busy{color:var(--dsw-alias-label-tertiary);flex:none;white-space:nowrap}',
+      '.dig-track{color:var(--dsw-alias-label-secondary);flex:none;font-variant-numeric:tabular-nums;white-space:nowrap}',
+      '.dig-select-wrap{display:inline-flex;align-items:center;gap:4px;min-width:0;color:var(--dsw-alias-label-secondary)}',
+      '.dig-select{appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;color:var(--dsw-alias-label-primary);font:inherit;padding:1px 6px;height:22px;max-width:190px;min-width:0;cursor:pointer;text-overflow:ellipsis}',
+      '.dig-select:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-select:focus{outline:1px solid var(--dsw-alias-brand-primary);outline-offset:-1px}',
+      '.dig-select-repo{max-width:200px}',
+      '.dig-select-branch{max-width:150px}',
+      '.dig-repo-static{display:inline-flex;align-items:center;gap:5px;min-width:0;color:var(--dsw-alias-label-secondary)}',
+      '.dig-repo-name{color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}',
+      '.dig-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
+      '.dig-icon-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-icon-btn:disabled{opacity:.4;cursor:default}',
-      '.dig-status{display:flex;align-items:center;gap:8px;padding:3px 8px;border-bottom:1px solid var(--dsw-alias-border-l1,#2a2a30);color:var(--dsw-alias-label-secondary,#9aa0a6);flex:none;overflow:hidden;white-space:nowrap}',
-      '.dig-status-branch{display:inline-flex;align-items:center;gap:4px;color:var(--dsw-alias-label-primary,#e6e6e6);flex:none}',
-      '.dig-status-sub{overflow:hidden;text-overflow:ellipsis}',
-      '.dig-banner{display:flex;align-items:center;gap:8px;padding:4px 8px;background:rgba(248,81,73,.14);color:#ff9a92;border-bottom:1px solid rgba(248,81,73,.3);flex:none}',
-      '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;background:rgba(77,107,254,.14);color:#a9b8ff;border-bottom:1px solid rgba(77,107,254,.3);flex:none}',
-      '.dig-body{flex:1;min-height:0;display:flex}',
+      '.dig-icon-btn-active{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
+      '.dig-banner{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-state-error-primary)}',
+      '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-label-secondary)}',
+      '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-body{flex:1;min-height:0;display:flex;overflow:hidden}',
       '.dig-body-columns{flex-direction:row}',
       '.dig-body-stack{flex-direction:column}',
-      '.dig-pane{display:flex;flex-direction:column;min-height:0;min-width:0;border-right:1px solid var(--dsw-alias-border-l1,#2a2a30)}',
-      '.dig-pane:last-child{border-right:none}',
-      '.dig-pane-tree{width:210px;flex:none}',
-      '.dig-pane-tree-stack{max-height:36%;flex:none;border-right:none;border-bottom:1px solid var(--dsw-alias-border-l1,#2a2a30)}',
-      '.dig-pane-main{flex:1}',
-      '.dig-pane-changes{width:300px;flex:none;border-right:none;border-left:1px solid var(--dsw-alias-border-l1,#2a2a30)}',
-      '.dig-pane-changes-stack{max-height:46%;flex:none;border-right:none;border-bottom:1px solid var(--dsw-alias-border-l1,#2a2a30)}',
+      '.dig-body-compact{flex-direction:column}',
+      '.dig-pane{display:flex;flex-direction:column;min-height:0;min-width:0}',
+      '.dig-pane-tree{width:200px;flex:none;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-pane-tree-stack{max-height:36%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-pane-main{flex:1;min-width:0}',
+      '.dig-pane-changes{width:290px;flex:none;border-left:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-pane-changes-stack{max-height:46%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-compact-bar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none}',
+      '.dig-compact-tree{max-height:42%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-seg{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--dsw-alias-interactive-bg-hover);flex:none}',
+      '.dig-seg-item{border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;padding:2px 10px;border-radius:6px;cursor:pointer;white-space:nowrap}',
+      '.dig-seg-item:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-seg-item[data-active="true"]{background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));color:var(--dsw-alias-label-primary)}',
       '.dig-search{padding:4px 6px;flex:none}',
-      '.dig-input{width:100%;box-sizing:border-box;padding:4px 6px;border-radius:5px;border:1px solid var(--dsw-alias-border-l2,#3a3a42);background:var(--dsw-alias-bg-layer-1,#1e1e24);color:inherit;font:inherit;outline:none}',
-      '.dig-input:focus{border-color:#4d6bfe}',
+      '.dig-input{width:100%;box-sizing:border-box;padding:4px 6px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;outline:none}',
+      '.dig-input::placeholder{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-input:focus{border-color:var(--dsw-alias-brand-primary)}',
       '.dig-input-compact{padding:3px 6px}',
+      '.dig-picker{display:flex;flex-direction:column;gap:2px;padding:12px;overflow:auto;flex:1;min-height:0}',
+      '.dig-picker-title{color:var(--dsw-alias-label-primary);font-weight:600;margin-bottom:2px}',
+      '.dig-picker-sub{color:var(--dsw-alias-label-tertiary);margin-bottom:8px;word-break:break-all}',
+      '.dig-picker-row{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-primary);font:inherit;padding:6px 8px;border-radius:8px;cursor:pointer}',
+      '.dig-picker-row:hover{background:var(--dsw-alias-interactive-bg-hover);border-color:var(--dsw-alias-brand-primary)}',
+      '.dig-picker-icon{display:inline-flex;color:var(--dsw-alias-label-secondary);flex:none}',
+      '.dig-picker-name{flex:none;font-weight:600}',
+      '.dig-picker-kind{color:var(--dsw-alias-label-tertiary);flex:none}',
+      '.dig-picker-path{color:var(--dsw-alias-label-tertiary);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}',
       '.dig-tree{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-tree-scroll{flex:1;overflow:auto;padding-bottom:6px}',
       '.dig-section{display:flex;flex-direction:column}',
-      '.dig-section-head{display:flex;align-items:center;gap:4px;width:100%;padding:3px 8px;border:none;background:transparent;color:var(--dsw-alias-label-secondary,#9aa0a6);font:inherit;font-weight:600;cursor:pointer;text-align:left}',
+      '.dig-section-head{display:flex;align-items:center;gap:4px;width:100%;padding:3px 8px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-section-head-static{cursor:default;padding-left:20px}',
-      '.dig-section-head:hover{color:var(--dsw-alias-label-primary,#e6e6e6)}',
+      '.dig-section-head:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-count{margin-left:auto;opacity:.6;font-weight:400}',
       '.dig-chevron{display:inline-flex;transform:rotate(-90deg);transition:transform .12s ease}',
       '.dig-chevron-open{transform:rotate(0deg)}',
       '.dig-row{display:flex;align-items:center;gap:5px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden}',
-      '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.06))}',
-      '.dig-row-head{color:#e2a03f}',
-      '.dig-row-selected{background:rgba(77,107,254,.18)}',
+      '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
       '.dig-row-icon{display:inline-flex;flex:none;opacity:.9}',
       '.dig-row-label{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}',
-      '.dig-row-sub{color:var(--dsw-alias-label-secondary,#9aa0a6);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
-      '.dig-row-dir{margin-left:auto;opacity:.7}',
-      '.dig-badge{font-size:10px;padding:0 4px;border-radius:6px;background:rgba(77,107,254,.2);color:#a9b8ff;flex:none}',
-      '.dig-badge-muted{background:rgba(255,255,255,.1);color:#9aa0a6}',
+      '.dig-row-sub{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-row-dir{margin-left:auto;opacity:.75}',
+      '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
+      '.dig-badge-muted{opacity:.8}',
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 6px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
-      '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.06))}',
-      '.dig-commit-selected{background:rgba(77,107,254,.2)}',
+      '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-commit-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
       '.dig-graph{flex:none}',
-      '.dig-commit-date{color:var(--dsw-alias-label-secondary,#9aa0a6);flex:none;font-variant-numeric:tabular-nums;min-width:26px}',
-      '.dig-commit-author{color:var(--dsw-alias-label-secondary,#9aa0a6);flex:none;max-width:110px;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;font-variant-numeric:tabular-nums;min-width:24px}',
+      '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;max-width:110px;overflow:hidden;text-overflow:ellipsis}',
       '.dig-commit-subject{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-ref{font-size:10px;padding:0 5px;border-radius:8px;background:rgba(63,185,80,.18);color:#7ee787;flex:none;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-ref-head{background:rgba(226,160,63,.2);color:#f0c674}',
-      '.dig-ref-tag{background:rgba(176,131,240,.2);color:#d2b3ff}',
-      '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2,#3a3a42);background:transparent;color:inherit;font:inherit;cursor:pointer}',
-      '.dig-empty{padding:14px;text-align:center;color:var(--dsw-alias-label-secondary,#9aa0a6)}',
+      '.dig-ref{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-ref-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-ref-tag{color:var(--dsw-alias-brand-primary)}',
+      '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer}',
+      '.dig-load-more:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-empty{padding:14px;text-align:center;color:var(--dsw-alias-label-tertiary)}',
       '.dig-changes{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-changes-body{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-changes-list{flex:1;overflow:auto;min-height:0}',
       '.dig-group{display:flex;flex-direction:column}',
-      '.dig-group-head{display:flex;align-items:center;gap:8px;padding:2px 8px;color:var(--dsw-alias-label-secondary,#9aa0a6);font-size:11px;font-weight:600}',
-      '.dig-link{margin-left:auto;border:none;background:transparent;color:#7aa2ff;font:inherit;cursor:pointer;padding:0}',
+      '.dig-group-head{display:flex;align-items:center;gap:8px;padding:2px 8px;color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:600}',
+      '.dig-link{margin-left:auto;border:none;background:transparent;color:var(--dsw-alias-brand-primary);font:inherit;cursor:pointer;padding:0;flex:none}',
       '.dig-link:hover{text-decoration:underline}',
       '.dig-row-file{gap:6px}',
-      '.dig-file-status{flex:none;width:14px;text-align:center;font-weight:700;font-size:10px;color:#e2a03f}',
-      '.dig-file-status-A{color:#3fb950}',
-      '.dig-file-status-D{color:#f85149}',
-      '.dig-file-status-R{color:#59b0d6}',
-      '.dig-file-status-U{color:#8a9aa8}',
-      '.dig-stat-add{color:#3fb950;flex:none;font-variant-numeric:tabular-nums}',
-      '.dig-stat-del{color:#f85149;flex:none;font-variant-numeric:tabular-nums}',
-      '.dig-mini{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa0a6);cursor:pointer;opacity:0;flex:none;padding:0}',
+      '.dig-file-status{flex:none;width:14px;text-align:center;font-weight:700;font-size:10px;color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-label-secondary))}',
+      '.dig-file-status-A{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-file-status-D{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-file-status-R{color:var(--dsw-alias-brand-primary)}',
+      '.dig-file-status-U{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-stat-add{color:var(--dsw-alias-state-success-primary);flex:none;font-variant-numeric:tabular-nums}',
+      '.dig-stat-del{color:var(--dsw-alias-state-error-primary);flex:none;font-variant-numeric:tabular-nums}',
+      '.dig-mini{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;opacity:0;flex:none;padding:0}',
       '.dig-row:hover .dig-mini{opacity:1}',
-      '.dig-mini:hover{background:rgba(255,255,255,.12);color:var(--dsw-alias-label-primary,#fff)}',
-      '.dig-commit-box{flex:none;border-top:1px solid var(--dsw-alias-border-l1,#2a2a30);padding:6px;display:flex;flex-direction:column;gap:6px}',
-      '.dig-textarea{width:100%;box-sizing:border-box;min-height:52px;resize:vertical;padding:5px 6px;border-radius:5px;border:1px solid var(--dsw-alias-border-l2,#3a3a42);background:var(--dsw-alias-bg-layer-1,#1e1e24);color:inherit;font:inherit;outline:none}',
-      '.dig-textarea:focus{border-color:#4d6bfe}',
+      '.dig-mini:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-commit-box{flex:none;padding:6px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-commit-box-compact{flex-direction:row;align-items:center;gap:6px;padding:4px 6px}',
+      '.dig-textarea{width:100%;box-sizing:border-box;min-height:50px;resize:vertical;padding:5px 6px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;outline:none}',
+      '.dig-textarea::placeholder{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-textarea:focus{border-color:var(--dsw-alias-brand-primary)}',
       '.dig-commit-actions{display:flex;align-items:center;gap:8px}',
-      '.dig-check{display:inline-flex;align-items:center;gap:4px;color:var(--dsw-alias-label-secondary,#9aa0a6);cursor:pointer}',
-      '.dig-btn{padding:3px 10px;border-radius:5px;border:1px solid var(--dsw-alias-border-l2,#3a3a42);background:transparent;color:inherit;font:inherit;cursor:pointer}',
-      '.dig-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.08))}',
+      '.dig-check{display:inline-flex;align-items:center;gap:4px;color:var(--dsw-alias-label-secondary);cursor:pointer}',
+      '.dig-btn{padding:3px 10px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer;flex:none}',
+      '.dig-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-btn:disabled{opacity:.45;cursor:default}',
-      '.dig-btn-small{padding:1px 8px;font-size:11px}',
-      '.dig-btn-primary{margin-left:auto;background:#4d6bfe;border-color:#4d6bfe;color:#fff}',
-      '.dig-btn-primary:hover:not(:disabled){background:#5f7bff}',
-      '.dig-btn-danger{background:#f85149;border-color:#f85149;color:#fff}',
+      '.dig-btn-small{padding:2px 8px;font-size:11px}',
+      '.dig-btn-primary{margin-left:auto;background:var(--dsw-alias-button-primary-fill,var(--dsw-alias-brand-primary));border-color:transparent;color:var(--dsw-alias-label-primary-inverted,#fff)}',
+      '.dig-btn-primary:hover:not(:disabled){background:var(--dsw-alias-button-primary-hover,var(--dsw-alias-brand-primary))}',
+      '.dig-btn-danger{background:var(--dsw-alias-state-error-primary);border-color:transparent;color:var(--dsw-alias-label-primary-inverted,#fff)}',
       '.dig-detail{display:flex;flex-direction:column;min-height:0;flex:1;overflow:auto;padding:6px 8px;gap:6px}',
       '.dig-detail-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
-      '.dig-detail-author,.dig-detail-date{color:var(--dsw-alias-label-secondary,#9aa0a6)}',
+      '.dig-detail-author,.dig-detail-date{color:var(--dsw-alias-label-tertiary)}',
       '.dig-detail-subject{font-weight:600;white-space:pre-wrap}',
-      '.dig-detail-body{margin:0;white-space:pre-wrap;color:var(--dsw-alias-label-secondary,#9aa0a6);font:inherit}',
+      '.dig-detail-body{margin:0;white-space:pre-wrap;color:var(--dsw-alias-label-secondary);font:inherit}',
       '.dig-detail-files-head{font-weight:600;margin-top:4px}',
       '.dig-detail-files{display:flex;flex-direction:column}',
       '.dig-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}',
-      '.dig-diff-pane{flex:none;max-height:52%;display:flex;flex-direction:column;border-top:1px solid var(--dsw-alias-border-l1,#2a2a30);min-height:0}',
-      '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-secondary,#9aa0a6);flex:none}',
+      '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
+      '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
       '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.5;min-height:0}',
       '.dig-diff-line{display:flex;gap:8px;padding:0 6px;white-space:pre}',
-      '.dig-diff-gutter{width:34px;flex:none;text-align:right;color:var(--dsw-alias-label-secondary,#6a6a72);user-select:none}',
+      '.dig-diff-gutter{width:32px;flex:none;text-align:right;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));user-select:none}',
       '.dig-diff-text{white-space:pre-wrap;word-break:break-word;flex:1;min-width:0}',
-      '.dig-diff-add{background:rgba(63,185,80,.14)}',
-      '.dig-diff-del{background:rgba(248,81,73,.14)}',
-      '.dig-diff-hunk{background:rgba(77,107,254,.14);color:#a9b8ff}',
-      '.dig-diff-meta{color:var(--dsw-alias-label-secondary,#8a8a92)}',
-      '.dig-overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:60}',
-      '.dig-dialog{min-width:260px;max-width:min(420px,90vw);background:var(--dsw-alias-bg-layer-1,#1e1e24);border:1px solid var(--dsw-alias-border-l2,#3a3a42);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.4)}',
+      '.dig-diff-add{background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 16%, transparent)}',
+      '.dig-diff-del{background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 16%, transparent)}',
+      '.dig-diff-hunk{color:var(--dsw-alias-brand-primary);background:color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent)}',
+      '.dig-diff-meta{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-overlay{position:fixed;inset:0;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));display:flex;align-items:center;justify-content:center;z-index:60}',
+      '.dig-dialog{min-width:260px;max-width:min(420px,90vw);background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.35)}',
       '.dig-dialog-title{font-weight:600}',
-      '.dig-dialog-text{color:var(--dsw-alias-label-secondary,#9aa0a6);white-space:pre-wrap}',
+      '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      '.dig-menu{position:fixed;z-index:70;min-width:190px;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-1,#1e1e24);border:1px solid var(--dsw-alias-border-l2,#3a3a42);box-shadow:0 10px 28px rgba(0,0,0,.45);display:flex;flex-direction:column}',
-      '.dig-menu-item{padding:4px 8px;border:none;background:transparent;color:inherit;font:inherit;text-align:left;border-radius:5px;cursor:pointer;white-space:nowrap}',
-      '.dig-menu-item:hover:not(:disabled){background:rgba(77,107,254,.24)}',
-      '.dig-menu-danger{color:#ff9a92}',
+      '.dig-menu{position:fixed;z-index:70;min-width:190px;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column}',
+      '.dig-menu-item{padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;text-align:left;border-radius:5px;cursor:pointer;white-space:nowrap}',
+      '.dig-menu-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-menu-danger{color:var(--dsw-alias-state-error-primary)}',
       '.dig-menu-disabled{opacity:.4;cursor:default}',
-      '.dig-menu-sep{height:1px;margin:3px 6px;background:var(--dsw-alias-border-l1,#2a2a30)}',
+      '.dig-menu-sep{height:1px;margin:3px 6px;background:var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
     ].join('\n')
 
     /* ============================== plugin ============================== */
