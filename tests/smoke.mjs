@@ -129,3 +129,31 @@ test('changelog tracks the current version', () => {
   assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
   assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))
 })
+test('client half exposes t(key), never the raw dictionary object', () => {
+  assert.match(client, /const t = \(key\) =>/, 't must be a lookup function')
+  assert.doesNotMatch(client, /const t = dictionaryOf\(/, 't must not be the dictionary itself')
+
+  const block = (name) => {
+    const start = client.indexOf('const ' + name + ' = {')
+    assert.ok(start >= 0, name + ' dictionary missing')
+    let depth = 0
+    for (let index = client.indexOf('{', start); index < client.length; index += 1) {
+      if (client[index] === '{') depth += 1
+      else if (client[index] === '}') {
+        depth -= 1
+        if (depth === 0) return client.slice(start, index + 1)
+      }
+    }
+    throw new Error('unterminated ' + name)
+  }
+
+  const keys = new Set()
+  for (const match of client.matchAll(/\bt\('([^']+)'\)/g)) keys.add(match[1])
+  assert.ok(keys.size >= 30, 'expected many looked-up keys, saw ' + keys.size)
+  for (const name of ['ZH', 'EN']) {
+    const text = block(name)
+    for (const key of keys) {
+      assert.ok(text.includes("'" + key + "':"), name + ' is missing the key ' + key)
+    }
+  }
+})

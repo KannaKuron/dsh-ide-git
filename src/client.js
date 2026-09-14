@@ -203,6 +203,7 @@ window.__ModuleLoader__.load({
           if (snapshot !== null && typeof snapshot === 'object' && typeof snapshot.active === 'string') active = snapshot.active
         }
       } catch (error) { void error }
+      if (active === '' && typeof navigator === 'object' && navigator !== null && typeof navigator.language === 'string') active = navigator.language
       return active.toLowerCase().indexOf('zh') === 0 ? ZH : EN
     }
 
@@ -1188,7 +1189,8 @@ window.__ModuleLoader__.load({
       document.head.appendChild(style)
       ctx.effect(() => () => { style.remove() }, 'dsh-ide-git: panel styles')
 
-      const t = dictionaryOf(ctx)
+      const dict = dictionaryOf(ctx)
+      const t = (key) => (Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : key)
 
       ctx.effect(() => ctx.betterSidebar.registerTab({
         id: TAB_ID,

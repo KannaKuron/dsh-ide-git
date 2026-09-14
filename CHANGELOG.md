@@ -3,6 +3,13 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.1.2 — 2026-09-14
+
+**类型**:fix
+
+- **修复真机首屏崩**:客户端半 `dictionaryOf()` 返回的是词典对象,却被当成 `t(key)` 函数调用(`title` / `description` 与面板内全部文案都经过它),better-sidebar 的错误边界因此捕获到 `dsh-better-sidebar: t is not a function` 并整页降级。现在显式构造 `const t = (key) => ...` 查表函数;语言探测在拿不到 locale 服务时回退 `navigator.language`。
+- **安装形态改为 `dsh.profile.bundles` 挂载**:此前在 profile 的 `cordis.patch.yml` 手写 insert 行,与包自带的 `dsh.bundle.patch` 叠加,更新流程会组合出 `duplicate loader entry id ide-git (2 rows)` 并回滚。现在与 dsh-better-workspace 等插件一致,只保留 bundles 一条路径。
+- 新增 SSR 渲染自检(本地 harness,用 profile 的 react / react-dom/server 真渲染 Tab 组件):断言模块注册、`inject`、tab 描述符与骨架 DOM,避免同类渲染回归。
 ## v0.1.1 — 2026-09-14
 
 **类型**:test
