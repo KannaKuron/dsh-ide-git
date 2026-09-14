@@ -34,7 +34,6 @@ window.__ModuleLoader__.load({
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
-    const COMPACT_MAX_HEIGHT = 200
     const COMPACT_MAX_WIDTH = 400
 
     /* ============================== i18n ============================== */
@@ -1316,7 +1315,13 @@ window.__ModuleLoader__.load({
       // short (the bottom panel is 1500x300 and still wants tree | graph | changes).
       // Only a genuinely tiny container (very narrow or very short) falls back to
       // the compact one-header chrome.
-      const compact = size.height > 0 && (size.height < COMPACT_MAX_HEIGHT || size.width < COMPACT_MAX_WIDTH)
+      // Width alone decides WHICH SURFACE this is: the native right sidebar is
+      // narrow (< 400) whatever its height, the bottom workbench is wide
+      // whatever its height. Height must never select the tall-narrow chrome on
+      // its own — v0.1.3 already made that mistake with a height < 330 test (a
+      // 1500x300 workbench came out single-column) and v0.3.5 still let
+      // height < 200 flip a 1320x180 workbench into the right-sidebar chrome.
+      const compact = size.width > 0 && size.width < COMPACT_MAX_WIDTH
       const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
 
 // The action rail measures ITSELF, not the panel: how many buttons fit is a
