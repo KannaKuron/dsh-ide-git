@@ -13,6 +13,14 @@
 - 本机联调:把包名加进 profile 的 `dsh.profile.bundles`(依赖指向仓库里的 tarball)→ 客户端半改动硬刷新页面即可,宿主半改动必须重启 `dsh web`(见不变量 11)。
 - 客户端半改动后跑 `node scripts/ssr-check.mjs`(用本地 web profile 的 react 真渲染一次 Tab 组件),它能抓住「一渲染就抛」的回归;`npm test` 的 30 例之外就靠它。
 
+## 截图与演示仓库
+
+- `scripts/demo-repo.mjs [dir]` 生成演示仓库(纯虚构),`scripts/screenshots.mjs <web-url> [out]` 拍 README 效果图。两者都要能重跑:演示仓库脚本是幂等的(先删后建),截图脚本假定实例已就绪。
+- **截图环境必须是干净的**:独立 `DSH_HOME`(例:`/Users/kanna/sandbox/dsh-shot-home`)、只装 `dsh-better-sidebar` 与本插件、绑定演示仓库、`ui-theme.preference: dark`。不要在真实 profile 里拍——壁纸插件、真实工作区与其它面板都会入镜。
+- **只截元素,不截窗口**:每张图都是 `.dig-root`(或其中的对话框)的元素截图,所以会话内容、文件路径与 DSH 外壳天然不会出现。
+- 主题与引导标记都写在 `DSH_HOME/settings.yaml`;**覆盖该文件会把 `ui-onboarding.welcomeNoticeVersion` 一起抹掉**,下次打开页面又会弹内测声明,挡住后续点击(截图脚本会先尝试点掉它)。
+- 面板要出现在底部工作台:会话头右侧的「展开底部面板」→ 面板 Tab 条 `+` → 卡片里的 **Git**;出现在原生右侧栏:点会话头右侧的「打开右侧边栏」→ 侧栏「开始」页里直接点 **Git** 卡片(那时没有 `+` 菜单可用)。这两个入口只在**会话真正开始之后**才存在(发一条消息即可,模型没有 key 也没关系)。
+
 ## 变更记录纪律
 
 - **所有版本发布、修复、事故复盘、复现/验证记录一律写进 `CHANGELOG.md`**,不追加进本文件;本文件只保留仍然有效的规则、不变量与当前事实。
@@ -29,7 +37,10 @@
 | dsh.plugin.json | 插件注册表清单(id `dsh-external/dsh-ide-git`) |
 | tests/smoke.mjs | 文件级冒烟测试(无 Cordis runtime、无浏览器):清单一致性 / 客户端包装 / 基线 require 白名单 / 破坏性守卫 / 写队列与撤回 / 方法表一致性 |
 | tests/api.test.mjs | 集成测试:临时真实仓库 + 伪造 cordis ctx 与 HTTP req/res,直驱宿主路由(解析 / 变更 / 全部守卫) |
-| docs/screenshots/ | README 截图(待补) |
+| docs/screenshots/ | README 效果图(6 张,由 scripts/screenshots.mjs 生成) |
+| scripts/demo-repo.mjs | 生成用于截图的虚构演示仓库(幂等) |
+| scripts/screenshots.mjs | Playwright 驱动的截图流程(只截插件面板元素) |
+| scripts/ssr-check.mjs | 客户端半的 SSR 自检(真渲染一次 Tab 组件) |
 
 ## 核心不变量(改代码前必读)
 

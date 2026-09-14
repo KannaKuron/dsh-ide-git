@@ -12,6 +12,46 @@ DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-id
 - **想比较分支**:分支右键即可与当前分支比较,结果按文件与提交数汇报。
 - **操作要够全**:签出、从任意分支/提交新建分支、重命名、删除、合并到当前、变基当前到此、新建标签、cherry-pick、还原提交、重置(保留/丢弃)、fetch / pull --ff-only / push(确认后)。
 
+## 效果
+
+> 下面这些图取自一个**只装了两个插件**(`dsh-better-sidebar` + 本插件)的干净 DSH,绑定在一个虚构的演示仓库上(见 `scripts/demo-repo.mjs`),画面里没有真实工作区、没有壁纸插件、也没有其它面板。
+
+<table>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/1-bottom-workbench.png" alt="底部工作台:分支树 / 提交图谱 / 变更与提交"/></td>
+<td valign="top"><b>底部工作台(宽扁 → 三栏)</b><br/>左列是 IDEA 式动作条:按<b>自身高度</b>决定放几个按钮,放不下的收进 <code>⋯</code>,末尾 <code>⚙</code> 可调顺序与显隐;中列是提交列表——列序与 IDEA 一致(<b>日期 → 提交人 → 图谱 → 分支标签 → 提交信息</b>),上方一排筛选(文本/哈希、分支或标签、提交人、日期、路径)与排序方向;右列是变更分组与提交框。</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/2-commit-menu.png" alt="提交右键菜单"/></td>
+<td valign="top"><b>提交右键</b><br/>详情、复制修订号、签出该修订、在此新建分支、新建标签、优选(Cherry-Pick)、还原提交、重置到此(保留/丢弃更改)——破坏性项标红,菜单在面板内定位,底部工作台里同样能弹出来。</td>
+</tr>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/3-branch-undo.png" alt="删除分支后的撤回浮窗"/></td>
+<td valign="top"><b>删除可撤回</b><br/>删除分支/贮藏是<b>真删除</b>,但宿主在动手前记下了对象 id:右下角浮窗点「撤回」即可恢复(一次性、30 分钟内有效);错过浮窗还有顶栏的「最近可撤回的操作」入口。删除 <code>main</code>/<code>master</code> 需要输入分支名确认。</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/4-rail-settings.png" alt="动作条设置:排序与显隐"/></td>
+<td valign="top"><b>动作条可配置</b><br/>拖动或用箭头调整顺序、眼睛图标逐项显隐,配置只存「排列 + 隐藏」并做过归一化,以后新增动作不会打坏旧配置。</td>
+</tr>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/5-commit-detail.png" alt="提交详情与逐行 diff"/></td>
+<td valign="top"><b>提交详情</b><br/>完整提交信息、作者与日期、变更文件列表(带 +/− 行数),点文件看逐行 diff(行号 + hunk 高亮 + 红绿底)。</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" width="58%"><img src="docs/screenshots/6-right-sidebar.png" alt="原生右侧栏里的同一面板"/></td>
+<td valign="top"><b>同一个注册,两种布局</b><br/>窄而高的<b>原生右侧栏</b>改用堆叠布局:动作条铺成顶部一行、变更在先、提交列表随后——面板只量自己的尺寸,从不猜自己在哪个容器里。截图顺序、演示仓库与干净环境都由 <code>scripts/screenshots.mjs</code> 复现。</td>
+</tr>
+</table>
+
 ## 布局:右侧栏与底部面板不一样,这是刻意的
 
 dsh-better-sidebar 0.19.x 里,同一个 Tab 注册会出现在两个完全不同的面上:
