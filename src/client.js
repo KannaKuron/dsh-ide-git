@@ -143,6 +143,10 @@ window.__ModuleLoader__.load({
       'toast.branchDeleted': '已删除分支 {name}',
       'toast.stashDropped': '已删除贮藏 {ref}',
       'toast.restored': '已恢复',
+      'undo.menu': '最近可撤回的操作',
+      'undo.empty': '现在没有可撤回的操作',
+      'undo.branch': '分支',
+      'undo.stash': '贮藏',
       'confirm.typeName': '输入 {name} 以确认',
       'confirm.protected': '{name} 是主分支。删除是不可逆的高风险操作,请输入分支名确认。删除后仍可从浮窗撤回。',
       'discard.untracked.confirm': '删除未跟踪文件 {path}?文件内容会被直接删除且无法撤回。',
@@ -279,6 +283,10 @@ window.__ModuleLoader__.load({
       'toast.branchDeleted': 'Deleted branch {name}',
       'toast.stashDropped': 'Dropped stash {ref}',
       'toast.restored': 'Restored',
+      'undo.menu': 'Recently deleted (undo)',
+      'undo.empty': 'Nothing to undo right now',
+      'undo.branch': 'Branch',
+      'undo.stash': 'Stash',
       'confirm.typeName': 'Type {name} to confirm',
       'confirm.protected': '{name} is a main branch. Deleting it is high risk, so type the branch name to confirm — a toast can still bring it back afterwards.',
       'discard.untracked.confirm': 'Delete the untracked file {path}? Its content is removed for good and cannot be undone.',
@@ -1567,7 +1575,7 @@ window.__ModuleLoader__.load({
         toastSeq.current += 1
         const id = 'toast-' + String(toastSeq.current)
         setToasts((list) => list.concat([Object.assign({ id: id, onClose: () => dropToast(id) }, toast)]))
-        const ttl = toast.ttl === undefined ? 15000 : toast.ttl
+        const ttl = toast.ttl === undefined ? (toast.actionLabel === undefined ? 9000 : 30000) : toast.ttl
         if (ttl > 0) toastTimers.current.push(setTimeout(() => dropToast(id), ttl))
         return id
       }, [dropToast])
@@ -1577,6 +1585,7 @@ window.__ModuleLoader__.load({
       const undoAction = useCallback(async (id) => {
         const data = await guard(() => request('undoApply', Object.assign({}, base, { id: id })))
         if (data === undefined) return
+        setToasts((list) => list.filter((item) => item.undoId !== id))
         await refresh()
         pushToast({ text: t('toast.restored') + ' · ' + data.label, icon: 'check', tone: 'ok', ttl: 6000 })
       }, [base, guard, refresh, pushToast, t])
@@ -1589,6 +1598,7 @@ window.__ModuleLoader__.load({
           text: fill(t('toast.branchDeleted'), { name: name }),
           icon: 'trash',
           tone: 'warn',
+          undoId: data.undo.id,
           actionLabel: t('toast.undo'),
           onAction: () => { void undoAction(data.undo.id) },
         })
@@ -1602,10 +1612,30 @@ window.__ModuleLoader__.load({
           text: fill(t('toast.stashDropped'), { ref: ref }),
           icon: 'trash',
           tone: 'warn',
+          undoId: data.undo.id,
           actionLabel: t('toast.undo'),
           onAction: () => { void undoAction(data.undo.id) },
         })
       }, [run, pushToast, undoAction, t])
+
+      // A toast is transient; this keeps the same handles reachable afterwards, so
+      // undoing a delete never depends on catching a floating chip in time.
+      const openUndoMenu = useCallback(async (event) => {
+        const data = await guard(() => request('undoList', base))
+        if (data === undefined) return
+        const entries = Array.isArray(data.items) ? data.items.slice().reverse() : []
+        if (entries.length === 0) {
+          pushToast({ text: t('undo.empty'), icon: 'undo', ttl: 6000 })
+          return
+        }
+        openMenuAt(event, entries.map((entry) => ({
+          id: 'undo:' + entry.id,
+          icon: 'undo',
+          tone: 'warn',
+          label: (entry.kind === 'branch-delete' ? t('undo.branch') : entry.kind === 'stash-drop' ? t('undo.stash') : entry.kind) + ' · ' + entry.label,
+          run: () => { void undoAction(entry.id) },
+        })))
+      }, [base, guard, openMenuAt, pushToast, t, undoAction])
 
       /* ---------- shared pieces ---------- */
 
@@ -1624,6 +1654,11 @@ window.__ModuleLoader__.load({
         summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
           (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
         operation === null ? null : E('span', { className: 'dig-opchip', title: t('operation.hint') }, t('operation.' + operation)),
+        E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+          title: t('undo.menu'),
+          onClick: (event) => { void openUndoMenu(event) },
+        }, E(Icon, { name: 'undo', size: 13 })),
         E('span', { className: 'dig-topbar-spacer' }),
         busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
 
