@@ -1,0 +1,131 @@
+/**
+ * dsh-ide-git — smoke test (file-level only: no Cordis runtime, no browser).
+ *
+ * Guards the invariants that would silently break the plugin at load time:
+ * manifest/bookkeeping consistency, the no-build client wrapper, the baseline
+ * require whitelist, and the argv-only git posture of the host half.
+ */
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync, existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const root = join(here, '..')
+const read = (name) => readFileSync(join(root, name), 'utf8')
+const exists = (name) => existsSync(join(root, name))
+
+const pkg = JSON.parse(read('package.json'))
+const manifest = JSON.parse(read('dsh.plugin.json'))
+const host = read('src/index.js')
+const client = read('src/client.js')
+const changelog = read('CHANGELOG.md')
+const patch = read('cordis.patch.yml')
+
+/** The dsh client baseline modules a no-build client half may require. */
+const BASELINE = new Set([
+  'react',
+  'react/jsx-runtime',
+  'react-dom',
+  'react-dom/client',
+  '@deepseek-ai/cordis',
+  '@deepseek-ai/dsh-client-store',
+  '@deepseek-ai/dsh-client-ui-slots',
+  '@deepseek-ai/dsh-client-ui-primitives',
+])
+
+test('release bookkeeping: package.json and dsh.plugin.json agree', () => {
+  assert.equal(manifest.version, pkg.version)
+  assert.equal(manifest.main, './' + pkg.main)
+  assert.equal(pkg.name, 'dsh-ide-git')
+  assert.match(manifest.id, /^dsh-external\//)
+  assert.equal(pkg.license, 'MIT')
+  assert.ok(exists('LICENSE'))
+})
+
+test('every published entry exists on disk', () => {
+  assert.ok(exists(pkg.main), 'host entry missing')
+  assert.ok(exists('cordis.patch.yml'))
+  for (const file of pkg.files) {
+    if (file.includes('*')) continue
+    assert.ok(exists(file), 'files[] entry missing: ' + file)
+  }
+  assert.equal(pkg.exports['.'], './' + pkg.main)
+  assert.equal(pkg.exports['./client'], './src/client.js')
+})
+
+test('cordis patch mounts exactly one row named dsh-ide-git', () => {
+  // Commented-out examples must not count: only live YAML lines are the mount.
+  const active = patch.split('\n').filter((line) => !line.trim().startsWith('#')).join('\n')
+  assert.match(active, /- insert:/)
+  const names = active.match(/name: '([^']+)'/g) || []
+  assert.deepEqual(names, ["name: 'dsh-ide-git'"])
+  assert.match(active, /id: ide-git/)
+})
+
+test('client half uses the no-build ModuleLoader wrapper', () => {
+  assert.match(client, /window\.__ModuleLoader__\.load\(\{/)
+  assert.match(client, /id: 'dsh-ide-git'/)
+  assert.match(client, /factory: \(require\) =>/)
+  assert.doesNotMatch(client, /^\s*import\s/m, 'client half must not use import')
+  assert.doesNotMatch(client, /\bexport\s+(default\s+)?(const|function|class)\b/)
+})
+
+test('client half requires only baseline modules', () => {
+  const calls = client.match(/require\((['"])([^'"]+)\1\)/g) || []
+  assert.ok(calls.length > 0, 'expected at least one require call')
+  for (const call of calls) {
+    const name = call.slice(call.indexOf('(') + 2, call.length - 2)
+    assert.ok(BASELINE.has(name), 'non-baseline require: ' + name)
+  }
+})
+
+test('client half registers exactly one better-sidebar tab', () => {
+  assert.match(client, /inject: \['betterSidebar'\]/)
+  assert.match(client, /ctx\.betterSidebar\.registerTab\(\{/)
+  assert.match(client, /id: TAB_ID/)
+  assert.match(client, /const TAB_ID = 'dsh-ide-git:panel'/)
+  assert.match(client, /single: true/)
+  const registrations = client.match(/registerTab\(/g) || []
+  assert.equal(registrations.length, 1)
+})
+
+test('host half is an ESM cordis plugin with argv-only git calls', () => {
+  assert.match(host, /export const name = 'dsh-ide-git'/)
+  assert.match(host, /export const inject = \['webServer'\]/)
+  assert.match(host, /export function apply\(ctx\)/)
+  assert.match(host, /ctx\.webServer\.register\(\{ kind: 'prefix', path: ROUTE_PREFIX/)
+  assert.match(host, /spawn\(gitBinary\(\), args, \{ cwd/)
+  assert.doesNotMatch(host, /(^|[^.\w])exec\(/m, 'no shell exec')
+  assert.doesNotMatch(host, /execSync\(|shell:\s*true/, 'no shell exec / shell:true')
+  assert.doesNotMatch(host, /from '(?!node:)/, 'host half may only import node: builtins')
+})
+
+test('host half keeps the destructive-confirm guards', () => {
+  for (const needle of [
+    'push requires confirm: true',
+    'hard reset requires confirm: true',
+    'force delete requires confirm: true',
+    'discarding untracked files requires confirm: true',
+    'dropping a stash requires confirm: true',
+  ]) {
+    assert.ok(host.includes(needle), 'missing guard: ' + needle)
+  }
+})
+
+test('host half exposes the method table the client calls', () => {
+  const methods = ['summary', 'branches', 'log', 'commitDetail', 'diff', 'compare', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'version']
+  for (const method of methods) {
+    assert.match(host, new RegExp('^  ' + method + ',$', 'm'), 'host method missing: ' + method)
+  }
+  for (const call of client.match(/request\('([a-zA-Z]+)'/g) || []) {
+    const method = call.slice(call.indexOf("'") + 1, call.length - 1)
+    assert.ok(methods.includes(method), 'client calls an unregistered method: ' + method)
+  }
+})
+
+test('changelog tracks the current version', () => {
+  assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
+  assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))
+})
