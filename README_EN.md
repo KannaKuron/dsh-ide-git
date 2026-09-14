@@ -27,6 +27,7 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 - Commit details: full message, author/date, changed files with +/− and per-file line diff.
 - Changes: conflicts / staged / changes / untracked groups, inline stage / unstage / discard, group-level actions, click for diff.
 - Commit box: multi-line message, Ctrl+Enter (Cmd+Enter) to commit, amend.
+- **Safety and undo**: deleting a branch or a stash pops a toast in the corner with an **Undo** action — the delete is real, and undo recreates the ref from the object id recorded just before it (one-shot, valid for 30 minutes). Deleting `main` / `master` / `trunk` requires typing the branch name, destructive dialogs focus Cancel instead of the red button, writes are serialised per repository on the host, and while a merge / rebase / cherry-pick / revert / bisect is still open the affected actions are greyed out with the reason.
 
 ## Install
 
@@ -39,7 +40,7 @@ Restart `dsh web`, then open **Git** from the bottom panel's `+` menu or from th
 
 ## How it works
 
-- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 29-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
+- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 31-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
 - **Client half** (`src/client.js`): no build step, single file, `window.__ModuleLoader__.load({ id, factory })`, requiring only `react` (a DSH client baseline module).
 - **Trust fence**: only loopback Hosts, or same-origin browser requests (`Sec-Fetch-Site`), are served.
 - **Destructive actions** (push, hard reset, force delete, discarding untracked files, dropping a stash) require an explicit `confirm: true` and always ask in the UI first.

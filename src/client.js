@@ -138,6 +138,21 @@ window.__ModuleLoader__.load({
       'filter.sortAsc': '旧→新',
       'filter.clear': '清除筛选',
       'filter.none': '没有匹配的提交',
+      'toast.undo': '撤回',
+      'toast.close': '关闭',
+      'toast.branchDeleted': '已删除分支 {name}',
+      'toast.stashDropped': '已删除贮藏 {ref}',
+      'toast.restored': '已恢复',
+      'confirm.typeName': '输入 {name} 以确认',
+      'confirm.protected': '{name} 是主分支。删除是不可逆的高风险操作,请输入分支名确认。删除后仍可从浮窗撤回。',
+      'discard.untracked.confirm': '删除未跟踪文件 {path}?文件内容会被直接删除且无法撤回。',
+      'stashDrop.confirm': '删除贮藏 {ref}?删除后浮窗里可以撤回。',
+      'operation.merge': '合并进行中',
+      'operation.rebase': '变基进行中',
+      'operation.cherry-pick': '优选进行中',
+      'operation.revert': '还原进行中',
+      'operation.bisect': '二分定位进行中',
+      'operation.hint': '该仓库还有一个多步操作没有结束,先完成或中止它再执行分支级操作',
       'confirm.title': '确认操作',
       'confirm.cancel': '取消',
       'confirm.ok': '确定',
@@ -153,7 +168,7 @@ window.__ModuleLoader__.load({
       'counts.untracked': '未跟踪 {n}',
       'counts.conflicted': '冲突 {n}',
       'push.confirm': '将 {branch} 推送到 {upstream}?',
-      'delete.confirm': '删除分支 {name}?该操作不可撤销。',
+      'delete.confirm': '删除分支 {name}?删除后浮窗里可以撤回(未合并的分支 git 会拒绝删除)。',
       'discard.confirm': '丢弃 {path} 的更改?该操作不可撤销。',
       'resetHard.confirm': '硬重置到 {hash}?未提交的更改会丢失。',
       'resetSoft.confirm': '将 HEAD 重置到 {hash}(保留工作区更改)?',
@@ -259,6 +274,21 @@ window.__ModuleLoader__.load({
       'filter.sortAsc': 'Oldest first',
       'filter.clear': 'Clear filters',
       'filter.none': 'No matching commits',
+      'toast.undo': 'Undo',
+      'toast.close': 'Close',
+      'toast.branchDeleted': 'Deleted branch {name}',
+      'toast.stashDropped': 'Dropped stash {ref}',
+      'toast.restored': 'Restored',
+      'confirm.typeName': 'Type {name} to confirm',
+      'confirm.protected': '{name} is a main branch. Deleting it is high risk, so type the branch name to confirm — a toast can still bring it back afterwards.',
+      'discard.untracked.confirm': 'Delete the untracked file {path}? Its content is removed for good and cannot be undone.',
+      'stashDrop.confirm': 'Drop stash {ref}? A toast will offer to bring it back.',
+      'operation.merge': 'Merge in progress',
+      'operation.rebase': 'Rebase in progress',
+      'operation.cherry-pick': 'Cherry-pick in progress',
+      'operation.revert': 'Revert in progress',
+      'operation.bisect': 'Bisect in progress',
+      'operation.hint': 'This repository still has a multi-step operation open — finish or abort it before branch-level actions',
       'confirm.title': 'Confirm',
       'confirm.cancel': 'Cancel',
       'confirm.ok': 'OK',
@@ -274,7 +304,7 @@ window.__ModuleLoader__.load({
       'counts.untracked': 'Untracked {n}',
       'counts.conflicted': 'Conflicts {n}',
       'push.confirm': 'Push {branch} to {upstream}?',
-      'delete.confirm': 'Delete branch {name}? This cannot be undone.',
+      'delete.confirm': 'Delete branch {name}? A toast will offer to bring it back (git still refuses unmerged branches).',
       'discard.confirm': 'Discard changes in {path}? This cannot be undone.',
       'resetHard.confirm': 'Hard reset to {hash}? Uncommitted changes are lost.',
       'resetSoft.confirm': 'Move HEAD to {hash} (working tree kept)?',
@@ -614,6 +644,7 @@ window.__ModuleLoader__.load({
       down: ['M8 3.4v9', 'M4.6 9 8 12.4 11.4 9'],
       grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
       filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
+      check: ['M3.2 8.4 6.4 11.6 12.8 4.6'],
     }
 
     function Icon(props) {
@@ -739,6 +770,26 @@ window.__ModuleLoader__.load({
             E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: props.onClose }, t('confirm.ok')))))
     }
 
+    /* Transient result chips, anchored inside the panel (see ContextMenu for why
+       nothing here is position:fixed). A toast can carry one action — currently
+       'undo', which is how a real delete is still reversible. */
+    function ToastStack(props) {
+      if (props.toasts.length === 0) return null
+      return E('div', { className: 'dig-toasts' }, props.toasts.map((item) => E('div', {
+        key: item.id,
+        className: 'dig-toast' + (item.tone === undefined ? '' : ' dig-toast-' + item.tone),
+      },
+        E('span', { className: 'dig-toast-icon' }, E(Icon, { name: item.icon === undefined ? 'check' : item.icon, size: 13 })),
+        E('span', { className: 'dig-toast-text', title: item.text }, item.text),
+        item.actionLabel === undefined ? null : E('button', {
+          type: 'button', className: 'dig-toast-action', onClick: () => item.onAction(),
+        }, item.actionLabel),
+        E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+          title: props.t('toast.close'), onClick: () => item.onClose(),
+        }, E(Icon, { name: 'close', size: 11 })))))
+    }
+
     function PromptDialog(props) {
       const [value, setValue] = useState(props.initialValue === undefined ? '' : props.initialValue)
       const ref = useRef(null)
@@ -761,14 +812,29 @@ window.__ModuleLoader__.load({
             E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: submit }, props.okLabel))))
     }
 
+    /* A destructive confirm: focus starts on Cancel (never on the red button), Enter
+       only submits when the dialog asked for a typed confirmation, and passing
+       requireText turns the dialog into a type-the-name gate. */
     function ConfirmDialog(props) {
+      const t = props.t
+      const [typed, setTyped] = useState('')
+      const cancelRef = useRef(null)
+      const needText = typeof props.requireText === 'string' && props.requireText !== ''
+      const matches = needText === false || typed.trim() === props.requireText
+      useEffect(() => { if (cancelRef.current !== null) cancelRef.current.focus() }, [])
       return E('div', { className: 'dig-overlay' },
         E('div', { className: 'dig-dialog' },
           E('div', { className: 'dig-dialog-title' }, props.title),
           E('div', { className: 'dig-dialog-text' }, props.text),
+          needText === false ? null : E('input', {
+            className: 'dig-input', value: typed, spellCheck: false,
+            placeholder: fill(t('confirm.typeName'), { name: props.requireText }),
+            onChange: (event) => setTyped(event.target.value),
+            onKeyDown: (event) => { if (event.key === 'Enter' && matches === true) props.onConfirm() },
+          }),
           E('div', { className: 'dig-dialog-actions' },
-            E('button', { type: 'button', className: 'dig-btn', onClick: props.onCancel }, props.cancelLabel),
-            E('button', { type: 'button', className: 'dig-btn dig-btn-danger', onClick: props.onConfirm }, props.okLabel))))
+            E('button', { ref: cancelRef, type: 'button', className: 'dig-btn', onClick: props.onCancel }, props.cancelLabel),
+            E('button', { type: 'button', className: 'dig-btn dig-btn-danger', disabled: matches === false, onClick: props.onConfirm }, props.okLabel))))
     }
 
     function Segmented(props) {
@@ -984,6 +1050,11 @@ window.__ModuleLoader__.load({
     /* ============================== history ============================== */
 
     const DAY_MS = 86400000
+
+    /** Branches the panel treats as high risk: deleting one needs a typed confirm. */
+    function isProtectedBranch(name) {
+      return name === 'main' || name === 'master' || name === 'trunk'
+    }
 
     /* A ref decoration as git prints it in %D, split into a display name and the
        kind that drives its badge colour. */
@@ -1204,6 +1275,7 @@ window.__ModuleLoader__.load({
       const [railConfig, setRailConfig] = useState(readRailConfig)
       const [railSettings, setRailSettings] = useState(false)
       const [railBox, setRailBox] = useState({ width: 0, height: 0 })
+      const [toasts, setToasts] = useState([])
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
@@ -1399,6 +1471,12 @@ window.__ModuleLoader__.load({
          coordinates: the bottom workbench is a containing block for fixed
          descendants (contain: layout), so viewport coordinates would place the
          menu outside the panel. See ContextMenu. */
+      // A merge / rebase / cherry-pick / revert / bisect that has not finished yet
+      // makes branch-level actions dangerous: git refuses most of them anyway, so
+      // the panel greys them out and says why instead of letting them fail.
+      const operation = summary === null || summary.operation === undefined ? null : summary.operation
+      const blocked = operation !== null
+
       const openMenuAt = useCallback((event, items) => {
         const element = hostRef.current
         const rect = element === null ? null : element.getBoundingClientRect()
@@ -1416,9 +1494,9 @@ window.__ModuleLoader__.load({
         const isLocal = entry.remote !== true && entry.tag !== true
         const reason = t('action.unavailable')
         const items = [
-          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true, reason: reason, run: () => { void checkout(entry) } },
-          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true, reason: reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
-          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true, reason: reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
+          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
+          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
+          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
           null,
           { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
@@ -1427,10 +1505,10 @@ window.__ModuleLoader__.load({
           isLocal ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, disabled: entry.head === true, reason: reason, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
           null,
           { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
-          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), run: () => setDialog({ kind: 'push' }) },
+          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
         openMenuAt(event, items)
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites])
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked])
 
       const commitMenu = useCallback((event, commit) => {
         const items = [
@@ -1441,14 +1519,14 @@ window.__ModuleLoader__.load({
           { id: 'branch', icon: 'plus', tone: 'success', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
           { id: 'tag', icon: 'tag', tone: 'warn', label: t('action.newTag'), run: () => setDialog({ kind: 'newTag', hash: commit.hash }) },
           null,
-          { id: 'cherry', icon: 'commit', tone: 'accent', label: t('action.cherryPick'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
-          { id: 'revert', icon: 'undo', tone: 'danger', label: t('action.revert'), run: () => { void run('revert', { hash: commit.hash }) } },
+          { id: 'cherry', icon: 'commit', tone: 'accent', label: t('action.cherryPick'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
+          { id: 'revert', icon: 'undo', tone: 'danger', label: t('action.revert'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('revert', { hash: commit.hash }) } },
           null,
-          { id: 'resetSoft', icon: 'undo', tone: 'warn', label: t('action.resetSoft'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
-          { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
+          { id: 'resetSoft', icon: 'undo', tone: 'warn', label: t('action.resetSoft'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
+          { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
         ]
         openMenuAt(event, items)
-      }, [run, selectCommit, t, openMenuAt])
+      }, [run, selectCommit, t, openMenuAt, blocked])
 
       const changeMenu = useCallback((event, item, group) => {
         const items = [
@@ -1471,6 +1549,64 @@ window.__ModuleLoader__.load({
         if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
       }, [run])
 
+      /* ---------- toasts + undo ---------- */
+
+      const toastTimers = useRef([])
+      const toastSeq = useRef(0)
+
+      useEffect(() => () => {
+        for (const timer of toastTimers.current) clearTimeout(timer)
+        toastTimers.current = []
+      }, [])
+
+      const dropToast = useCallback((id) => {
+        setToasts((list) => list.filter((item) => item.id !== id))
+      }, [])
+
+      const pushToast = useCallback((toast) => {
+        toastSeq.current += 1
+        const id = 'toast-' + String(toastSeq.current)
+        setToasts((list) => list.concat([Object.assign({ id: id, onClose: () => dropToast(id) }, toast)]))
+        const ttl = toast.ttl === undefined ? 15000 : toast.ttl
+        if (ttl > 0) toastTimers.current.push(setTimeout(() => dropToast(id), ttl))
+        return id
+      }, [dropToast])
+
+      // The delete really happened; the host kept an object id for a while, and this
+      // asks it to recreate the branch / stash entry from that id.
+      const undoAction = useCallback(async (id) => {
+        const data = await guard(() => request('undoApply', Object.assign({}, base, { id: id })))
+        if (data === undefined) return
+        await refresh()
+        pushToast({ text: t('toast.restored') + ' · ' + data.label, icon: 'check', tone: 'ok', ttl: 6000 })
+      }, [base, guard, refresh, pushToast, t])
+
+      const deleteBranch = useCallback(async (name) => {
+        const data = await run('branchDelete', { name: name, confirm: true })
+        if (data === undefined) return
+        if (data.undo === undefined) return
+        pushToast({
+          text: fill(t('toast.branchDeleted'), { name: name }),
+          icon: 'trash',
+          tone: 'warn',
+          actionLabel: t('toast.undo'),
+          onAction: () => { void undoAction(data.undo.id) },
+        })
+      }, [run, pushToast, undoAction, t])
+
+      const dropStash = useCallback(async (ref) => {
+        const data = await run('stashDrop', { ref: ref, confirm: true })
+        if (data === undefined) return
+        if (data.undo === undefined) return
+        pushToast({
+          text: fill(t('toast.stashDropped'), { ref: ref }),
+          icon: 'trash',
+          tone: 'warn',
+          actionLabel: t('toast.undo'),
+          onAction: () => { void undoAction(data.undo.id) },
+        })
+      }, [run, pushToast, undoAction, t])
+
       /* ---------- shared pieces ---------- */
 
       const repoOptions = repoState === null ? [] : repoState.repos
@@ -1487,6 +1623,7 @@ window.__ModuleLoader__.load({
           }, branches.local.map((entry) => E('option', { key: entry.name, value: entry.name }, entry.name)))),
         summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
           (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
+        operation === null ? null : E('span', { className: 'dig-opchip', title: t('operation.hint') }, t('operation.' + operation)),
         E('span', { className: 'dig-topbar-spacer' }),
         busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
 
@@ -1576,7 +1713,7 @@ window.__ModuleLoader__.load({
         openMenuAt(event, [
           { id: 'stash-push', icon: 'stash', tone: 'violet', label: t('stash.push'), disabled: dirty === 0, reason: t('action.unavailable'), run: () => { void run('stashPush', { includeUntracked: true }) } },
           { id: 'stash-apply', icon: 'checkout', tone: 'accent', label: t('stash.apply'), disabled: count === 0, reason: t('action.unavailable'), run: () => { void run('stashApply', {}) } },
-          { id: 'stash-drop', icon: 'trash', tone: 'danger', label: t('stash.drop'), danger: true, disabled: count === 0, reason: t('action.unavailable'), run: () => { void run('stashDrop', { confirm: true }) } },
+          { id: 'stash-drop', icon: 'trash', tone: 'danger', label: t('stash.drop'), danger: true, disabled: count === 0, reason: t('action.unavailable'), run: () => setDialog({ kind: 'stashDrop', ref: 'stash@{0}' }) },
           null,
           { id: 'stash-count', icon: 'tag', tone: 'secondary', label: fill(t('stash.count'), { n: count }), disabled: true, run: () => {} },
         ])
@@ -1597,7 +1734,7 @@ window.__ModuleLoader__.load({
         const entry = { id: spec.id, icon: spec.icon, tone: spec.tone, label: t(spec.key), disabled: false, active: false, run: () => {} }
         if (spec.id === 'refresh') entry.run = () => setTick((value) => value + 1)
         else if (spec.id === 'newBranch') entry.run = () => setDialog({ kind: 'newBranch' })
-        else if (spec.id === 'checkout') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'checkout') }
+        else if (spec.id === 'checkout') { entry.disabled = otherBranches.length === 0 || blocked; entry.run = (event) => pickBranchMenu(event, 'checkout') }
         else if (spec.id === 'delete') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'delete') }
         else if (spec.id === 'compare') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'compare') }
         else if (spec.id === 'diff') { entry.disabled = dirty === 0; entry.run = () => showWorkingDiff() }
@@ -1605,8 +1742,8 @@ window.__ModuleLoader__.load({
         else if (spec.id === 'tag') { entry.disabled = commits.length === 0; entry.run = () => setDialog({ kind: 'newTag' }) }
         else if (spec.id === 'favorite') { entry.disabled = headBranch === ''; entry.active = favorites.indexOf(headBranch) >= 0; entry.run = () => toggleFavoriteBranch(headBranch) }
         else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
-        else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
-        else if (spec.id === 'push') { entry.disabled = remoteReady !== true; entry.run = () => setDialog({ kind: 'push' }) }
+        else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
+        else if (spec.id === 'push') { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
         if (busy === true && spec.id !== 'refresh') entry.disabled = true
         return entry
       })
@@ -1776,16 +1913,37 @@ window.__ModuleLoader__.load({
         }))
       }
       if (dialog !== null && dialog.kind === 'deleteBranch') {
+        const guarded = isProtectedBranch(dialog.name)
         overlays.push(E(ConfirmDialog, {
-          key: 'delete', title: t('confirm.title'), text: fill(t('delete.confirm'), { name: dialog.name }),
+          key: 'delete',
+          t: t,
+          title: t('confirm.title'),
+          text: fill(guarded ? t('confirm.protected') : t('delete.confirm'), { name: dialog.name }),
+          requireText: guarded ? dialog.name : undefined,
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
-          onConfirm: () => { setDialog(null); void run('branchDelete', { name: dialog.name }) },
+          onConfirm: () => { const name = dialog.name; setDialog(null); void deleteBranch(name) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'stashDrop') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'stashDrop',
+          t: t,
+          title: t('confirm.title'),
+          text: fill(t('stashDrop.confirm'), { ref: dialog.ref }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { const ref = dialog.ref; setDialog(null); void dropStash(ref) },
         }))
       }
       if (dialog !== null && dialog.kind === 'discard') {
         overlays.push(E(ConfirmDialog, {
-          key: 'discard', title: t('confirm.title'), text: fill(t('discard.confirm'), { path: dialog.item.path }),
+          key: 'discard',
+          t: t,
+          title: t('confirm.title'),
+          text: dialog.group === 'untracked'
+            ? fill(t('discard.untracked.confirm'), { path: dialog.item.path })
+            : fill(t('discard.confirm'), { path: dialog.item.path }),
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => {
@@ -1796,7 +1954,8 @@ window.__ModuleLoader__.load({
       }
       if (dialog !== null && dialog.kind === 'reset') {
         overlays.push(E(ConfirmDialog, {
-          key: 'reset', title: t('confirm.title'),
+          key: 'reset', t: t,
+          title: t('confirm.title'),
           text: dialog.mode === 'hard' ? fill(t('resetHard.confirm'), { hash: dialog.hash.slice(0, 8) }) : fill(t('resetSoft.confirm'), { hash: dialog.hash.slice(0, 8) }),
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
@@ -1805,7 +1964,8 @@ window.__ModuleLoader__.load({
       }
       if (dialog !== null && dialog.kind === 'checkoutCommit') {
         overlays.push(E(ConfirmDialog, {
-          key: 'checkoutCommit', title: t('confirm.title'), text: fill(t('checkoutCommit.confirm'), { hash: dialog.hash.slice(0, 8) }),
+          key: 'checkoutCommit', t: t,
+          title: t('confirm.title'), text: fill(t('checkoutCommit.confirm'), { hash: dialog.hash.slice(0, 8) }),
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => { setDialog(null); void run('checkout', { branch: dialog.hash }) },
@@ -1815,7 +1975,8 @@ window.__ModuleLoader__.load({
         const branch = summary === null ? '' : summary.branch
         const target = summary === null || summary.upstream === null ? 'origin' : summary.upstream
         overlays.push(E(ConfirmDialog, {
-          key: 'push', title: t('confirm.title'), text: fill(t('push.confirm'), { branch: branch, upstream: target }),
+          key: 'push', t: t,
+          title: t('confirm.title'), text: fill(t('push.confirm'), { branch: branch, upstream: target }),
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => {
@@ -1835,7 +1996,8 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-shell' },
           columns === true && repoRoot !== null ? renderRail(true) : null,
           body),
-        overlays)
+        overlays,
+        E(ToastStack, { t: t, toasts: toasts }))
     }
 
     function copyText(text) {
@@ -1889,6 +2051,15 @@ window.__ModuleLoader__.load({
       '.dig-tone-violet{color:#b083f0}',
       '.dig-tone-cyan{color:#59b0d6}',
       '.dig-icon-btn-small{width:20px;height:20px;border-radius:5px}',
+      '.dig-toasts{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:80;max-width:min(340px,92%)}',
+      '.dig-toast{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 8px 22px rgba(0,0,0,.32)}',
+      '.dig-toast-icon{display:inline-flex;flex:none;color:var(--dsw-alias-label-secondary)}',
+      '.dig-toast-warn .dig-toast-icon{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-toast-ok .dig-toast-icon{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-toast-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}',
+      '.dig-toast-action{border:none;background:transparent;color:var(--dsw-alias-brand-primary);font:inherit;font-weight:600;cursor:pointer;padding:0 2px;flex:none}',
+      '.dig-toast-action:hover{text-decoration:underline}',
+      '.dig-opchip{flex:none;padding:0 6px;border-radius:999px;background:color-mix(in srgb, var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary)) 20%, transparent);color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500;white-space:nowrap}',
       '.dig-rail-list{display:flex;flex-direction:column;gap:2px;max-height:min(50vh,300px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:8px}',
       '.dig-rail-item{display:flex;align-items:center;gap:6px;padding:2px 4px;border-radius:6px}',
       '.dig-rail-item:hover{background:var(--dsw-alias-interactive-bg-hover)}',

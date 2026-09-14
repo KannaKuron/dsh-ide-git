@@ -115,7 +115,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'branches', 'log', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'version']
+  const methods = ['summary', 'branches', 'log', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     assert.match(host, new RegExp('^  ' + method + ',$', 'm'), 'host method missing: ' + method)
   }
@@ -123,6 +123,37 @@ test('host half exposes the method table the client calls', () => {
     const method = call.slice(call.indexOf("'") + 1, call.length - 1)
     assert.ok(methods.includes(method), 'client calls an unregistered method: ' + method)
   }
+})
+
+test('host half serialises writes and refuses the dangerous cases', () => {
+  for (const needle of [
+    'const WRITE_METHODS = new Set([',
+    'function withRepoLock(key, work) {',
+    "const PROTECTED_BRANCHES = new Set(['main', 'master', 'trunk'])",
+    "refusing to delete the checked-out branch",
+    "'deleting \"' + name + '\" requires confirm: true'",
+    'function pushUndo(root, entry) {',
+    'async function operationOf(root) {',
+  ]) {
+    assert.ok(host.includes(needle), 'missing safety guard: ' + needle)
+  }
+  // '.' would wipe every untracked file at once; the panel only ever discards
+  // explicit paths, so the root is filtered out before git sees it.
+  assert.ok(host.includes("entry !== '.' && entry !== './'"), 'discard must not accept the repository root')
+})
+
+test('client half offers an undo toast and a safe confirm', () => {
+  for (const needle of [
+    'function ToastStack(props) {',
+    "actionLabel: t('toast.undo'),",
+    "request('undoApply'",
+    'function isProtectedBranch(name) {',
+    'requireText: guarded ? dialog.name : undefined,',
+  ]) {
+    assert.ok(client.includes(needle), 'missing client guard: ' + needle)
+  }
+  // Destructive dialogs must not open with focus on the red button.
+  assert.match(client, /cancelRef\.current\.focus\(\)/, 'confirm dialog must focus cancel')
 })
 
 test('changelog tracks the current version', () => {

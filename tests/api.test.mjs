@@ -8,7 +8,7 @@
  */
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -205,4 +205,79 @@ test('trust fence refuses cross-site requests and accepts same-origin remote hos
   assert.equal(remote.body.ok, true)
   const noHost = await call('summary', { cwd: repo }, { host: '' })
   assert.equal(noHost.status, 403)
+})
+
+test('branch delete is reversible through the undo stack', async () => {
+  git('branch', 'doomed', 'HEAD')
+  const head = git('rev-parse', 'doomed').trim()
+  const removed = await call('branchDelete', { cwd: repo, name: 'doomed' })
+  assert.equal(removed.status, 200)
+  assert.equal(removed.body.data.hash, head)
+  assert.ok(removed.body.data.undo !== undefined, 'a delete must hand back an undo handle')
+  assert.equal(git('branch', '--list', 'doomed').trim(), '')
+  const listed = await call('undoList', { cwd: repo })
+  assert.ok(listed.body.data.items.some((entry) => entry.id === removed.body.data.undo.id))
+  const undone = await call('undoApply', { cwd: repo, id: removed.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  assert.equal(undone.body.data.kind, 'branch-delete')
+  assert.equal(git('rev-parse', 'doomed').trim(), head)
+  // One-shot: the same handle cannot be replayed.
+  const again = await call('undoApply', { cwd: repo, id: removed.body.data.undo.id })
+  assert.equal(again.status, 409)
+  assert.equal(again.body.error.code, 'undo-gone')
+  git('branch', '-q', '-D', 'doomed')
+})
+
+test('undo refuses when the branch name is taken again', async () => {
+  git('branch', 'redo', 'HEAD')
+  const removed = await call('branchDelete', { cwd: repo, name: 'redo' })
+  git('branch', 'redo', 'HEAD')
+  const conflict = await call('undoApply', { cwd: repo, id: removed.body.data.undo.id })
+  assert.equal(conflict.status, 409)
+  assert.equal(conflict.body.error.code, 'undo-conflict')
+  git('branch', '-q', '-D', 'redo')
+})
+
+test('the checked-out branch and protected branches are guarded', async () => {
+  const current = await call('branchDelete', { cwd: repo, name: 'main', confirm: true })
+  assert.equal(current.status, 409)
+  assert.equal(current.body.error.code, 'protected-branch')
+  git('branch', 'master', 'HEAD')
+  const guarded = await call('branchDelete', { cwd: repo, name: 'master' })
+  assert.equal(guarded.status, 400)
+  assert.match(guarded.body.error.message, /requires confirm: true/)
+  const allowed = await call('branchDelete', { cwd: repo, name: 'master', confirm: true })
+  assert.equal(allowed.status, 200)
+})
+
+test('discard refuses to target the repository root', async () => {
+  writeFileSync(join(repo, 'keep-me.txt'), 'x\n')
+  const refused = await call('discard', { cwd: repo, paths: ['.'], untracked: true, confirm: true })
+  assert.equal(refused.status, 400)
+  assert.equal(refused.body.error.message, 'paths is required')
+  assert.ok(existsSync(join(repo, 'keep-me.txt')), 'a refused discard must not delete anything')
+  rmSync(join(repo, 'keep-me.txt'), { force: true })
+})
+
+test('summary reports an in-progress git operation', async () => {
+  assert.equal((await call('summary', { cwd: repo })).body.data.operation, null)
+  const marker = join(repo, '.git', 'MERGE_HEAD')
+  writeFileSync(marker, git('rev-parse', 'HEAD'))
+  assert.equal((await call('summary', { cwd: repo })).body.data.operation, 'merge')
+  rmSync(marker, { force: true })
+  assert.equal((await call('summary', { cwd: repo })).body.data.operation, null)
+})
+
+test('a dropped stash can be restored from the undo stack', async () => {
+  writeFileSync(join(repo, 'a.txt'), 'one\ntwo\nthree\nfour\nfive\n')
+  await call('stashPush', { cwd: repo, message: 'undo-check' })
+  assert.equal((await call('stashList', { cwd: repo })).body.data.stashes.length, 1)
+  const dropped = await call('stashDrop', { cwd: repo, ref: 'stash@{0}', confirm: true })
+  assert.equal(dropped.status, 200)
+  assert.ok(dropped.body.data.undo !== undefined)
+  assert.equal((await call('stashList', { cwd: repo })).body.data.stashes.length, 0)
+  const undone = await call('undoApply', { cwd: repo, id: dropped.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  assert.equal((await call('stashList', { cwd: repo })).body.data.stashes.length, 1)
+  git('stash', 'clear')
 })

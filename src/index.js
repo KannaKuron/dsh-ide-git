@@ -328,6 +328,85 @@ async function worktreesOf(root) {
   return trees
 }
 
+/* ============================== safety ============================== */
+
+/**
+ * Write operations on one repository run one at a time. The client greys its
+ * actions out while a request is in flight, but a stale tab, a second window or
+ * a double click could still start two writers, and git dislikes concurrent
+ * index writers — so the host serialises writes per repository.
+ */
+const repoQueues = new Map()
+
+function withRepoLock(key, work) {
+  const previous = repoQueues.get(key) === undefined ? Promise.resolve() : repoQueues.get(key)
+  const next = previous.then(work, work)
+  const settled = next.then(() => undefined, () => undefined)
+  repoQueues.set(key, settled)
+  settled.then(() => { if (repoQueues.get(key) === settled) repoQueues.delete(key) })
+  return next
+}
+
+const WRITE_METHODS = new Set([
+  'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename',
+  'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
+  'push', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'undoApply',
+])
+
+function lockKeyOf(payload) {
+  if (typeof payload.repoRoot === 'string' && payload.repoRoot !== '') return payload.repoRoot
+  if (typeof payload.cwd === 'string' && payload.cwd !== '') return payload.cwd
+  return 'global'
+}
+
+/* Deleting is a real delete — but the host remembers how to bring it back for a
+   while, so the panel can offer an undo. Entries are per repository, newest
+   last, capped and time-limited. */
+const UNDO_LIMIT = 20
+const UNDO_TTL_MS = 30 * 60 * 1000
+const undoStacks = new Map()
+let undoSeq = 0
+
+/** Branches whose deletion is never a routine action. */
+const PROTECTED_BRANCHES = new Set(['main', 'master', 'trunk'])
+
+function undoEntriesOf(root) {
+  const stored = undoStacks.get(root) === undefined ? [] : undoStacks.get(root)
+  const alive = stored.filter((entry) => Date.now() - entry.at < UNDO_TTL_MS)
+  if (alive.length !== stored.length) undoStacks.set(root, alive)
+  return alive
+}
+
+function pushUndo(root, entry) {
+  const list = undoEntriesOf(root)
+  undoSeq += 1
+  const record = Object.assign({ id: 'u' + undoSeq.toString(36) + Date.now().toString(36), at: Date.now() }, entry)
+  list.push(record)
+  while (list.length > UNDO_LIMIT) list.shift()
+  undoStacks.set(root, list)
+  return { id: record.id, kind: record.kind, label: record.label }
+}
+
+/** .git markers that mean a multi-step operation is still in progress. */
+async function operationOf(root) {
+  const result = await runGit(root, ['rev-parse', '--absolute-git-dir'])
+  if (result.code !== 0) return null
+  const gitDir = result.stdout.trim()
+  if (gitDir === '') return null
+  const markers = [
+    ['merge', 'MERGE_HEAD'],
+    ['rebase', 'rebase-merge'],
+    ['rebase', 'rebase-apply'],
+    ['cherry-pick', 'CHERRY_PICK_HEAD'],
+    ['revert', 'REVERT_HEAD'],
+    ['bisect', 'BISECT_LOG'],
+  ]
+  for (const marker of markers) {
+    if (existsSync(path.join(gitDir, marker[1]))) return marker[0]
+  }
+  return null
+}
+
 /* ============================== methods ============================== */
 
 async function summary(payload) {
@@ -357,6 +436,7 @@ async function summary(payload) {
     },
     stashCount: await stashCountOf(root),
     worktrees: await worktreesOf(root),
+    operation: await operationOf(root),
   }
 }
 
@@ -515,7 +595,9 @@ async function unstage(payload) {
 async function discard(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
-  const paths = optionalPaths(payload, 'paths')
+  // '.' would discard EVERYTHING in the repository in one go; the panel always
+  // discards explicit paths, so the root itself is not a valid target here.
+  const paths = optionalPaths(payload, 'paths').filter((entry) => entry !== '.' && entry !== './')
   if (paths.length === 0) throw badRequest('paths is required')
   const untracked = payload.untracked === true
   if (untracked) {
@@ -581,8 +663,14 @@ async function branchDelete(payload) {
   const name = requireRef(payload.name, 'name')
   const force = payload.force === true
   if (force && payload.confirm !== true) throw badRequest('force delete requires confirm: true')
+  const current = await currentBranchOf(root)
+  if (name === current) throw new PanelError('protected-branch', 'refusing to delete the checked-out branch "' + name + '"', 409)
+  if (PROTECTED_BRANCHES.has(name) && payload.confirm !== true) throw badRequest('deleting "' + name + '" requires confirm: true')
+  const head = (await git(root, ['rev-parse', '--verify', 'refs/heads/' + name])).trim()
+  // -d (the default) refuses to drop an unmerged branch: git is the guard here.
   await git(root, ['branch', force ? '-D' : '-d', name])
-  return { branch: name, force }
+  const undo = pushUndo(root, { kind: 'branch-delete', label: name, name: name, hash: head })
+  return { branch: name, force, hash: head, undo: undo }
 }
 
 async function merge(payload) {
@@ -722,8 +810,10 @@ async function stashDrop(payload) {
   const root = await repoRootOf(cwd, payload)
   const ref = typeof payload.ref === 'string' && payload.ref.trim() !== '' ? requireRef(payload.ref, 'ref') : 'stash@{0}'
   if (payload.confirm !== true) throw badRequest('dropping a stash requires confirm: true')
+  const sha = (await git(root, ['rev-parse', '--verify', ref])).trim()
   await git(root, ['stash', 'drop', ref])
-  return { ref }
+  const undo = pushUndo(root, { kind: 'stash-drop', label: ref, hash: sha })
+  return { ref, hash: sha, undo: undo }
 }
 
 async function tagCreate(payload) {
@@ -744,6 +834,42 @@ async function tagDelete(payload) {
   const tag = requireRef(payload.name, 'name')
   await git(root, ['tag', '-d', tag])
   return { tag }
+}
+
+/** What this repository can still undo right now (newest last). */
+async function undoList(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const items = undoEntriesOf(root).map((entry) => ({ id: entry.id, kind: entry.kind, label: entry.label, at: entry.at }))
+  return { items }
+}
+
+/**
+ * Undo one remembered action. Nothing here is a 'soft delete': the branch (or
+ * stash entry) really was gone, and the undo recreates it from the object id
+ * recorded before the deletion. It is one-shot and can fail loudly when the
+ * name has been taken again in the meantime.
+ */
+async function undoApply(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const id = requireRef(payload.id, 'id')
+  const list = undoEntriesOf(root)
+  const index = list.findIndex((entry) => entry.id === id)
+  if (index < 0) throw new PanelError('undo-gone', 'this action can no longer be undone', 409)
+  const entry = list[index]
+  if (entry.kind === 'branch-delete') {
+    const exists = await runGit(root, ['show-ref', '--verify', '--quiet', 'refs/heads/' + entry.name])
+    if (exists.code === 0) throw new PanelError('undo-conflict', 'branch "' + entry.name + '" already exists again', 409)
+    await git(root, ['branch', entry.name, entry.hash])
+  } else if (entry.kind === 'stash-drop') {
+    await git(root, ['stash', 'store', '-m', 'dsh-ide-git: restored ' + entry.label, entry.hash])
+  } else {
+    throw new PanelError('undo-unsupported', 'this action cannot be undone', 500)
+  }
+  list.splice(index, 1)
+  undoStacks.set(root, list)
+  return { kind: entry.kind, label: entry.label }
 }
 
 async function compare(payload) {
@@ -876,6 +1002,8 @@ const METHODS = {
   stashDrop,
   tagCreate,
   tagDelete,
+  undoList,
+  undoApply,
 }
 
 /* ============================== http plumbing ============================== */
@@ -952,7 +1080,10 @@ async function handle(req, res) {
   }
   try {
     const payload = await readJsonBody(req)
-    sendJson(res, 200, { ok: true, data: await handler(payload) })
+    const data = WRITE_METHODS.has(method)
+      ? await withRepoLock(lockKeyOf(payload), () => handler(payload))
+      : await handler(payload)
+    sendJson(res, 200, { ok: true, data: data })
   } catch (error) {
     if (error instanceof PanelError) {
       sendJson(res, error.status, { ok: false, error: { code: error.code, message: error.message } })
