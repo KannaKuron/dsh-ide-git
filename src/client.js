@@ -33,8 +33,8 @@ window.__ModuleLoader__.load({
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
-    const COMPACT_MAX_HEIGHT = 330
-    const COMPACT_MAX_WIDTH = 470
+    const COMPACT_MAX_HEIGHT = 200
+    const COMPACT_MAX_WIDTH = 400
 
     /* ============================== i18n ============================== */
 
@@ -848,8 +848,12 @@ window.__ModuleLoader__.load({
         return () => window.removeEventListener('resize', measure)
       }, [])
 
+      // Width decides: a wide container is a three-column workbench even when it is
+      // short (the bottom panel is 1500x300 and still wants tree | graph | changes).
+      // Only a genuinely tiny container (very narrow or very short) falls back to
+      // the compact one-header chrome.
       const compact = size.height > 0 && (size.height < COMPACT_MAX_HEIGHT || size.width < COMPACT_MAX_WIDTH)
-      const columns = !compact && size.width >= 640 && size.width >= size.height * 1.4
+      const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
 
       const guard = useCallback(async (work) => {
         setBusy(true)
