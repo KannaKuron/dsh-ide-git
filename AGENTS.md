@@ -10,7 +10,8 @@
 
 - GitHub 操作一律用 gh(已认证 KannaKuron)。**本仓库当前不接 npm 发包**:没有 npm-publish 工作流,也不要在没有明确指令时新增发布工作流(用户明确要求:功能稳定后再谈发版)。
 - CI(`.github/workflows/ci.yml`)只跑 `npm test`(冒烟 + api 两层),不发布任何东西。
-- 本机联调:仓库目录加入 web profile 依赖 + 挂载 `cordis.patch.yml` 的 insert 行 → 重启 `dsh web`(客户端半改动由 DSH 热加载,宿主半改动必须重启)。
+- 本机联调:把包名加进 profile 的 `dsh.profile.bundles`(依赖指向仓库里的 tarball)→ 客户端半改动硬刷新页面即可,宿主半改动必须重启 `dsh web`(见不变量 11)。
+- 客户端半改动后跑 `node scripts/ssr-check.mjs`(用本地 web profile 的 react 真渲染一次 Tab 组件),它能抓住「一渲染就抛」的回归;`npm test` 的 22 例之外就靠它。
 
 ## 变更记录纪律
 
@@ -38,7 +39,7 @@
 4. **破坏性操作必须 `confirm: true`**:push、`reset --hard`、`branch -D`、丢弃未跟踪文件(`clean`)、`stash drop`。UI 侧对应动作一律先弹 ConfirmDialog。冒烟测试校验这些守卫字符串存在。
 5. **两条信任围栏**:宿主路由只服务 loopback Host 或 `Sec-Fetch-Site: same-origin/same-site` 的请求;任何新路由都必须先过 `isTrusted(req)`,再检查 method 为 POST。
 6. **better-sidebar 契约**:用 `ctx.betterSidebar.registerTab` 注册,**必须包在 `ctx.effect(() => ...)` 里**(否则 HMR/禁用后残留注册,再次激活抛 already registered);`inject: ['betterSidebar']` 声明依赖;`id` 用 `dsh-ide-git:panel`(单例 `single: true`);标题/描述用函数形式以跟随语言切换。
-7. **双面布局用测量而不是猜测**。`TabComponentProps` 不携带「我在右栏还是底部面板」的信息,所以布局只依赖容器尺寸:`width >= 640 && width >= height * 1.5` → `columns`(三栏),否则 `stack`(纵向)。不要引入「按面板类型」的分支,也不要硬编码高度。
+7. **布局用测量而不是猜测,而且宽度说了算**。`TabComponentProps` 不携带「我在右栏还是底部面板」的信息,所以只看容器尺寸:`compact`(极窄 < 400px 或极矮 < 200px)→ 单行头部 + 变更/历史分段;否则 `width >= 600 且 width >= height * 1.15` → `columns`(三栏);其余 → `stack`(纵向)。**不要**拿高度当主要判据(v0.1.3 用 `height < 330` 判紧凑,把 1500x300 的底部工作台判成了单栏,看起来和右侧栏一样)。不要引入「按面板类型」的分支,也不要硬编码高度。
 8. **服务只在 client 半**。宿主半没有 `ctx.betterSidebar`;宿主侧要读侧栏状态只能走它自己的 `/sidebar/*` 路由。本插件的宿主半不依赖 better-sidebar,缺失时客户端注册静默跳过(peerDependency 是 optional)。
 9. **版本两处一致**:`package.json` 与 `dsh.plugin.json` 的 version 必须相同(冒烟测试强制);`files[]` 里列出的每个文件都必须真实存在。
 
