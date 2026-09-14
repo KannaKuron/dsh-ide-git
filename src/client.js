@@ -654,7 +654,10 @@ window.__ModuleLoader__.load({
       commit: ['M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z', 'M8 1.5v4', 'M8 10.5v4'],
       refresh: ['M13 8a5 5 0 1 1-1.6-3.7', 'M13 3v3h-3'],
       fetch: ['M8 2v8', 'M4.5 6.5 8 10l3.5-3.5', 'M3 13h10'],
-      pull: ['M8 13V5', 'M4.5 8.5 8 5l3.5 3.5', 'M3 3h10'],
+      // pull mirrors push: arrow INTO the local side (down) with the rail on top,
+      // where fetch keeps its arrow against the bottom rail. Both used to point up,
+      // so pull read as "push" in the rail (reported on v0.3.9).
+      pull: ['M8 3v8', 'M4.5 7.5 8 11l3.5-3.5', 'M3 2h10'],
       push: ['M8 2v8', 'M4.5 5.5 8 2l3.5 3.5', 'M3 13h10'],
       plus: ['M8 3v10', 'M3 8h10'],
       minus: ['M3 8h10'],
