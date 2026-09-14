@@ -26,6 +26,7 @@ window.__ModuleLoader__.load({
     const useMemo = React.useMemo
     const useRef = React.useRef
     const useCallback = React.useCallback
+    const useLayoutEffect = React.useLayoutEffect
 
     const API_BASE = '/dsh-ide-git/api'
     const TAB_ID = 'dsh-ide-git:panel'
@@ -638,7 +639,9 @@ window.__ModuleLoader__.load({
       const closeRef = useRef(props.onClose)
       const [position, setPosition] = useState({ left: props.anchor.x, top: props.anchor.y })
       useEffect(() => { closeRef.current = props.onClose })
-      useEffect(() => {
+      // Layout effect: the clamp below runs before the browser paints, so the menu
+      // never flashes at its raw (possibly out-of-panel) anchor position.
+      useLayoutEffect(() => {
         const element = ref.current
         if (element === null) return
         const rect = element.getBoundingClientRect()
