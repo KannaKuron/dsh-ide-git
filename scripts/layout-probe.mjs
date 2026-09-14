@@ -124,6 +124,32 @@ async function resizeTo(target) {
 
 const CHROMES = ['dig-body-columns', 'dig-body-stack', 'dig-body-compact']
 
+/**
+ * In the three-pane chrome the changes pane is a fixed 290px column, and the header
+ * packs a fold button plus four toolbar icons. When it overflows, the rightmost icon
+ * is simply clipped — invisible in a summary of the panel, obvious to whoever is
+ * looking at it (reported on v0.3.8).
+ */
+async function headerOverflow() {
+  return page.evaluate(() => {
+    const head = document.querySelector('.dig-changes-head')
+    if (head === null) return null
+    const icons = head.querySelectorAll('.dig-icon-btn')
+    const last = icons.length === 0 ? null : icons[icons.length - 1]
+    const headBox = head.getBoundingClientRect()
+    const parentBox = head.parentElement === null ? headBox : head.parentElement.getBoundingClientRect()
+    const lastBox = last === null ? null : last.getBoundingClientRect()
+    return {
+      width: Math.round(headBox.width),
+      // Content-box vs border-box shows up as the header being WIDER than the pane
+      // that holds it, not as internal scroll overflow — compare with the parent.
+      bleed: Math.round(headBox.right - parentBox.right),
+      lastIcon: lastBox === null ? null : Math.round(lastBox.right),
+      parentRight: Math.round(parentBox.right),
+    }
+  })
+}
+
 async function chromeOf() {
   // Only the visible root counts: a folded workbench keeps its DOM node around,
   // so a page-wide class lookup mixes two chromes together.
@@ -157,7 +183,14 @@ try {
     const state = await chromeOf()
     rows.push({ requested: target, actual: actual, state: state })
     await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'h' + String(target).padStart(3, '0') + '.png') })
-    log('target ' + target + ' → ' + actual + 'px, chrome=' + state.chrome + ', rail=' + state.rail)
+    const head = await headerOverflow()
+    log('target ' + target + ' → ' + actual + 'px, chrome=' + state.chrome + ', rail=' + state.rail
+      + (head === null ? '' : ', changes-header ' + head.width + 'px bleed=' + head.bleed
+        + ' lastIconRight=' + head.lastIcon + ' paneRight=' + head.parentRight))
+    if (head !== null && (head.bleed > 1 || (head.lastIcon !== null && head.lastIcon > head.parentRight + 1))) {
+      log('FAILED: the changes header clips its toolbar (panel ' + state.width + 'px wide)')
+      process.exitCode = 1
+    }
   }
 
   console.log('\nrequested | actual | width | chrome            | rail')

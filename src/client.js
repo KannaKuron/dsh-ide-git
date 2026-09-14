@@ -2345,7 +2345,11 @@ window.__ModuleLoader__.load({
       '.dig-section-head{display:flex;align-items:center;gap:4px;width:100%;padding:3px 8px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-section-head-static{cursor:default;padding-left:20px}',
       '.dig-section-head:hover{color:var(--dsw-alias-label-primary)}',
-      '.dig-changes-head{cursor:default;gap:2px}',
+      // The header became a DIV (it now holds buttons), and a div is content-box
+      // while a button is border-box: without this, width:100% plus its own padding
+      // overflowed the pane by 16px and clipped the last toolbar icon (reported on
+      // v0.3.8).
+      '.dig-changes-head{cursor:default;gap:2px;box-sizing:border-box}',
       '.dig-section-toggle{display:flex;align-items:center;gap:4px;flex:1;min-width:0;padding:0;border:none;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-folder{display:flex;flex-direction:column}',
       '.dig-branch-folder{display:flex;flex-direction:column}',
