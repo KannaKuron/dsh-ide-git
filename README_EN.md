@@ -73,16 +73,16 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 
 ## Install
 
-`@sh
+```sh
 dsh plugin --profile web add dsh-better-sidebar
 dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
-`@
+```
 
 Restart `dsh web`, then open **Git** from the bottom panel's `+` menu or from the native right sidebar's `+` menu. The plugin also appears as a card in better-sidebar's settings page (side cards), where it can be disabled.
 
 ## How it works
 
-- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 31-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
+- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 32-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
 - **Client half** (`src/client.js`): no build step, single file, `window.__ModuleLoader__.load({ id, factory })`, requiring only `react` (a DSH client baseline module).
 - **Trust fence**: only loopback Hosts, or same-origin browser requests (`Sec-Fetch-Site`), are served.
 - **Destructive actions** (push, hard reset, force delete, discarding untracked files, dropping a stash) require an explicit `confirm: true` and always ask in the UI first.

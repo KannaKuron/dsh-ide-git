@@ -84,13 +84,13 @@ dsh-better-sidebar 0.19.x 里,同一个 Tab 注册会出现在两个完全不同
 
 ## 安装
 
-`@sh
+```sh
 # 先装底座(本插件的前置)
 dsh plugin --profile web add dsh-better-sidebar
 # 再装本插件(GitHub 直装;npm 包名与仓库名一致,发布后可用 dsh-ide-git)
 dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
 # 重启 dsh web
-`@
+```
 
 装好后打开任意会话:
 
@@ -100,14 +100,14 @@ dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
 
 ## 工作原理
 
-`@
+```
 宿主半 src/index.js                       客户端半 src/client.js
   POST /dsh-ide-git/api/<method>            ctx.betterSidebar.registerTab({ id: 'dsh-ide-git:panel' })
   └─ spawn('git', argv, { cwd })            └─ Panel:ResizeObserver → columns / stack
      └─ 会话工作区 = cwd(客户端 scope.cwd 传入)
-`@
+```
 
-- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 29 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
+- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 32 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
 - **客户端半**:无构建、单文件、`window.__ModuleLoader__.load({ id, factory })` 包装,只 `require('react')`(DSH 客户端基线模块白名单内)。
 - **信任围栏**:路由挂在 DSH 自己的 web server 上,天然同源;只有 Host 为 loopback,或浏览器标记 `Sec-Fetch-Site: same-origin/same-site` 的请求才会被服务。
 - **破坏性操作**:`push` / 硬重置 / 强制删分支 / 丢弃未跟踪文件 / 删除 stash 都必须显式 `confirm: true`,UI 侧一律弹二次确认。
@@ -127,10 +127,10 @@ dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
 
 ## 开发
 
-`@sh
+```sh
 npm test      # 两层:smoke(文件级:清单一致性、客户端包装、白名单、确认守卫、方法表)
               #      + api(临时真实仓库直驱宿主路由:解析、暂存/提交/分支/标签/stash、全部守卫与信任围栏)
-`@
+```
 
 本机联调:把仓库加到 web profile 后重启 `dsh web`;客户端半改动由 DSH 热加载,宿主半改动需要重启。
 

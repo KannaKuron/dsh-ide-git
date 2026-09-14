@@ -182,6 +182,22 @@ test('changelog tracks the current version', () => {
   assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
   assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))
 })
+
+test('markdown stays well-formed: fences paired, files newline-terminated', () => {
+  // 2026-09-14: README 的 8 个代码围栏被写成「反引号 + @」,GitHub 上「安装」整段错乱。
+  // README 是别人看到的第一屏,在这之前没有任何测试看着它。
+  const fence = '`'.repeat(3)
+  for (const name of ['README.md', 'README_EN.md', 'CHANGELOG.md', 'AGENTS.md']) {
+    const lines = read(name).split('\n')
+    assert.ok(!lines.some((line) => line.startsWith('`@')), name + ' has a half-typed fence')
+    assert.ok(read(name).endsWith('\n'), name + ' must end with a newline')
+    const fences = lines.filter((line) => line.startsWith(fence))
+    assert.equal(fences.length % 2, 0, name + ' has an unpaired code fence')
+    for (const line of fences) {
+      assert.match(line, /^`{3,4}[a-zA-Z0-9]*$/, name + ' has a malformed fence: ' + line)
+    }
+  }
+})
 test('client half exposes t(key), never the raw dictionary object', () => {
   assert.match(client, /const t = \(key\) =>/, 't must be a lookup function')
   assert.doesNotMatch(client, /const t = dictionaryOf\(/, 't must not be the dictionary itself')
