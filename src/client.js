@@ -114,6 +114,29 @@ window.__ModuleLoader__.load({
       'toolbar.pull': '拉取(Pull)',
       'toolbar.push': '推送(Push)',
       'toolbar.tree': '分支栏',
+      'rail.more': '更多操作',
+      'rail.settings': '动作条设置',
+      'rail.settingsHint': '拖动或用箭头调整顺序,眼睛图标控制显示',
+      'rail.reset': '恢复默认',
+      'rail.up': '上移',
+      'rail.down': '下移',
+      'rail.show': '显示',
+      'rail.hide': '隐藏',
+      'action.unavailable': '当前状态不可用',
+      'filter.branch': '分支',
+      'filter.user': '用户',
+      'filter.date': '日期',
+      'filter.path': '路径',
+      'filter.all': '全部',
+      'filter.today': '今天',
+      'filter.week': '最近 7 天',
+      'filter.month': '最近 30 天',
+      'filter.year': '今年',
+      'filter.pathPlaceholder': '过滤路径(回车应用)',
+      'filter.sortDesc': '新→旧',
+      'filter.sortAsc': '旧→新',
+      'filter.clear': '清除筛选',
+      'filter.none': '没有匹配的提交',
       'confirm.title': '确认操作',
       'confirm.cancel': '取消',
       'confirm.ok': '确定',
@@ -212,6 +235,29 @@ window.__ModuleLoader__.load({
       'toolbar.pull': 'Pull',
       'toolbar.push': 'Push',
       'toolbar.tree': 'Branch pane',
+      'rail.more': 'More actions',
+      'rail.settings': 'Action bar settings',
+      'rail.settingsHint': 'Drag or use the arrows to reorder; the eye toggles visibility',
+      'rail.reset': 'Restore defaults',
+      'rail.up': 'Move up',
+      'rail.down': 'Move down',
+      'rail.show': 'Show',
+      'rail.hide': 'Hide',
+      'action.unavailable': 'Not available in the current state',
+      'filter.branch': 'Branch',
+      'filter.user': 'User',
+      'filter.date': 'Date',
+      'filter.path': 'Path',
+      'filter.all': 'All',
+      'filter.today': 'Today',
+      'filter.week': 'Last 7 days',
+      'filter.month': 'Last 30 days',
+      'filter.year': 'This year',
+      'filter.pathPlaceholder': 'Filter by path (Enter)',
+      'filter.sortDesc': 'Newest first',
+      'filter.sortAsc': 'Oldest first',
+      'filter.clear': 'Clear filters',
+      'filter.none': 'No matching commits',
       'confirm.title': 'Confirm',
       'confirm.cancel': 'Cancel',
       'confirm.ok': 'OK',
@@ -325,6 +371,57 @@ window.__ModuleLoader__.load({
       return next
     }
 
+    const RAIL_KEY = 'dsh-ide-git.rail.v1'
+
+    /* The action rail is user-composed. RAIL_SPECS is the canonical set AND the
+       default order; a stored config only holds a permutation plus the ids the
+       user hid, and normalizeRail() drops unknown ids and appends missing ones —
+       so a version that adds an action never breaks a stored config. */
+    const RAIL_SPECS = [
+      { id: 'refresh', icon: 'refresh', key: 'toolbar.refresh', tone: 'accent' },
+      { id: 'newBranch', icon: 'plus', key: 'toolbar.newBranch', tone: 'success' },
+      { id: 'checkout', icon: 'checkout', key: 'action.checkout', tone: 'accent' },
+      { id: 'delete', icon: 'trash', key: 'action.delete', tone: 'danger' },
+      { id: 'compare', icon: 'compare', key: 'action.compare', tone: 'violet' },
+      { id: 'diff', icon: 'file', key: 'action.showDiff', tone: 'secondary' },
+      { id: 'stash', icon: 'stash', key: 'action.stash', tone: 'cyan' },
+      { id: 'tag', icon: 'tag', key: 'action.newTagHere', tone: 'warn' },
+      { id: 'favorite', icon: 'star', key: 'action.favorite', tone: 'warn' },
+      { id: 'fetch', icon: 'fetch', key: 'toolbar.fetch', tone: 'cyan' },
+      { id: 'pull', icon: 'pull', key: 'toolbar.pull', tone: 'accent' },
+      { id: 'push', icon: 'push', key: 'toolbar.push', tone: 'success' },
+    ]
+    const RAIL_IDS = RAIL_SPECS.map((spec) => spec.id)
+
+    function normalizeRail(raw) {
+      const source = raw !== null && typeof raw === 'object' ? raw : {}
+      const order = []
+      const storedOrder = Array.isArray(source.order) ? source.order : []
+      for (const id of storedOrder) {
+        if (typeof id === 'string' && RAIL_IDS.indexOf(id) >= 0 && order.indexOf(id) < 0) order.push(id)
+      }
+      for (const id of RAIL_IDS) { if (order.indexOf(id) < 0) order.push(id) }
+      const hidden = []
+      const storedHidden = Array.isArray(source.hidden) ? source.hidden : []
+      for (const id of storedHidden) {
+        if (typeof id === 'string' && RAIL_IDS.indexOf(id) >= 0 && hidden.indexOf(id) < 0) hidden.push(id)
+      }
+      return { order, hidden }
+    }
+
+    function readRailConfig() {
+      try {
+        const raw = window.localStorage.getItem(RAIL_KEY)
+        if (raw === null || raw === '') return normalizeRail(null)
+        return normalizeRail(JSON.parse(raw))
+      } catch (error) { void error }
+      return normalizeRail(null)
+    }
+
+    function writeRailConfig(config) {
+      try { window.localStorage.setItem(RAIL_KEY, JSON.stringify(config)) } catch (error) { void error }
+    }
+
     /* ============================== formatting ============================== */
 
     function relativeTime(iso) {
@@ -369,8 +466,8 @@ window.__ModuleLoader__.load({
     function buildRows(commits) {
       const lanes = []
       const rows = []
-      let laneCount = 1
       for (const commit of commits) {
+        const before = lanes.slice()
         let lane = lanes.indexOf(commit.hash)
         if (lane === -1) {
           lane = lanes.indexOf(null)
@@ -388,43 +485,59 @@ window.__ModuleLoader__.load({
           }
           parentLanes.push(slot)
         }
-        if (lanes.length > laneCount) laneCount = lanes.length
-        rows.push({ commit, lane, parentLanes, lanes: lanes.slice() })
+        rows.push({ commit, lane, parentLanes, before: before, after: lanes.slice(), width: 1 })
       }
+      let laneCount = 1
+      for (const row of rows) laneCount = Math.max(laneCount, row.before.length, row.after.length)
       for (const row of rows) row.width = laneCount
       return rows
     }
 
+    /* One SVG per row, but the geometry is chosen so that rows stack into ONE
+       continuous graph: a lane segment always covers the full row box (0..height)
+       whenever the lane exists above and below, and only rounds off to the row
+       centre where the lane genuinely starts (a branch tip) or ends (a root).
+       v0.1.7 started every non-own lane at 0 and every own lane at height/2, which
+       left a visible gap between two consecutive commits on the same lane. */
     function GraphCell(props) {
       const row = props.row
-      const previous = props.previous
       const height = props.height
       const width = Math.max(1, row.width) * LANE_WIDTH + 8
+      const middle = height / 2
       const children = []
       const x = (lane) => 8 + lane * LANE_WIDTH
-      const previousLanes = previous === null || previous === undefined ? [] : previous.lanes
-      const depth = Math.max(row.lanes.length, previousLanes.length)
+      const color = (lane) => LANE_COLORS[lane % LANE_COLORS.length]
+      const depth = Math.max(row.before.length, row.after.length)
       for (let lane = 0; lane < depth; lane += 1) {
-        const below = row.lanes[lane]
-        const above = previousLanes[lane]
-        if ((below === null || below === undefined) && (above === null || above === undefined)) continue
-        const startY = lane === row.lane ? height / 2 : 0
+        const above = lane < row.before.length ? row.before[lane] : null
+        const below = lane < row.after.length ? row.after[lane] : null
+        const hasTop = above !== null && above !== undefined
+        const hasBottom = below !== null && below !== undefined
+        if (hasTop === false && hasBottom === false) continue
+        const y1 = hasTop ? 0 : middle
+        const y2 = hasBottom ? height : middle
+        if (y1 === y2) continue
         children.push(E('line', {
           key: 'lane-' + lane,
-          x1: x(lane), y1: startY, x2: x(lane), y2: height,
-          stroke: LANE_COLORS[lane % LANE_COLORS.length], strokeWidth: 1.6,
+          x1: x(lane), y1: y1, x2: x(lane), y2: y2,
+          stroke: color(lane), strokeWidth: 2, strokeLinecap: 'round',
         }))
       }
       for (const parentLane of row.parentLanes) {
+        if (parentLane === row.lane) continue
         children.push(E('path', {
           key: 'edge-' + parentLane,
-          d: 'M ' + x(row.lane) + ' ' + (height / 2) + ' C ' + x(row.lane) + ' ' + height + ', ' + x(parentLane) + ' ' + (height / 2) + ', ' + x(parentLane) + ' ' + height,
+          d: 'M ' + x(row.lane) + ' ' + middle + ' C ' + x(row.lane) + ' ' + height + ', ' + x(parentLane) + ' ' + middle + ', ' + x(parentLane) + ' ' + height,
           fill: 'none',
-          stroke: LANE_COLORS[parentLane % LANE_COLORS.length],
-          strokeWidth: 1.6,
+          stroke: color(parentLane),
+          strokeWidth: 2,
+          strokeLinecap: 'round',
         }))
       }
-      children.push(E('circle', { key: 'dot', cx: x(row.lane), cy: height / 2, r: 4, fill: LANE_COLORS[row.lane % LANE_COLORS.length] }))
+      const isHead = Array.isArray(row.commit.refs) && row.commit.refs.some((ref) => String(ref).indexOf('HEAD') >= 0)
+      children.push(isHead
+        ? E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.8, fill: 'none', stroke: color(row.lane), strokeWidth: 2 })
+        : E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.6, fill: color(row.lane) }))
       return E('svg', { className: 'dig-graph', width: width, height: height, viewBox: '0 0 ' + width + ' ' + height }, children)
     }
 
@@ -492,36 +605,57 @@ window.__ModuleLoader__.load({
       compare: ['M4 4h7', 'M4 12h7', 'M6.5 1.5 4 4l2.5 2.5', 'M9.5 9.5 12 12l-2.5 2.5'],
       stash: ['M2.5 3.5h11V6h-11z', 'M3.5 6v6.5h9V6', 'M6.5 8.5h3'],
       tag: ['M2.5 7.5 7.5 2.5h6v6l-5 5z', 'M10.5 5.5h.01'],
+      settings: ['M8 6.4a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Z', 'M8 1.8v1.5', 'M8 12.7v1.5', 'M1.8 8h1.5', 'M12.7 8h1.5', 'M3.6 3.6l1.1 1.1', 'M11.3 11.3l1.1 1.1', 'M12.4 3.6l-1.1 1.1', 'M4.7 11.3l-1.1 1.1'],
+      more: ['M3.6 8h0.01', 'M8 8h0.01', 'M12.4 8h0.01'],
+      eye: ['M1.5 8S4.1 3.8 8 3.8 14.5 8 14.5 8 11.9 12.2 8 12.2 1.5 8 1.5 8Z', 'M8 6.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z'],
+      eyeOff: ['M1.6 8S4.2 4 8 4c1 0 1.9.2 2.7.6', 'M13 5.6c.9 1.1 1.5 2.4 1.5 2.4S11.9 12 8 12c-.9 0-1.7-.2-2.4-.5', 'M2.6 2.6l10.8 10.8'],
+      up: ['M8 12.6V3.6', 'M4.6 7 8 3.6 11.4 7'],
+      down: ['M8 3.4v9', 'M4.6 9 8 12.4 11.4 9'],
+      grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
+      filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
     }
 
     function Icon(props) {
       const size = props.size === undefined ? 14 : props.size
       const shape = ICONS[props.name] === undefined ? ICONS.commit : ICONS[props.name]
+      const weight = props.name === 'more' ? 2.6 : props.name === 'grip' ? 1.6 : 1.4
       return E('svg', {
         className: 'dig-icon', width: size, height: size, viewBox: '0 0 16 16',
-        fill: 'none', stroke: 'currentColor', strokeWidth: 1.4,
+        fill: 'none', stroke: 'currentColor', strokeWidth: weight,
         strokeLinecap: 'round', strokeLinejoin: 'round',
       }, shape.map((d, index) => E('path', { key: index, d: d })))
     }
 
+    /* Menus are laid out INSIDE the panel on purpose: dsh-better-sidebar's bottom
+       workbench declares contain: layout style, and layout containment makes that
+       element the containing block for position:fixed descendants. A viewport-
+       anchored menu inside a 300px-tall panel is therefore laid out against the
+       panel with viewport coordinates, lands outside it and looks exactly like
+       'right click does nothing'. Anchors become panel-relative offsets clamped to
+       the panel box, and the menu scrolls when it is taller than the room left. */
     function ContextMenu(props) {
       const ref = useRef(null)
+      const closeRef = useRef(props.onClose)
       const [position, setPosition] = useState({ left: props.anchor.x, top: props.anchor.y })
+      useEffect(() => { closeRef.current = props.onClose })
       useEffect(() => {
         const element = ref.current
         if (element === null) return
         const rect = element.getBoundingClientRect()
-        setPosition({
-          left: Math.max(4, Math.min(props.anchor.x, window.innerWidth - rect.width - 8)),
-          top: Math.max(4, Math.min(props.anchor.y, window.innerHeight - rect.height - 8)),
-        })
-      }, [props.anchor.x, props.anchor.y])
+        const width = props.boundsWidth === undefined ? 0 : props.boundsWidth
+        const height = props.boundsHeight === undefined ? 0 : props.boundsHeight
+        let left = props.anchor.x
+        let top = props.anchor.y
+        if (width > 0) left = Math.max(4, Math.min(left, width - rect.width - 4))
+        if (height > 0 && top + rect.height > height - 4) top = Math.max(4, top - rect.height)
+        setPosition({ left: left, top: top })
+      }, [props.anchor.x, props.anchor.y, props.boundsWidth, props.boundsHeight])
       useEffect(() => {
         const onDown = (event) => {
           if (ref.current !== null && ref.current.contains(event.target)) return
-          props.onClose()
+          closeRef.current()
         }
-        const onKey = (event) => { if (event.key === 'Escape') props.onClose() }
+        const onKey = (event) => { if (event.key === 'Escape') closeRef.current() }
         const timer = setTimeout(() => document.addEventListener('mousedown', onDown, true), 0)
         document.addEventListener('keydown', onKey)
         return () => {
@@ -529,17 +663,77 @@ window.__ModuleLoader__.load({
           document.removeEventListener('mousedown', onDown, true)
           document.removeEventListener('keydown', onKey)
         }
-      }, [props.onClose])
+      }, [])
       return E('div', { className: 'dig-menu', ref: ref, style: { left: position.left + 'px', top: position.top + 'px' } },
         props.items.map((item, index) => (item === null
           ? E('div', { key: 'sep-' + index, className: 'dig-menu-sep' })
           : E('button', {
               key: item.id + '-' + index,
               type: 'button',
-              className: 'dig-menu-item' + (item.danger === true ? ' dig-menu-danger' : '') + (item.disabled === true ? ' dig-menu-disabled' : ''),
+              title: item.disabled === true && item.reason !== undefined ? item.reason : '',
+              className: 'dig-menu-item'
+                + (item.danger === true ? ' dig-menu-danger' : '')
+                + (item.disabled === true ? ' dig-menu-disabled' : '')
+                + (item.active === true ? ' dig-menu-item-active' : ''),
               disabled: item.disabled === true,
-              onClick: () => { props.onClose(); item.run() },
-            }, item.label))))
+              onClick: (event) => { closeRef.current(); item.run(event) },
+            },
+            item.icon === undefined ? null : E('span', { className: 'dig-menu-icon dig-tone-' + (item.tone === undefined ? 'secondary' : item.tone) }, E(Icon, { name: item.icon, size: 13 })),
+            E('span', { className: 'dig-menu-label' }, item.label)))))
+    }
+
+    /* Lets the user choose which actions the rail shows and in which order. The
+       list is drag-sortable and arrow-sortable (the arrows also work with a
+       keyboard); visibility is a per-action toggle, not a delete, so a hidden
+       action keeps its position. */
+    function RailSettings(props) {
+      const t = props.t
+      const [dragId, setDragId] = useState(null)
+      return E('div', {
+        className: 'dig-overlay',
+        onMouseDown: (event) => { if (event.target === event.currentTarget) props.onClose() },
+      },
+        E('div', { className: 'dig-dialog dig-dialog-wide' },
+          E('div', { className: 'dig-dialog-title' }, t('rail.settings')),
+          E('div', { className: 'dig-dialog-text' }, t('rail.settingsHint')),
+          E('div', { className: 'dig-rail-list' },
+            props.items.map((item, index) => E('div', {
+              key: item.id,
+              className: 'dig-rail-item'
+                + (item.hidden === true ? ' dig-rail-item-off' : '')
+                + (dragId === item.id ? ' dig-rail-item-drag' : ''),
+              draggable: true,
+              onDragStart: (event) => {
+                setDragId(item.id)
+                if (event.dataTransfer !== undefined && event.dataTransfer !== null) {
+                  event.dataTransfer.effectAllowed = 'move'
+                  try { event.dataTransfer.setData('text/plain', item.id) } catch (error) { void error }
+                }
+              },
+              onDragEnd: () => setDragId(null),
+              onDragOver: (event) => { event.preventDefault() },
+              onDrop: (event) => { event.preventDefault(); props.onDrop(dragId, item.id); setDragId(null) },
+            },
+              E('span', { className: 'dig-rail-grip' }, E(Icon, { name: 'grip', size: 12 })),
+              E('span', { className: 'dig-rail-item-icon dig-tone-' + item.tone }, E(Icon, { name: item.icon, size: 13 })),
+              E('span', { className: 'dig-rail-item-label' }, item.label),
+              E('button', {
+                type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('rail.up'),
+                disabled: index === 0, onClick: () => props.onMove(item.id, -1),
+              }, E(Icon, { name: 'up', size: 12 })),
+              E('button', {
+                type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('rail.down'),
+                disabled: index === props.items.length - 1, onClick: () => props.onMove(item.id, 1),
+              }, E(Icon, { name: 'down', size: 12 })),
+              E('button', {
+                type: 'button',
+                className: 'dig-icon-btn dig-icon-btn-small' + (item.hidden === true ? '' : ' dig-icon-btn-active'),
+                title: item.hidden === true ? t('rail.show') : t('rail.hide'),
+                onClick: () => props.onToggle(item.id),
+              }, E(Icon, { name: item.hidden === true ? 'eyeOff' : 'eye', size: 13 }))))),
+          E('div', { className: 'dig-dialog-actions' },
+            E('button', { type: 'button', className: 'dig-btn', onClick: props.onReset }, t('rail.reset')),
+            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: props.onClose }, t('confirm.ok')))))
     }
 
     function PromptDialog(props) {
@@ -627,13 +821,16 @@ window.__ModuleLoader__.load({
     function BranchRow(props) {
       const entry = props.entry
       const isHead = entry.head === true
+      const kind = entry.tag === true ? 'tag' : entry.remote === true ? 'remote' : isHead ? 'head' : 'local'
+      const tone = kind === 'tag' ? 'warn' : kind === 'remote' ? 'violet' : kind === 'head' ? 'success' : 'accent'
+      const glyph = kind === 'tag' ? 'tag' : kind === 'remote' ? 'fetch' : kind === 'head' ? 'star' : 'branch'
       return E('div', {
-        className: 'dig-row' + (isHead ? ' dig-row-head' : ''),
+        className: 'dig-row dig-row-' + kind,
         title: entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream,
         onClick: () => props.onCheckout(entry),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
       },
-        E('span', { className: 'dig-row-icon' }, E(Icon, { name: isHead ? 'star' : entry.remote === true ? 'fetch' : 'branch', size: 12 })),
+        E('span', { className: 'dig-row-icon dig-tone-' + tone }, E(Icon, { name: glyph, size: 12 })),
         E('span', { className: 'dig-row-label' }, entry.name),
         entry.worktree === null || entry.worktree === undefined ? null : E('span', { className: 'dig-badge dig-badge-muted', title: entry.worktree }, 'W'),
         entry.ahead > 0 ? E('span', { className: 'dig-badge' }, '↑' + entry.ahead) : null,
@@ -783,45 +980,162 @@ window.__ModuleLoader__.load({
 
     /* ============================== history ============================== */
 
+    const DAY_MS = 86400000
+
+    /* A ref decoration as git prints it in %D, split into a display name and the
+       kind that drives its badge colour. */
+    function refInfo(raw) {
+      const value = String(raw)
+      if (value.indexOf('HEAD -> ') === 0) return { name: value.slice(8), kind: 'head' }
+      if (value === 'HEAD') return { name: 'HEAD', kind: 'head' }
+      if (value.indexOf('tag: ') === 0) return { name: value.slice(5), kind: 'tag' }
+      return { name: value, kind: value.indexOf('/') >= 0 ? 'remote' : 'local' }
+    }
+
+    function sinceThreshold(key) {
+      if (key === 'today') { const start = new Date(); start.setHours(0, 0, 0, 0); return start.getTime() }
+      if (key === 'week') return Date.now() - 7 * DAY_MS
+      if (key === 'month') return Date.now() - 30 * DAY_MS
+      if (key === 'year') return new Date(new Date().getFullYear(), 0, 1).getTime()
+      return 0
+    }
+
     function HistoryList(props) {
       const t = props.t
-      const [filter, setFilter] = useState('')
-      const rows = useMemo(() => buildRows(props.commits), [props.commits])
-      const needle = filter.trim().toLowerCase()
-      const visible = useMemo(() => {
-        if (needle === '') return rows
-        return rows.filter((row) => {
-          const commit = row.commit
-          return commit.subject.toLowerCase().indexOf(needle) >= 0 ||
-            commit.hash.toLowerCase().indexOf(needle) === 0 ||
-            commit.author.toLowerCase().indexOf(needle) >= 0
+      const commits = props.commits
+      const [text, setText] = useState('')
+      const [author, setAuthor] = useState('')
+      const [refName, setRefName] = useState('')
+      const [since, setSince] = useState('')
+      const [order, setOrder] = useState('desc')
+      const [pathDraft, setPathDraft] = useState(props.pathFilter === undefined ? '' : props.pathFilter)
+
+      useEffect(() => { setPathDraft(props.pathFilter === undefined ? '' : props.pathFilter) }, [props.pathFilter])
+
+      const authors = useMemo(() => {
+        const found = []
+        for (const commit of commits) {
+          if (typeof commit.author === 'string' && commit.author !== '' && found.indexOf(commit.author) < 0) found.push(commit.author)
+        }
+        return found.sort()
+      }, [commits])
+
+      const refOptions = useMemo(() => {
+        const found = []
+        for (const commit of commits) {
+          const list = Array.isArray(commit.refs) ? commit.refs : []
+          for (const entry of list) {
+            const info = refInfo(entry)
+            if (info.kind !== 'head' && found.indexOf(info.name) < 0) found.push(info.name)
+          }
+        }
+        return found.sort()
+      }, [commits])
+
+      const filtered = useMemo(() => {
+        const needle = text.trim().toLowerCase()
+        const threshold = sinceThreshold(since)
+        const kept = commits.filter((commit) => {
+          if (needle !== '') {
+            const hit = String(commit.subject).toLowerCase().indexOf(needle) >= 0 ||
+              String(commit.hash).toLowerCase().indexOf(needle) === 0 ||
+              String(commit.author).toLowerCase().indexOf(needle) >= 0
+            if (hit === false) return false
+          }
+          if (author !== '' && commit.author !== author) return false
+          if (refName !== '') {
+            const list = (Array.isArray(commit.refs) ? commit.refs : []).map((entry) => refInfo(entry).name)
+            if (list.indexOf(refName) < 0) return false
+          }
+          if (threshold > 0) {
+            const at = Date.parse(commit.date)
+            if (Number.isFinite(at) && at < threshold) return false
+          }
+          return true
         })
-      }, [rows, needle])
-      return E('div', { className: 'dig-history' },
-        props.hideSearch === true ? null : E('div', { className: 'dig-search' },
-          E('input', {
-            className: 'dig-input dig-input-compact', value: filter, spellCheck: false,
-            placeholder: t('history.filter'),
-            onChange: (event) => setFilter(event.target.value),
-          })),
+        return order === 'asc' ? kept.slice().reverse() : kept
+      }, [commits, text, author, refName, since, order])
+
+      const rows = useMemo(() => buildRows(filtered), [filtered])
+      const dirtyFilter = text !== '' || author !== '' || refName !== '' || since !== '' || (props.pathFilter !== undefined && props.pathFilter !== '')
+      const applyPath = (value) => { if (props.onPathFilter !== undefined) props.onPathFilter(value) }
+      const clearAll = () => {
+        setText('')
+        setAuthor('')
+        setRefName('')
+        setSince('')
+        setPathDraft('')
+        applyPath('')
+      }
+
+      const filterBar = props.hideSearch === true ? null : E('div', { className: 'dig-filters' },
+        E('input', {
+          className: 'dig-input dig-input-compact dig-filter-text', value: text, spellCheck: false,
+          placeholder: t('history.filter'),
+          onChange: (event) => setText(event.target.value),
+        }),
+        E('select', {
+          className: 'dig-filter-select', value: refName, title: t('filter.branch'),
+          onChange: (event) => setRefName(event.target.value),
+        }, [E('option', { key: '', value: '' }, t('filter.branch') + ': ' + t('filter.all'))].concat(
+          refOptions.map((name) => E('option', { key: name, value: name }, name)))),
+        E('select', {
+          className: 'dig-filter-select', value: author, title: t('filter.user'),
+          onChange: (event) => setAuthor(event.target.value),
+        }, [E('option', { key: '', value: '' }, t('filter.user') + ': ' + t('filter.all'))].concat(
+          authors.map((name) => E('option', { key: name, value: name }, name)))),
+        E('select', {
+          className: 'dig-filter-select', value: since, title: t('filter.date'),
+          onChange: (event) => setSince(event.target.value),
+        },
+          E('option', { value: '' }, t('filter.date') + ': ' + t('filter.all')),
+          E('option', { value: 'today' }, t('filter.today')),
+          E('option', { value: 'week' }, t('filter.week')),
+          E('option', { value: 'month' }, t('filter.month')),
+          E('option', { value: 'year' }, t('filter.year'))),
+        E('form', {
+          className: 'dig-filter-path',
+          onSubmit: (event) => { event.preventDefault(); applyPath(pathDraft.trim()) },
+        }, E('input', {
+          className: 'dig-input dig-input-compact', value: pathDraft, spellCheck: false,
+          placeholder: t('filter.pathPlaceholder'),
+          onChange: (event) => setPathDraft(event.target.value),
+        })),
+        E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+          title: order === 'desc' ? t('filter.sortDesc') : t('filter.sortAsc'),
+          onClick: () => setOrder(order === 'desc' ? 'asc' : 'desc'),
+        }, E(Icon, { name: order === 'desc' ? 'down' : 'up', size: 12 })),
+        dirtyFilter ? E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('filter.clear'),
+          onClick: clearAll,
+        }, E(Icon, { name: 'close', size: 12 })) : null)
+
+      return E('div', { className: 'dig-history' }, filterBar,
         E('div', { className: 'dig-history-scroll' },
-          visible.length === 0 ? E('div', { className: 'dig-empty' }, t('history.empty')) : null,
-          visible.map((row, index) => {
+          rows.length === 0 ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : t('history.empty')) : null,
+          rows.map((row) => {
             const commit = row.commit
+            const decorations = (Array.isArray(commit.refs) ? commit.refs : []).map(refInfo)
+            const shown = decorations.slice(0, 3)
+            const hidden = decorations.length - shown.length
             return E('div', {
               key: commit.hash,
               className: 'dig-commit' + (props.selectedHash === commit.hash ? ' dig-commit-selected' : ''),
               onClick: () => props.onSelect(commit),
               onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
             },
-              E(GraphCell, { row: row, previous: index === 0 ? null : visible[index - 1], height: 26 }),
               E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
-              E('span', { className: 'dig-commit-author' }, commit.author),
-              E('span', { className: 'dig-commit-subject' }, commit.subject),
-              commit.refs.map((ref) => E('span', {
-                key: ref,
-                className: 'dig-ref' + (ref.indexOf('HEAD') >= 0 ? ' dig-ref-head' : ref.indexOf('tag:') >= 0 ? ' dig-ref-tag' : ''),
-              }, ref.replace('HEAD -> ', '').replace('tag: ', ''))))
+              E('span', { className: 'dig-commit-author', title: commit.author }, commit.author),
+              E(GraphCell, { row: row, height: 26 }),
+              shown.map((decoration, index) => E('span', {
+                key: decoration.kind + ':' + decoration.name + ':' + index,
+                className: 'dig-ref dig-ref-' + decoration.kind,
+                title: decoration.name,
+              }, decoration.name)),
+              hidden > 0 ? E('span', { className: 'dig-ref dig-ref-more' }, '+' + hidden) : null,
+              E('span', { className: 'dig-commit-subject', title: commit.subject }, commit.subject),
+              E('span', { className: 'dig-commit-fill' }))
           }),
           props.hasMore === true
             ? E('button', { type: 'button', className: 'dig-load-more', disabled: props.busy === true, onClick: props.onLoadMore }, t('history.loadMore'))
@@ -861,6 +1175,7 @@ window.__ModuleLoader__.load({
       const scope = props.scope
       const t = props.t
       const hostRef = useRef(null)
+      const railHostRef = useRef(null)
       const [size, setSize] = useState({ width: 0, height: 0 })
       const [repoState, setRepoState] = useState(null)
       const [repoRoot, setRepoRoot] = useState(null)
@@ -882,6 +1197,10 @@ window.__ModuleLoader__.load({
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
       const [favTick, setFavTick] = useState(0)
+      const [pathFilter, setPathFilter] = useState('')
+      const [railConfig, setRailConfig] = useState(readRailConfig)
+      const [railSettings, setRailSettings] = useState(false)
+      const [railBox, setRailBox] = useState({ width: 0, height: 0 })
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
@@ -910,6 +1229,27 @@ window.__ModuleLoader__.load({
       // the compact one-header chrome.
       const compact = size.height > 0 && (size.height < COMPACT_MAX_HEIGHT || size.width < COMPACT_MAX_WIDTH)
       const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
+
+// The action rail measures ITSELF, not the panel: how many buttons fit is a
+      // function of the strip that holds them (a 1200x300 workbench and a 300x900
+      // sidebar disagree about that). railBox keeps the last measured span; until
+      // the first measurement lands, every action is rendered.
+      useEffect(() => {
+        const element = railHostRef.current
+        if (element === null) { setRailBox({ width: 0, height: 0 }); return undefined }
+        const measure = () => {
+          const rect = element.getBoundingClientRect()
+          setRailBox({ width: Math.round(rect.width), height: Math.round(rect.height) })
+        }
+        measure()
+        if (typeof ResizeObserver === 'function') {
+          const observer = new ResizeObserver(measure)
+          observer.observe(element)
+          return () => observer.disconnect()
+        }
+        window.addEventListener('resize', measure)
+        return () => window.removeEventListener('resize', measure)
+      }, [repoRoot, columns, compact])
 
       const guard = useCallback(async (work) => {
         setBusy(true)
@@ -963,11 +1303,14 @@ window.__ModuleLoader__.load({
         setBranches(await request('branches', base))
       }, [base])
 
-      const loadCommits = useCallback(async (skip) => {
-        const data = await request('log', Object.assign({}, base, { skip: skip === undefined ? 0 : skip, limit: 120 }))
+      const loadCommits = useCallback(async (skip, overridePath) => {
+        const activePath = overridePath === undefined ? pathFilter : overridePath
+        const payload = Object.assign({}, base, { skip: skip === undefined ? 0 : skip, limit: 120 })
+        if (activePath !== undefined && activePath !== '') payload.path = activePath
+        const data = await request('log', payload)
         setCommits((previous) => (skip === undefined || skip === 0 ? data.commits : previous.concat(data.commits)))
         setHasMore(data.hasMore)
-      }, [base])
+      }, [base, pathFilter])
 
       const refresh = useCallback(async () => {
         if (repoRoot === null) return
@@ -1008,6 +1351,7 @@ window.__ModuleLoader__.load({
         setSelectedHash(null)
         setPatch('')
         setView('history')
+        setPathFilter('')
       }, [sessionId])
 
       const openDiff = useCallback(async (seed) => {
@@ -1048,57 +1392,74 @@ window.__ModuleLoader__.load({
         setNote(baseRef + ' ... ' + headRef + ' · ' + String(data.files.length) + ' files / ' + String(data.commits.length) + ' commits')
       }, [run])
 
+      /* Menu anchors are stored as offsets inside the panel, not as viewport
+         coordinates: the bottom workbench is a containing block for fixed
+         descendants (contain: layout), so viewport coordinates would place the
+         menu outside the panel. See ContextMenu. */
+      const openMenuAt = useCallback((event, items) => {
+        const element = hostRef.current
+        const rect = element === null ? null : element.getBoundingClientRect()
+        setMenu({
+          x: event.clientX - (rect === null ? 0 : rect.left),
+          y: event.clientY - (rect === null ? 0 : rect.top),
+          boundsWidth: rect === null ? 0 : Math.round(rect.width),
+          boundsHeight: rect === null ? 0 : Math.round(rect.height),
+          items: items,
+        })
+      }, [])
+
       const branchMenu = useCallback((event, entry) => {
         const current = branches === null ? '' : branches.branch
         const isLocal = entry.remote !== true && entry.tag !== true
+        const reason = t('action.unavailable')
         const items = [
-          { id: 'checkout', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true, run: () => { void checkout(entry) } },
-          isLocal ? { id: 'rebase', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true, run: () => { void run('rebase', { onto: entry.name }) } } : null,
-          isLocal ? { id: 'merge', label: t('action.mergeIntoCurrent'), disabled: entry.head === true, run: () => { void run('merge', { branch: entry.name }) } } : null,
-          { id: 'compare', label: t('action.compare'), disabled: entry.head === true || current === '', run: () => { void compareWith(current, entry.name) } },
+          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true, reason: reason, run: () => { void checkout(entry) } },
+          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true, reason: reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
+          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true, reason: reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
+          { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
           null,
-          { id: 'favorite', label: t('action.favorite'), run: () => toggleFavoriteBranch(entry.name) },
-          { id: 'newBranch', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
-          isLocal ? { id: 'rename', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
-          isLocal ? { id: 'delete', label: t('action.delete'), danger: true, disabled: entry.head === true, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
+          { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
+          { id: 'newBranch', icon: 'plus', tone: 'success', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
+          isLocal ? { id: 'rename', icon: 'file', tone: 'primary', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
+          isLocal ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, disabled: entry.head === true, reason: reason, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
           null,
-          { id: 'update', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
-          { id: 'push', label: t('action.push'), run: () => setDialog({ kind: 'push' }) },
+          { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
+          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
-        setMenu({ x: event.clientX, y: event.clientY, items: items })
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch])
+        openMenuAt(event, items)
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites])
 
       const commitMenu = useCallback((event, commit) => {
         const items = [
-          { id: 'details', label: t('action.details'), run: () => { void selectCommit(commit) } },
-          { id: 'copy', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
+          { id: 'details', icon: 'file', tone: 'primary', label: t('action.details'), run: () => { void selectCommit(commit) } },
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
           null,
-          { id: 'checkout', label: t('action.checkout'), run: () => setDialog({ kind: 'checkoutCommit', hash: commit.hash }) },
-          { id: 'branch', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
-          { id: 'tag', label: t('action.newTag'), run: () => setDialog({ kind: 'newTag', hash: commit.hash }) },
+          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), run: () => setDialog({ kind: 'checkoutCommit', hash: commit.hash }) },
+          { id: 'branch', icon: 'plus', tone: 'success', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
+          { id: 'tag', icon: 'tag', tone: 'warn', label: t('action.newTag'), run: () => setDialog({ kind: 'newTag', hash: commit.hash }) },
           null,
-          { id: 'cherry', label: t('action.cherryPick'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
-          { id: 'revert', label: t('action.revert'), run: () => { void run('revert', { hash: commit.hash }) } },
+          { id: 'cherry', icon: 'commit', tone: 'accent', label: t('action.cherryPick'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
+          { id: 'revert', icon: 'undo', tone: 'danger', label: t('action.revert'), run: () => { void run('revert', { hash: commit.hash }) } },
           null,
-          { id: 'resetSoft', label: t('action.resetSoft'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
-          { id: 'resetHard', label: t('action.resetHard'), danger: true, run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
+          { id: 'resetSoft', icon: 'undo', tone: 'warn', label: t('action.resetSoft'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
+          { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
         ]
-        setMenu({ x: event.clientX, y: event.clientY, items: items })
-      }, [run, selectCommit, t])
+        openMenuAt(event, items)
+      }, [run, selectCommit, t, openMenuAt])
 
       const changeMenu = useCallback((event, item, group) => {
         const items = [
-          { id: 'diff', label: t('action.showDiff'), run: () => { void openDiff({ path: item.path, staged: group === 'staged' }) } },
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { void openDiff({ path: item.path, staged: group === 'staged' }) } },
           null,
           group === 'staged'
-            ? { id: 'unstage', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
-            : { id: 'stage', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
-          { id: 'discard', label: t('action.discard'), danger: true, disabled: group === 'untracked', run: () => setDialog({ kind: 'discard', item: item, group: group }) },
+            ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
+            : { id: 'stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
+          { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, disabled: group === 'untracked', reason: t('action.unavailable'), run: () => setDialog({ kind: 'discard', item: item, group: group }) },
           null,
-          { id: 'copy', label: t('action.copyPath'), run: () => { copyText(item.path) } },
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
-        setMenu({ x: event.clientX, y: event.clientY, items: items })
-      }, [openDiff, run, t])
+        openMenuAt(event, items)
+      }, [openDiff, run, t, openMenuAt])
 
       const submitDialog = useCallback(async (state, value) => {
         setDialog(null)
@@ -1156,7 +1517,9 @@ window.__ModuleLoader__.load({
             },
           })
         : E(HistoryList, {
-            t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash, hideSearch: compact,
+            t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
+            hideSearch: compact, pathFilter: pathFilter,
+            onPathFilter: (value) => setPathFilter(value),
             onSelect: (commit) => { void selectCommit(commit) },
             onMenu: commitMenu,
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
@@ -1175,18 +1538,19 @@ window.__ModuleLoader__.load({
       const pickBranchMenu = (event, kind) => {
         if (otherBranches.length === 0) { setNote(t('note.noBranches')); return }
         const current = branches === null ? '' : branches.branch
-        setMenu({
-          x: event.clientX, y: event.clientY,
-          items: otherBranches.map((entry) => ({
-            id: kind + ':' + entry.name,
-            label: entry.name,
-            run: () => {
-              if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
-              if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
-              void compareWith(current, entry.name)
-            },
-          })),
-        })
+        const icon = kind === 'checkout' ? 'checkout' : kind === 'delete' ? 'trash' : 'compare'
+        const tone = kind === 'delete' ? 'danger' : kind === 'compare' ? 'violet' : 'accent'
+        openMenuAt(event, otherBranches.map((entry) => ({
+          id: kind + ':' + entry.name,
+          icon: icon,
+          tone: tone,
+          label: entry.name,
+          run: () => {
+            if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
+            if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
+            void compareWith(current, entry.name)
+          },
+        })))
       }
 
       const showWorkingDiff = () => {
@@ -1205,42 +1569,131 @@ window.__ModuleLoader__.load({
       }
 
       const stashMenu = (event) => {
-        setMenu({
-          x: event.clientX, y: event.clientY,
-          items: [
-            { id: 'stash-push', label: t('stash.push'), disabled: dirty === 0, run: () => { void run('stashPush', { includeUntracked: true }) } },
-            { id: 'stash-apply', label: t('stash.apply'), run: () => { void run('stashApply', {}) } },
-            { id: 'stash-drop', label: t('stash.drop'), danger: true, run: () => { void run('stashDrop', { confirm: true }) } },
-            null,
-            { id: 'stash-count', label: fill(t('stash.count'), { n: summary === null ? 0 : summary.stashCount }), disabled: true, run: () => {} },
-          ],
-        })
+        const count = summary === null ? 0 : summary.stashCount
+        openMenuAt(event, [
+          { id: 'stash-push', icon: 'stash', tone: 'violet', label: t('stash.push'), disabled: dirty === 0, reason: t('action.unavailable'), run: () => { void run('stashPush', { includeUntracked: true }) } },
+          { id: 'stash-apply', icon: 'checkout', tone: 'accent', label: t('stash.apply'), disabled: count === 0, reason: t('action.unavailable'), run: () => { void run('stashApply', {}) } },
+          { id: 'stash-drop', icon: 'trash', tone: 'danger', label: t('stash.drop'), danger: true, disabled: count === 0, reason: t('action.unavailable'), run: () => { void run('stashDrop', { confirm: true }) } },
+          null,
+          { id: 'stash-count', icon: 'tag', tone: 'secondary', label: fill(t('stash.count'), { n: count }), disabled: true, run: () => {} },
+        ])
       }
-
-      const railEntry = (id, icon, title, onClick, extraClass) => E('button', {
-        key: id, type: 'button',
-        className: 'dig-rail-btn' + (extraClass === undefined ? '' : ' ' + extraClass),
-        title: title,
-        disabled: busy === true && id !== 'refresh',
-        onClick: onClick,
-      }, E(Icon, { name: icon, size: 14 }))
 
       /* favorites/toggleFavoriteBranch live above branchMenu: a useCallback dep array is evaluated during render. */
       const headBranch = branches === null ? '' : branches.branch
-      const railButtons = repoRoot === null ? [] : [
-        railEntry('refresh', 'refresh', t('toolbar.refresh'), () => setTick((value) => value + 1)),
-        railEntry('newBranch', 'plus', t('toolbar.newBranch'), () => setDialog({ kind: 'newBranch' })),
-        railEntry('checkout', 'checkout', t('action.checkout'), (event) => pickBranchMenu(event, 'checkout')),
-        railEntry('delete', 'trash', t('action.delete'), (event) => pickBranchMenu(event, 'delete')),
-        railEntry('compare', 'compare', t('action.compare'), (event) => pickBranchMenu(event, 'compare')),
-        railEntry('diff', 'file', t('action.showDiff'), () => showWorkingDiff()),
-        railEntry('stash', 'stash', t('action.stash'), (event) => stashMenu(event)),
-        railEntry('tag', 'tag', t('action.newTagHere'), () => setDialog({ kind: 'newTag' })),
-        railEntry('favorite', 'star', t('action.favorite'), () => toggleFavoriteBranch(headBranch), favorites.indexOf(headBranch) >= 0 ? 'dig-rail-fav' : undefined),
-        railEntry('fetch', 'fetch', t('toolbar.fetch'), () => { void run('fetch', { prune: true }) }),
-        railEntry('pull', 'pull', t('toolbar.pull'), () => { void run('pull', { mode: 'ff-only' }) }),
-        railEntry('push', 'push', t('toolbar.push'), () => setDialog({ kind: 'push' })),
-      ]
+      const remoteReady = branches !== null && Array.isArray(branches.remotes) && branches.remotes.length > 0
+      const tracked = summary !== null && summary.upstream !== null
+      const stashCount = summary === null ? 0 : summary.stashCount
+      const reason = t('action.unavailable')
+
+      /* One descriptor per action, with the availability IDEA would use: delete /
+         checkout / compare need another local branch, fetch and push need a remote,
+         pull needs an upstream, diff needs pending changes, tag needs a commit.
+         The rail renders a user-chosen subset in a user-chosen order. */
+      const railActions = RAIL_SPECS.map((spec) => {
+        const entry = { id: spec.id, icon: spec.icon, tone: spec.tone, label: t(spec.key), disabled: false, active: false, run: () => {} }
+        if (spec.id === 'refresh') entry.run = () => setTick((value) => value + 1)
+        else if (spec.id === 'newBranch') entry.run = () => setDialog({ kind: 'newBranch' })
+        else if (spec.id === 'checkout') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'checkout') }
+        else if (spec.id === 'delete') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'delete') }
+        else if (spec.id === 'compare') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'compare') }
+        else if (spec.id === 'diff') { entry.disabled = dirty === 0; entry.run = () => showWorkingDiff() }
+        else if (spec.id === 'stash') { entry.disabled = dirty === 0 && stashCount === 0; entry.run = (event) => stashMenu(event) }
+        else if (spec.id === 'tag') { entry.disabled = commits.length === 0; entry.run = () => setDialog({ kind: 'newTag' }) }
+        else if (spec.id === 'favorite') { entry.disabled = headBranch === ''; entry.active = favorites.indexOf(headBranch) >= 0; entry.run = () => toggleFavoriteBranch(headBranch) }
+        else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
+        else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
+        else if (spec.id === 'push') { entry.disabled = remoteReady !== true; entry.run = () => setDialog({ kind: 'push' }) }
+        if (busy === true && spec.id !== 'refresh') entry.disabled = true
+        return entry
+      })
+
+      const railOrdered = railConfig.order
+        .map((id) => railActions.find((action) => action.id === id))
+        .filter((action) => action !== undefined)
+      const railVisible = railOrdered.filter((action) => railConfig.hidden.indexOf(action.id) < 0)
+
+      const applyRail = (next) => { setRailConfig(next); writeRailConfig(next) }
+      const moveRailAction = (id, delta) => {
+        const order = railConfig.order.slice()
+        const at = order.indexOf(id)
+        const to = at + delta
+        if (at < 0 || to < 0 || to >= order.length) return
+        order.splice(at, 1)
+        order.splice(to, 0, id)
+        applyRail({ order: order, hidden: railConfig.hidden })
+      }
+      const dropRailAction = (fromId, toId) => {
+        if (fromId === null || fromId === toId) return
+        const order = railConfig.order.slice()
+        const at = order.indexOf(fromId)
+        const to = order.indexOf(toId)
+        if (at < 0 || to < 0) return
+        order.splice(at, 1)
+        order.splice(to, 0, fromId)
+        applyRail({ order: order, hidden: railConfig.hidden })
+      }
+      const toggleRailAction = (id) => {
+        const hidden = railConfig.hidden.indexOf(id) >= 0
+          ? railConfig.hidden.filter((entry) => entry !== id)
+          : railConfig.hidden.concat([id])
+        applyRail({ order: railConfig.order, hidden: hidden })
+      }
+      const resetRailActions = () => applyRail({ order: RAIL_IDS.slice(), hidden: [] })
+
+      const RAIL_SLOT = 26
+      const railCapacityOf = (vertical) => {
+        const span = vertical ? railBox.height : railBox.width
+        if (span <= 0) return railVisible.length + 1
+        return Math.max(1, Math.floor((span - (vertical ? 10 : 12)) / RAIL_SLOT))
+      }
+
+      /* Renders the rail for one orientation: as many buttons as fit, then a more
+         menu that lists EVERY action, then the settings button pinned to the end. */
+      const renderRail = (vertical) => {
+        const capacity = railCapacityOf(vertical)
+        // The settings button is never dropped and never pushed out: the more
+        // button only appears when there is room for it AND for settings.
+        const overflow = railVisible.length + 1 > capacity && capacity >= 3
+        const slots = overflow
+          ? Math.max(1, capacity - 2)
+          : Math.min(railVisible.length, Math.max(0, capacity - 1))
+        const children = railVisible.slice(0, slots).map((action) => E('button', {
+          key: action.id,
+          type: 'button',
+          className: 'dig-rail-btn dig-tone-' + action.tone + (action.active === true ? ' dig-rail-btn-active' : ''),
+          title: action.disabled === true ? action.label + ' · ' + reason : action.label,
+          disabled: action.disabled === true,
+          onClick: action.run,
+        }, E(Icon, { name: action.icon, size: 15 })))
+        if (overflow === true) {
+          children.push(E('button', {
+            key: 'more',
+            type: 'button',
+            className: 'dig-rail-btn dig-rail-more',
+            title: t('rail.more'),
+            onClick: (event) => openMenuAt(event, railActions.map((action) => ({
+              id: 'rail:' + action.id,
+              icon: action.icon,
+              tone: action.tone,
+              label: action.label,
+              disabled: action.disabled,
+              active: action.active,
+              reason: reason,
+              run: (inner) => action.run(inner === undefined ? event : inner),
+            }))),
+          }, E(Icon, { name: 'more', size: 16 })))
+        }
+        children.push(E('span', { key: 'gap', className: vertical ? 'dig-rail-gap' : 'dig-rail-gap-x' }))
+        children.push(E('button', {
+          key: 'settings',
+          type: 'button',
+          className: 'dig-rail-btn dig-rail-settings',
+          title: t('rail.settings'),
+          onClick: () => setRailSettings(true),
+        }, E(Icon, { name: 'settings', size: 15 })))
+        return E('div', { className: vertical ? 'dig-rail' : 'dig-rail-row', ref: railHostRef }, children)
+      }
 
       /* ---------- body per chrome ---------- */
 
@@ -1281,7 +1734,30 @@ window.__ModuleLoader__.load({
       const overlays = []
       if (menu !== null) {
         overlays.push(E(ContextMenu, {
-          key: 'menu', anchor: { x: menu.x, y: menu.y }, items: menu.items, onClose: () => setMenu(null),
+          key: 'menu',
+          anchor: { x: menu.x, y: menu.y },
+          boundsWidth: menu.boundsWidth,
+          boundsHeight: menu.boundsHeight,
+          items: menu.items,
+          onClose: () => setMenu(null),
+        }))
+      }
+      if (railSettings === true) {
+        overlays.push(E(RailSettings, {
+          key: 'rail-settings',
+          t: t,
+          items: railOrdered.map((action) => ({
+            id: action.id,
+            icon: action.icon,
+            tone: action.tone,
+            label: action.label,
+            hidden: railConfig.hidden.indexOf(action.id) >= 0,
+          })),
+          onMove: moveRailAction,
+          onDrop: dropRailAction,
+          onToggle: toggleRailAction,
+          onReset: resetRailActions,
+          onClose: () => setRailSettings(false),
         }))
       }
       if (dialog !== null && (dialog.kind === 'newBranch' || dialog.kind === 'renameBranch' || dialog.kind === 'newTag')) {
@@ -1351,10 +1827,10 @@ window.__ModuleLoader__.load({
       // horizontal row under the repo/branch bar, and every action lives in
       // exactly one place.
       return E('div', { className: 'dig-root', ref: hostRef }, topBar,
-        columns ? null : E('div', { className: 'dig-rail-row' }, railButtons),
+        columns === true || repoRoot === null ? null : renderRail(false),
         banner, noteBanner,
         E('div', { className: 'dig-shell' },
-          columns ? E('div', { className: 'dig-rail' }, railButtons) : null,
+          columns === true && repoRoot !== null ? renderRail(true) : null,
           body),
         overlays)
     }
@@ -1370,7 +1846,7 @@ window.__ModuleLoader__.load({
        (dsh-any-background) keep showing through, like the host's own panels. */
 
     const CSS = [
-      '.dig-root{display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:12.5px;line-height:1.5;font-weight:500;overflow:hidden}',
+      '.dig-root{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:13px;line-height:1.5;font-weight:600;overflow:hidden}',
       '.dig-topbar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));overflow:hidden}',
       '.dig-topbar-spacer{flex:1;min-width:4px}',
       '.dig-busy{color:var(--dsw-alias-label-tertiary);flex:none;white-space:nowrap}',
@@ -1391,12 +1867,33 @@ window.__ModuleLoader__.load({
       '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-label-secondary)}',
       '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-shell{flex:1;min-height:0;display:flex;overflow:hidden}',
-      '.dig-rail{width:30px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow-y:auto;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
-      '.dig-rail-row{display:flex;align-items:center;gap:2px;padding:3px 6px;flex:none;overflow-x:auto;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail{width:32px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow:hidden;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail-gap{flex:1;min-height:2px}',
+      '.dig-rail-gap-x{flex:1;min-width:2px}',
+      '.dig-rail-row{display:flex;align-items:center;gap:2px;padding:3px 6px;flex:none;overflow:hidden;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
       '.dig-rail-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
       '.dig-rail-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
-      '.dig-rail-btn:disabled{opacity:.4;cursor:default}',
-      '.dig-rail-fav{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-rail-btn:disabled{opacity:.28;cursor:default}',
+      '.dig-rail-btn-active{background:color-mix(in srgb, var(--dsw-alias-brand-primary) 20%, transparent)}',
+      '.dig-rail-more,.dig-rail-settings{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-rail-more:hover,.dig-rail-settings:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-tone-primary{color:var(--dsw-alias-label-primary)}',
+      '.dig-tone-secondary{color:var(--dsw-alias-label-secondary)}',
+      '.dig-tone-accent{color:var(--dsw-alias-brand-primary)}',
+      '.dig-tone-success{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-tone-warn{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-tone-danger{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-tone-violet{color:#b083f0}',
+      '.dig-tone-cyan{color:#59b0d6}',
+      '.dig-icon-btn-small{width:20px;height:20px;border-radius:5px}',
+      '.dig-rail-list{display:flex;flex-direction:column;gap:2px;max-height:min(50vh,300px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:8px}',
+      '.dig-rail-item{display:flex;align-items:center;gap:6px;padding:2px 4px;border-radius:6px}',
+      '.dig-rail-item:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-rail-item-off{opacity:.5}',
+      '.dig-rail-item-drag{outline:1px solid var(--dsw-alias-brand-primary)}',
+      '.dig-rail-grip{display:inline-flex;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));cursor:grab;flex:none}',
+      '.dig-rail-item-icon{display:inline-flex;flex:none}',
+      '.dig-rail-item-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}',
       '.dig-body{flex:1;min-height:0;display:flex;overflow:hidden}',
       '.dig-body-columns{flex-direction:row}',
       '.dig-body-stack{flex-direction:column}',
@@ -1440,24 +1937,36 @@ window.__ModuleLoader__.load({
       '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
       '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
+      '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
+      '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
+      '.dig-row-head .dig-row-label{font-weight:600}',
       '.dig-row-icon{display:inline-flex;flex:none;opacity:.9}',
-      '.dig-row-label{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;font-weight:500}',
+      '.dig-row-label{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;font-weight:600}',
       '.dig-row-sub{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
       '.dig-row-dir{margin-left:auto;opacity:.75}',
       '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
       '.dig-badge-muted{opacity:.8}',
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-history-scroll{flex:1;overflow:auto}',
-      '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 6px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
+      '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-commit-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
       '.dig-graph{flex:none}',
-      '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;font-variant-numeric:tabular-nums;min-width:24px;font-weight:500}',
-      '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;max-width:110px;overflow:hidden;text-overflow:ellipsis;font-weight:500}',
-      '.dig-commit-subject{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}',
-      '.dig-ref{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-ref-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      '.dig-ref-tag{color:var(--dsw-alias-brand-primary)}',
+      '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;width:54px;font-variant-numeric:tabular-nums;font-weight:500}',
+      '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;width:96px;overflow:hidden;text-overflow:ellipsis;font-weight:500}',
+      '.dig-commit-subject{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}',
+      '.dig-commit-fill{flex:1 1 0;min-width:0}',
+      '.dig-ref{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}',
+      '.dig-ref-head{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-ref-local{color:var(--dsw-alias-brand-primary)}',
+      '.dig-ref-remote{color:#b083f0}',
+      '.dig-ref-tag{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-ref-more{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-filters{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;min-width:0;overflow-x:auto;overflow-y:hidden;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-filter-text{flex:1 1 90px;min-width:80px;width:auto}',
+      '.dig-filter-select{flex:none;max-width:118px;appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;height:22px;padding:0 4px;cursor:pointer;text-overflow:ellipsis}',
+      '.dig-filter-select:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-filter-path{flex:0 1 112px;min-width:70px;display:flex}',
       '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer}',
       '.dig-load-more:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-empty{padding:14px;text-align:center;color:var(--dsw-alias-label-tertiary);font-weight:500}',
@@ -1504,7 +2013,7 @@ window.__ModuleLoader__.load({
       '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
       '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
-      '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.5;font-weight:500;min-height:0}',
+      '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;font-weight:500;min-height:0}',
       '.dig-diff-line{display:flex;gap:8px;padding:0 6px;white-space:pre}',
       '.dig-diff-gutter{width:32px;flex:none;text-align:right;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));user-select:none}',
       '.dig-diff-text{white-space:pre-wrap;word-break:break-word;flex:1;min-width:0}',
@@ -1512,17 +2021,21 @@ window.__ModuleLoader__.load({
       '.dig-diff-del{background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 16%, transparent)}',
       '.dig-diff-hunk{color:var(--dsw-alias-brand-primary);background:color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent)}',
       '.dig-diff-meta{color:var(--dsw-alias-label-tertiary)}',
-      '.dig-overlay{position:fixed;inset:0;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));display:flex;align-items:center;justify-content:center;z-index:60}',
-      '.dig-dialog{min-width:260px;max-width:min(420px,90vw);background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.35)}',
+      '.dig-overlay{position:absolute;inset:0;padding:8px;box-sizing:border-box;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));display:flex;align-items:center;justify-content:center;z-index:60}',
+      '.dig-dialog{min-width:240px;max-width:min(420px,94%);max-height:100%;overflow:auto;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.35)}',
+      '.dig-dialog-wide{min-width:min(360px,92%)}',
       '.dig-dialog-title{font-weight:600}',
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      '.dig-menu{position:fixed;z-index:70;min-width:190px;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column}',
-      '.dig-menu-item{padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;text-align:left;border-radius:5px;cursor:pointer;white-space:nowrap}',
+      '.dig-menu{position:absolute;z-index:70;min-width:200px;max-width:calc(100% - 8px);max-height:calc(100% - 8px);overflow:auto;overscroll-behavior:contain;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column}',
+      '.dig-menu-item{display:flex;align-items:center;gap:8px;padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;text-align:left;border-radius:5px;cursor:pointer;white-space:nowrap;overflow:hidden}',
+      '.dig-menu-icon{display:inline-flex;flex:none}',
+      '.dig-menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-menu-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
-      '.dig-menu-danger{color:var(--dsw-alias-state-error-primary)}',
-      '.dig-menu-disabled{opacity:.4;cursor:default}',
+      '.dig-menu-item-active{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-menu-danger,.dig-menu-danger .dig-menu-label{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-menu-disabled{opacity:.38;cursor:default}',
       '.dig-menu-sep{height:1px;margin:3px 6px;background:var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
     ].join('\n')
 

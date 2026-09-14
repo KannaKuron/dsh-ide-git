@@ -13,15 +13,16 @@ In better-sidebar 0.19.x one tab registration shows up on two very different sur
 | Right sidebar | **DSH's native right sidebar** (plugin tabs are bridged in) | narrow + tall | `stack`: changes above the graph, collapsible branch pane |
 | Bottom panel | **better-sidebar's own workbench** | wide + flat | `columns`: tree / graph / changes — the JetBrains Git tool window shape |
 
-The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 640px and aspect ≥ 1.5 → columns, otherwise stack), so free-floating windows and the mobile drawer adapt too.
+The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 600px and width ≥ 1.15 × height → columns, otherwise stack), so free-floating windows and the mobile drawer adapt too.
 
 ## Features
 
-- Toolbar: refresh, new branch, fetch (prune), pull (`--ff-only`), push (confirmed), branch pane toggle.
+- Action rail: the JetBrains-style vertical strip in the bottom workbench (and one horizontal row under the header in the right sidebar) with refresh, new branch, checkout, delete, compare, show diff, stash, new tag, favorite, fetch, pull and push. **It shows as many buttons as fit**, folds the rest into a `⋯ more` menu, and pins a `⚙ settings` button that lets you reorder actions and toggle each of them (stored in `dsh-ide-git.rail.v1`). Every action lights up or greys out with the current state (no other branch → delete / checkout / compare off, no remote → fetch / push off, no upstream → pull off, no changes → diff off).
 - Status line: branch, upstream, ahead/behind, stash count, busy indicator.
-- Branch tree: HEAD / Local / Remote / Tags groups, filter box, ahead/behind badges, worktree marker.
+- Branch tree: HEAD / Local / Remote / Tags groups, filter box, ahead/behind badges, worktree marker; local blue / remote violet / tag amber / HEAD green.
 - Branch context menu: checkout, rebase current onto this, merge into current, compare with current, new branch from here, rename, delete, fetch, push.
-- Commit list: lane graph, refs badges, relative date, author, subject, filter, load more (120 per page).
+- History filters: text or hash, branch or tag, author, date (today / 7 days / 30 days / this year), an order toggle (newest / oldest first) and one-click clear; the path filter runs server-side (`git log -- <path>`) on Enter.
+- Commit list: IDEA column order — **date → author → graph → refs → subject**; a lane graph whose segments span whole rows (pixel-aligned across rows), a hollow dot for HEAD, refs badges (HEAD green / local blue / remote violet / tag amber, at most three plus `+n`), load more (120 per page).
 - Commit context menu: details, copy revision, checkout revision, new branch here, new tag, cherry-pick, revert, reset here (keep / discard changes).
 - Commit details: full message, author/date, changed files with +/− and per-file line diff.
 - Changes: conflicts / staged / changes / untracked groups, inline stage / unstage / discard, group-level actions, click for diff.

@@ -48,6 +48,9 @@
 
 12. **hooks 依赖数组在渲染期求值**。useCallback / useMemo / useEffect 的依赖数组当帧就会求值,引用「后面才声明的 const」直接 TDZ 报错(v0.1.6 就因此崩过一次:branchMenu 的依赖里写了定义在 rail 段的 toggleFavoriteBranch)。规则:被 hooks 依赖引用的函数与值必须先声明;派生值同理。SSR 自检(react-dom/server 真渲染一次 Tab 组件)能抓出这类错误,改完客户端半务必跑一遍。
 
+13. **面板内的浮层一律用「面板内定位」**。`dsh-better-sidebar` 的底部工作台声明了 `contain: layout style`,布局包含使它成为 `position: fixed` 后代的**包含块**——用视口坐标 + `position: fixed` 的浮层会被摆到面板之外(屏幕外),真机上表现为「右键点了没反应」。规则:菜单 / 遮罩 / 对话框都是 `.dig-root`(`position: relative`)内的 `position: absolute`;锚点先减去 `hostRef` 的 `getBoundingClientRect()`(见 `openMenuAt`),再按面板盒子夹取;浮层自带 `max-height` + 内部滚动,放不下时向上翻而不是溢出。
+14. **动作条是用户可配置的,`RAIL_SPECS` 是唯一权威**。增删动作只改 `RAIL_SPECS`;持久化(`dsh-ide-git.rail.v1`)只存「排列 + 隐藏」,读写一律过 `normalizeRail()`(丢弃未知 id、补齐缺失 id),所以新增动作不会让旧配置失效。设置按钮由 rail 自己追加、不参与配置;容量按 rail **自身**尺寸算(竖排看高度、横排看宽度),放不下才出现 `⋯ 更多`,而「更多」必须列出全部动作。
+
 ## 与 dsh-better-sidebar 生态的关系
 
 - 插件要进 better-sidebar 设置页的「侧边卡片」分区/推荐目录,靠的是:注册 Tab 时提供 `title` / `description` / `icon`(卡片自动生成),以及仓库打好 `dsh-better-sidebar` topic。推荐目录本身维护在 better-sidebar 仓库的 `src/client/plugins-tabs.ts`,收录需要向该仓库提 PR。
