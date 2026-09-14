@@ -1124,16 +1124,7 @@ window.__ModuleLoader__.load({
         summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
           (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
         E('span', { className: 'dig-topbar-spacer' }),
-        busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null,
-        E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.refresh'), onClick: () => setTick((value) => value + 1) }, E(Icon, { name: 'refresh' })),
-        E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.newBranch'), onClick: () => setDialog({ kind: 'newBranch' }) }, E(Icon, { name: 'plus' })),
-        E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.fetch'), disabled: busy, onClick: () => { void run('fetch', { prune: true }) } }, E(Icon, { name: 'fetch' })),
-        compact ? null : E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.pull'), disabled: busy, onClick: () => { void run('pull', { mode: 'ff-only' }) } }, E(Icon, { name: 'pull' })),
-        E('button', { type: 'button', className: 'dig-icon-btn', title: t('toolbar.push'), disabled: busy, onClick: () => setDialog({ kind: 'push' }) }, E(Icon, { name: 'push' })),
-        compact ? null : E('button', {
-          type: 'button', className: 'dig-icon-btn' + (treeOpen ? ' dig-icon-btn-active' : ''), title: t('toolbar.tree'),
-          onClick: () => setTreeOpen((value) => !value),
-        }, E(Icon, { name: 'branch' })))
+        busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
 
       const banner = error === null ? null : E('div', { className: 'dig-banner' },
         E('span', { className: 'dig-banner-text' }, error),
@@ -1246,6 +1237,9 @@ window.__ModuleLoader__.load({
         railEntry('stash', 'stash', t('action.stash'), (event) => stashMenu(event)),
         railEntry('tag', 'tag', t('action.newTagHere'), () => setDialog({ kind: 'newTag' })),
         railEntry('favorite', 'star', t('action.favorite'), () => toggleFavoriteBranch(headBranch), favorites.indexOf(headBranch) >= 0 ? 'dig-rail-fav' : undefined),
+        railEntry('fetch', 'fetch', t('toolbar.fetch'), () => { void run('fetch', { prune: true }) }),
+        railEntry('pull', 'pull', t('toolbar.pull'), () => { void run('pull', { mode: 'ff-only' }) }),
+        railEntry('push', 'push', t('toolbar.push'), () => setDialog({ kind: 'push' })),
       ]
 
       /* ---------- body per chrome ---------- */
@@ -1352,9 +1346,15 @@ window.__ModuleLoader__.load({
         }))
       }
 
-      return E('div', { className: 'dig-root', ref: hostRef }, topBar, banner, noteBanner,
+      // Wide chromes (the bottom workbench) get the vertical IDE rail on the left;
+      // narrow ones (the native right sidebar) get the same actions as one
+      // horizontal row under the repo/branch bar, and every action lives in
+      // exactly one place.
+      return E('div', { className: 'dig-root', ref: hostRef }, topBar,
+        columns ? null : E('div', { className: 'dig-rail-row' }, railButtons),
+        banner, noteBanner,
         E('div', { className: 'dig-shell' },
-          E('div', { className: 'dig-rail' }, railButtons),
+          columns ? E('div', { className: 'dig-rail' }, railButtons) : null,
           body),
         overlays)
     }
@@ -1392,6 +1392,7 @@ window.__ModuleLoader__.load({
       '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-shell{flex:1;min-height:0;display:flex;overflow:hidden}',
       '.dig-rail{width:30px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow-y:auto;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail-row{display:flex;align-items:center;gap:2px;padding:3px 6px;flex:none;overflow-x:auto;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
       '.dig-rail-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
       '.dig-rail-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-rail-btn:disabled{opacity:.4;cursor:default}',
