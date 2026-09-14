@@ -64,6 +64,7 @@ window.__ModuleLoader__.load({
       'branches.head': 'HEAD(当前分支)',
       'branches.favorites': '收藏',
       'branches.pickHint': '单击选中,双击签出',
+      'branches.worktree': '已在另一工作区检出',
       'action.stash': '贮藏',
       'action.favorite': '收藏/取消收藏当前分支',
       'action.newTagHere': '在当前提交新建标签...',
@@ -217,6 +218,7 @@ window.__ModuleLoader__.load({
       'branches.head': 'HEAD (current branch)',
       'branches.favorites': 'Favorites',
       'branches.pickHint': 'Click to select, double-click to check out',
+      'branches.worktree': 'Checked out in another working tree',
       'action.stash': 'Stash',
       'action.favorite': 'Favorite / unfavorite current branch',
       'action.newTagHere': 'New tag on current commit...',
@@ -953,7 +955,13 @@ window.__ModuleLoader__.load({
       },
         E('span', { className: 'dig-row-icon dig-tone-' + tone }, E(Icon, { name: glyph, size: 12 })),
         E('span', { className: 'dig-row-label' }, props.label === undefined ? entry.name : props.label),
-        entry.worktree === null || entry.worktree === undefined ? null : E('span', { className: 'dig-badge dig-badge-muted', title: entry.worktree }, 'W'),
+        // A bare 'W' told nobody anything (reported right after the section counts):
+        // it means this branch is checked out in ANOTHER working tree, which is why
+        // git refuses to check it out here. An icon plus a spelled-out tooltip says so.
+        entry.worktree === null || entry.worktree === undefined ? null : E('span', {
+          className: 'dig-badge dig-badge-muted dig-badge-worktree',
+          title: t('branches.worktree') + ': ' + entry.worktree,
+        }, E(Icon, { name: 'folder', size: 10 })),
         entry.ahead > 0 ? E('span', { className: 'dig-badge' }, '↑' + entry.ahead) : null,
         entry.behind > 0 ? E('span', { className: 'dig-badge' }, '↓' + entry.behind) : null)
     }
@@ -2385,6 +2393,7 @@ window.__ModuleLoader__.load({
       '.dig-row-dir{margin-left:auto;opacity:.75}',
       '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
       '.dig-badge-muted{opacity:.8}',
+      '.dig-badge-worktree{padding:0 3px;display:inline-flex;align-items:center;height:14px}',
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',

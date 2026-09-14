@@ -375,3 +375,23 @@ test('ignored files show up only when the panel asks for them', async () => {
   rmSync(join(repo, 'ignored-note.txt'), { force: true })
   rmSync(join(repo, '.gitignore'), { force: true })
 })
+
+test('only ANOTHER working tree marks a branch as occupied', async () => {
+  // `git worktree list` includes the checkout the repository lives in, so a naive
+  // read flags the CURRENT branch as occupied by its own working tree.
+  const linked = join(tmpdir(), 'dsh-ide-git-wt-' + Date.now())
+  git('worktree', 'add', '-q', '-b', 'wt-branch', linked)
+  try {
+    const data = await call('branches', { cwd: repo })
+    const current = data.body.data.local.find((entry) => entry.name === data.body.data.branch)
+    const other = data.body.data.local.find((entry) => entry.name === 'wt-branch')
+    assert.ok(current !== undefined && other !== undefined, 'both branches are listed')
+    assert.equal(current.worktree, null, 'the checkout the panel is looking at is not occupied')
+    assert.ok(other.worktree !== null && other.worktree.indexOf('dsh-ide-git-wt-') >= 0,
+      'the linked checkout marks its own branch: ' + JSON.stringify(other.worktree))
+  } finally {
+    git('worktree', 'remove', '--force', linked)
+    git('branch', '-D', 'wt-branch')
+    rmSync(linked, { recursive: true, force: true })
+  }
+})

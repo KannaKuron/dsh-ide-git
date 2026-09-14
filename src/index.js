@@ -18,7 +18,7 @@
  */
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 export const name = 'dsh-ide-git'
@@ -327,6 +327,14 @@ async function stashCountOf(root) {
   return Number.isFinite(count) ? count : 0
 }
 
+/** Same directory, tolerating a trailing slash and macOS /var vs /private/var. */
+function sameDirectory(left, right) {
+  const one = path.resolve(String(left))
+  const two = path.resolve(String(right))
+  if (one === two) return true
+  try { return realpathSync(one) === realpathSync(two) } catch { return false }
+}
+
 async function worktreesOf(root) {
   const result = await runGit(root, ['worktree', 'list', '--porcelain'])
   if (result.code !== 0) return []
@@ -551,7 +559,13 @@ async function branches(payload) {
   const worktrees = await worktreesOf(root)
   const busy = new Map()
   for (const tree of worktrees) {
-    if (tree.branch !== null && tree.branch !== '') busy.set(tree.branch, tree.path)
+    if (tree.branch === null || tree.branch === '') continue
+    // `git worktree list` includes the checkout this repository lives in, so
+    // without this the CURRENT branch was flagged as occupied by its own working
+    // tree (reported on v0.3.11: main showed the marker while checked out here).
+    // Only a SECOND working tree holding a branch blocks checking it out here.
+    if (sameDirectory(tree.path, root)) continue
+    busy.set(tree.branch, tree.path)
   }
   for (const record of out.split(RECORD_SEP)) {
     const trimmed = record.replace(/^\n+/, '')
