@@ -356,3 +356,22 @@ test('a discard too large to snapshot still happens, just without an undo handle
   assert.equal(discarded.body.data.undo, undefined)
   assert.equal(discarded.body.data.undoBlocked, true)
 })
+
+test('ignored files show up only when the panel asks for them', async () => {
+  writeFileSync(join(repo, '.gitignore'), 'ignored-dir/\nignored-note.txt\n')
+  mkdirSync(join(repo, 'ignored-dir'), { recursive: true })
+  writeFileSync(join(repo, 'ignored-dir', 'junk.txt'), 'x\n')
+  writeFileSync(join(repo, 'ignored-note.txt'), 'x\n')
+  const plain = await call('summary', { cwd: repo })
+  assert.deepEqual(plain.body.data.changes.ignored, [], 'ignored files stay out of the default summary')
+  const asked = await call('summary', { cwd: repo, ignored: true })
+  const paths = asked.body.data.changes.ignored.map((file) => file.path)
+  // --ignored=traditional reports the directory itself, not every file inside it.
+  assert.ok(paths.includes('ignored-dir/'), 'ignored directory as one entry: ' + JSON.stringify(paths))
+  assert.ok(paths.includes('ignored-note.txt'))
+  assert.equal(asked.body.data.changes.untracked.some((file) => file.path.indexOf('ignored') === 0), false,
+    'nothing ignored may leak into the groups the panel stages from')
+  rmSync(join(repo, 'ignored-dir'), { recursive: true, force: true })
+  rmSync(join(repo, 'ignored-note.txt'), { force: true })
+  rmSync(join(repo, '.gitignore'), { force: true })
+})

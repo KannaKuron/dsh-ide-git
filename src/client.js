@@ -77,6 +77,14 @@ window.__ModuleLoader__.load({
       'changes.amend': '修补',
       'changes.stageAll': '全部暂存',
       'changes.unstageAll': '全部取消暂存',
+      'changes.groupBy': '分组依据',
+      'changes.groupFlat': '平铺',
+      'changes.groupDir': '按目录',
+      'changes.expandAll': '全部展开',
+      'changes.foldAll': '全部折叠',
+      'changes.showIgnored': '显示忽略的文件',
+      'changes.rootDir': '(根目录)',
+      'changes.commitAndPush': '提交并推送',
       'action.stage': '暂存',
       'action.unstage': '取消暂存',
       'action.discard': '丢弃更改',
@@ -170,6 +178,7 @@ window.__ModuleLoader__.load({
       'status.loading': '正在读取...',
       'status.busy': '处理中...',
       'counts.staged': '已暂存 {n}',
+      'counts.ignored': '忽略 {n}',
       'counts.unstaged': '更改 {n}',
       'counts.untracked': '未跟踪 {n}',
       'counts.conflicted': '冲突 {n}',
@@ -220,6 +229,14 @@ window.__ModuleLoader__.load({
       'changes.amend': 'Amend',
       'changes.stageAll': 'Stage all',
       'changes.unstageAll': 'Unstage all',
+      'changes.groupBy': 'Group by',
+      'changes.groupFlat': 'Flat list',
+      'changes.groupDir': 'By directory',
+      'changes.expandAll': 'Expand all',
+      'changes.foldAll': 'Collapse all',
+      'changes.showIgnored': 'Show ignored files',
+      'changes.rootDir': '(root)',
+      'changes.commitAndPush': 'Commit and push',
       'action.stage': 'Stage',
       'action.unstage': 'Unstage',
       'action.discard': 'Discard changes',
@@ -313,6 +330,7 @@ window.__ModuleLoader__.load({
       'status.loading': 'Reading...',
       'status.busy': 'Working...',
       'counts.staged': 'Staged {n}',
+      'counts.ignored': 'Ignored {n}',
       'counts.unstaged': 'Changes {n}',
       'counts.untracked': 'Untracked {n}',
       'counts.conflicted': 'Conflicts {n}',
@@ -658,6 +676,8 @@ window.__ModuleLoader__.load({
       grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
       filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
       check: ['M3.2 8.4 6.4 11.6 12.8 4.6'],
+      expand: ['M4.5 6.2 8 9.7l3.5-3.5', 'M3 12.4h10'],
+      collapse: ['M4.5 9.8 8 6.3l3.5 3.5', 'M3 3.6h10'],
     }
 
     function Icon(props) {
@@ -963,7 +983,10 @@ window.__ModuleLoader__.load({
       const t = props.t
       const item = props.item
       const raw = item.index === '?' ? '?' : (item.index + item.worktree).trim()
-      const status = raw === '' ? 'M' : raw.charAt(0)
+      // Ignored rows are informational: their status letter is their own, and the
+      // stage/discard buttons below would silently do nothing (git needs -f).
+      const readOnly = props.group === 'ignored'
+      const status = readOnly ? 'I' : (raw === '' ? 'M' : raw.charAt(0))
       return E('div', {
         className: 'dig-row dig-row-file',
         title: item.origPath === undefined ? item.path : item.origPath + ' → ' + item.path,
@@ -971,14 +994,16 @@ window.__ModuleLoader__.load({
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, item, props.group) },
       },
         E('span', { className: 'dig-file-status dig-file-status-' + (status === '?' ? 'U' : status) }, status),
-        E('span', { className: 'dig-row-label' }, baseName(item.path)),
-        E('span', { className: 'dig-row-sub dig-row-dir' }, dirName(item.path)),
+        // An ignored DIRECTORY comes back as "dist/" (ls-files --directory), whose
+        // basename is empty — show the whole path instead of a blank label.
+        E('span', { className: 'dig-row-label' }, item.path.slice(-1) === '/' ? item.path : baseName(item.path)),
+        E('span', { className: 'dig-row-sub dig-row-dir' }, item.path.slice(-1) === '/' ? '' : dirName(item.path)),
         item.additions > 0 ? E('span', { className: 'dig-stat-add' }, '+' + item.additions) : null,
         item.deletions > 0 ? E('span', { className: 'dig-stat-del' }, '-' + item.deletions) : null,
-        props.group === 'staged'
+        readOnly ? null : (props.group === 'staged'
           ? E('button', { type: 'button', className: 'dig-mini', title: t('action.unstage'), onClick: (event) => { event.stopPropagation(); props.onUnstage(item) } }, E(Icon, { name: 'minus', size: 12 }))
-          : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 })),
-        E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
+          : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 }))),
+        readOnly ? null : E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
     }
 
     function ChangesPanel(props) {
@@ -987,27 +1012,71 @@ window.__ModuleLoader__.load({
       const [message, setMessage] = useState('')
       const [amend, setAmend] = useState(false)
       const [collapsed, setCollapsed] = useState(false)
+      // 'flat' keeps git's own grouping (staged / changes / untracked); 'dir'
+      // clusters each group's files under their folder, the way "Group by:
+      // Directory" does in an IDE. Folders are addressed by <group>|<dir>, so a
+      // refresh never loses which ones the user folded away.
+      const [groupBy, setGroupBy] = useState('flat')
+      const [foldedDirs, setFoldedDirs] = useState({})
       const changes = summary === null ? null : summary.changes
       const conflicted = changes === null ? [] : changes.conflicted
       const staged = changes === null ? [] : changes.staged
       const unstaged = changes === null ? [] : changes.unstaged
       const untracked = changes === null ? [] : changes.untracked
+      const ignored = changes === null || changes.ignored === undefined ? [] : changes.ignored
       const total = conflicted.length + staged.length + unstaged.length + untracked.length
-      const submit = () => {
-        if (message.trim() === '' || props.busy === true) return
-        props.onCommit(message, amend)
+      const submit = (push) => {
+        if (message.trim() === '' || props.busy === true) return false
+        props.onCommit(message, amend, push === true)
         setMessage('')
         setAmend(false)
+        return true
+      }
+      const entryRow = (key, item) => E(ChangeRow, {
+        key: key + ':' + item.path, item: item, group: key, t: t,
+        onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
+      })
+      const folderOf = (item) => {
+        const dir = dirName(item.path)
+        return dir === '' ? t('changes.rootDir') : dir
+      }
+      const rowsOf = (key, entries) => {
+        if (groupBy !== 'dir') return entries.map((item) => entryRow(key, item))
+        const folders = new Map()
+        for (const item of entries) {
+          const name = folderOf(item)
+          if (folders.has(name) === false) folders.set(name, [])
+          folders.get(name).push(item)
+        }
+        return Array.from(folders.keys()).sort().map((name) => {
+          const id = key + '|' + name
+          const open = foldedDirs[id] !== true
+          const list = folders.get(name)
+          return E('div', { className: 'dig-folder', key: id },
+            E('button', {
+              type: 'button', className: 'dig-folder-head',
+              onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
+            },
+              E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+              E('span', { className: 'dig-folder-name' }, name),
+              E('span', { className: 'dig-count' }, String(list.length))),
+            open ? list.map((item) => entryRow(key, item)) : null)
+        })
+      }
+      const foldAll = (value) => {
+        const next = {}
+        if (value === true) {
+          const groups = [['conflicted', conflicted], ['staged', staged], ['unstaged', unstaged], ['untracked', untracked], ['ignored', ignored]]
+          for (const pair of groups) for (const item of pair[1]) next[pair[0] + '|' + folderOf(item)] = true
+        }
+        setFoldedDirs(next)
       }
       const group = (key, title, entries) => entries.length === 0 ? null : E('div', { className: 'dig-group', key: key },
         E('div', { className: 'dig-group-head' },
           E('span', null, title),
           key === 'staged' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onUnstageAll() }, t('changes.unstageAll')) : null,
           key === 'unstaged' || key === 'untracked' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onStageAll(entries) }, t('changes.stageAll')) : null),
-        entries.map((item) => E(ChangeRow, {
-          key: key + ':' + item.path, item: item, group: key, t: t,
-          onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
-        })))
+        rowsOf(key, entries))
       const composer = props.compact === true
         ? E('div', { className: 'dig-commit-box dig-commit-box-compact' },
             E('input', {
@@ -1021,7 +1090,7 @@ window.__ModuleLoader__.load({
             E('button', {
               type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
               disabled: message.trim() === '' || props.busy === true,
-              onClick: submit,
+              onClick: () => { submit(false) },
             }, t('changes.commit')))
         : E('div', { className: 'dig-commit-box' },
             E('textarea', {
@@ -1039,25 +1108,60 @@ window.__ModuleLoader__.load({
               E('button', {
                 type: 'button', className: 'dig-btn dig-btn-primary',
                 disabled: message.trim() === '' || props.busy === true,
-                onClick: submit,
-              }, t('changes.commit'))))
-      const showBody = props.hideHeader === true || collapsed === false
-      return E('div', { className: 'dig-changes' },
-        props.hideHeader === true ? null : E('button', {
-          type: 'button', className: 'dig-section-head',
+                onClick: () => { submit(false) },
+              }, t('changes.commit')),
+              E('button', {
+                type: 'button', className: 'dig-btn',
+                disabled: message.trim() === '' || props.busy === true,
+                onClick: () => { submit(true) },
+              }, t('changes.commitAndPush'))))
+      // Folding hides the FILE LIST only. The commit box is the panel's primary
+      // action and used to vanish together with the list, leaving an empty pane
+      // with no way to commit anything (reported on v0.3.5).
+      const head = props.hideHeader === true ? null : E('div', { className: 'dig-section-head dig-changes-head' },
+        E('button', {
+          type: 'button', className: 'dig-section-toggle',
           onClick: () => setCollapsed((value) => !value),
         },
           E('span', { className: 'dig-chevron' + (collapsed ? '' : ' dig-chevron-open') }, E(Icon, { name: 'chevron', size: 12 })),
           E('span', null, t('changes.title')),
           E('span', { className: 'dig-count' }, String(total))),
-        showBody ? E('div', { className: 'dig-changes-body' },
+        E('span', { className: 'dig-topbar-spacer' }),
+        E('button', {
+          type: 'button',
+          className: 'dig-icon-btn dig-icon-btn-small' + (groupBy === 'dir' ? ' dig-icon-btn-active' : ''),
+          title: t('changes.groupBy') + ': ' + (groupBy === 'dir' ? t('changes.groupDir') : t('changes.groupFlat')),
+          onClick: () => setGroupBy((value) => (value === 'dir' ? 'flat' : 'dir')),
+        }, E(Icon, { name: 'folder', size: 13 })),
+        E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+          title: t('changes.expandAll'), disabled: groupBy !== 'dir',
+          onClick: () => foldAll(false),
+        }, E(Icon, { name: 'expand', size: 13 })),
+        E('button', {
+          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+          title: t('changes.foldAll'), disabled: groupBy !== 'dir',
+          onClick: () => foldAll(true),
+        }, E(Icon, { name: 'collapse', size: 13 })),
+        E('button', {
+          type: 'button',
+          className: 'dig-icon-btn dig-icon-btn-small' + (props.showIgnored === true ? ' dig-icon-btn-active' : ''),
+          title: t('changes.showIgnored'),
+          onClick: () => props.onToggleIgnored(),
+        }, E(Icon, { name: props.showIgnored === true ? 'eye' : 'eyeOff', size: 13 })))
+      return E('div', { className: 'dig-changes' },
+        head,
+        E('div', { className: 'dig-changes-body' },
           E('div', { className: 'dig-changes-list' },
-            total === 0 ? E('div', { className: 'dig-empty' }, t('changes.empty')) : null,
-            group('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted),
-            group('staged', fill(t('counts.staged'), { n: staged.length }), staged),
-            group('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged),
-            group('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)),
-          composer) : null)
+            collapsed ? null : [
+              total === 0 && ignored.length === 0 ? E('div', { className: 'dig-empty', key: 'empty' }, t('changes.empty')) : null,
+              group('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted),
+              group('staged', fill(t('counts.staged'), { n: staged.length }), staged),
+              group('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged),
+              group('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked),
+              group('ignored', fill(t('counts.ignored'), { n: ignored.length }), ignored),
+            ]),
+          composer))
     }
 
     /* ============================== history ============================== */
@@ -1267,6 +1371,9 @@ window.__ModuleLoader__.load({
       const [repoState, setRepoState] = useState(null)
       const [repoRoot, setRepoRoot] = useState(null)
       const [summary, setSummary] = useState(null)
+      // Ignored files are opt-in: --ignored walks the ignore rules, and nobody
+      // needs node_modules listed while they are writing a commit message.
+      const [showIgnored, setShowIgnored] = useState(false)
       const [branches, setBranches] = useState(null)
       const [commits, setCommits] = useState([])
       const [hasMore, setHasMore] = useState(false)
@@ -1388,10 +1495,10 @@ window.__ModuleLoader__.load({
       }, [cwd, sessionId, tick])
 
       const loadSummary = useCallback(async () => {
-        const data = await request('summary', base)
+        const data = await request('summary', Object.assign({}, base, { ignored: showIgnored }))
         setSummary(data)
         return data
-      }, [base])
+      }, [base, showIgnored])
 
       const loadBranches = useCallback(async () => {
         setBranches(await request('branches', base))
@@ -1706,7 +1813,14 @@ window.__ModuleLoader__.load({
 
       const changesPane = E(ChangesPanel, {
         t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
-        onCommit: (message, amend) => { void run('commit', { message: message, amend: amend }) },
+        showIgnored: showIgnored,
+        onToggleIgnored: () => setShowIgnored((value) => !value),
+        // Commit-and-push carries the confirm flag with it: the button already
+        // says exactly what it will publish, so the host guard is satisfied by
+        // the click itself rather than by a second dialog.
+        onCommit: (message, amend, push) => {
+          void run('commit', { message: message, amend: amend, push: push === true, confirm: push === true })
+        },
         onStage: (item) => { void run('stage', { paths: [item.path] }) },
         onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
         onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
@@ -2175,6 +2289,12 @@ window.__ModuleLoader__.load({
       '.dig-section-head{display:flex;align-items:center;gap:4px;width:100%;padding:3px 8px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-section-head-static{cursor:default;padding-left:20px}',
       '.dig-section-head:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-changes-head{cursor:default;gap:2px}',
+      '.dig-section-toggle{display:flex;align-items:center;gap:4px;flex:1;min-width:0;padding:0;border:none;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer;text-align:left}',
+      '.dig-folder{display:flex;flex-direction:column}',
+      '.dig-folder-head{display:flex;align-items:center;gap:6px;width:100%;padding:1px 8px 1px 4px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;cursor:pointer;text-align:left}',
+      '.dig-folder-head:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
       '.dig-count{margin-left:auto;opacity:.6;font-weight:400}',
       '.dig-chevron{display:inline-flex;transform:rotate(-90deg);transition:transform .12s ease}',
       '.dig-chevron-open{transform:rotate(0deg)}',
@@ -2228,6 +2348,7 @@ window.__ModuleLoader__.load({
       '.dig-file-status-D{color:var(--dsw-alias-state-error-primary)}',
       '.dig-file-status-R{color:var(--dsw-alias-brand-primary)}',
       '.dig-file-status-U{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-file-status-I{color:var(--dsw-alias-label-tertiary)}',
       '.dig-stat-add{color:var(--dsw-alias-state-success-primary);flex:none;font-variant-numeric:tabular-nums}',
       '.dig-stat-del{color:var(--dsw-alias-state-error-primary);flex:none;font-variant-numeric:tabular-nums}',
       '.dig-mini{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;opacity:0;flex:none;padding:0}',

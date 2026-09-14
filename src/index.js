@@ -231,6 +231,25 @@ function classify(entries) {
   return { staged, unstaged, untracked, conflicted }
 }
 
+/** An ignored tree can be enormous, and this list is informational only. */
+const MAX_IGNORED_ENTRIES = 500
+
+/**
+ * Ignored paths, asked for on their own. `git status -uall --ignored` expands
+ * every file inside an ignored directory — node_modules alone would flood the
+ * panel — while `ls-files --directory` reports the directory as a single entry.
+ */
+async function ignoredEntriesOf(root) {
+  const result = await runGit(root, ['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'])
+  if (result.code !== 0) return { entries: [], truncated: false }
+  const paths = result.stdout.split('\u0000').filter((entry) => entry !== '')
+  const kept = paths.slice(0, MAX_IGNORED_ENTRIES)
+  return {
+    entries: kept.map((filePath) => ({ index: '!', worktree: '!', path: filePath })),
+    truncated: paths.length > kept.length,
+  }
+}
+
 /** `git diff --numstat -z` -> Map(path -> { additions, deletions, binary }). */
 async function numstatOf(root, args) {
   const result = await runGit(root, ['diff', '--numstat', '-z', ...args])
@@ -495,6 +514,7 @@ async function summary(payload) {
   const tracking = upstream === null ? { ahead: 0, behind: 0 } : await aheadBehindOf(root, upstream, branch)
   const statusOut = await git(root, ['status', '--porcelain=v1', '-z', '--untracked-files=all'])
   const groups = classify(parsePorcelain(statusOut))
+  const ignored = payload.ignored === true ? await ignoredEntriesOf(root) : { entries: [], truncated: false }
   const unstagedStat = await numstatOf(root, [])
   const stagedStat = await numstatOf(root, ['--cached'])
   return {
@@ -510,6 +530,8 @@ async function summary(payload) {
       unstaged: decorate(groups.unstaged, unstagedStat),
       untracked: decorate(groups.untracked, new Map()),
       conflicted: decorate(groups.conflicted, new Map()),
+      ignored: ignored.entries,
+      ignoredTruncated: ignored.truncated,
     },
     stashCount: await stashCountOf(root),
     worktrees: await worktreesOf(root),
@@ -700,7 +722,16 @@ async function commit(payload) {
   if (payload.amend === true) args.push('--amend')
   if (payload.signoff === true) args.push('--signoff')
   const out = await git(root, args)
-  return { output: out.trim() }
+  const result = { output: out.trim() }
+  if (payload.push === true) {
+    // Commit-and-push is one gesture in the panel, so the commit is published in
+    // the same request. A failed push must not hide the commit that did land.
+    if (payload.confirm !== true) throw badRequest('pushing requires confirm: true')
+    const pushed = await runGit(root, ['push'])
+    result.pushed = pushed.code === 0
+    if (pushed.code !== 0) result.pushError = (pushed.stderr.trim() || pushed.stdout.trim() || 'push failed')
+  }
+  return result
 }
 
 async function checkout(payload) {

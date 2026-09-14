@@ -208,6 +208,12 @@ appendFileSync(join(target, 'src/ui/list.js'), '\nexport function emptyState() {
 write('notes/scratch.md', '- 想一想要不要支持双链\n')
 write('docs/todo.md', '- [ ] 同步冲突提示\n')
 
+// 6) 一个被忽略的目录与文件：「显示忽略的文件」要有东西可显示,而
+//    ls-files --directory 会把整个 dist/ 收成一条,不会淹没列表。
+write('.gitignore', 'dist/\n*.log\n')
+write('dist/bundle.js', '// build output, ignored on purpose\n')
+write('debug.log', 'noise\n')
+
 console.log('demo repo ready at ' + target)
 console.log('origin: ' + origin)
 console.log(git(['log', '--oneline', '--graph', '--decorate', '-n', '10']))
