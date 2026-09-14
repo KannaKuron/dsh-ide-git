@@ -35,6 +35,13 @@ window.__ModuleLoader__.load({
     const AUTO_REFRESH_MS = 12000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
     const COMPACT_MAX_WIDTH = 400
+    /* Branch rows sit one step right of their SECTION header, and each namespace
+       folder adds another step. Without the base step the rows started at 8px —
+       left of the section title, which reads as "no indentation at all".
+       Folder headers use the same formula, so a folder's chevron lines up with the
+       icon of a branch on the same level. */
+    const BRANCH_INDENT_BASE = 34
+    const BRANCH_INDENT_STEP = 14
 
     /* ============================== i18n ============================== */
 
@@ -938,7 +945,7 @@ window.__ModuleLoader__.load({
       // on v0.3.7). Double-click checks out, right-click has the whole menu.
       return E('div', {
         className: 'dig-row dig-row-' + kind + (props.picked === true ? ' dig-row-picked' : ''),
-        style: props.depth === undefined || props.depth === 0 ? undefined : { paddingLeft: (8 + props.depth * 12) + 'px' },
+        style: { paddingLeft: (BRANCH_INDENT_BASE + (props.depth === undefined ? 0 : props.depth) * BRANCH_INDENT_STEP) + 'px' },
         title: where + ' · ' + t('branches.pickHint'),
         onClick: () => props.onPick(entry),
         onDoubleClick: () => props.onCheckout(entry),
@@ -999,6 +1006,7 @@ window.__ModuleLoader__.load({
           out.push(E('div', { className: 'dig-branch-folder', key: 'dir:' + id },
             E('button', {
               type: 'button', className: 'dig-folder-head',
+              style: { paddingLeft: (BRANCH_INDENT_BASE + depth * BRANCH_INDENT_STEP) + 'px' },
               onClick: () => setFoldedFolders((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
             },
               E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
@@ -1015,8 +1023,9 @@ window.__ModuleLoader__.load({
           onClick: () => setCollapsed((previous) => Object.assign({}, previous, { [key]: !previous[key] })),
         },
           E('span', { className: 'dig-chevron' + (collapsed[key] === true ? '' : ' dig-chevron-open') }, E(Icon, { name: 'chevron', size: 12 })),
-          E('span', null, title),
-          E('span', { className: 'dig-count' }, String(entries.length))),
+          // No count here: a bare digit next to the section name read as another
+          // column instead of a total (reported on v0.3.10).
+          E('span', null, title)),
         collapsed[key] === true ? null : E('div', { className: 'dig-section-body' },
           grouped === true
             ? rowsOf(forestOf(entries.map((entry) => decorate(entry))), '', 0)

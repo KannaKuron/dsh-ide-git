@@ -1,6 +1,6 @@
 {
   "id": "dsh-external/dsh-ide-git",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "main": "./src/index.js",
   "description": "IDE 级 Git 操作面板:分支树 + 提交图谱 + 变更/暂存/提交 + 提交详情,以 dsh-better-sidebar 原生 tab 形式挂载,可停靠右侧栏或底部面板。JetBrains 风格 Git 工具窗口 for DeepSeek Harness.",
   "engines": {
