@@ -3,6 +3,12 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.3.2 — 2026-09-14
+
+**类型**:docs
+
+- **补齐生态惯例的 README 顶部**:标题下增加 `Awesome DSH Plugin` 徽章与**中英互切链接**(中文页 `简体中文 | [English](README_EN.md)`,英文页 `[简体中文](README.md) | English`),与 family 其它插件(dsh-better-workspace / dsh-ptc-cordis-preset / dsh-agent-lang / dsh-gitbash-shell)保持一致——此前两份 README 只有标题和简介,英文读者在中文页里找不到入口。
+- 顺带核对 `dsh.plugin.json` 的字段集(`id / version / main / description / engines / contributes`)与 family 完全一致,无缺项。本次只改文档,`src/` 未动,运行中的实例不需要升级或重启。
 ## v0.3.1 — 2026-09-14
 
 **类型**:docs / chore
