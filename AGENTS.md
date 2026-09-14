@@ -45,6 +45,8 @@
 10. **客户端半的 `t` 必须是函数**。词典是对象(`ZH` / `EN`),文案入口必须是 `const t = (key) => …` 查表函数——2026-09-14 真机首屏崩(`dsh-better-sidebar: t is not a function`)就是把它写成了词典本身,better-sidebar 的错误边界会整页降级。冒烟测试同时强制 `t` 是函数且 `t('…')` 用到的每个 key 在 ZH 与 EN 中都存在。改文案时两本词典一起改。
 11. **挂载只走 `dsh.profile.bundles`**。包自带 `dsh.bundle.patch`(`cordis.patch.yml`),DSH 组合顺序是「各 bundle 层 → profile 自己的 patch 层」;再在 profile 的 `cordis.patch.yml` 手写一条 insert 就会得到两行同 id,插件更新流程会以 `duplicate loader entry id` 失败并回滚。本机联调改 profile 时:把包名加进 `dsh.profile.bundles`(并让依赖指向本地 tarball),**不要**手写 insert 行;可用 `app-boot` 的 `loadProfile` + `composeEntries` 离线校验组合里恰好一行。
 
+12. **hooks 依赖数组在渲染期求值**。useCallback / useMemo / useEffect 的依赖数组当帧就会求值,引用「后面才声明的 const」直接 TDZ 报错(v0.1.6 就因此崩过一次:branchMenu 的依赖里写了定义在 rail 段的 toggleFavoriteBranch)。规则:被 hooks 依赖引用的函数与值必须先声明;派生值同理。SSR 自检(react-dom/server 真渲染一次 Tab 组件)能抓出这类错误,改完客户端半务必跑一遍。
+
 ## 与 dsh-better-sidebar 生态的关系
 
 - 插件要进 better-sidebar 设置页的「侧边卡片」分区/推荐目录,靠的是:注册 Tab 时提供 `title` / `description` / `icon`(卡片自动生成),以及仓库打好 `dsh-better-sidebar` topic。推荐目录本身维护在 better-sidebar 仓库的 `src/client/plugins-tabs.ts`,收录需要向该仓库提 PR。

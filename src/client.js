@@ -55,6 +55,16 @@ window.__ModuleLoader__.load({
       'branches.remote': '远程',
       'branches.tags': '标签',
       'branches.head': 'HEAD(当前分支)',
+      'branches.favorites': '收藏',
+      'action.stash': '贮藏',
+      'action.favorite': '收藏/取消收藏当前分支',
+      'action.newTagHere': '在当前提交新建标签...',
+      'stash.push': '贮藏当前更改',
+      'stash.apply': '应用最近贮藏',
+      'stash.drop': '删除最近贮藏',
+      'stash.count': '共 {n} 条贮藏',
+      'note.noChanges': '没有可显示的变更',
+      'note.noBranches': '没有其他分支',
       'branches.filter': '分支或标签',
       'changes.title': '变更',
       'changes.staged': '已暂存',
@@ -143,6 +153,16 @@ window.__ModuleLoader__.load({
       'branches.remote': 'Remote',
       'branches.tags': 'Tags',
       'branches.head': 'HEAD (current branch)',
+      'branches.favorites': 'Favorites',
+      'action.stash': 'Stash',
+      'action.favorite': 'Favorite / unfavorite current branch',
+      'action.newTagHere': 'New tag on current commit...',
+      'stash.push': 'Stash current changes',
+      'stash.apply': 'Apply latest stash',
+      'stash.drop': 'Drop latest stash',
+      'stash.count': '{n} stash entries',
+      'note.noChanges': 'No pending changes',
+      'note.noBranches': 'No other branches',
       'branches.filter': 'Branch or tag',
       'changes.title': 'Changes',
       'changes.staged': 'Staged',
@@ -276,6 +296,33 @@ window.__ModuleLoader__.load({
         next[sessionId] = repoPath
         window.localStorage.setItem(REPO_KEY, JSON.stringify(next))
       } catch (error) { void error }
+    }
+
+    const FAV_KEY = 'dsh-ide-git.favorites.v1'
+
+    function readFavorites(repoPath) {
+      try {
+        const raw = window.localStorage.getItem(FAV_KEY)
+        if (raw === null || raw === '') return []
+        const parsed = JSON.parse(raw)
+        if (parsed === null || typeof parsed !== 'object') return []
+        const list = parsed[repoPath]
+        return Array.isArray(list) ? list.filter((entry) => typeof entry === 'string') : []
+      } catch (error) { void error }
+      return []
+    }
+
+    function toggleFavorite(repoPath, branch) {
+      const current = readFavorites(repoPath)
+      const next = current.indexOf(branch) >= 0 ? current.filter((entry) => entry !== branch) : current.concat([branch])
+      try {
+        const raw = window.localStorage.getItem(FAV_KEY)
+        const parsed = raw === null || raw === '' ? {} : JSON.parse(raw)
+        const all = parsed !== null && typeof parsed === 'object' ? parsed : {}
+        all[repoPath] = next
+        window.localStorage.setItem(FAV_KEY, JSON.stringify(all))
+      } catch (error) { void error }
+      return next
     }
 
     /* ============================== formatting ============================== */
@@ -439,6 +486,12 @@ window.__ModuleLoader__.load({
       close: ['M4 4l8 8', 'M12 4l-8 8'],
       star: ['M8 2.2l1.8 3.8 4 .5-2.9 2.7.8 4-3.7-2.1-3.7 2.1.8-4L2.2 6.5l4-.5z'],
       folder: ['M2 4.5h4l1.2 1.5H14v6.5H2z'],
+      file: ['M4 2h5l3 3v9H4z', 'M9 2v3h3'],
+      trash: ['M3 5h10', 'M6.5 5V3.5h3V5', 'M4.5 5l.6 8.5h5.8L11.5 5', 'M6.8 7v4', 'M9.2 7v4'],
+      checkout: ['M3 8h7', 'M7.5 5.5 10 8l-2.5 2.5', 'M13 3.5v9'],
+      compare: ['M4 4h7', 'M4 12h7', 'M6.5 1.5 4 4l2.5 2.5', 'M9.5 9.5 12 12l-2.5 2.5'],
+      stash: ['M2.5 3.5h11V6h-11z', 'M3.5 6v6.5h9V6', 'M6.5 8.5h3'],
+      tag: ['M2.5 7.5 7.5 2.5h6v6l-5 5z', 'M10.5 5.5h.01'],
     }
 
     function Icon(props) {
@@ -590,13 +643,14 @@ window.__ModuleLoader__.load({
     function BranchTree(props) {
       const t = props.t
       const [filter, setFilter] = useState('')
-      const [collapsed, setCollapsed] = useState({ remote: false, tags: true })
+      const [collapsed, setCollapsed] = useState({ favorites: false, remote: false, tags: true })
       const branches = props.branches
       const needle = filter.trim().toLowerCase()
       const match = (name) => needle === '' || String(name).toLowerCase().indexOf(needle) >= 0
       const locals = (branches === null ? [] : branches.local).filter((entry) => match(entry.name))
       const remotes = (branches === null ? [] : branches.remote).filter((entry) => match(entry.name))
       const tags = (branches === null ? [] : branches.tags).filter((entry) => match(entry.name))
+      const favorites = Array.isArray(props.favorites) ? props.favorites : []
       const section = (key, title, entries, decorate) => E('div', { className: 'dig-section', key: key },
         E('button', {
           type: 'button', className: 'dig-section-head',
@@ -618,6 +672,7 @@ window.__ModuleLoader__.load({
           })),
         E('div', { className: 'dig-tree-scroll' },
           E('div', { className: 'dig-section-head dig-section-head-static' }, t('branches.head')),
+          favorites.length === 0 ? null : section('favorites', t('branches.favorites'), locals.filter((entry) => favorites.indexOf(entry.name) >= 0), (entry) => entry),
           section('local', t('branches.local'), locals, (entry) => entry),
           section('remote', t('branches.remote'), remotes, (entry) => Object.assign({}, entry, { remote: true })),
           section('tags', t('branches.tags'), tags, (entry) => Object.assign({}, entry, { tag: true }))))
@@ -826,6 +881,7 @@ window.__ModuleLoader__.load({
       const [menu, setMenu] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
+      const [favTick, setFavTick] = useState(0)
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
@@ -867,6 +923,13 @@ window.__ModuleLoader__.load({
           setBusy(false)
         }
       }, [])
+
+      const favorites = useMemo(() => (repoRoot === null ? [] : readFavorites(repoRoot)), [repoRoot, favTick])
+      const toggleFavoriteBranch = useCallback((name) => {
+        if (repoRoot === null || name === '') return
+        toggleFavorite(repoRoot, name)
+        setFavTick((value) => value + 1)
+      }, [repoRoot])
 
       useEffect(() => {
         if (cwd === undefined) return undefined
@@ -994,6 +1057,7 @@ window.__ModuleLoader__.load({
           isLocal ? { id: 'merge', label: t('action.mergeIntoCurrent'), disabled: entry.head === true, run: () => { void run('merge', { branch: entry.name }) } } : null,
           { id: 'compare', label: t('action.compare'), disabled: entry.head === true || current === '', run: () => { void compareWith(current, entry.name) } },
           null,
+          { id: 'favorite', label: t('action.favorite'), run: () => toggleFavoriteBranch(entry.name) },
           { id: 'newBranch', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
           isLocal ? { id: 'rename', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
           isLocal ? { id: 'delete', label: t('action.delete'), danger: true, disabled: entry.head === true, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
@@ -1002,7 +1066,7 @@ window.__ModuleLoader__.load({
           { id: 'push', label: t('action.push'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
         setMenu({ x: event.clientX, y: event.clientY, items: items })
-      }, [branches, checkout, run, t, compareWith])
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch])
 
       const commitMenu = useCallback((event, commit) => {
         const items = [
@@ -1113,6 +1177,77 @@ window.__ModuleLoader__.load({
           E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null) } }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
 
+      /* ---------- rail (IDE-style left action strip) ---------- */
+
+      const otherBranches = (branches === null ? [] : branches.local).filter((entry) => entry.head !== true)
+
+      const pickBranchMenu = (event, kind) => {
+        if (otherBranches.length === 0) { setNote(t('note.noBranches')); return }
+        const current = branches === null ? '' : branches.branch
+        setMenu({
+          x: event.clientX, y: event.clientY,
+          items: otherBranches.map((entry) => ({
+            id: kind + ':' + entry.name,
+            label: entry.name,
+            run: () => {
+              if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
+              if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
+              void compareWith(current, entry.name)
+            },
+          })),
+        })
+      }
+
+      const showWorkingDiff = () => {
+        const changes = summary === null ? null : summary.changes
+        if (changes === null) return
+        const order = [
+          ['unstaged', changes.unstaged, false],
+          ['staged', changes.staged, true],
+          ['conflicted', changes.conflicted, false],
+          ['untracked', changes.untracked, false],
+        ]
+        for (const entry of order) {
+          if (entry[1].length > 0) { void openDiff({ path: entry[1][0].path, staged: entry[2] }); return }
+        }
+        setNote(t('note.noChanges'))
+      }
+
+      const stashMenu = (event) => {
+        setMenu({
+          x: event.clientX, y: event.clientY,
+          items: [
+            { id: 'stash-push', label: t('stash.push'), disabled: dirty === 0, run: () => { void run('stashPush', { includeUntracked: true }) } },
+            { id: 'stash-apply', label: t('stash.apply'), run: () => { void run('stashApply', {}) } },
+            { id: 'stash-drop', label: t('stash.drop'), danger: true, run: () => { void run('stashDrop', { confirm: true }) } },
+            null,
+            { id: 'stash-count', label: fill(t('stash.count'), { n: summary === null ? 0 : summary.stashCount }), disabled: true, run: () => {} },
+          ],
+        })
+      }
+
+      const railEntry = (id, icon, title, onClick, extraClass) => E('button', {
+        key: id, type: 'button',
+        className: 'dig-rail-btn' + (extraClass === undefined ? '' : ' ' + extraClass),
+        title: title,
+        disabled: busy === true && id !== 'refresh',
+        onClick: onClick,
+      }, E(Icon, { name: icon, size: 14 }))
+
+      /* favorites/toggleFavoriteBranch live above branchMenu: a useCallback dep array is evaluated during render. */
+      const headBranch = branches === null ? '' : branches.branch
+      const railButtons = repoRoot === null ? [] : [
+        railEntry('refresh', 'refresh', t('toolbar.refresh'), () => setTick((value) => value + 1)),
+        railEntry('newBranch', 'plus', t('toolbar.newBranch'), () => setDialog({ kind: 'newBranch' })),
+        railEntry('checkout', 'checkout', t('action.checkout'), (event) => pickBranchMenu(event, 'checkout')),
+        railEntry('delete', 'trash', t('action.delete'), (event) => pickBranchMenu(event, 'delete')),
+        railEntry('compare', 'compare', t('action.compare'), (event) => pickBranchMenu(event, 'compare')),
+        railEntry('diff', 'file', t('action.showDiff'), () => showWorkingDiff()),
+        railEntry('stash', 'stash', t('action.stash'), (event) => stashMenu(event)),
+        railEntry('tag', 'tag', t('action.newTagHere'), () => setDialog({ kind: 'newTag' })),
+        railEntry('favorite', 'star', t('action.favorite'), () => toggleFavoriteBranch(headBranch), favorites.indexOf(headBranch) >= 0 ? 'dig-rail-fav' : undefined),
+      ]
+
       /* ---------- body per chrome ---------- */
 
       let body
@@ -1133,16 +1268,16 @@ window.__ModuleLoader__.load({
             }),
             E('span', { className: 'dig-topbar-spacer' }),
             treeOpen ? E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-active', title: t('toolbar.tree'), onClick: () => setTreeOpen(false) }, E(Icon, { name: 'branch' })) : null),
-          treeOpen ? E('div', { className: 'dig-compact-tree' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-compact-tree' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns' },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane),
           E('div', { className: 'dig-pane dig-pane-changes' }, changesPane))
       } else {
         body = E('div', { className: 'dig-body dig-body-stack' },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack' }, E(BranchTree, { t: t, branches: branches, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack' }, changesPane),
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
       }
@@ -1217,7 +1352,11 @@ window.__ModuleLoader__.load({
         }))
       }
 
-      return E('div', { className: 'dig-root', ref: hostRef }, topBar, banner, noteBanner, body, overlays)
+      return E('div', { className: 'dig-root', ref: hostRef }, topBar, banner, noteBanner,
+        E('div', { className: 'dig-shell' },
+          E('div', { className: 'dig-rail' }, railButtons),
+          body),
+        overlays)
     }
 
     function copyText(text) {
@@ -1251,6 +1390,12 @@ window.__ModuleLoader__.load({
       '.dig-banner{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-state-error-primary)}',
       '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-label-secondary)}',
       '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-shell{flex:1;min-height:0;display:flex;overflow:hidden}',
+      '.dig-rail{width:30px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow-y:auto;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
+      '.dig-rail-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-rail-btn:disabled{opacity:.4;cursor:default}',
+      '.dig-rail-fav{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
       '.dig-body{flex:1;min-height:0;display:flex;overflow:hidden}',
       '.dig-body-columns{flex-direction:row}',
       '.dig-body-stack{flex-direction:column}',
