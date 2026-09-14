@@ -3,6 +3,12 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.1.1 — 2026-09-14
+
+**类型**:test
+
+- 新增真实 git 集成测试 `tests/api.test.mjs`(12 例):在临时目录建一个真实仓库,伪造 cordis ctx 与 HTTP req/res 直接驱动宿主路由,覆盖解析(porcelain -z / numstat -z / log 记录格式)、变更(暂存/取消暂存/提交/分支重命名与删除/标签/比较/stash 全链路)与全部守卫(confirm、ref 注入 `--force`、路径逃逸 `../..`、未知方法 404、跨站 403 与同源远程放行)。`npm test` 现在跑两层(smoke + api),CI 不变(仍只跑测试,不发布)。
+
 ## v0.1.0 — 2026-09-14
 
 **类型**:feat

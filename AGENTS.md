@@ -9,7 +9,7 @@
 ## 环境与工具
 
 - GitHub 操作一律用 gh(已认证 KannaKuron)。**本仓库当前不接 npm 发包**:没有 npm-publish 工作流,也不要在没有明确指令时新增发布工作流(用户明确要求:功能稳定后再谈发版)。
-- CI(`.github/workflows/ci.yml`)只跑 `npm test`(冒烟测试),不发布任何东西。
+- CI(`.github/workflows/ci.yml`)只跑 `npm test`(冒烟 + api 两层),不发布任何东西。
 - 本机联调:仓库目录加入 web profile 依赖 + 挂载 `cordis.patch.yml` 的 insert 行 → 重启 `dsh web`(客户端半改动由 DSH 热加载,宿主半改动必须重启)。
 
 ## 变更记录纪律
@@ -26,7 +26,8 @@
 | src/client.js | **客户端半(全部 UI)**:`window.__ModuleLoader__.load` 包装;注册 better-sidebar Tab;Panel 组件含分支树 / 图谱 / 变更 / 详情 / 右键菜单 / 弹窗 / 样式 |
 | cordis.patch.yml | dsh plugin add 官方安装通道的挂载声明(insert 一行 `ide-git`) |
 | dsh.plugin.json | 插件注册表清单(id `dsh-external/dsh-ide-git`) |
-| tests/smoke.mjs | 文件级冒烟测试(无 Cordis runtime、无浏览器) |
+| tests/smoke.mjs | 文件级冒烟测试(无 Cordis runtime、无浏览器):清单一致性 / 客户端包装 / 基线 require 白名单 / 确认守卫 / 方法表一致性 |
+| tests/api.test.mjs | 集成测试:临时真实仓库 + 伪造 cordis ctx 与 HTTP req/res,直驱宿主路由(解析 / 变更 / 全部守卫) |
 | docs/screenshots/ | README 截图(待补) |
 
 ## 核心不变量(改代码前必读)

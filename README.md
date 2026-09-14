@@ -84,7 +84,8 @@ dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
 ## 开发
 
 `@sh
-node --test tests/smoke.mjs      # 冒烟测试(文件级:清单一致性、客户端包装、白名单、确认守卫、方法表)
+npm test      # 两层:smoke(文件级:清单一致性、客户端包装、白名单、确认守卫、方法表)
+              #      + api(临时真实仓库直驱宿主路由:解析、暂存/提交/分支/标签/stash、全部守卫与信任围栏)
 `@
 
 本机联调:把仓库加到 web profile 后重启 `dsh web`;客户端半改动由 DSH 热加载,宿主半改动需要重启。

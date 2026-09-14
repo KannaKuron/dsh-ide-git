@@ -43,6 +43,12 @@ Restart `dsh web`, then open **Git** from the bottom panel's `+` menu or from th
 - **Trust fence**: only loopback Hosts, or same-origin browser requests (`Sec-Fetch-Site`), are served.
 - **Destructive actions** (push, hard reset, force delete, discarding untracked files, dropping a stash) require an explicit `confirm: true` and always ask in the UI first.
 
+## Tests
+
+```sh
+npm test   # smoke (file-level invariants) + api (a real throwaway repo driven through the host route)
+```
+
 ## Limits / roadmap
 
 v0.1.0 covers the main path. Still missing: multi-select and partial commits (changelists), interactive rebase / fixup / squash, patches, a merge-conflict editor, blame and file history, plugin-owned settings rows, a worktree view, and desktop-client verification. Large repositories: paginated log and a 400KB diff cap.

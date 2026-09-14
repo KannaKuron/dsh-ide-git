@@ -1,6 +1,6 @@
 {
   "name": "dsh-ide-git",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DSH web plugin: an IDE-grade Git panel (branch tree, commit graph, changes, commit detail) that lives inside dsh-better-sidebar as a native tab — JetBrains-style Git tool window for DeepSeek Harness.",
   "type": "module",
   "repository": {
@@ -43,7 +43,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test tests/smoke.mjs",
+    "test": "node --test tests/smoke.mjs tests/api.test.mjs",
     "version": "node -e \"const fs=require('fs');const m=JSON.parse(fs.readFileSync('dsh.plugin.json','utf8'));const v=JSON.parse(fs.readFileSync('package.json','utf8')).version;m.version=v;fs.writeFileSync('dsh.plugin.json',JSON.stringify(m,null,2)+'\\n')\" && git add dsh.plugin.json"
   },
   "keywords": [
