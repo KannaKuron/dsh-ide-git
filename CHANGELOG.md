@@ -3,6 +3,12 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.3.3 — 2026-09-14
+
+**类型**:docs
+
+- **换掉跑版的徽章**:`https://awesome-dsh-plugin.com/badge.svg` 是第三方 SVG,内部用 `<text x="10" font-size="11">` 排字、勾选框从 `x=146` 起,**间距只有 6px 且完全依赖 Verdana 的精确字宽**——字体一回退(非 Verdana 环境)文字就顶到勾选框上,真机上看起来像坏了。改用服务端渲染、宽度自适配的 shields.io 版本(`awesome-DSH_plugin-c0392b`,同色同语义),链接仍指向 awesome-dsh-plugin.com。
+- v0.3.2 补的**中英互切链接保留**;两份 README 顶部现在是:标题 → 徽章 → `简体中文 | [English](README_EN.md)`(英文页反过来) → 简介引用块。
 ## v0.3.2 — 2026-09-14
 
 **类型**:docs

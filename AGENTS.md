@@ -65,6 +65,12 @@
 15. **删除类方法必须留下撤回句柄**。任何「删除」在动手前先记下对象 id 并 `pushUndo()`,响应里返回 `undo: { id, kind, label }`;撤回逻辑集中在 `undoApply` 里按 `kind` 分支,不要另开方法。撤回是**一次性**的:成功后必须把数组写回(`undoStacks.set(root, list)`)——`undoEntriesOf()` 返回的是 `filter` 出来的新数组,v0.3.0 就因此漏过写回,导致同一个句柄重放时走到 `undo-conflict` 而不是 `undo-gone`。句柄有 TTL 与条数上限。
 16. **会改仓库的方法必须登记进 `WRITE_METHODS`**。路由按这个 Set 把写请求放进 per-repo 队列(`withRepoLock`),漏登记就等于重新打开并发写窗口;只读方法不要加进去,否则白白排队。
 
+## 文档规范
+
+- **README 顶部顺序:标题 → 徽章 → 中英互切链接 → 简介引用块**。语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
+- **徽章用 shields.io,不要用第三方 SVG**:`awesome-dsh-plugin.com/badge.svg` 内部用 `<text>` 定位、只留 6px 间距且依赖 Verdana 字宽,换字体就顶到勾选框上(v0.3.3 真机跑版)。统一写成 `[![awesome · DSH plugin](https://img.shields.io/badge/awesome-DSH_plugin-c0392b)](https://awesome-dsh-plugin.com)`——shields.io 在服务端按固定字体算好宽度,不会再跑版。
+- 效果图走 `docs/screenshots/`,中文页与英文页引用同一批文件,配图段落用「左图右说明」的两列表格(见 `## 效果` / `## Screenshots`)。
+
 ## 与 dsh-better-sidebar 生态的关系
 
 - 插件要进 better-sidebar 设置页的「侧边卡片」分区/推荐目录,靠的是:注册 Tab 时提供 `title` / `description` / `icon`(卡片自动生成),以及仓库打好 `dsh-better-sidebar` topic。推荐目录本身维护在 better-sidebar 仓库的 `src/client/plugins-tabs.ts`,收录需要向该仓库提 PR。

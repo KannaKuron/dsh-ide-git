@@ -1,6 +1,6 @@
 # dsh-ide-git
 
-[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![awesome · DSH plugin](https://img.shields.io/badge/awesome-DSH_plugin-c0392b)](https://awesome-dsh-plugin.com)
 
 [简体中文](README.md) | English
 
