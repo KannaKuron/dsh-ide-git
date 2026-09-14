@@ -67,8 +67,8 @@
 
 ## 文档规范
 
-- **README 顶部顺序:标题 → 徽章 → 中英互切链接 → 简介引用块**。语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
-- **徽章用 shields.io,不要用第三方 SVG**:`awesome-dsh-plugin.com/badge.svg` 内部用 `<text>` 定位、只留 6px 间距且依赖 Verdana 字宽,换字体就顶到勾选框上(v0.3.3 真机跑版)。统一写成 `[![awesome · DSH plugin](https://img.shields.io/badge/awesome-DSH_plugin-c0392b)](https://awesome-dsh-plugin.com)`——shields.io 在服务端按固定字体算好宽度,不会再跑版。
+- **README 顶部顺序:标题 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
+- **不要挂收录徽章:本插件尚未被 awesome-dsh-plugin 收录**(v0.3.2 加过、v0.3.3 换过实现、v0.3.4 全部撤掉)——没上架就挂人家的 badge 是**虚假宣称**,用户明确纠正过。**收录之后**再加,并且用 shields.io 写法而不是第三方 SVG:`awesome-dsh-plugin.com/badge.svg` 内部用 `<text>` 定位、文字与勾只留 6px 且依赖 Verdana 字宽,换字体就顶在一起(v0.3.3 真机跑版);shields.io 在服务端按固定字体算好宽度。
 - 效果图走 `docs/screenshots/`,中文页与英文页引用同一批文件,配图段落用「左图右说明」的两列表格(见 `## 效果` / `## Screenshots`)。
 
 ## 与 dsh-better-sidebar 生态的关系

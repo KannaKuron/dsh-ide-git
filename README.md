@@ -1,7 +1,5 @@
 # dsh-ide-git
 
-[![awesome · DSH plugin](https://img.shields.io/badge/awesome-DSH_plugin-c0392b)](https://awesome-dsh-plugin.com)
-
 简体中文 | [English](README_EN.md)
 
 > 给 [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 的侧边栏装一个 **IDE 级的 Git 工具窗口**——左边分支树、中间提交图谱、右边变更与提交详情,操作方式对齐 JetBrains 系 IDE 的 Git 面板;以 [dsh-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) 原生 Tab 的形式注册,右侧栏与底部面板都能用。
