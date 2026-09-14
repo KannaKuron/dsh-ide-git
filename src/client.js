@@ -142,14 +142,17 @@ window.__ModuleLoader__.load({
       'toast.close': '关闭',
       'toast.branchDeleted': '已删除分支 {name}',
       'toast.stashDropped': '已删除贮藏 {ref}',
+      'toast.discarded': '已丢弃 {path} 的更改',
+      'toast.discardNoUndo': '已丢弃 {path} 的更改(文件过大或过多,未保留撤回)',
       'toast.restored': '已恢复',
       'undo.menu': '最近可撤回的操作',
       'undo.empty': '现在没有可撤回的操作',
       'undo.branch': '分支',
       'undo.stash': '贮藏',
+      'undo.discard': '丢弃',
       'confirm.typeName': '输入 {name} 以确认',
       'confirm.protected': '{name} 是主分支。删除是不可逆的高风险操作,请输入分支名确认。删除后仍可从浮窗撤回。',
-      'discard.untracked.confirm': '删除未跟踪文件 {path}?文件内容会被直接删除且无法撤回。',
+      'discard.untracked.confirm': '删除未跟踪文件 {path}?文件内容会被删除,删除后浮窗里可以撤回。',
       'stashDrop.confirm': '删除贮藏 {ref}?删除后浮窗里可以撤回。',
       'operation.merge': '合并进行中',
       'operation.rebase': '变基进行中',
@@ -173,7 +176,7 @@ window.__ModuleLoader__.load({
       'counts.conflicted': '冲突 {n}',
       'push.confirm': '将 {branch} 推送到 {upstream}?',
       'delete.confirm': '删除分支 {name}?删除后浮窗里可以撤回(未合并的分支 git 会拒绝删除)。',
-      'discard.confirm': '丢弃 {path} 的更改?该操作不可撤销。',
+      'discard.confirm': '丢弃 {path} 的更改?工作区内容会被覆盖,丢弃后浮窗里可以撤回。',
       'resetHard.confirm': '硬重置到 {hash}?未提交的更改会丢失。',
       'resetSoft.confirm': '将 HEAD 重置到 {hash}(保留工作区更改)?',
       'checkoutCommit.confirm': '签出提交 {hash}?(分离头指针)',
@@ -282,14 +285,17 @@ window.__ModuleLoader__.load({
       'toast.close': 'Close',
       'toast.branchDeleted': 'Deleted branch {name}',
       'toast.stashDropped': 'Dropped stash {ref}',
+      'toast.discarded': 'Discarded changes in {path}',
+      'toast.discardNoUndo': 'Discarded changes in {path} (too large to keep an undo)',
       'toast.restored': 'Restored',
       'undo.menu': 'Recently deleted (undo)',
       'undo.empty': 'Nothing to undo right now',
       'undo.branch': 'Branch',
       'undo.stash': 'Stash',
+      'undo.discard': 'Discard',
       'confirm.typeName': 'Type {name} to confirm',
       'confirm.protected': '{name} is a main branch. Deleting it is high risk, so type the branch name to confirm — a toast can still bring it back afterwards.',
-      'discard.untracked.confirm': 'Delete the untracked file {path}? Its content is removed for good and cannot be undone.',
+      'discard.untracked.confirm': 'Delete the untracked file {path}? Its content is removed — a toast will offer to bring it back.',
       'stashDrop.confirm': 'Drop stash {ref}? A toast will offer to bring it back.',
       'operation.merge': 'Merge in progress',
       'operation.rebase': 'Rebase in progress',
@@ -313,7 +319,7 @@ window.__ModuleLoader__.load({
       'counts.conflicted': 'Conflicts {n}',
       'push.confirm': 'Push {branch} to {upstream}?',
       'delete.confirm': 'Delete branch {name}? A toast will offer to bring it back (git still refuses unmerged branches).',
-      'discard.confirm': 'Discard changes in {path}? This cannot be undone.',
+      'discard.confirm': 'Discard changes in {path}? The working-tree content is overwritten — a toast will offer to bring it back.',
       'resetHard.confirm': 'Hard reset to {hash}? Uncommitted changes are lost.',
       'resetSoft.confirm': 'Move HEAD to {hash} (working tree kept)?',
       'checkoutCommit.confirm': 'Check out commit {hash}? (detached HEAD)',
@@ -1618,6 +1624,29 @@ window.__ModuleLoader__.load({
         })
       }, [run, pushToast, undoAction, t])
 
+      // A discard really overwrote the working tree, so it hands back the same
+      // kind of handle a delete does: the host snapshotted the bytes first.
+      const discardChanges = useCallback(async (item, group) => {
+        const data = await run('discard', { paths: [item.path], untracked: group === 'untracked', confirm: true })
+        if (data === undefined) return
+        if (data.undo === undefined) {
+          // The host declined to snapshot (too big / not faithfully reproducible);
+          // say so instead of letting the toast promise an undo that is not there.
+          if (data.undoBlocked === true) {
+            pushToast({ text: fill(t('toast.discardNoUndo'), { path: item.path }), icon: 'trash', tone: 'warn' })
+          }
+          return
+        }
+        pushToast({
+          text: fill(t('toast.discarded'), { path: item.path }),
+          icon: 'trash',
+          tone: 'warn',
+          undoId: data.undo.id,
+          actionLabel: t('toast.undo'),
+          onAction: () => { void undoAction(data.undo.id) },
+        })
+      }, [run, pushToast, undoAction, t])
+
       // A toast is transient; this keeps the same handles reachable afterwards, so
       // undoing a delete never depends on catching a floating chip in time.
       const openUndoMenu = useCallback(async (event) => {
@@ -1632,7 +1661,7 @@ window.__ModuleLoader__.load({
           id: 'undo:' + entry.id,
           icon: 'undo',
           tone: 'warn',
-          label: (entry.kind === 'branch-delete' ? t('undo.branch') : entry.kind === 'stash-drop' ? t('undo.stash') : entry.kind) + ' · ' + entry.label,
+          label: (entry.kind === 'branch-delete' ? t('undo.branch') : entry.kind === 'stash-drop' ? t('undo.stash') : entry.kind === 'discard' ? t('undo.discard') : entry.kind) + ' · ' + entry.label,
           run: () => { void undoAction(entry.id) },
         })))
       }, [base, guard, openMenuAt, pushToast, t, undoAction])
@@ -1982,8 +2011,10 @@ window.__ModuleLoader__.load({
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => {
+            const item = dialog.item
+            const group = dialog.group
             setDialog(null)
-            void run('discard', { paths: [dialog.item.path], untracked: dialog.group === 'untracked', confirm: true })
+            void discardChanges(item, group)
           },
         }))
       }

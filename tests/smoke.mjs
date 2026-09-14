@@ -156,6 +156,28 @@ test('client half offers an undo toast and a safe confirm', () => {
   assert.match(client, /cancelRef\.current\.focus\(\)/, 'confirm dialog must focus cancel')
 })
 
+test('a discard is reversible through the same undo stack', () => {
+  // Overwriting the working tree is a destructive action like any other: the
+  // host snapshots the bytes first, and says so honestly when it cannot.
+  for (const needle of [
+    'function snapshotForUndo(root, paths) {',
+    'function snapshotState(root, files) {',
+    "kind: 'discard'",
+    'undoBlocked: true',
+    'UNDO_MAX_SNAPSHOT_BYTES',
+  ]) {
+    assert.ok(host.includes(needle), 'missing host guard: ' + needle)
+  }
+  for (const needle of [
+    "t('toast.discarded')",
+    'data.undoBlocked === true',
+    "'undo.discard'",
+    'void discardChanges(item, group)',
+  ]) {
+    assert.ok(client.includes(needle), 'missing client guard: ' + needle)
+  }
+})
+
 test('changelog tracks the current version', () => {
   assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
   assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))

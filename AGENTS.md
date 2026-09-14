@@ -62,7 +62,7 @@
 13. **面板内的浮层一律用「面板内定位」**。`dsh-better-sidebar` 的底部工作台声明了 `contain: layout style`,布局包含使它成为 `position: fixed` 后代的**包含块**——用视口坐标 + `position: fixed` 的浮层会被摆到面板之外(屏幕外),真机上表现为「右键点了没反应」。规则:菜单 / 遮罩 / 对话框都是 `.dig-root`(`position: relative`)内的 `position: absolute`;锚点先减去 `hostRef` 的 `getBoundingClientRect()`(见 `openMenuAt`),再按面板盒子夹取;浮层自带 `max-height` + 内部滚动,放不下时向上翻而不是溢出。
 14. **动作条是用户可配置的,`RAIL_SPECS` 是唯一权威**。增删动作只改 `RAIL_SPECS`;持久化(`dsh-ide-git.rail.v1`)只存「排列 + 隐藏」,读写一律过 `normalizeRail()`(丢弃未知 id、补齐缺失 id),所以新增动作不会让旧配置失效。设置按钮由 rail 自己追加、不参与配置;容量按 rail **自身**尺寸算(竖排看高度、横排看宽度),放不下才出现 `⋯ 更多`,而「更多」必须列出全部动作。
 
-15. **删除类方法必须留下撤回句柄**。任何「删除」在动手前先记下对象 id 并 `pushUndo()`,响应里返回 `undo: { id, kind, label }`;撤回逻辑集中在 `undoApply` 里按 `kind` 分支,不要另开方法。撤回是**一次性**的:成功后必须把数组写回(`undoStacks.set(root, list)`)——`undoEntriesOf()` 返回的是 `filter` 出来的新数组,v0.3.0 就因此漏过写回,导致同一个句柄重放时走到 `undo-conflict` 而不是 `undo-gone`。句柄有 TTL 与条数上限。
+15. **删除 / 覆盖类方法必须留下撤回句柄**。删除记对象 id(`pushUndo()`),覆盖工作区内容记**文件字节快照**(`snapshotForUndo()` 在动手前读、`snapshotState()` 记下操作后的样子),响应里统一返回 `undo: { id, kind, label }`;撤回逻辑集中在 `undoApply` 里按 `kind` 分支,不要另开方法。**快照不成立时不许假装能撤回**:符号链接 / 特殊文件 / 超过 `UNDO_MAX_FILES`(400)或 `UNDO_MAX_SNAPSHOT_BYTES`(4 MB)时返回 `undoBlocked: true` 而**不返回** `undo`,客户端如实提示「未保留撤回」。写回前必须逐个比对目标是否仍是操作后的样子(内容 sha1),有一个不一致就返回 `undo-conflict` 并且**一个文件都不写**。撤回是**一次性**的:成功后必须把数组写回(`undoStacks.set(root, list)`)——`undoEntriesOf()` 返回的是 `filter` 出来的新数组,v0.3.0 就因此漏过写回,导致同一个句柄重放时走到 `undo-conflict` 而不是 `undo-gone`。句柄有 TTL 与条数上限。
 16. **会改仓库的方法必须登记进 `WRITE_METHODS`**。路由按这个 Set 把写请求放进 per-repo 队列(`withRepoLock`),漏登记就等于重新打开并发写窗口;只读方法不要加进去,否则白白排队。
 
 ## 文档规范

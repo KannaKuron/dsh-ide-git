@@ -8,7 +8,7 @@
  */
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -280,4 +280,79 @@ test('a dropped stash can be restored from the undo stack', async () => {
   assert.equal(undone.status, 200)
   assert.equal((await call('stashList', { cwd: repo })).body.data.stashes.length, 1)
   git('stash', 'clear')
+})
+
+test('discarding a tracked file hands back an undo that puts the bytes back', async () => {
+  const target = join(repo, 'undo-discard.txt')
+  writeFileSync(target, 'committed\n')
+  git('add', 'undo-discard.txt')
+  git('commit', '-q', '-m', 'add undo-discard')
+  writeFileSync(target, 'dirty edit\n')
+  const discarded = await call('discard', { cwd: repo, paths: ['undo-discard.txt'] })
+  assert.equal(discarded.status, 200)
+  assert.equal(readFileSync(target, 'utf8'), 'committed\n')
+  assert.ok(discarded.body.data.undo !== undefined, 'a discard must hand back an undo handle')
+  const undone = await call('undoApply', { cwd: repo, id: discarded.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  assert.equal(undone.body.data.kind, 'discard')
+  assert.equal(readFileSync(target, 'utf8'), 'dirty edit\n')
+  // One-shot, exactly like the delete handles.
+  const again = await call('undoApply', { cwd: repo, id: discarded.body.data.undo.id })
+  assert.equal(again.status, 409)
+  assert.equal(again.body.error.code, 'undo-gone')
+})
+
+test('discarding an untracked file can be undone too', async () => {
+  const target = join(repo, 'untracked-note.txt')
+  writeFileSync(target, 'scratch\n')
+  const discarded = await call('discard', { cwd: repo, paths: ['untracked-note.txt'], untracked: true, confirm: true })
+  assert.equal(discarded.status, 200)
+  assert.equal(existsSync(target), false, 'clean really deletes the file')
+  assert.ok(discarded.body.data.undo !== undefined)
+  const undone = await call('undoApply', { cwd: repo, id: discarded.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  assert.equal(readFileSync(target, 'utf8'), 'scratch\n')
+  rmSync(target, { force: true })
+})
+
+test('a file deleted in the working tree is undone back to absent', async () => {
+  const target = join(repo, 'gone.txt')
+  writeFileSync(target, 'committed\n')
+  git('add', 'gone.txt')
+  git('commit', '-q', '-m', 'add gone')
+  rmSync(target)
+  const discarded = await call('discard', { cwd: repo, paths: ['gone.txt'] })
+  assert.equal(discarded.status, 200)
+  assert.equal(existsSync(target), true, 'checkout brings the committed file back')
+  const undone = await call('undoApply', { cwd: repo, id: discarded.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  assert.equal(existsSync(target), false, 'undoing restores the deletion, not the file')
+})
+
+test('the discard undo refuses once the file changed again', async () => {
+  const target = join(repo, 'undo-conflict.txt')
+  writeFileSync(target, 'first\n')
+  git('add', 'undo-conflict.txt')
+  git('commit', '-q', '-m', 'add undo-conflict')
+  writeFileSync(target, 'second\n')
+  const discarded = await call('discard', { cwd: repo, paths: ['undo-conflict.txt'] })
+  assert.equal(discarded.status, 200)
+  // The user typed something new after the discard: writing the old bytes back
+  // would silently destroy it, so the undo has to refuse.
+  writeFileSync(target, 'third\n')
+  const conflict = await call('undoApply', { cwd: repo, id: discarded.body.data.undo.id })
+  assert.equal(conflict.status, 409)
+  assert.equal(conflict.body.error.code, 'undo-conflict')
+  assert.equal(readFileSync(target, 'utf8'), 'third\n')
+})
+
+test('a discard too large to snapshot still happens, just without an undo handle', async () => {
+  const target = join(repo, 'huge-untracked.bin')
+  writeFileSync(target, Buffer.alloc(5 * 1024 * 1024, 7))
+  const discarded = await call('discard', { cwd: repo, paths: ['huge-untracked.bin'], untracked: true, confirm: true })
+  assert.equal(discarded.status, 200)
+  assert.equal(existsSync(target), false)
+  // No handle is better than a handle that would fail later: the panel says so.
+  assert.equal(discarded.body.data.undo, undefined)
+  assert.equal(discarded.body.data.undoBlocked, true)
 })

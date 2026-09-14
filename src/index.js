@@ -17,7 +17,8 @@
  * same posture dsh-better-sidebar's own /sidebar/api routes take.
  */
 import { spawn } from 'node:child_process'
-import { existsSync, readdirSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 export const name = 'dsh-ide-git'
@@ -387,6 +388,82 @@ function pushUndo(root, entry) {
   return { id: record.id, kind: record.kind, label: record.label }
 }
 
+/* Undoing a discard means writing the old bytes back, so the host has to keep
+   them: a checkout/clean is the one moment they still exist. Snapshots stay
+   deliberately conservative — regular files only, capped in count and in total
+   size — and anything that cannot be reproduced faithfully (a symlink, a
+   special file, a huge tree) yields NO undo handle at all rather than a promise
+   the host cannot keep. */
+const UNDO_MAX_FILES = 400
+const UNDO_MAX_SNAPSHOT_BYTES = 4 * 1024 * 1024
+
+function hashOf(data) {
+  return createHash('sha1').update(data).digest('hex')
+}
+
+/** Repo-relative POSIX path of a target, or null when it escapes the repo. */
+function relInside(root, target) {
+  const rel = path.relative(root, target)
+  if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) return null
+  return rel.split(path.sep).join('/')
+}
+
+/**
+ * Read every regular file the given paths cover (each path may be a file or a
+ * directory). Returns null when the snapshot would not be faithful, which makes
+ * the caller skip the undo handle instead of offering one it cannot honour.
+ */
+function snapshotForUndo(root, paths) {
+  const files = []
+  let bytes = 0
+  const collect = (target) => {
+    const rel = relInside(root, target)
+    if (rel === null) return true
+    let stat
+    try {
+      stat = lstatSync(target)
+    } catch (error) {
+      // Already gone ('D' in the working tree) is itself a state worth undoing
+      // to, so record the absence. Any other failure is not ours to guess at.
+      if (error.code === 'ENOENT') { files.push({ rel: rel, data: null }); return true }
+      return false
+    }
+    if (stat.isSymbolicLink()) return false
+    if (stat.isDirectory()) {
+      if (path.basename(target) === '.git') return true
+      let names
+      try { names = readdirSync(target) } catch { return false }
+      for (const name of names) if (!collect(path.join(target, name))) return false
+      return true
+    }
+    if (!stat.isFile()) return false
+    if (files.length >= UNDO_MAX_FILES) return false
+    let data
+    try { data = readFileSync(target) } catch { return false }
+    bytes += data.length
+    if (bytes > UNDO_MAX_SNAPSHOT_BYTES) return false
+    files.push({ rel: rel, data: data })
+    return true
+  }
+  for (const entry of paths) if (!collect(path.resolve(root, entry))) return null
+  return files
+}
+
+/**
+ * The shape the snapshot targets have right now: a content hash, or null when
+ * the path is absent. The undo compares against this before writing anything,
+ * so content typed after the discard is never silently overwritten.
+ */
+function snapshotState(root, files) {
+  return files.map((file) => {
+    try {
+      return { rel: file.rel, hash: hashOf(readFileSync(path.join(root, file.rel))) }
+    } catch {
+      return { rel: file.rel, hash: null }
+    }
+  })
+}
+
 /** .git markers that mean a multi-step operation is still in progress. */
 async function operationOf(root) {
   const result = await runGit(root, ['rev-parse', '--absolute-git-dir'])
@@ -600,13 +677,17 @@ async function discard(payload) {
   const paths = optionalPaths(payload, 'paths').filter((entry) => entry !== '.' && entry !== './')
   if (paths.length === 0) throw badRequest('paths is required')
   const untracked = payload.untracked === true
-  if (untracked) {
-    if (payload.confirm !== true) throw badRequest('discarding untracked files requires confirm: true')
-    await git(root, ['clean', '-f', '-d', '--', ...paths])
-    return { discarded: paths.length, untracked: true }
-  }
-  await git(root, ['checkout', '--', ...paths])
-  return { discarded: paths.length, untracked: false }
+  if (untracked && payload.confirm !== true) throw badRequest('discarding untracked files requires confirm: true')
+  // Last chance to keep the bytes: the checkout/clean below is what destroys them.
+  const files = snapshotForUndo(root, paths)
+  if (untracked) await git(root, ['clean', '-f', '-d', '--', ...paths])
+  else await git(root, ['checkout', '--', ...paths])
+  // A snapshot the host cannot reproduce faithfully means no handle at all — the
+  // panel says so instead of showing an undo that would fail later.
+  if (files === null) return { discarded: paths.length, untracked: untracked, undoBlocked: true }
+  const label = paths.length === 1 ? paths[0] : paths.length + ' paths'
+  const undo = pushUndo(root, { kind: 'discard', label: label, files: files, after: snapshotState(root, files) })
+  return { discarded: paths.length, untracked: untracked, undo: undo }
 }
 
 async function commit(payload) {
@@ -847,8 +928,10 @@ async function undoList(payload) {
 /**
  * Undo one remembered action. Nothing here is a 'soft delete': the branch (or
  * stash entry) really was gone, and the undo recreates it from the object id
- * recorded before the deletion. It is one-shot and can fail loudly when the
- * name has been taken again in the meantime.
+ * recorded before the deletion; a discard really overwrote the working tree,
+ * and the undo writes the snapshotted bytes back. It is one-shot and fails
+ * loudly when the world moved on — the name is taken again, or the discarded
+ * files were edited since.
  */
 async function undoApply(payload) {
   const cwd = cwdOf(payload)
@@ -864,6 +947,25 @@ async function undoApply(payload) {
     await git(root, ['branch', entry.name, entry.hash])
   } else if (entry.kind === 'stash-drop') {
     await git(root, ['stash', 'store', '-m', 'dsh-ide-git: restored ' + entry.label, entry.hash])
+  } else if (entry.kind === 'discard') {
+    // Refuse to trample anything typed since the discard: every target must
+    // still look exactly the way the discard left it.
+    const now = snapshotState(root, entry.files)
+    for (let position = 0; position < now.length; position += 1) {
+      if (now[position].hash !== entry.after[position].hash) {
+        throw new PanelError('undo-conflict', 'these files changed after the discard', 409)
+      }
+    }
+    for (const file of entry.files) {
+      const target = path.join(root, file.rel)
+      if (file.data === null) {
+        // The file was absent before the discard: absent is what we restore.
+        try { unlinkSync(target) } catch { /* already gone */ }
+        continue
+      }
+      mkdirSync(path.dirname(target), { recursive: true })
+      writeFileSync(target, file.data)
+    }
   } else {
     throw new PanelError('undo-unsupported', 'this action cannot be undone', 500)
   }
