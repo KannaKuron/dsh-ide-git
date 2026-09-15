@@ -548,7 +548,24 @@ window.__ModuleLoader__.load({
         }
         const parents = Array.isArray(commit.parents) ? commit.parents : []
         const parentLanes = []
-        lanes[lane] = parents.length > 0 ? parents[0] : null
+        /* A commit whose parent already sits on ANOTHER lane merges into it:
+           its own lane ends here and the edge is drawn across. Until v0.4.1 the
+           first parent was parked on the commit's own lane unconditionally, so
+           a branch that merged back into a lane to its left kept a stub of its
+           own colour running on above the junction — a fork that never
+           happened. Only a parent that is not on the board yet inherits the
+           lane, which is what keeps an ordinary line continuous. */
+        if (parents.length > 0) {
+          const first = lanes.indexOf(parents[0])
+          if (first !== -1 && first !== lane) {
+            lanes[lane] = null
+            parentLanes.push(first)
+          } else {
+            lanes[lane] = parents[0]
+          }
+        } else {
+          lanes[lane] = null
+        }
         for (let index = 1; index < parents.length; index += 1) {
           let slot = lanes.indexOf(parents[index])
           if (slot === -1) {

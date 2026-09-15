@@ -1,0 +1,120 @@
+/**
+ * dsh-ide-git — commit-graph layout test (the client's branch lane algorithm).
+ *
+ * The graph is drawn per row, but the lanes are decided by a single pass in
+ * `buildRows`: a lane is a slot that carries one pending commit downwards
+ * until that commit's own row consumes it. That makes the layout checkable
+ * without a browser — the function is pure and depends on nothing but its
+ * argument, so it is lifted straight out of the client half and driven here.
+ *
+ * The invariant that matters is "no ghost lane": whatever a row leaves on a
+ * lane must be the commit that lane is holding, so the commit has to show up
+ * later on THAT lane. v0.4.1 fixed the case where a branch merging back into a
+ * lane to its left parked its first parent on its own lane anyway, leaving a
+ * stub of a fork that never happened.
+ */
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const source = readFileSync(join(here, '..', 'src', 'client.js'), 'utf8')
+
+/** Lift `buildRows` out of the client half (it closes over nothing). */
+function liftedBuildRows() {
+  const marker = 'function buildRows(commits) {'
+  const start = source.indexOf(marker)
+  assert.ok(start >= 0, 'buildRows is gone from the client half')
+  let depth = 0
+  let end = -1
+  for (let index = source.indexOf('{', start); index < source.length; index += 1) {
+    const char = source[index]
+    if (char === '{') depth += 1
+    else if (char === '}') {
+      depth -= 1
+      if (depth === 0) { end = index + 1; break }
+    }
+  }
+  assert.ok(end > start, 'buildRows has unbalanced braces')
+  return new Function(source.slice(start, end) + '; return buildRows;')()
+}
+
+const buildRows = liftedBuildRows()
+const commit = (hash, parents) => ({ hash, parents, subject: hash, refs: [] })
+
+/** Whatever a lane carries out of a row must be fulfilled by that lane later. */
+function assertNoGhostLanes(rows) {
+  for (let index = 0; index < rows.length; index += 1) {
+    const after = rows[index].after
+    for (let lane = 0; lane < after.length; lane += 1) {
+      const hash = after[lane]
+      if (hash === null || hash === undefined) continue
+      const at = rows.findIndex((row, later) => later > index && row.commit.hash === hash)
+      if (at === -1) continue // the parent is past this page's edge
+      assert.equal(
+        rows[at].lane, lane,
+        'lane ' + lane + ' carries ' + hash + ' out of row ' + index + ', but ' + hash + ' lands on lane ' + rows[at].lane,
+      )
+    }
+  }
+}
+
+test('a branch merging into a lane to its left ends its own lane', () => {
+  // m is a merge: first parent c continues the trunk, second parent x opens
+  // lane 1. x's own parent d is ALREADY on lane 0, so lane 1 must end at x
+  // instead of carrying d — that leftover is the stub the user reported.
+  const rows = buildRows([
+    commit('m', ['c', 'x']),
+    commit('c', ['d']),
+    commit('x', ['d']),
+    commit('d', []),
+  ])
+  assert.deepEqual(rows[2].parentLanes, [0], 'the merge edge points at the lane d already occupies')
+  assert.equal(rows[2].after[1], null, 'lane 1 must end at x, not carry d onwards')
+  assert.equal(rows[2].after[0], 'd', 'lane 0 keeps carrying d')
+  assertNoGhostLanes(rows)
+})
+
+test('a straight line keeps its lane', () => {
+  const rows = buildRows([
+    commit('a', ['b']),
+    commit('b', ['c']),
+    commit('c', []),
+  ])
+  assert.deepEqual(rows.map((row) => row.lane), [0, 0, 0])
+  assert.equal(rows[0].after[0], 'b')
+  assert.equal(rows[1].after[0], 'c')
+  assert.equal(rows[2].after[0], null, 'a root commit leaves its lane empty')
+  assertNoGhostLanes(rows)
+})
+
+test('a merge opens a lane for the second parent and closes it when it returns', () => {
+  const rows = buildRows([
+    commit('m', ['a', 'b']),
+    commit('a', ['base']),
+    commit('b', ['base']),
+    commit('base', []),
+  ])
+  assert.deepEqual(rows[0].parentLanes, [1])
+  assert.equal(rows[0].after[1], 'b')
+  assert.equal(rows[2].after[1], null, 'the side lane closes when b merges back')
+  assert.deepEqual(rows[2].parentLanes, [0])
+  assertNoGhostLanes(rows)
+})
+
+test('a parent already on the board is never parked twice', () => {
+  const rows = buildRows([
+    commit('tip', ['left', 'right']),
+    commit('left', ['shared']),
+    commit('right', ['shared']),
+    commit('shared', ['root']),
+    commit('root', []),
+  ])
+  assertNoGhostLanes(rows)
+  for (const row of rows) {
+    const live = row.after.filter((value) => value !== null && value !== undefined)
+    assert.equal(new Set(live).size, live.length, 'one lane per pending commit at row ' + row.commit.hash)
+  }
+})
