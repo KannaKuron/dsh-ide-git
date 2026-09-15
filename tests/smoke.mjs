@@ -226,8 +226,12 @@ test('markdown stays well-formed: fences paired, files newline-terminated', () =
   }
 })
 test('client half exposes t(key), never the raw dictionary object', () => {
-  assert.match(client, /const t = \(key\) =>/, 't must be a lookup function')
+  assert.match(client, /const t = translatorOf\(ctx\)/, 't must be a live lookup function')
+  assert.match(client, /function translatorOf\(ctx\) \{/, 'the live lookup itself must exist')
+  assert.match(client, /function dictionaryFor\(active\)/, 'locale tags must resolve through dictionaryFor')
+  assert.match(client, /locale\.subscribe\(/, 'the panel must repaint on a live language switch')
   assert.doesNotMatch(client, /const t = dictionaryOf\(/, 't must not be the dictionary itself')
+  assert.doesNotMatch(client, /const dict = dictionaryOf\(ctx\)/, 'the dictionary must not be captured once at activation')
 
   const block = (name) => {
     const start = client.indexOf('const ' + name + ' = {')

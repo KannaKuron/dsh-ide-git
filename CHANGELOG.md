@@ -3,6 +3,18 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.5.1 — 2026-09-15
+
+**类型**:fix
+
+- **语言切换现在实时生效**(用户提问暴露的缺陷):v0.5.0 把词典选在了 `apply()` 里一次性算好,于是用户在 DSH 设置里换语言之后必须**刷新页面**才生效 —— 而 DSH 的 locale 偏好本来就是实时推送的。现在:
+  - `translatorOf(ctx)` **每次查表重新解析**语言(按 tag 缓存,一次字符串比较),那个 `const dict = dictionaryOf(ctx)` 的一次性捕获已删除;
+  - 新增 `LocaleLive` 包装组件**订阅 `ctx.locale.subscribe`**,DSH 的 snapshot 一变就重渲染面板 —— 这是 DSH 官方组件的做法,面板不是 DSH 的组件,所以自己订阅;
+  - 两条通道(better-sidebar 的 Tab 与 DSH 原生右侧栏座位)都走这层包装。
+- 冒烟测试相应加强:断言 `t` 是**实时**查表(`translatorOf(ctx)`)、`dictionaryFor` 存在、面板订阅了 `locale.subscribe`,并显式禁止 `const dict = dictionaryOf(ctx)` 这种一次性捕获再回来。
+- 兼容性:未覆盖的语言(包括 DSH 将来新增、而我们没有词典的)一律回退英文 —— 英文始终是键完整的那本,不会露出键名,也不会串到中文。
+- 只改客户端半:**硬刷新页面即可,不需要重启**。
+
 ## v0.5.0 — 2026-09-15
 
 **类型**:feat

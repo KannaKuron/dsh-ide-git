@@ -3314,7 +3314,11 @@ window.__ModuleLoader__.load({
       return Object.prototype.hasOwnProperty.call(bag, key)
     }
 
-    function dictionaryOf(ctx) {
+    /* The active locale tag, read fresh every time: DSH's language preference
+       switches live (the host-backed preference wins over the browser), so a
+       value captured once at activation would keep answering in the language
+       that happened to be active when the plugin loaded. */
+    function activeLocaleOf(ctx) {
       let active = ''
       try {
         const locale = ctx.get('locale')
@@ -3324,7 +3328,26 @@ window.__ModuleLoader__.load({
         }
       } catch (error) { void error }
       if (active === '' && typeof navigator === 'object' && navigator !== null && typeof navigator.language === 'string') active = navigator.language
-      return dictionaryFor(active)
+      return active
+    }
+
+    function dictionaryOf(ctx) {
+      return dictionaryFor(activeLocaleOf(ctx))
+    }
+
+    /* A live lookup: the dictionary is picked per call and cached under the tag
+       it was picked for, so a language switch costs one string compare per
+       string. Falling back to EN — which is kept key-complete on purpose —
+       means an unsupported language shows English, never a raw key. */
+    function translatorOf(ctx) {
+      let cachedTag = null
+      let cachedDict = null
+      return (key) => {
+        const tag = activeLocaleOf(ctx)
+        if (tag !== cachedTag) { cachedTag = tag; cachedDict = dictionaryFor(tag) }
+        if (hasOwnKey(cachedDict, key)) return cachedDict[key]
+        return hasOwnKey(EN, key) ? EN[key] : key
+      }
     }
 
     function fill(template, values) {
@@ -5480,6 +5503,24 @@ window.__ModuleLoader__.load({
        `{ scope, t }`. A session's working directory is the path of the
        workspace that accounts for it — the same value the better-sidebar seat
        delivers as `scope.cwd`. */
+    /* DSH's locale service notifies on every snapshot change, and its own
+       components re-render on that. The panel is not one of DSH's components,
+       so it subscribes for itself: a language switch then repaints the panel
+       instead of waiting for the next page load. Everything the panel draws is
+       inside this wrapper — the better-sidebar tab and the native seat both go
+       through it. */
+    function LocaleLive(props) {
+      const [tick, setTick] = useState(0)
+      useEffect(() => {
+        const locale = props.ctx === undefined ? undefined : props.ctx.get('locale')
+        if (locale === undefined || typeof locale.subscribe !== 'function') return undefined
+        const unsubscribe = locale.subscribe(() => { setTick((value) => value + 1) })
+        return typeof unsubscribe === 'function' ? unsubscribe : undefined
+      }, [])
+      void tick
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible })
+    }
+
     function NativePanel(props) {
       const workspaces = typeof props.useWorkspaces === 'function'
         ? props.useWorkspaces(NATIVE_WORKSPACE_ITEMS)
@@ -5495,7 +5536,7 @@ window.__ModuleLoader__.load({
         }
       }
       const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
-      return E(Panel, { scope: scope, t: props.t, visible: true })
+      return E(LocaleLive, { ctx: props.ctx, scope: scope, t: props.t, visible: true })
     }
 
     function apply(ctx) {
@@ -5505,8 +5546,7 @@ window.__ModuleLoader__.load({
       document.head.appendChild(style)
       ctx.effect(() => () => { style.remove() }, 'dsh-ide-git: panel styles')
 
-      const dict = dictionaryOf(ctx)
-      const t = (key) => (Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : key)
+      const t = translatorOf(ctx)
 
       /* DSH's own locale registry: bind this plugin's namespace so host-side
          consumers read exactly the copy the panel does. Every shipped
@@ -5551,7 +5591,7 @@ window.__ModuleLoader__.load({
         })
         const offBody = slots.inject('sidebar.right.pane.tab', () => slots.register(
           { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
-          (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t })),
+          (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
         ))
         disposeNative = () => {
           try { offBody() } catch (error) { void error }
@@ -5571,7 +5611,12 @@ window.__ModuleLoader__.load({
           icon: (size) => E(Icon, { name: 'commit', size: size === undefined ? 16 : size }),
           order: 21,
           single: true,
-          component: (tabProps) => E(Panel, Object.assign({}, tabProps, { t: t })),
+          component: (tabProps) => E(LocaleLive, {
+            ctx: ctx,
+            scope: tabProps.scope,
+            t: t,
+            visible: tabProps.visible,
+          }),
         }), 'dsh-ide-git: Git tab')
       })
 
