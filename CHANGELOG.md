@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.4.2 — 2026-09-15
+
+**类型**:chore
+
+- **接入 npm 发布通道(Trusted Publishing / OIDC)**:新增 .github/workflows/npm-publish.yml(node 24 + id-token: write,零令牌);npm 侧已登记 Trusted Publisher(repo=KannaKuron/dsh-ide-git,file=npm-publish.yml,permissions=publish)。此后 Release published 自动发 npm;日常发版 = 更新 CHANGELOG → npm version → push --tags → gh release create(家族惯例,详见工作区总纲「通用发布流程」)。**v0.4.1 为手动 bootstrap 首版**(npm login 令牌建包,无 tag、无 Release);发布后 npmmirror 同步:curl -X PUT https://registry.npmmirror.com/dsh-ide-git/sync。
+- **测试夹具跨平台修复(Windows)**:api.test.mjs 临时仓库显式固定 core.autocrlf=false + core.eol=lf——Windows 上 Git for Windows 的系统级 autocrlf=true 会让 discard/undo 检回的文件 LF→CRLF,字节级断言全挂(macOS/Linux/CI 不受影响);夹具不再继承宿主行尾策略,43/43 全绿。
+- 相关:[Release v0.4.2](https://github.com/KannaKuron/dsh-ide-git/releases/tag/v0.4.2)
+
 ## v0.4.1 — 2026-09-15
 
 **类型**:fix

@@ -8,8 +8,8 @@
 
 ## 环境与工具
 
-- GitHub 操作一律用 gh(已认证 KannaKuron)。**本仓库当前不接 npm 发包**:没有 npm-publish 工作流,也不要在没有明确指令时新增发布工作流(用户明确要求:功能稳定后再谈发版)。
-- CI(`.github/workflows/ci.yml`)只跑 `npm test`(冒烟 + api 两层),不发布任何东西。
+- GitHub 操作一律用 gh(已认证 KannaKuron)。**npm 发布通道(v0.4.2 起)**:.github/workflows/npm-publish.yml(OIDC:node 24 + id-token: write,零令牌),Trusted Publisher 已登记(repo=KannaKuron/dsh-ide-git,file=npm-publish.yml,permissions=publish);日常发版 = 更新 CHANGELOG → npm version patch/minor → push --tags → gh release create,Release published 自动发 npm;发完 curl -X PUT https://registry.npmmirror.com/dsh-ide-git/sync 同步镜像。v0.4.1 为手动 bootstrap 首版(令牌建包,无 Release)。
+- CI(`.github/workflows/ci.yml`)只跑 `npm test`(smoke + api + graph 三层),不发布任何东西;npm 发布走 npm-publish.yml(Release 触发,见上一条)。
 - 本机联调:把包名加进 profile 的 `dsh.profile.bundles`(依赖指向仓库里的 tarball)→ 客户端半改动硬刷新页面即可,宿主半改动需要重启 `dsh web`(见不变量 11)——**重启由用户自己做**,规则见下一条。
 - **绝不替用户重启他的实例**(2026-09-14 用户明确要求)。`dsh web`(默认 3080)是用户自己的工作环境:重启会打断他正在进行的回合,而且「什么时候重启」必须由他掌握。
   - 要真机验证 → **自己起隔离实例**:独立 `DSH_HOME`(如 `/Users/kanna/sandbox/dsh-shot-home`)+ 独立端口(3099),验证完**自己杀掉**;3080 上的进程一律不碰。
