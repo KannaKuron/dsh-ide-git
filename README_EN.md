@@ -84,7 +84,7 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 
 ```sh
 # works on its own: the panel lands in DSH's native right sidebar
-dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
+dsh plugin --profile web add dsh-ide-git
 # optional: adds the bottom workbench and better-sidebar's sidebar chrome
 dsh plugin --profile web add dsh-better-sidebar
 ```

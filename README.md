@@ -95,7 +95,7 @@ DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-id
 
 ```sh
 # 本插件可以单独使用:面板直接出现在 DSH 原生右侧栏
-dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
+dsh plugin --profile web add dsh-ide-git
 # 可选底座:装了它才会多出底部工作台,并跟随它的侧栏布局
 dsh plugin --profile web add dsh-better-sidebar
 # 重启 dsh web
