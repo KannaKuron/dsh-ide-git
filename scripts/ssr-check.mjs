@@ -56,8 +56,15 @@ const plugin = capturedSpec.factory((name) => {
 })
 if (typeof plugin.apply !== 'function') throw new Error('factory did not return an apply()')
 
+/* Door 1 — dsh-better-sidebar is loaded: it hosts the tab (and the bottom
+   workbench with it). */
 let tab = null
-const ctx = { effect: (fn) => fn(), get: () => undefined, betterSidebar: { registerTab: (descriptor) => { tab = descriptor; return () => {} } } }
+const betterSidebar = { registerTab: (descriptor) => { tab = descriptor; return () => {} } }
+const ctx = {
+  effect: (fn) => fn(),
+  get: (name) => (name === 'betterSidebar' ? betterSidebar : undefined),
+  inject: (deps, callback) => { callback(ctx) },
+}
 plugin.apply(ctx)
 if (tab === null) throw new Error('apply() did not register a tab')
 
@@ -83,3 +90,37 @@ console.log('ssr-check: tab ' + tab.id + ' (' + tab.title() + ') rendered ' + ht
 const empty = renderToStaticMarkup(React.createElement(tab.component, Object.assign({}, props, { scope: { sessionId: 'ssr-2' } })))
 if (empty.length === 0) throw new Error('rendering without a cwd produced nothing')
 console.log('ssr-check: workspace-less render ' + empty.length + ' chars - OK')
+
+/* Door 2 — no better-sidebar: the plugin must fall back to DSH's own
+   right-sidebar seats, and must register a guide entry so the tab is actually
+   reachable (the guide is the only door into a page type). */
+let nativeDefinition = null
+let nativeBody = null
+const sidebarRightTabs = { register: (definition) => { nativeDefinition = definition; return () => {} } }
+const slots = {
+  inject: (name, callback) => callback(),
+  register: (options, component) => {
+    if (options.name === 'sidebar.right.pane.tab') nativeBody = component
+    return () => {}
+  },
+}
+const nativeCtx = {
+  effect: (fn) => fn(),
+  get: (name) => (name === 'sidebarRightTabs' ? sidebarRightTabs : name === 'slots' ? slots : undefined),
+  /* better-sidebar never arrives on this host: the wait callback never runs. */
+  inject: () => {},
+}
+plugin.apply(nativeCtx)
+if (nativeDefinition === null) throw new Error('the native fallback registered no tab type')
+if (nativeBody === null) throw new Error('the native fallback registered no tab body')
+const guide = nativeDefinition.guide
+if (typeof nativeDefinition.kind !== 'string' || nativeDefinition.kind === ''
+  || !Array.isArray(guide) || guide.length === 0) {
+  throw new Error('the native tab type needs a kind and at least one guide entry, or nothing opens it')
+}
+const nativeHtml = renderToStaticMarkup(React.createElement(nativeBody, {
+  sessionId: 'ssr-native',
+  useWorkspaces: (selector) => selector({ items: [{ path: '/tmp/ssr-workspace', sessionIds: ['ssr-native'] }] }),
+}))
+if (nativeHtml.indexOf('dig-root') < 0) throw new Error('the native seat rendered no panel')
+console.log('ssr-check: native right-sidebar seat rendered ' + nativeHtml.length + ' chars - OK')

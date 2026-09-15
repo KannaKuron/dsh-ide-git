@@ -2490,6 +2490,36 @@ window.__ModuleLoader__.load({
 
     /* ============================== plugin ============================== */
 
+    /* The native right-sidebar seats need three names: the registration id (a
+       package name is the natural value, and it is also the seat key the body
+       registers under), the tab kind (unique across kinds — the shipped `git`
+       kind is not ours to take), and the guide capsule that opens the tab. */
+    const NATIVE_ID = 'dsh-ide-git'
+    const NATIVE_KIND = 'ide-git'
+    const NATIVE_WORKSPACE_ITEMS = (state) => state.items
+
+    /* The native seat hands a tab the standard props; the panel wants
+       `{ scope, t }`. A session's working directory is the path of the
+       workspace that accounts for it — the same value the better-sidebar seat
+       delivers as `scope.cwd`. */
+    function NativePanel(props) {
+      const workspaces = typeof props.useWorkspaces === 'function'
+        ? props.useWorkspaces(NATIVE_WORKSPACE_ITEMS)
+        : null
+      const sessionId = typeof props.sessionId === 'string' ? props.sessionId : 'default'
+      let cwd
+      if (Array.isArray(workspaces)) {
+        for (const item of workspaces) {
+          if (item === null || typeof item !== 'object') continue
+          if (!Array.isArray(item.sessionIds) || item.sessionIds.indexOf(sessionId) < 0) continue
+          if (typeof item.path === 'string' && item.path !== '') cwd = item.path
+          break
+        }
+      }
+      const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
+      return E(Panel, { scope: scope, t: props.t, visible: true })
+    }
+
     function apply(ctx) {
       const style = document.createElement('style')
       style.setAttribute('data-dsh-ide-git', '')
@@ -2500,17 +2530,66 @@ window.__ModuleLoader__.load({
       const dict = dictionaryOf(ctx)
       const t = (key) => (Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : key)
 
-      ctx.effect(() => ctx.betterSidebar.registerTab({
-        id: TAB_ID,
-        title: () => t('title'),
-        description: () => t('description'),
-        icon: (size) => E(Icon, { name: 'commit', size: size === undefined ? 16 : size }),
-        order: 21,
-        single: true,
-        component: (tabProps) => E(Panel, Object.assign({}, tabProps, { t: t })),
-      }), 'dsh-ide-git: Git tab')
+      /* Two doors, one panel. dsh-better-sidebar also carries the bottom
+         workbench, so wherever it is loaded it stays the host; the native
+         right-sidebar seats are the fallback for a host running this plugin on
+         its own — registering both would draw the same panel twice in one
+         column, so a late-arriving better-sidebar takes the native one down. */
+      let disposeNative = null
+      let hostedByBetterSidebar = false
+
+      const hostNatively = () => {
+        if (disposeNative !== null) return
+        const tabs = ctx.get('sidebarRightTabs')
+        const slots = ctx.get('slots')
+        if (tabs === undefined || typeof tabs.register !== 'function') return
+        if (slots === undefined || typeof slots.inject !== 'function') return
+        const offType = tabs.register({
+          id: NATIVE_ID,
+          kind: NATIVE_KIND,
+          title: () => t('title'),
+          guide: [{
+            id: 'git',
+            order: 21,
+            title: () => t('title'),
+            description: () => t('description'),
+            icon: (iconProps) => E(Icon, {
+              name: 'commit',
+              size: iconProps === undefined || iconProps.size === undefined ? 16 : iconProps.size,
+            }),
+          }],
+        })
+        const offBody = slots.inject('sidebar.right.pane.tab', () => slots.register(
+          { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
+          (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t })),
+        ))
+        disposeNative = () => {
+          try { offBody() } catch (error) { void error }
+          try { offType() } catch (error) { void error }
+        }
+      }
+
+      ctx.inject(['betterSidebar'], (tabCtx) => {
+        const betterSidebar = tabCtx.get('betterSidebar')
+        if (betterSidebar === undefined || typeof betterSidebar.registerTab !== 'function') return
+        hostedByBetterSidebar = true
+        if (disposeNative !== null) { disposeNative(); disposeNative = null }
+        tabCtx.effect(() => betterSidebar.registerTab({
+          id: TAB_ID,
+          title: () => t('title'),
+          description: () => t('description'),
+          icon: (size) => E(Icon, { name: 'commit', size: size === undefined ? 16 : size }),
+          order: 21,
+          single: true,
+          component: (tabProps) => E(Panel, Object.assign({}, tabProps, { t: t })),
+        }), 'dsh-ide-git: Git tab')
+      })
+
+      /* ctx.inject runs its callback straight away when the service is already
+         there, so only a host without better-sidebar reaches the native seats. */
+      if (!hostedByBetterSidebar) hostNatively()
     }
 
-    return { name: 'dsh-ide-git', inject: ['betterSidebar'], apply }
+    return { name: 'dsh-ide-git', inject: [], apply }
   },
 })

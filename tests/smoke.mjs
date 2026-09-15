@@ -81,14 +81,23 @@ test('client half requires only baseline modules', () => {
   }
 })
 
-test('client half registers exactly one better-sidebar tab', () => {
-  assert.match(client, /inject: \['betterSidebar'\]/)
-  assert.match(client, /ctx\.betterSidebar\.registerTab\(\{/)
-  assert.match(client, /id: TAB_ID/)
+test('client half has two doors: better-sidebar first, native right sidebar as fallback', () => {
   assert.match(client, /const TAB_ID = 'dsh-ide-git:panel'/)
   assert.match(client, /single: true/)
+  // Door 1 — dsh-better-sidebar, waited for through ctx.inject so a host that
+  // loads it late still gets the tab (and the bottom workbench with it).
+  assert.match(client, /ctx\.inject\(\['betterSidebar'\]/)
+  assert.match(client, /betterSidebar\.registerTab\(\{/)
+  // Door 2 — DSH's own right-sidebar seats, for a host running this plugin
+  // alone. Both doors can never be open at once.
+  assert.match(client, /ctx\.get\('sidebarRightTabs'\)/)
+  assert.match(client, /slots\.inject\('sidebar\.right\.pane\.tab'/)
+  assert.match(client, /hostedByBetterSidebar/)
+  assert.match(client, /inject: \[\], apply/)
   const registrations = client.match(/registerTab\(/g) || []
   assert.equal(registrations.length, 1)
+  const nativeTypes = client.match(/tabs\.register\(\{/g) || []
+  assert.equal(nativeTypes.length, 1, 'exactly one native tab type registration')
 })
 
 test('host half is an ESM cordis plugin with argv-only git calls', () => {

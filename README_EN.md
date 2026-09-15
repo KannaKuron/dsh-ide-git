@@ -46,16 +46,25 @@ DSH's built-in Git panel covers stage / commit / revert / history. `dsh-ide-git`
 </tr>
 </table>
 
-## Two surfaces, two layouts (deliberately)
+## Where it mounts: two hosts, one panel
 
-In better-sidebar 0.19.x one tab registration shows up on two very different surfaces:
+The plugin registers once; which surface it lands on is the **host's** decision, and the two doors are exclusive:
 
-| Surface | Owner | Shape | Layout here |
-|---|---|---|---|
-| Right sidebar | **DSH's native right sidebar** (plugin tabs are bridged in) | narrow + tall | `stack`: changes above the graph, collapsible branch pane |
-| Bottom panel | **better-sidebar's own workbench** | wide + flat | `columns`: tree / graph / changes — the JetBrains Git tool window shape |
+| Host | When | What you get |
+|---|---|---|
+| **dsh-better-sidebar** (optional) | whenever it is installed | its tab system: the tab in the right sidebar **plus the bottom workbench**; the plugin also shows up as a card in its settings page |
+| **DSH's own right sidebar** | automatically, when better-sidebar is absent | a **Git** capsule on the sidebar's guide page — the very same panel |
 
-The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 600px and width ≥ 1.15 × height → columns, otherwise stack), so free-floating windows and the mobile drawer adapt too.
+better-sidebar wins while it is there (it also carries the bottom workbench); a late-arriving better-sidebar takes the native registration down and hosts the tab itself. Installing this plugin alone is fully supported — no prerequisite.
+
+The same panel shows up on surfaces of very different shapes, so the layout measures instead of guessing:
+
+| Surface | Shape | Layout here |
+|---|---|---|
+| Right sidebar (native, or bridged by better-sidebar) | narrow + tall | `stack`: changes above the graph, collapsible branch pane |
+| Bottom workbench (better-sidebar only) | wide + flat | `columns`: tree / graph / changes — the JetBrains Git tool window shape |
+
+The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 600px and width ≥ 1.15 × height → columns, otherwise stack — width decides, height has no veto), so free-floating windows and the mobile drawer adapt too.
 
 ## Features
 
@@ -74,11 +83,23 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 ## Install
 
 ```sh
-dsh plugin --profile web add dsh-better-sidebar
+# works on its own: the panel lands in DSH's native right sidebar
 dsh plugin --profile web add "github:KannaKuron/dsh-ide-git"
+# optional: adds the bottom workbench and better-sidebar's sidebar chrome
+dsh plugin --profile web add dsh-better-sidebar
 ```
 
-Restart `dsh web`, then open **Git** from the bottom panel's `+` menu or from the native right sidebar's `+` menu. The plugin also appears as a card in better-sidebar's settings page (side cards), where it can be disabled.
+Restart `dsh web`, then:
+
+- **plugin alone** — open the right sidebar from the session header and pick the **Git** capsule on the guide page;
+- **with better-sidebar** — pick **Git** from the bottom panel's `+` menu, or from the native right sidebar's `+` menu (one registration, one state);
+- with better-sidebar present the plugin also appears as a card in its settings page (side cards), where it can be disabled.
+
+### Compatibility
+
+- `engines.dsh` is **`>=0.1.2-0`**: every DSH from 0.1.2 up, prereleases such as `0.1.5-rc` / `0.1.6-alpha` included (plain semver never matches a prerelease against a range, hence the `-0` floor).
+- Three long-lived contracts, nothing else: the host's `webServer.register({ kind: 'prefix' })` route, the client's `window.__ModuleLoader__.load({ id, factory })`, and the client `slots` service. It does **not** import the `ui-primitives` icon set (every icon is an inline SVG), so host icon changes cannot reach it.
+- better-sidebar is an **optional** peer: absent, broken, or waiting on its own upstream fix, the plugin still mounts in the native right sidebar.
 
 ## How it works
 

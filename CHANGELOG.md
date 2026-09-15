@@ -3,6 +3,21 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.4.0 — 2026-09-15
+
+**类型**:feat
+
+- **插件现在可以单独安装**(用户要求:保证只装我们插件的用户也没问题)。此前本插件是 dsh-better-sidebar 的消费插件,底座不在就什么都不挂;现在客户端半有**两条通道**,互斥且自动选择:
+  - 底座在场 → 注册进它的 Tab 系统(右侧栏 + 底部工作台),行为与之前完全一致;
+  - 底座不在 → 直接注册 **DSH 原生右侧栏**座位(`ctx.sidebarRightTabs.register` + keyed slot `sidebar.right.pane.tab`),右侧栏 Guide 页出现 **Git** 胶囊,点开就是同一个面板;
+  - 底座**晚到**也不怕:改用 `ctx.inject(['betterSidebar'], …)`,服务出现时顶掉原生注册、改挂到它那边。返回值的 `inject` 从 `['betterSidebar']` 变成 `[]`——底座不再是硬依赖。
+- 原生通道需要自己解析会话工作目录:原生座位给的是 `{ sessionId, useWorkspaces, … }`,面板要的是 `{ scope: { cwd, sessionId } }`。cwd 取**账下有该会话的那个 workspace 的 `path`**,与底座通道的 `scope.cwd` 同源。
+- **`engines.dsh` 修正为 `>=0.1.2-0`**:原来的 `>=0.1.2` 在标准 semver 下对任何预发布版本都是 false(`0.1.5-rc.2`、`0.1.6-alpha.1` 实测皆 false),而 DSH 生态的宿主版本本身就是预发布。起点写 `-0` 之后,带 `includePrerelease` 的解析器(插件市场的 discovery 就是)能正确匹配;DSH 内核并不校验这个字段,所以它不是阻塞项,但声明应当自洽。
+- **README 补「挂在哪里」与「兼容性」**:两条通道的说明、只装本插件的入口,以及本插件只依赖的三样长期契约(宿主 `webServer.register({ kind: 'prefix' })`、客户端 `__ModuleLoader__.load({ id, factory })`、客户端 `slots` 服务),并写明**不引用 `ui-primitives` 图标集**——宿主 0.1.6 删掉 `IconSendOutline16` 那件事波及的是底座,不是本插件。
+- 顺手修掉两处文档事实错误:中文页把布局阈值写成「≥ 640px 且宽高比 ≥ 1.5」(实际是 `width >= 600 && width >= height * 1.15`,见不变量 7);「布局」表格单元格里的裸竖线会破坏 GitHub 的表格渲染。
+- 自检:`scripts/ssr-check.mjs` 现在**两条通道各渲染一遍**,原生通道还断言注册了 `kind` 与至少一个 guide 胶囊(没有胶囊的 page 类型在原生右侧栏里无从打开);冒烟用例改名为「两条通道」,断言 `registerTab(` 只有一处、原生类型注册也只有一处。`npm test` 39/39。
+- 本次只改客户端半与文档:**运行中的实例硬刷新即可,不需要重启**。
+
 ## v0.3.13 — 2026-09-14
 
 **类型**:docs

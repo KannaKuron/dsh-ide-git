@@ -54,9 +54,13 @@
 3. **git 调用永远是 argv 数组**:`spawn(gitBinary(), args, { cwd })`,禁止 `exec` / `shell: true` / 字符串拼接命令;用户输入先过 `requireAbsolute` / `requireRef`(不以 `-` 开头、无空白与控制字符)/ `requireRelativePath`(不越出仓库)。新增方法必须走同一套校验。
 4. **破坏性操作必须 `confirm: true`**:push、`reset --hard`、`branch -D`、丢弃未跟踪文件(`clean`)、`stash drop`。UI 侧对应动作一律先弹 ConfirmDialog。**唯一例外是「提交并推送」按钮**(v0.3.7):按钮文案已经把「会推送」写在脸上,点击即视为确认,不再二次弹框——它仍然把 `confirm: true` 传给宿主,所以守卫没有被绕过。冒烟测试校验这些守卫字符串存在。
 5. **两条信任围栏**:宿主路由只服务 loopback Host 或 `Sec-Fetch-Site: same-origin/same-site` 的请求;任何新路由都必须先过 `isTrusted(req)`,再检查 method 为 POST。
-6. **better-sidebar 契约**:用 `ctx.betterSidebar.registerTab` 注册,**必须包在 `ctx.effect(() => ...)` 里**(否则 HMR/禁用后残留注册,再次激活抛 already registered);`inject: ['betterSidebar']` 声明依赖;`id` 用 `dsh-ide-git:panel`(单例 `single: true`);标题/描述用函数形式以跟随语言切换。
+6. **注册是两条通道,互斥,自动选**(v0.4.0 起)。客户端半按宿主决定挂哪儿,返回值的 `inject` 是 `[]`——底座是**可选** peer,不是硬依赖:
+   - **有 dsh-better-sidebar** → `ctx.inject(['betterSidebar'], (tabCtx) => tabCtx.effect(() => betterSidebar.registerTab({ … })))`。注册必须包在 `effect` 里(否则 HMR/禁用后残留注册,再次激活抛 already registered);`id` 用 `dsh-ide-git:panel`(单例 `single: true`);标题/描述用函数形式以跟随语言切换。
+   - **没有它** → DSH **原生右侧栏**座位:`ctx.sidebarRightTabs.register({ id: 'dsh-ide-git', kind: 'ide-git', title, guide: [胶囊] })` 加上 keyed slot `sidebar.right.pane.tab`(键同 id)。`guide` **至少要有一项**——原生右侧栏里 guide 胶囊是打开一个 page 类型的唯一入口,没有它 tab 注册了也进不去。
+   - 两条通道**永不并存**:原生注册留着 disposer,晚到的 better-sidebar 会先撤掉它再接管(`hostedByBetterSidebar`)。
+   - 原生座位不给 cwd:`NativePanel` 从 `useWorkspaces(state => state.items)` 里找 **sessionIds 含当前会话**的 workspace,取它的 `path`——与底座通道的 `scope.cwd` 同源。
 7. **布局用测量而不是猜测,而且宽度说了算**。`TabComponentProps` 不携带「我在右栏还是底部面板」的信息,所以只看容器尺寸:`compact`(**宽度 < 400** → 单行头部 + 变更/历史分段,即窄栏 chrome);否则 `width >= 600 且 width >= height * 1.15` → `columns`(三栏);其余 → `stack`(纵向)。**高度没有否决权**:它只参与 `columns` / `stack` 的区分,**绝不能单独触发 `compact`**——v0.1.3 用 `height < 330` 判紧凑,把 1500x300 的底部工作台判成了单栏;v0.3.5 仍留着 `height < 200`,于是 1320x180 的底部面板一拉矮就整块翻成右栏样式(用户报告,v0.3.6 修掉)。回归验证用 `scripts/layout-probe.mjs`(驱动干净实例把面板从 480 拉到 90px,逐档记录实际 chrome 并截图)。不要引入「按面板类型」的分支,也不要硬编码高度。
-8. **服务只在 client 半**。宿主半没有 `ctx.betterSidebar`;宿主侧要读侧栏状态只能走它自己的 `/sidebar/*` 路由。本插件的宿主半不依赖 better-sidebar,缺失时客户端注册静默跳过(peerDependency 是 optional)。
+8. **服务只在 client 半**。宿主半既没有 `ctx.betterSidebar` 也没有 `sidebarRightTabs`;宿主侧要读侧栏状态只能走它自己的 `/sidebar/*` 路由。宿主半不依赖任何插件;客户端半用 `ctx.get()` **探测**两个宿主服务,一个都没有时只挂样式、什么都不注册,绝不抛错。
 9. **版本两处一致**:`package.json` 与 `dsh.plugin.json` 的 version 必须相同(冒烟测试强制);`files[]` 里列出的每个文件都必须真实存在。
 
 10. **客户端半的 `t` 必须是函数**。词典是对象(`ZH` / `EN`),文案入口必须是 `const t = (key) => …` 查表函数——2026-09-14 真机首屏崩(`dsh-better-sidebar: t is not a function`)就是把它写成了词典本身,better-sidebar 的错误边界会整页降级。冒烟测试同时强制 `t` 是函数且 `t('…')` 用到的每个 key 在 ZH 与 EN 中都存在。改文案时两本词典一起改。
@@ -79,4 +83,5 @@
 ## 与 dsh-better-sidebar 生态的关系
 
 - 插件要进 better-sidebar 设置页的「侧边卡片」分区/推荐目录,靠的是:注册 Tab 时提供 `title` / `description` / `icon`(卡片自动生成),以及仓库打好 `dsh-better-sidebar` topic。推荐目录本身维护在 better-sidebar 仓库的 `src/client/plugins-tabs.ts`,收录需要向该仓库提 PR。
+- **底座不是前置**:没装它时本插件走 DSH 原生右侧栏(见不变量 6)。底座崩了/还没修好,用户仍能用原生通道,这也是 v0.4.0 的出发点。
 - 本插件与内置 `git` Tab(「文件变动」)是互补关系:内置管暂存/提交/还原/历史,本插件管分支树、图谱、提交详情与更全的分支/提交操作。
