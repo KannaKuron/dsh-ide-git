@@ -187,6 +187,24 @@ test('a discard is reversible through the same undo stack', () => {
   }
 })
 
+test('every shipped dictionary carries the same key set as zh', () => {
+  // A locale block is preceded by a /* locale: <tag> */ marker, so the blocks
+  // can be sliced without parsing the file. Equality matters because a key
+  // missing from a third language falls back to English at lookup time — a
+  // silent half-translated panel, which is exactly what this catches.
+  const keyLines = (segment) => [...segment.matchAll(/^ +'([^']+)': '/gm)].map((match) => match[1]).sort()
+  const zhSegment = client.slice(client.indexOf('const ZH = {'), client.indexOf('const EN = {'))
+  const zhKeys = keyLines(zhSegment)
+  assert.ok(zhKeys.length >= 140, 'the zh dictionary looks truncated: ' + zhKeys.length)
+
+  const parts = client.split('/* locale: ')
+  assert.ok(parts.length - 1 >= 3, 'expected at least three third-language dictionaries, saw ' + (parts.length - 1))
+  for (let index = 1; index < parts.length; index += 1) {
+    const tag = parts[index].slice(0, parts[index].indexOf(' */'))
+    assert.deepEqual(keyLines(parts[index]), zhKeys, 'dictionary ' + tag + ' does not match the zh key set')
+  }
+})
+
 test('changelog tracks the current version', () => {
   assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
   assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))

@@ -63,7 +63,7 @@
 8. **服务只在 client 半**。宿主半既没有 `ctx.betterSidebar` 也没有 `sidebarRightTabs`;宿主侧要读侧栏状态只能走它自己的 `/sidebar/*` 路由。宿主半不依赖任何插件;客户端半用 `ctx.get()` **探测**两个宿主服务,一个都没有时只挂样式、什么都不注册,绝不抛错。
 9. **版本两处一致**:`package.json` 与 `dsh.plugin.json` 的 version 必须相同(冒烟测试强制);`files[]` 里列出的每个文件都必须真实存在。
 
-10. **客户端半的 `t` 必须是函数**。词典是对象(`ZH` / `EN`),文案入口必须是 `const t = (key) => …` 查表函数——2026-09-14 真机首屏崩(`dsh-better-sidebar: t is not a function`)就是把它写成了词典本身,better-sidebar 的错误边界会整页降级。冒烟测试同时强制 `t` 是函数且 `t('…')` 用到的每个 key 在 ZH 与 EN 中都存在。改文案时两本词典一起改。
+10. **客户端半的 `t` 必须是函数,词典按语言分条**(v0.5.0 起)。中文与英文是文件内的 `ZH` / `EN`,其余语言在 `LOCALES` 表里一门一条、每条前有一行 `/* locale: <tag> */` 标记,查找走表驱动的 `dictionaryFor()`(精确 tag → 主语言子标签 → 英文,`zh-Hant-*` 归港式繁体)。文案入口必须是 `const t = (key) => …` 查表函数——2026-09-14 真机首屏崩(`dsh-better-sidebar: t is not a function`)就是把它写成了词典本身,better-sidebar 的错误边界会整页降级。**加文案键时:ZH / EN 一起加,再给 `LOCALES` 里每一门语言都加**——冒烟测试逐门比对键集,缺一个就红(缺键不报错,只静默回退英文,面板会变成半翻译状态)。加一门语言 = 在 `LOCALES` 追加一个带标记的条目再跑测试,不改任何逻辑。词典同时经 `ctx.locale.register(LOCALE_NS, …)` 发布给 DSH。
 11. **挂载只走 `dsh.profile.bundles`**。包自带 `dsh.bundle.patch`(`cordis.patch.yml`),DSH 组合顺序是「各 bundle 层 → profile 自己的 patch 层」;再在 profile 的 `cordis.patch.yml` 手写一条 insert 就会得到两行同 id,插件更新流程会以 `duplicate loader entry id` 失败并回滚。本机联调改 profile 时:把包名加进 `dsh.profile.bundles`(并让依赖指向本地 tarball),**不要**手写 insert 行;可用 `app-boot` 的 `loadProfile` + `composeEntries` 离线校验组合里恰好一行。
 
 12. **hooks 依赖数组在渲染期求值**。useCallback / useMemo / useEffect 的依赖数组当帧就会求值,引用「后面才声明的 const」直接 TDZ 报错(v0.1.6 就因此崩过一次:branchMenu 的依赖里写了定义在 rail 段的 toggleFavoriteBranch)。规则:被 hooks 依赖引用的函数与值必须先声明;派生值同理。SSR 自检(react-dom/server 真渲染一次 Tab 组件)能抓出这类错误,改完客户端半务必跑一遍。
