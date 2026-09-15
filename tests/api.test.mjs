@@ -51,6 +51,13 @@ before(() => {
 
   repo = mkdtempSync(join(tmpdir(), 'dsh-ide-git-api-'))
   git('init', '-q', '-b', 'main')
+  // Fixture isolation: Windows Git for Windows ships a system-level
+  // core.autocrlf=true that rewrites LF to CRLF on every checkout/restore,
+  // which breaks byte-exact assertions on files written back by the
+  // discard/undo round-trip. The throwaway repo must not inherit any host
+  // line-ending policy.
+  git('config', 'core.autocrlf', 'false')
+  git('config', 'core.eol', 'lf')
   git('config', 'user.name', 'Check')
   git('config', 'user.email', 'check@example.com')
   writeFileSync(join(repo, 'a.txt'), 'one\n')
