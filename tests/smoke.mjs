@@ -93,6 +93,13 @@ test('client half has two doors: better-sidebar first, native right sidebar as f
   assert.match(client, /ctx\.get\('sidebarRightTabs'\)/)
   assert.match(client, /slots\.inject\('sidebar\.right\.pane\.tab'/)
   assert.match(client, /hostedByBetterSidebar/)
+  // The base can be disabled AT RUNTIME: cordis unloads the inject effect,
+  // and the cleanup must fall back to the native seats (v0.5.2 — the panel
+  // used to vanish until the next reload when better-sidebar was toggled
+  // off in the plugin panel).
+  assert.match(client, /return \(\) => \{/)
+  assert.match(client, /hostedByBetterSidebar = false/)
+  assert.match(client, /hostNatively\(\)\n\s*\}/)
   assert.match(client, /inject: \[\], apply/)
   const registrations = client.match(/registerTab\(/g) || []
   assert.equal(registrations.length, 1)

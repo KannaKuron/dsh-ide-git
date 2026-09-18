@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.5.2 — 2026-09-18
+
+**类型**:fix(运行时禁用底座后,面板从两侧栏一起消失)
+
+- **现象(用户实测)**:同时装着 dsh-better-sidebar 与 dsh-ide-git 时,在插件面板里**禁用 dsh-better-sidebar**,Git 面板在 DSH 原生右侧栏里也不出现了——两条通道同时失效,除非刷新页面。
+- **根因**:v0.4.0 的两通道选择是**一次性**的。better-sidebar 在场时走 Tab 通道(`hostedByBetterSidebar = true`),原生座位从未挂载;而 `ctx.inject(['betterSidebar'])` 的回调只在「服务可用」时执行,基础被禁用后 cordis 卸载该回调创建的 effect(Tab 注册随之撤销),**但没有任何代码路径把原生座位补回来**——`if (!hostedByBetterSidebar) hostNatively()` 只在外层 apply 时跑过一次,而 apply 的 fiber 不依赖 betterSidebar,不会重载。
+- **修法**:把 Tab 注册改成显式 effect(`registerTab` → 返回清理函数),在清理函数里撤 Tab、复位 `hostedByBetterSidebar`、调 `hostNatively()` 回落原生座位。cordis 的依赖语义保证这条清理恰好在基础的服务消失时运行,基础回归时同一 inject 重新触发、回调里的 `disposeNative()` 分支再把原生座位撤下(两通道互斥不变)。
+- **回归守卫**(冒烟测试):断言清理函数存在、复位 `hostedByBetterSidebar = false`、清理路径调用 `hostNatively()`;SSR 自检三条(native seat / Tab / workspace-less)全绿。
+- 相关:不变量 6(两条通道互斥、自动选)语义不变,只是把「自动选」从一次性快照升级为随服务生命周期变化。
 ## v0.5.1 — 2026-09-15
 
 **类型**:fix

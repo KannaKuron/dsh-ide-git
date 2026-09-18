@@ -5604,20 +5604,33 @@ window.__ModuleLoader__.load({
         if (betterSidebar === undefined || typeof betterSidebar.registerTab !== 'function') return
         hostedByBetterSidebar = true
         if (disposeNative !== null) { disposeNative(); disposeNative = null }
-        tabCtx.effect(() => betterSidebar.registerTab({
-          id: TAB_ID,
-          title: () => t('title'),
-          description: () => t('description'),
-          icon: (size) => E(Icon, { name: 'commit', size: size === undefined ? 16 : size }),
-          order: 21,
-          single: true,
-          component: (tabProps) => E(LocaleLive, {
-            ctx: ctx,
-            scope: tabProps.scope,
-            t: t,
-            visible: tabProps.visible,
-          }),
-        }), 'dsh-ide-git: Git tab')
+        tabCtx.effect(() => {
+          const offTab = betterSidebar.registerTab({
+            id: TAB_ID,
+            title: () => t('title'),
+            description: () => t('description'),
+            icon: (size) => E(Icon, { name: 'commit', size: size === undefined ? 16 : size }),
+            order: 21,
+            single: true,
+            component: (tabProps) => E(LocaleLive, {
+              ctx: ctx,
+              scope: tabProps.scope,
+              t: t,
+              visible: tabProps.visible,
+            }),
+          })
+          /* The base can go away at RUNTIME (disabled in the plugin panel, or
+             uninstalled): cordis unloads this effect when the service
+             disappears, and the panel must fall back to the native
+             right-sidebar seats instead of vanishing with the base. The
+             same inject re-fires when the service returns, and the
+             callback above takes the native seats down again. */
+          return () => {
+            try { offTab() } catch (error) { void error }
+            hostedByBetterSidebar = false
+            hostNatively()
+          }
+        }, 'dsh-ide-git: Git tab')
       })
 
       /* ctx.inject runs its callback straight away when the service is already
