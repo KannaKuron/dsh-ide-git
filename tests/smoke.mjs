@@ -90,7 +90,11 @@ test('client half has two doors: better-sidebar first, native right sidebar as f
   assert.match(client, /betterSidebar\.registerTab\(\{/)
   // Door 2 — DSH's own right-sidebar seats, for a host running this plugin
   // alone. Both doors can never be open at once.
-  assert.match(client, /ctx\.get\('sidebarRightTabs'\)/)
+  // The native seats WAIT for their services (v0.5.3): the old synchronous
+  // ctx.get() probe ran before ui-sidebar-right provided the registry on the
+  // desktop app and on clean instances, then returned silently — no Git card,
+  // no error. ctx.inject() re-registers the moment the services appear.
+  assert.match(client, /ctx\.inject\(\['sidebarRightTabs', 'slots'\]/, 'native seats wait for their services')
   assert.match(client, /slots\.inject\('sidebar\.right\.pane\.tab'/)
   assert.match(client, /hostedByBetterSidebar/)
   // The base can be disabled AT RUNTIME: cordis unloads the inject effect,

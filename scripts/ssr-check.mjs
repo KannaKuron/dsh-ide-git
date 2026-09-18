@@ -107,8 +107,15 @@ const slots = {
 const nativeCtx = {
   effect: (fn) => fn(),
   get: (name) => (name === 'sidebarRightTabs' ? sidebarRightTabs : name === 'slots' ? slots : undefined),
-  /* better-sidebar never arrives on this host: the wait callback never runs. */
-  inject: () => {},
+  /* Two different waits on this host: better-sidebar NEVER arrives (its
+     callback stays pending forever), while the native seats DO arrive —
+     their wait callback must run, exactly as cordis runs it once
+     ui-sidebar-right provides the registry. Model both, or the check hides
+     the very ordering bug v0.5.3 fixed. */
+  inject: (deps, callback) => {
+    if (Array.isArray(deps) && deps.includes('sidebarRightTabs')) callback(nativeCtx)
+    return { dispose: () => {} }
+  },
 }
 plugin.apply(nativeCtx)
 if (nativeDefinition === null) throw new Error('the native fallback registered no tab type')

@@ -5565,45 +5565,63 @@ window.__ModuleLoader__.load({
          right-sidebar seats are the fallback for a host running this plugin on
          its own — registering both would draw the same panel twice in one
          column, so a late-arriving better-sidebar takes the native one down. */
-      let disposeNative = null
+      let nativeFiber = null
       let hostedByBetterSidebar = false
 
+      /* WAIT for both native seats instead of probing with ctx.get(): on a
+         host without better-sidebar this apply can run BEFORE ui-sidebar-right
+         provides the registry, and the old synchronous probe returned
+         silently — the native seats were then never registered (reproduced
+         on a clean instance and on the desktop app: the right sidebar showed
+         no Git card and the console stayed empty). ctx.inject() retries the
+         registration the moment the services appear. */
       const hostNatively = () => {
-        if (disposeNative !== null) return
-        const tabs = ctx.get('sidebarRightTabs')
-        const slots = ctx.get('slots')
-        if (tabs === undefined || typeof tabs.register !== 'function') return
-        if (slots === undefined || typeof slots.inject !== 'function') return
-        const offType = tabs.register({
-          id: NATIVE_ID,
-          kind: NATIVE_KIND,
-          title: () => t('title'),
-          guide: [{
-            id: 'git',
-            order: 21,
-            title: () => t('title'),
-            description: () => t('description'),
-            icon: (iconProps) => E(Icon, {
-              name: 'commit',
-              size: iconProps === undefined || iconProps.size === undefined ? 16 : iconProps.size,
-            }),
-          }],
+        if (nativeFiber !== null) return
+        nativeFiber = ctx.inject(['sidebarRightTabs', 'slots'], (nativeCtx) => {
+          const tabs = nativeCtx.get('sidebarRightTabs')
+          const slots = nativeCtx.get('slots')
+          if (tabs === undefined || typeof tabs.register !== 'function') return
+          if (slots === undefined || typeof slots.inject !== 'function') return
+          nativeCtx.effect(() => {
+            const offType = tabs.register({
+              id: NATIVE_ID,
+              kind: NATIVE_KIND,
+              title: () => t('title'),
+              guide: [{
+                id: 'git',
+                order: 21,
+                title: () => t('title'),
+                description: () => t('description'),
+                icon: (iconProps) => E(Icon, {
+                  name: 'commit',
+                  size: iconProps === undefined || iconProps.size === undefined ? 16 : iconProps.size,
+                }),
+              }],
+            })
+            const offBody = slots.inject('sidebar.right.pane.tab', () => slots.register(
+              { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
+              (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
+            ))
+            return () => {
+              try { offBody() } catch (error) { void error }
+              try { offType() } catch (error) { void error }
+            }
+          }, 'dsh-ide-git: native right-sidebar seats')
         })
-        const offBody = slots.inject('sidebar.right.pane.tab', () => slots.register(
-          { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
-          (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
-        ))
-        disposeNative = () => {
-          try { offBody() } catch (error) { void error }
-          try { offType() } catch (error) { void error }
-        }
+      }
+
+      const takeNativeDown = () => {
+        if (nativeFiber === null) return
+        const fiber = nativeFiber
+        nativeFiber = null
+        void Promise.resolve(fiber.dispose()).catch((error) => { void error })
       }
 
       ctx.inject(['betterSidebar'], (tabCtx) => {
         const betterSidebar = tabCtx.get('betterSidebar')
         if (betterSidebar === undefined || typeof betterSidebar.registerTab !== 'function') return
         hostedByBetterSidebar = true
-        if (disposeNative !== null) { disposeNative(); disposeNative = null }
+        takeNativeDown()
         tabCtx.effect(() => {
           const offTab = betterSidebar.registerTab({
             id: TAB_ID,
