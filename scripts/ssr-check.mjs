@@ -75,13 +75,15 @@ const props = {
   visible: true,
 }
 // A server render never runs effects, so the panel is stuck in its initial state:
-// no repository resolved yet. The chrome that only exists once a repository is
-// known (rail, branch tree, history, changes) is therefore NOT covered here — the
-// assertions below pin the shell, and everything else relies on the real page.
-// The TDZ class of bug is still caught, because a hooks dependency array is
-// evaluated during render.
+// the workspace scan is still running (v0.5.4 shows a neutral loading state
+// there — the old render printed "no repository found", a verdict nobody had
+// reached). The chrome that only exists once a repository is known (picker,
+// rail, branch tree, history, changes) is therefore NOT covered here — the
+// assertions below pin the shell, and everything else relies on the real
+// page. The TDZ class of bug is still caught, because a hooks dependency
+// array is evaluated during render.
 const html = renderToStaticMarkup(React.createElement(tab.component, props))
-const needles = ['dig-root', 'dig-topbar', 'dig-shell', 'dig-picker']
+const needles = ['dig-root', 'dig-topbar', 'dig-shell', 'dig-empty']
 for (const needle of needles) {
   if (html.indexOf(needle) < 0) throw new Error('rendered output is missing: ' + needle)
 }

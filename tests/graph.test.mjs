@@ -42,6 +42,49 @@ function liftedBuildRows() {
 }
 
 const buildRows = liftedBuildRows()
+
+/**
+ * v0.5.4 near-miss: GraphCell was taught to read GRAPH_MAX_LANES but the
+ * constant itself never made it into the file — the empty-state render and the
+ * pure layout test both passed, while every real page died with a
+ * ReferenceError that better-sidebar's error boundary swallowed. The graph is
+ * not exercised by either of those, so the reference check lives here.
+ */
+function assertIdentifiersDeclared(functionName) {
+  const start = source.indexOf('function ' + functionName + '(props) {')
+  assert.ok(start >= 0, functionName + ' is gone from the client half')
+  let depth = 0
+  let end = -1
+  for (let index = source.indexOf('{', start); index < source.length; index += 1) {
+    const char = source[index]
+    if (char === '{') depth += 1
+    else if (char === '}') {
+      depth -= 1
+      if (depth === 0) { end = index + 1; break }
+    }
+  }
+  assert.ok(end > start, functionName + ' has unbalanced braces')
+  const body = source.slice(start, end)
+    // identifiers only: drop comments and string literals first, or 'HEAD' and
+    // prose words inside a comment read as constant references.
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/\/\/[^\n]*/g, ' ')
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''")
+    .replace(/"(?:[^"\\]|\\.)*"/g, '""')
+    .replace(/`(?:[^`\\]|\\.)*`/g, '\'\'')
+  const names = new Set()
+  for (const match of body.matchAll(/\b([A-Z][A-Z0-9_]{3,})\b/g)) names.add(match[1])
+  for (const name of names) {
+    assert.ok(
+      source.indexOf('const ' + name + ' =') >= 0,
+      functionName + ' reads ' + name + ', but nothing in the client half declares it',
+    )
+  }
+}
+
+test('every module-level constant GraphCell reads is actually declared', () => {
+  assertIdentifiersDeclared('GraphCell')
+})
 const commit = (hash, parents) => ({ hash, parents, subject: hash, refs: [] })
 
 /** Whatever a lane carries out of a row must be fulfilled by that lane later. */
@@ -117,4 +160,41 @@ test('a parent already on the board is never parked twice', () => {
     const live = row.after.filter((value) => value !== null && value !== undefined)
     assert.equal(new Set(live).size, live.length, 'one lane per pending commit at row ' + row.commit.hash)
   }
+})
+
+/* v0.5.4 — the log is a window, and parents past its edge used to park their
+   hash on a lane forever: the lane could never be consumed, every later branch
+   tip claimed a fresh lane, and the graph turned into a bundle of independent
+   parallel lines with dangling edges. An out-of-window parent now ends its
+   lane at the commit instead. */
+test('a parent beyond the loaded window ends its lane instead of parking a ghost', () => {
+  const rows = buildRows([commit('a', ['ghost'])])
+  assert.equal(rows[0].after[0], null, 'the lane must end at the commit, not carry a hash that can never arrive')
+  assert.deepEqual(rows[0].parentLanes, [], 'no edge can land on an unloaded parent')
+  assertNoGhostLanes(rows)
+})
+
+test('commits after an out-of-window parent reuse the freed lane', () => {
+  const rows = buildRows([
+    commit('a', ['ghost1']),
+    commit('b', ['ghost2']),
+    commit('c', ['b']),
+  ])
+  assert.deepEqual(rows.map((row) => row.lane), [0, 0, 0], 'freed lanes stay reusable, the graph stays narrow')
+  assert.equal(rows[2].after[0], 'b', 'an in-window parent still keeps its lane alive')
+  assertNoGhostLanes(rows)
+})
+
+test('an out-of-window second parent opens no extra lane', () => {
+  const rows = buildRows([
+    commit('m', ['ghost', 'a']),
+    commit('a', []),
+  ])
+  /* The ghost parent contributes nothing: no lane is opened for it and no
+     edge points at it. The loaded second parent inherits the lane m was on,
+     so its edge simply continues down the same column. */
+  assert.equal(rows[0].after.length, 1, 'the ghost must not open a second lane')
+  assert.deepEqual(rows[0].parentLanes, [0], 'the only edge points at the loaded parent, on the same lane')
+  assert.deepEqual(rows[1].lane, 0, 'a consumes the lane on its own row')
+  assertNoGhostLanes(rows)
 })

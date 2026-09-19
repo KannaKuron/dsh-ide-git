@@ -91,35 +91,17 @@ async function enterSession() {
   await settle(7000)
 }
 
-async function openBottomPanel() {
-  await clickText('展开底部面板')
-  await settle(2500)
-  await page.locator('.nArs4W_tabBarPlus').first().click({ timeout: 8000 })
-  await settle(1500)
-  await page.getByText('Git', { exact: true }).first().click({ timeout: 8000 })
+/** The panel's home moved: 0.1.6 hosts it in the right-sidebar dock, and the
+ *  old bottom-workbench entry ("展开底部面板" / .nArs4W_tabBarPlus) is gone. The
+ *  panel is opened from the sidebar's start page, where its card carries the
+ *  title/description this plugin registered. */
+async function openPanel() {
+  await clickText('打开右侧边栏')
+  await settle(3000)
+  const card = page.locator('button').filter({ has: page.locator('span', { hasText: 'IDE 级 Git 面板' }) }).first()
+  if (await card.count() === 0) throw new Error('the Git card is not on the sidebar start page')
+  await card.click({ timeout: 8000 })
   await settle(6000)
-}
-
-/** Drags the workbench handle so the panel root ends up about `target` px tall. */
-async function resizeTo(target) {
-  const root = page.locator('.dig-root').first()
-  const handle = page.locator('.nArs4W_bottomResize').first()
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const box = await root.boundingBox()
-    const hb = await handle.boundingBox()
-    if (box === null || hb === null) throw new Error('panel or resize handle not found')
-    const delta = box.height - target
-    if (Math.abs(delta) < 8) break
-    const x = hb.x + hb.width / 2
-    const y = hb.y + hb.height / 2
-    await page.mouse.move(x, y)
-    await page.mouse.down()
-    await page.mouse.move(x, y + delta, { steps: 16 })
-    await page.mouse.up()
-    await settle(900)
-  }
-  const final = await root.boundingBox()
-  return final === null ? null : Math.round(final.height)
 }
 
 const CHROMES = ['dig-body-columns', 'dig-body-stack', 'dig-body-compact']
@@ -168,23 +150,23 @@ async function chromeOf() {
   }
 }
 
-const TARGETS = [480, 380, 300, 260, 220, 200, 180, 150, 120, 90]
+/* Width decides the chrome (invariant 7), so the sweep drives width: the panel
+   lives in the right-sidebar dock, and its pane tracks the window. */
+const WIDTHS = [1600, 1440, 1280, 1120, 980, 860, 760, 660, 560, 460, 380]
 const rows = []
 
 try {
   await enterSession()
-  await openBottomPanel()
+  await openPanel()
 
-  // Grow first, so every later step shrinks towards its target from above.
-  await resizeTo(520)
-  for (const target of TARGETS) {
-    const actual = await resizeTo(target)
-    await settle(700)
+  for (const width of WIDTHS) {
+    await page.setViewportSize({ width: width, height: 1000 })
+    await settle(900)
     const state = await chromeOf()
-    rows.push({ requested: target, actual: actual, state: state })
-    await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'h' + String(target).padStart(3, '0') + '.png') })
+    rows.push({ requested: width, actual: state.width, state: state })
+    await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'w' + String(width).padStart(4, '0') + '.png') })
     const head = await headerOverflow()
-    log('target ' + target + ' → ' + actual + 'px, chrome=' + state.chrome + ', rail=' + state.rail
+    log('viewport ' + width + ' → panel ' + state.width + 'px, chrome=' + state.chrome + ', rail=' + state.rail
       + (head === null ? '' : ', changes-header ' + head.width + 'px bleed=' + head.bleed
         + ' lastIconRight=' + head.lastIcon + ' paneRight=' + head.parentRight))
     if (head !== null && (head.bleed > 1 || (head.lastIcon !== null && head.lastIcon > head.parentRight + 1))) {
@@ -193,27 +175,20 @@ try {
     }
   }
 
-  console.log('\nrequested | actual | width | chrome            | rail')
-  console.log('----------|--------|-------|-------------------|----------')
+  console.log('\nviewport | panel | chrome            | rail')
+  console.log('---------|-------|-------------------|----------')
   for (const row of rows) {
     console.log(
-      String(row.requested).padStart(9) + ' |' +
-      String(row.actual).padStart(7) + ' |' +
-      String(row.state.width).padStart(6) + ' | ' +
+      String(row.requested).padStart(8) + ' |' +
+      String(row.actual).padStart(6) + ' | ' +
       row.state.chrome.padEnd(17) + ' | ' + row.state.rail,
     )
   }
-
-  // The narrow side of the rule: the native right sidebar must stay compact.
-  await clickText('折叠底部面板')
-  await settle(1500)
-  await clickText('打开右侧边栏')
-  await settle(3000)
-  await page.locator('button:visible').filter({ hasText: /^Git$/ }).last().click({ timeout: 8000 })
-  await settle(6000)
-  const sidebar = await chromeOf()
-  await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'right-sidebar.png') })
-  log('native right sidebar → ' + sidebar.width + 'x' + sidebar.height + ', chrome=' + sidebar.chrome)
+  const widths = rows.map((row) => row.actual)
+  if (new Set(widths).size === 1) {
+    log('WARNING: the panel width never changed — the dock ignored the viewport sweep')
+    process.exitCode = 1
+  }
 
   if (pageErrors.length > 0) {
     log('FAILED: the panel raised ' + pageErrors.length + ' uncaught error(s) — the chrome crashed')

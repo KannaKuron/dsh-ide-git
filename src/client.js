@@ -34,6 +34,10 @@ window.__ModuleLoader__.load({
        locale registry. */
     const LOCALE_NS = 'dsh-ide-git'
     const LANE_WIDTH = 14
+    /* Hard cap on the drawn lane columns. Lanes beyond the cap collapse into
+       the last column: without the cap a branchy repository pushed the graph
+       wider than the panel and shoved the subject column out of view. */
+    const GRAPH_MAX_LANES = 7
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
@@ -3521,6 +3525,16 @@ window.__ModuleLoader__.load({
     /* ============================== commit graph ============================== */
 
     function buildRows(commits) {
+      /* The log is a WINDOW: the oldest visible commits usually have parents
+         that were never loaded. A parent outside the window must not park its
+         hash on a lane — the lane would stay occupied for the rest of the
+         page (the hash can never be consumed), every later branch tip would
+         claim yet another fresh lane, and the drawing degenerated into a
+         bundle of independent parallel lines that pushed the subjects out of
+         the panel. So the pass first learns which hashes are actually on the
+         board, and an edge to anything else simply ends at its commit. */
+      const present = new Set()
+      for (const commit of commits) present.add(commit.hash)
       const lanes = []
       const rows = []
       for (const commit of commits) {
@@ -3538,24 +3552,30 @@ window.__ModuleLoader__.load({
            a branch that merged back into a lane to its left kept a stub of its
            own colour running on above the junction — a fork that never
            happened. Only a parent that is not on the board yet inherits the
-           lane, which is what keeps an ordinary line continuous. */
+           lane, and (v0.5.4) only a parent that is on the board at all: a
+           parent past the loaded window ends the lane at this row instead of
+           holding it for a commit that will never arrive. */
         if (parents.length > 0) {
           const first = lanes.indexOf(parents[0])
           if (first !== -1 && first !== lane) {
             lanes[lane] = null
             parentLanes.push(first)
-          } else {
+          } else if (present.has(parents[0])) {
             lanes[lane] = parents[0]
+          } else {
+            lanes[lane] = null
           }
         } else {
           lanes[lane] = null
         }
         for (let index = 1; index < parents.length; index += 1) {
-          let slot = lanes.indexOf(parents[index])
+          const parent = parents[index]
+          if (!present.has(parent)) continue
+          let slot = lanes.indexOf(parent)
           if (slot === -1) {
             slot = lanes.indexOf(null)
-            if (slot === -1) { lanes.push(parents[index]); slot = lanes.length - 1 }
-            else lanes[slot] = parents[index]
+            if (slot === -1) { lanes.push(parent); slot = lanes.length - 1 }
+            else lanes[slot] = parent
           }
           parentLanes.push(slot)
         }
@@ -3576,10 +3596,12 @@ window.__ModuleLoader__.load({
     function GraphCell(props) {
       const row = props.row
       const height = props.height
-      const width = Math.max(1, row.width) * LANE_WIDTH + 8
+      const width = Math.min(Math.max(1, row.width), GRAPH_MAX_LANES) * LANE_WIDTH + 8
       const middle = height / 2
       const children = []
-      const x = (lane) => 8 + lane * LANE_WIDTH
+      /* Lanes beyond the cap share the last column: the geometry stays bounded
+         and the subject column keeps its room. */
+      const x = (lane) => 8 + Math.min(lane, GRAPH_MAX_LANES - 1) * LANE_WIDTH
       const color = (lane) => LANE_COLORS[lane % LANE_COLORS.length]
       const depth = Math.max(row.before.length, row.after.length)
       for (let lane = 0; lane < depth; lane += 1) {
@@ -3898,20 +3920,37 @@ window.__ModuleLoader__.load({
 
     function RepoSelect(props) {
       const t = props.t
+      /* While the workspace is still being scanned the panel used to print "no
+         repository found" — a verdict nobody had reached yet. A deep workspace
+         scan takes seconds, so that premature verdict sat on screen long enough
+         to look like the final answer. Loading shows loading; "not found" only
+         shows once the scan came back empty. */
+      if (props.loading === true) {
+        return E('span', { className: 'dig-repo-static' },
+          E(Icon, { name: 'folder', size: 12 }),
+          E('span', { className: 'dig-repo-name' }, t('status.loading')))
+      }
       if (props.repos.length <= 1) {
         const only = props.repos.length === 1 ? props.repos[0] : null
         return E('span', { className: 'dig-repo-static', title: only === null ? '' : only.path },
           E(Icon, { name: 'folder', size: 12 }),
           E('span', { className: 'dig-repo-name' }, only === null ? t('repo.empty') : only.name))
       }
+      /* The switcher is a button over a panel-internal menu, not a native
+         <select>: the OS-drawn popup ignores the panel theme entirely (light
+         system colours over a dark translucent panel) and was unreadable. */
+      let current = null
+      for (const repo of props.repos) { if (repo.path === props.value) { current = repo; break } }
       return E('span', { className: 'dig-select-wrap', title: t('repo.switch') },
         E(Icon, { name: 'folder', size: 12 }),
-        E('select', {
-          className: 'dig-select dig-select-repo',
-          value: props.value === null ? '' : props.value,
-          onChange: (event) => props.onChange(event.target.value),
-        }, props.repos.map((repo) => E('option', { key: repo.path, value: repo.path },
-          repo.name + (repo.branch === null || repo.branch === undefined ? '' : ' · ' + repo.branch)))))
+        E('button', {
+          type: 'button',
+          className: 'dig-select dig-select-btn dig-select-repo',
+          onClick: props.onOpenMenu,
+        },
+          E('span', { className: 'dig-repo-name' },
+            current === null ? t('repo.pick') : current.name + (current.branch === null || current.branch === undefined ? '' : ' · ' + current.branch)),
+          E(Icon, { name: 'chevron', size: 12 })))
     }
 
     function RepoPicker(props) {
@@ -4550,7 +4589,10 @@ window.__ModuleLoader__.load({
       }, [repoRoot])
 
       useEffect(() => {
-        if (cwd === undefined) return undefined
+        /* No workspace attached: there is nothing to scan, so land the empty
+           result straight away instead of leaving repoState null (which reads
+           as "still loading" and would spin forever). */
+        if (cwd === undefined) { setRepoState({ repos: [], isRepo: false }); return undefined }
         let cancelled = false
         void (async () => {
           try {
@@ -4860,15 +4902,47 @@ window.__ModuleLoader__.load({
       const repoOptions = repoState === null ? [] : repoState.repos
       const dirty = summary === null ? 0 : summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length + summary.changes.conflicted.length
 
+      /* Both header switchers are menu-driven now (see RepoSelect): the
+         popovers reuse openMenuAt, so they clamp to the panel box and share
+         the opaque, frosted menu surface instead of the OS select popup. */
+      const openRepoMenu = useCallback((event) => {
+        openMenuAt(event, repoOptions.map((repo) => ({
+          id: 'repo:' + repo.path,
+          icon: 'folder',
+          tone: 'accent',
+          label: repo.name + (repo.branch === null || repo.branch === undefined ? '' : ' · ' + repo.branch),
+          active: repo.path === repoRoot,
+          run: () => { if (repo.path !== repoRoot) pickRepo(repo.path) },
+        })))
+      }, [openMenuAt, repoOptions, repoRoot, pickRepo])
+
+      const openBranchSwitchMenu = useCallback((event) => {
+        const local = branches === null ? [] : branches.local
+        openMenuAt(event, local.map((entry) => ({
+          id: 'switch:' + entry.name,
+          icon: entry.head === true ? 'star' : 'branch',
+          tone: entry.head === true ? 'warn' : 'accent',
+          label: entry.name,
+          active: entry.head === true,
+          run: () => { if (entry.head !== true) void checkout(entry) },
+        })))
+      }, [openMenuAt, branches, checkout])
+
       const topBar = E('div', { className: 'dig-topbar' },
-        E(RepoSelect, { t: t, repos: repoOptions, value: repoRoot, onChange: pickRepo }),
+        E(RepoSelect, {
+          t: t, repos: repoOptions, value: repoRoot,
+          loading: repoState === null,
+          onOpenMenu: openRepoMenu,
+        }),
         branches === null || branches.local.length === 0 ? null : E('span', { className: 'dig-select-wrap', title: t('branch.switch') },
           E(Icon, { name: 'branch', size: 12 }),
-          E('select', {
-            className: 'dig-select dig-select-branch',
-            value: branches.branch,
-            onChange: (event) => { void run('checkout', { branch: event.target.value }) },
-          }, branches.local.map((entry) => E('option', { key: entry.name, value: entry.name }, entry.name)))),
+          E('button', {
+            type: 'button',
+            className: 'dig-select dig-select-btn dig-select-branch',
+            onClick: openBranchSwitchMenu,
+          },
+            E('span', { className: 'dig-repo-name' }, branches.branch),
+            E(Icon, { name: 'chevron', size: 12 }))),
         summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
           (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
         operation === null ? null : E('span', { className: 'dig-opchip', title: t('operation.hint') }, t('operation.' + operation)),
@@ -5098,7 +5172,12 @@ window.__ModuleLoader__.load({
       /* ---------- body per chrome ---------- */
 
       let body
-      if (repoRoot === null) {
+      if (repoState === null) {
+        /* The scan is still running: a neutral loading state, never the
+           "no repository found" verdict (that text is reserved for a scan
+           that actually came back empty). */
+        body = E('div', { className: 'dig-body' }, E('div', { className: 'dig-empty' }, t('status.loading')))
+      } else if (repoRoot === null) {
         body = E('div', { className: 'dig-body' }, E(RepoPicker, {
           t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo,
         }))
@@ -5282,7 +5361,10 @@ window.__ModuleLoader__.load({
       '.dig-select{appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;padding:1px 6px;height:22px;max-width:190px;min-width:0;cursor:pointer;text-overflow:ellipsis}',
       '.dig-select:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-select:focus{outline:1px solid var(--dsw-alias-brand-primary);outline-offset:-1px}',
+      '.dig-select-btn{display:inline-flex;align-items:center;gap:4px;text-align:left;white-space:nowrap;overflow:hidden}',
+      '.dig-select-btn .dig-repo-name{flex:1;min-width:0;max-width:none}',
       '.dig-select-repo{max-width:200px}',
+      '.dig-select option,.dig-filter-select option{background:var(--dsw-alias-bg-layer-1,#22262e);color:var(--dsw-alias-label-primary,#e6e8ee)}',
       '.dig-select-branch{max-width:150px}',
       '.dig-repo-static{display:inline-flex;align-items:center;gap:5px;min-width:0;color:var(--dsw-alias-label-secondary)}',
       '.dig-repo-name{color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}',
@@ -5478,7 +5560,7 @@ window.__ModuleLoader__.load({
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      '.dig-menu{position:absolute;z-index:70;min-width:200px;max-width:calc(100% - 8px);max-height:calc(100% - 8px);overflow:auto;overscroll-behavior:contain;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column}',
+      '.dig-menu{position:absolute;z-index:70;min-width:200px;max-width:calc(100% - 8px);max-height:calc(100% - 8px);overflow:auto;overscroll-behavior:contain;padding:4px;border-radius:8px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));-webkit-backdrop-filter:var(--dsh-any-blur-card-panels,blur(14px) saturate(1.2));backdrop-filter:var(--dsh-any-blur-card-panels,blur(14px) saturate(1.2));border:1px solid var(--dsw-alias-border-l2);box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column}',
       '.dig-menu-item{display:flex;align-items:center;gap:8px;padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;text-align:left;border-radius:5px;cursor:pointer;white-space:nowrap;overflow:hidden}',
       '.dig-menu-icon{display:inline-flex;flex:none}',
       '.dig-menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
