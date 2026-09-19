@@ -198,3 +198,69 @@ test('an out-of-window second parent opens no extra lane', () => {
   assert.deepEqual(rows[1].lane, 0, 'a consumes the lane on its own row')
   assertNoGhostLanes(rows)
 })
+
+/** Lift any factory-level function out of the client half (see buildRows above). */
+function liftedFunction(functionName) {
+  const marker = 'function ' + functionName + '('
+  const start = source.indexOf(marker)
+  assert.ok(start >= 0, functionName + ' is gone from the client half')
+  let depth = 0
+  let end = -1
+  for (let index = source.indexOf('{', start); index < source.length; index += 1) {
+    const char = source[index]
+    if (char === '{') depth += 1
+    else if (char === '}') {
+      depth -= 1
+      if (depth === 0) { end = index + 1; break }
+    }
+  }
+  assert.ok(end > start, functionName + ' has unbalanced braces')
+  return new Function(source.slice(start, end) + '; return ' + functionName + ';')()
+}
+
+const laneSegments = liftedFunction('laneSegments')
+
+/* v0.5.5 — the user reported the line "断开了" and a "无端点的多余分叉" twice.
+   The cause was not the lane algorithm but the drawing: a lane OPENED by an edge
+   curve in the same row was painted twice — the curve landed at the row bottom
+   while a vertical segment was also started at the row centre, leaving a
+   floating hook above the new line. The opened lane must be carried by the
+   curve alone; the next row's segment starts at its top edge. */
+test('a lane opened by an edge in the same row draws no vertical stub', () => {
+  const rows = buildRows([
+    commit('m', ['a', 'b']),
+    commit('a', ['base']),
+    commit('b', ['base']),
+    commit('base', []),
+  ])
+  const opened = laneSegments(rows[0], 26)
+  assert.deepEqual(opened.filter((segment) => segment.lane === 1), [], 'lane 1 is opened by the merge edge — the curve alone must draw it')
+  assert.ok(opened.some((segment) => segment.lane === 0), 'the trunk still draws through the merge row')
+  // The lane's own commit row DOES draw it, and it merges back into the trunk
+  // there, so it rounds off at the row centre — where b's dot sits.
+  const own = laneSegments(rows[2], 26)
+  assert.ok(own.some((segment) => segment.lane === 1 && segment.y1 === 0 && segment.y2 === 13), 'b draws its lane down to its own dot')
+  // A lane that merely passes through spans the whole row box.
+  const through = laneSegments(rows[1], 26)
+  assert.ok(through.some((segment) => segment.lane === 0 && segment.y1 === 0 && segment.y2 === 26), 'the trunk spans the full row box')
+})
+
+/* Lanes fill newest-first, and the CURRENT branch owns column 0 whenever it is
+   on the board — a side branch created later must not push HEAD's line to the
+   right (the ordering rule the user asked about). */
+test('the current branch keeps the leftmost lane', () => {
+  const headFirst = buildRows([
+    Object.assign(commit('head', ['base']), { refs: ['HEAD -> main'] }),
+    commit('side', ['base']),
+    commit('base', []),
+  ])
+  assert.equal(headFirst[0].lane, 0)
+  const headLater = buildRows([
+    Object.assign(commit('side', ['base']), { refs: ['origin/side'] }),
+    Object.assign(commit('head', ['base']), { refs: ['HEAD -> main'] }),
+    commit('base', []),
+  ])
+  assert.equal(headLater[0].lane, 1, 'a newer side commit takes the next free lane')
+  assert.equal(headLater[1].lane, 0, 'the current branch still gets column 0')
+  assertNoGhostLanes(headLater)
+})

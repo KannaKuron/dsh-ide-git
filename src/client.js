@@ -3536,6 +3536,12 @@ window.__ModuleLoader__.load({
       const present = new Set()
       for (const commit of commits) present.add(commit.hash)
       const lanes = []
+      /* The current branch keeps the LEFTMOST column whenever it is on the
+         board: pre-seeding its hash makes that commit claim lane 0 when its
+         row arrives, so HEAD's line never drifts to the right of a side
+         branch (the rest of the lanes fill newest-first, see below). */
+      const headCommit = commits.find((commit) => Array.isArray(commit.refs) && commit.refs.some((ref) => String(ref).indexOf('HEAD') >= 0))
+      if (headCommit !== undefined) lanes.push(headCommit.hash)
       const rows = []
       for (const commit of commits) {
         const before = lanes.slice()
@@ -3593,6 +3599,31 @@ window.__ModuleLoader__.load({
        centre where the lane genuinely starts (a branch tip) or ends (a root).
        v0.1.7 started every non-own lane at 0 and every own lane at height/2, which
        left a visible gap between two consecutive commits on the same lane. */
+    /* Vertical lane segments for one row. A lane that this row OPENS through an
+       edge curve (it was empty above, and the curve lands at the row bottom) must
+       NOT also get a vertical segment from the row centre: the two overlapped and
+       left a floating hook where the line visibly started in mid-air — reported
+       twice by the user as "断开的线/无端点的分叉". The curve alone carries the
+       connection, and the next row's segment starts at its top edge. */
+    function laneSegments(row, height) {
+      const middle = height / 2
+      const depth = Math.max(row.before.length, row.after.length)
+      const segments = []
+      for (let lane = 0; lane < depth; lane += 1) {
+        const above = lane < row.before.length ? row.before[lane] : null
+        const below = lane < row.after.length ? row.after[lane] : null
+        const hasTop = above !== null && above !== undefined
+        const hasBottom = below !== null && below !== undefined
+        if (hasTop === false && hasBottom === false) continue
+        if (hasTop === false && row.parentLanes.indexOf(lane) >= 0) continue
+        const y1 = hasTop ? 0 : middle
+        const y2 = hasBottom ? height : middle
+        if (y1 === y2) continue
+        segments.push({ lane: lane, y1: y1, y2: y2 })
+      }
+      return segments
+    }
+
     function GraphCell(props) {
       const row = props.row
       const height = props.height
@@ -3603,20 +3634,11 @@ window.__ModuleLoader__.load({
          and the subject column keeps its room. */
       const x = (lane) => 8 + Math.min(lane, GRAPH_MAX_LANES - 1) * LANE_WIDTH
       const color = (lane) => LANE_COLORS[lane % LANE_COLORS.length]
-      const depth = Math.max(row.before.length, row.after.length)
-      for (let lane = 0; lane < depth; lane += 1) {
-        const above = lane < row.before.length ? row.before[lane] : null
-        const below = lane < row.after.length ? row.after[lane] : null
-        const hasTop = above !== null && above !== undefined
-        const hasBottom = below !== null && below !== undefined
-        if (hasTop === false && hasBottom === false) continue
-        const y1 = hasTop ? 0 : middle
-        const y2 = hasBottom ? height : middle
-        if (y1 === y2) continue
+      for (const segment of laneSegments(row, height)) {
         children.push(E('line', {
-          key: 'lane-' + lane,
-          x1: x(lane), y1: y1, x2: x(lane), y2: y2,
-          stroke: color(lane), strokeWidth: 2, strokeLinecap: 'round',
+          key: 'lane-' + segment.lane,
+          x1: x(segment.lane), y1: segment.y1, x2: x(segment.lane), y2: segment.y2,
+          stroke: color(segment.lane), strokeWidth: 2, strokeLinecap: 'round',
         }))
       }
       for (const parentLane of row.parentLanes) {
@@ -3951,6 +3973,25 @@ window.__ModuleLoader__.load({
           E('span', { className: 'dig-repo-name' },
             current === null ? t('repo.pick') : current.name + (current.branch === null || current.branch === undefined ? '' : ' · ' + current.branch)),
           E(Icon, { name: 'chevron', size: 12 })))
+    }
+
+    /* The history filters were the LAST native <select>s: their popup is drawn
+       by the OS, so a dark translucent panel still got a light system list —
+       reported on v0.5.4 ("only the one at the top was replaced"). Same
+       treatment as the header switchers: a button over a panel-internal menu. */
+    function FilterSelect(props) {
+      const options = Array.isArray(props.options) ? props.options : []
+      let current = options[0]
+      for (const option of options) { if (option.value === props.value) { current = option; break } }
+      const label = props.label + ': ' + (current === undefined ? '' : current.label)
+      return E('button', {
+        type: 'button',
+        className: 'dig-filter-select' + (props.value === '' ? '' : ' dig-filter-on'),
+        title: props.hint === undefined ? label : props.hint,
+        onClick: (event) => { if (props.onOpenMenu !== undefined) props.onOpenMenu(event, options) },
+      },
+        E('span', { className: 'dig-filter-label' }, label),
+        E(Icon, { name: 'chevron', size: 11 }))
     }
 
     function RepoPicker(props) {
@@ -4375,31 +4416,45 @@ window.__ModuleLoader__.load({
         applyPath('')
       }
 
-      const filterBar = props.hideSearch === true ? null : E('div', { className: 'dig-filters' },
+      /* Every filter opens the same in-panel menu; a checked row marks the active
+        value, so the button never has to spell the whole list out. */
+        const openFilterMenu = (event, options, currentValue, onPick) => {
+          if (props.openMenuAt === undefined) return
+          props.openMenuAt(event, options.map((option) => ({
+            id: 'filter:' + String(option.value),
+            icon: option.value === '' ? 'filter' : 'check',
+            tone: option.value === '' ? 'secondary' : 'accent',
+            label: option.label,
+            active: option.value === currentValue,
+            run: () => onPick(option.value),
+          })))
+        }
+        const allOption = { value: '', label: t('filter.all') }
+        const filterBar = props.hideSearch === true ? null : E('div', { className: 'dig-filters' },
         E('input', {
           className: 'dig-input dig-input-compact dig-filter-text', value: text, spellCheck: false,
           placeholder: t('history.filter'),
           onChange: (event) => setText(event.target.value),
         }),
-        E('select', {
-          className: 'dig-filter-select', value: refName, title: t('filter.branch'),
-          onChange: (event) => setRefName(event.target.value),
-        }, [E('option', { key: '', value: '' }, t('filter.branch') + ': ' + t('filter.all'))].concat(
-          refOptions.map((name) => E('option', { key: name, value: name }, name)))),
-        E('select', {
-          className: 'dig-filter-select', value: author, title: t('filter.user'),
-          onChange: (event) => setAuthor(event.target.value),
-        }, [E('option', { key: '', value: '' }, t('filter.user') + ': ' + t('filter.all'))].concat(
-          authors.map((name) => E('option', { key: name, value: name }, name)))),
-        E('select', {
-          className: 'dig-filter-select', value: since, title: t('filter.date'),
-          onChange: (event) => setSince(event.target.value),
-        },
-          E('option', { value: '' }, t('filter.date') + ': ' + t('filter.all')),
-          E('option', { value: 'today' }, t('filter.today')),
-          E('option', { value: 'week' }, t('filter.week')),
-          E('option', { value: 'month' }, t('filter.month')),
-          E('option', { value: 'year' }, t('filter.year'))),
+        E(FilterSelect, {
+          label: t('filter.branch'), value: refName, hint: t('filter.branch'),
+          options: [allOption].concat(refOptions.map((name) => ({ value: name, label: name }))),
+          onOpenMenu: (event, options) => openFilterMenu(event, options, refName, setRefName),
+        }),
+        E(FilterSelect, {
+          label: t('filter.user'), value: author, hint: t('filter.user'),
+          options: [allOption].concat(authors.map((name) => ({ value: name, label: name }))),
+          onOpenMenu: (event, options) => openFilterMenu(event, options, author, setAuthor),
+        }),
+        E(FilterSelect, {
+          label: t('filter.date'), value: since, hint: t('filter.date'),
+          options: [allOption,
+            { value: 'today', label: t('filter.today') },
+            { value: 'week', label: t('filter.week') },
+            { value: 'month', label: t('filter.month') },
+            { value: 'year', label: t('filter.year') }],
+          onOpenMenu: (event, options) => openFilterMenu(event, options, since, setSince),
+        }),
         E('form', {
           className: 'dig-filter-path',
           onSubmit: (event) => { event.preventDefault(); applyPath(pathDraft.trim()) },
@@ -4992,7 +5047,7 @@ window.__ModuleLoader__.load({
           })
         : E(HistoryList, {
             t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
-            hideSearch: compact, pathFilter: pathFilter,
+            hideSearch: compact, pathFilter: pathFilter, openMenuAt: openMenuAt,
             onPathFilter: (value) => setPathFilter(value),
             onSelect: (commit) => { void selectCommit(commit) },
             onMenu: commitMenu,
@@ -5497,6 +5552,9 @@ window.__ModuleLoader__.load({
       '.dig-filter-text{flex:1 1 90px;min-width:80px;width:auto}',
       '.dig-filter-select{flex:none;max-width:118px;appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;height:22px;padding:0 4px;cursor:pointer;text-overflow:ellipsis}',
       '.dig-filter-select:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-filter-select{display:inline-flex;align-items:center;gap:3px}',
+      '.dig-filter-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:96px}',
+      '.dig-filter-on{color:var(--dsw-alias-brand-primary);border-color:var(--dsw-alias-brand-primary)}',
       '.dig-filter-path{flex:0 1 112px;min-width:70px;display:flex}',
       '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:6px;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer}',
       '.dig-load-more:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
