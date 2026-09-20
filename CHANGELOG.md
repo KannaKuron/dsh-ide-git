@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.6.0 — 2026-09-20
+
+**类型**:feat(git 子模块作为独立仓库出现在仓库选择器;PR #3,by @sitns)
+
+- **子模块可以点选了**(桌面 Git 客户端行为):git 把每个子模块记成独立工作树(自己的 HEAD / 索引 / 分支),父仓库只看到一个 gitlink 行。新增 `collectSubmoduleRepos(root, depth, prefix)`:以 `git submodule status --recursive` 取登记路径(**未初始化的在表内但没有工作树,不成为可选行**),逐层递归到深度 2,工作树校验(`rev-parse --show-toplevel`)并发执行。
+- **`scanRepos(cwd)` 统一发现通道**:工作区自身 + 目录扫描子仓库 + **每一个已发现仓库的子模块**——容器工作区(自身不是仓库、装着多个检出)也能经此把子模块列出来。结果按归一化路径去重(Windows 大小写不敏感;**子模块行覆盖目录扫描行**,因其 name 带仓库相对路径、重名可区分),分支查询并发,按 cwd 缓存 60 秒(面板高频轮询 vs 每个检出一次 spawn;贡献者实测首次扫描 4.6s → 缓存命中 1.9ms)。
+- **行对象新增 `label`(短名)与 `submodulePath`**;子模块行的 `name` 为仓库相对路径,`kind` 仍为 `'nested'`,**客户端零改动**(RepoPicker 已按该 kind 渲染「子仓库」)。选中后该路径作为 `repoRoot` 随每次请求下发,宿主 `repoRootOf()` 优先采用,所有 git 方法自然作用于该子仓库。
+- **行为变化须知**:扫描结果按 cwd 缓存 60 秒——新 clone 的仓库 / 新初始化的子模块最多 1 分钟后才出现在选择器(此前每次实时);列表总量上限 60 行、子模块登记上限 400;排序键从 name 改为 path。
+- **验证**:新增 `tests/repos.test.mjs` 6 项(临时真实仓库夹具,Git ≥ 2.38 需 `protocol.file.allow=always`;「已登记未 checkout」用 `update-index --cacheinfo 160000` 造真实 gitlink 状态):双子模块各自分支与短名、子模块路径绑定 summary / branches 生效、容器工作区列出检出、双路发现去重、未初始化子模块不出现;全量 56/56(本机 Windows + git 2.55 实测);`isRepo` 语义不变(仅工作区自身是仓库时 true);WRITE_METHODS 未动(`repos` 保持只读、不进写队列)。
+
 ## v0.5.6 — 2026-09-20
 
 **类型**:fix(npm 安装后在打包宿主上插件完全不出现;贡献者报告,issue #1 / PR #2,by @sitns)
