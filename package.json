@@ -13,7 +13,8 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./client": "./src/client.js"
+    "./client": "./src/client.js",
+    "./package.json": "./package.json"
   },
   "engines": {
     "node": ">=18",
@@ -44,7 +45,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test tests/smoke.mjs tests/api.test.mjs tests/graph.test.mjs",
+    "test": "node --test tests/smoke.mjs tests/api.test.mjs tests/graph.test.mjs tests/repos.test.mjs",
     "version": "node -e \"const fs=require('fs');const m=JSON.parse(fs.readFileSync('dsh.plugin.json','utf8'));const v=JSON.parse(fs.readFileSync('package.json','utf8')).version;m.version=v;fs.writeFileSync('dsh.plugin.json',JSON.stringify(m,null,2)+'\\n')\" && git add dsh.plugin.json"
   },
   "keywords": [
