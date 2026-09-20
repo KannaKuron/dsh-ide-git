@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.5.6 — 2026-09-20
+
+**类型**:fix(npm 安装后在打包宿主上插件完全不出现;贡献者报告,issue #1 / PR #2,by @sitns)
+
+- **现象(用户实测,DSH Desktop 2.0.13 + npm 安装 0.5.5)**:插件在设置里显示已启用、宿主 Git 路由活着(`/dsh-ide-git/api/*` 打到信任围栏返回 403 而非 404),但 better-sidebar 的 `+` 新建标签页列表与 DSH 原生右侧栏 Guide 页**都看不到 Git 入口**——宿主半区加载成功,客户端半区从未到达浏览器,控制台与宿主日志**零报错**。
+- **根因**:`package.json` 的 `exports` 只声明了 `.` 与 `./client`。`@deepseek-ai/dsh-client-modules` 组合器在 loader 没有内部 `resolveSync` 时(**打包宿主正是这条路径**)走 `createRequire(baseUrl).resolve('<pkg>/package.json')` 回退分支定位包清单,该解析抛 `ERR_PACKAGE_PATH_NOT_EXPORTED`,`resolveMeta()` 把这一行当作「未声明 `dsh.client`」**静默跳过**(`pkgMeta` 置 null,不抛不告警)。开发环境(本地编译 `dsh web`,loader 有内部 resolver,走 `nearestPackage` 分支)不受影响,所以联调从未暴露。
+- **修法**:`exports` 补一行 `"./package.json": "./package.json"`。这是生态既有惯例——`dsh-scratchpad` / `dsh-better-sidebar` 的 `exports` 都带该键,所以同一 profile 里只有本插件中招。
+- **验证**:npm 上的 0.5.5 与修复版分别装进干净目录跑 `createRequire` 探针——0.5.5 解析 `dsh-ide-git/package.json` 必抛 `ERR_PACKAGE_PATH_NOT_EXPORTED`(`./client` 正常,解释了开发环境为何无恙),修复版两项全 OK;三层测试 50/50 绿。
+- 相关:#2 顺带把 `tests/repos.test.mjs` 写进了 test 脚本(该文件随 #3 落地);Node 24 的 `node --test` 对不存在的文件静默跳过,两个 PR 分先后合并不影响 CI。
+
 ## v0.5.5 — 2026-09-19
 
 **类型**:fix(图谱断线/无端点分叉的真身 + 最后一处原生下拉;用户二次报告)
