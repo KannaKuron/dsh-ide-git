@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.7.0 — 2026-09-22
+
+**类型**:feat(适配 dsh v0.1.7-alpha.1 展示面)
+
+- **插件管理页展示资产**(dsh 0.1.7 新特性):新增 `icon.svg` + `locale/{en,zh}.json` 多语言标题/描述;旧宿主完全忽略,单包双时代。
+- **修复:仓库选择器里同一子模块出现两行**(git 2.54 / Apple Git-157 实测触发):`pathIdentity` 只做斜杠归一,没归一符号链接拼写——`git rev-parse --show-toplevel` 解析出 `/private/var/...`,目录扫描保留 `/var/...`,同一检出以两种身份各成一行。现在身份键经 `realpathSync` 折叠(不可解析时回退斜杠归一形);子模块行仍随后构建、按身份键胜出,名称保持 repo 相对路径。tests/repos 的「reports the workspace repository and every submodule」「a checkout reachable two ways appears once」两项恢复全绿。
+- **0.1.7 兼容性复核**:宿主半 `webServer.register({ kind: 'prefix', ... })` 契约不变;客户端两通道——betterSidebar Tab 注册与原生 `sidebarRightTabs` + `sidebar.right.pane.tab` 键槽——在 0.1.7 源码中逐一核对均健在;`useWorkspaces`/`useSessions` 标准注入面无漂移;本插件不消费任何被 0.1.7 移除的 API(settings.register/SettingsScope/settingsScope 服务、workspaceFiles 旧 base64 接口、目录预设机制)。
+- 冒烟/api/graph/repos 四层测试全绿。
+
 ## v0.6.0 — 2026-09-20
 
 **类型**:feat(git 子模块作为独立仓库出现在仓库选择器;PR #3,by @sitns)

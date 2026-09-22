@@ -1,6 +1,6 @@
 {
   "name": "dsh-ide-git",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "DSH plugin: an IDE-grade Git tool window as a native dsh-better-sidebar tab — branch tree, commit graph, changes, commit details, JetBrains-style actions, in the right sidebar and the bottom panel. | DSH 插件:IDE 级 Git 工具窗口,以 dsh-better-sidebar 原生 Tab 挂载——分支树 / 提交图谱 / 变更与提交详情 / JetBrains 风格操作,右侧栏与底部面板双布局自适应。",
   "type": "module",
   "repository": {
@@ -14,7 +14,8 @@
   "exports": {
     ".": "./src/index.js",
     "./client": "./src/client.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "engines": {
     "node": ">=18",
@@ -35,6 +36,8 @@
     }
   },
   "files": [
+    "icon.svg",
+    "locale",
     "src/index.js",
     "src/client.js",
     "cordis.patch.yml",
@@ -72,5 +75,6 @@
   "homepage": "https://github.com/KannaKuron/dsh-ide-git",
   "bugs": {
     "url": "https://github.com/KannaKuron/dsh-ide-git/issues"
-  }
+  },
+  "icon": "./icon.svg"
 }

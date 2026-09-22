@@ -1063,7 +1063,17 @@ const REPO_LIST_LIMIT = 60
  *  collapses to one row. */
 function pathIdentity(value) {
   const normalized = value.replace(/\\/g, '/').replace(/\/+$/, '')
-  return process.platform === 'win32' ? normalized.toLowerCase() : normalized
+  const key = process.platform === 'win32' ? normalized.toLowerCase() : normalized
+  /* realpath collapses producer spellings of one checkout: git's
+   * --show-toplevel resolves symlinks (/private/var on macOS) while a
+   * directory walk keeps the spelling it was handed (/var), and without this
+   * the same submodule arrived as two rows. An unresolvable path falls back
+   * to the slash-normalized form. */
+  try {
+    return realpathSync(key).replace(/\\/g, '/').replace(/\/+$/, '')
+  } catch {
+    return key
+  }
 }
 
 /** One repository row shipped to the client (`kind` drives the picker badge). */
