@@ -76,8 +76,8 @@
 
 ## 文档规范
 
-- **README 顶部顺序:标题 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
-- **不要挂收录徽章:本插件尚未被 awesome-dsh-plugin 收录**(v0.3.2 加过、v0.3.3 换过实现、v0.3.4 全部撤掉)——没上架就挂人家的 badge 是**虚假宣称**,用户明确纠正过。**收录之后**再加,并且用 shields.io 写法而不是第三方 SVG:`awesome-dsh-plugin.com/badge.svg` 内部用 `<text>` 定位、文字与勾只留 6px 且依赖 Verdana 字宽,换字体就顶在一起(v0.3.3 真机跑版);shields.io 在服务端按固定字体算好宽度。
+- **README 顶部顺序:标题 → 收录徽章 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
+- **收录徽章可以挂**(2026-09-23 起 awesome-dsh-plugin 已收录本插件,收录 PR 已合并):两份 README 标题下挂官方 badge,与 `dsh-better-workspace` 同款:`[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)`。历史教训仍然有效:**未收录时挂徽章 = 虚假宣称**(v0.3.2 加过、v0.3.4 撤掉,用户明确纠正过),所以收录状态变化时同步更新本条。写法备注:`badge.svg` 内部用 `<text>` 定位、依赖 Verdana 字宽,若真机渲染挤压可换 shields.io 写法(服务端按固定字体算宽度;v0.3.3 曾因此换过一次)。
 - 效果图走 `docs/screenshots/`,中文页与英文页引用同一批文件,配图段落用「左图右说明」的两列表格(见 `## 效果` / `## Screenshots`)。
 
 ## 与 dsh-better-sidebar 生态的关系
