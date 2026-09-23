@@ -111,7 +111,7 @@ dsh plugin --profile web add dsh-better-sidebar
 
 ### 兼容性
 
-- `engines.dsh` 声明为 **`>=0.1.2-0`** ——0.1.2 起的全部版本都算,包括 `0.1.5-rc` / `0.1.6-alpha` 这类**预发布**(纯 semver 下预发布默认不匹配任何范围,所以起点写成了 `-0`)。
+- `engines.dsh` 声明为 **`>=0.1.2-0`** ——0.1.2 起的全部版本都算,包括 `0.1.5-rc` / `0.1.6-alpha` 这类**预发布**(纯 semver 下预发布默认不匹配任何范围,所以起点写成了 `-0`)。**同一个值也是 `@deepseek-ai/dsh` 的 peerDependencies**:dsh 0.1.7 起会强制执行 peer 里的 `@deepseek-ai/dsh*` 范围(不满足就不加载),而 `engines` 没有任何读取方——写进 peer 才算数。范围是**开放下界、不封顶**,所以 0.1.7 起的任何宿主(含 rc / alpha 预发布)都不会因此被禁用;0.1.0–0.1.6 没有这套检查,完全不受影响。
 - 只依赖三样长期契约:宿主半的 `webServer.register({ kind: 'prefix' })` 路由、客户端半的 `window.__ModuleLoader__.load({ id, factory })`、以及客户端的 `slots` 服务。**不引用 `ui-primitives` 图标集**(图标全是自带 SVG),所以宿主删改图标不会波及本插件。
 - 底座是**可选** peer:没装、装坏了、或它自己要等上游修,都不影响本插件挂到原生右侧栏。
 

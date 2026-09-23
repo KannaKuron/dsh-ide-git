@@ -3,6 +3,19 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.7.2 — 2026-09-23
+
+**类型**:chore(适配 dsh 0.1.7-rc.1:契约复核零漂移 + 补齐版本兼容性声明与两条回归守卫)
+
+- **rc.1 契约复核(结论:本插件消费的官方契约零漂移,`src/` 未改一行)**。`apps/web` / `packages/host/frontend-static` / `packages/host/webserver` / `packages/client/*` 在 `dsh-v0.1.7-alpha.2..dsh-v0.1.7-rc.1` 区间只有 `package.json` 版本号变化——`<base href="./">` 的注入点(`packages/host/frontend-static/src/index.ts:116-120`,插在 head 开标签之后、所有资源引用之前)与 `ctx.webServer.register({ kind, path, handler })`(`packages/host/webserver/src/index.ts:166`)逐字节未变,所以 v0.7.1 的挂载相对 `API_BASE` 在 rc.1 依旧正确(真机证据见下)。`sidebar.right.pane.tab`(keyed/session)、`SidebarRightTabDefinition` / `SidebarRightGuideEntry`(`packages/client/ui-sidebar-right/src/client/tab-registry.ts:61-135`)、`WorkspaceView{path,sessionIds}`(`packages/api/workspace-controller/src/types.ts:18-30`)、`locale.register(ns, dicts)` 与 `dsh.client.inject` 四个包名全部健在。
+- **新增 `@deepseek-ai/dsh` peer 声明(取值与 `engines.dsh` 逐字相同:`>=0.1.2-0`)**。rc.1 起版本兼容性检查是**唯一被强制执行**的机制,而它只读 `peerDependencies` 里 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` 的 range(`packages/boot/app-boot/src/plugin-compatibility.ts:61-80`),`engines.dsh` 一个读取方都没有——声明留在 engines 里等于永远被放行,等于把这个事实写在了没人看的字段上。范围取**开放下界**:0.1.7 是唯一带检查机制的版本线,`>=0.1.2-0` 对 0.1.7 起的任何宿主(含 rc/alpha 预发布)恒真,所以**不可能**因此禁用一台本来能跑本插件的宿主;反过来,枚举式 range 会踩 `dsh-any-background@0.3.0` 在 rc.1 上被拒、用户被迫授予版本例外的那个坑。官方 profile 模板自带 `autoInstallPeers: false`(`packages/boot/app-boot/src/profile.ts:200-211`,注释原话:插件的 peer 走运行时解析、不装第二份),桌面端同理(`apps/desktop/src/project-manager.ts:33`),所以这条 peer 不会被 pnpm 拉进 profile。**同时把该 peer 标进 `peerDependenciesMeta.optional`(与已有的 `dsh-better-sidebar` 同款)**:门禁只读 `peerDependencies`、不读 meta,但一旦有人用 `autoInstallPeers` 默认开启的 pnpm/npm 工程安装本包,包管理器会去 registry 解析这个 range——而 `@deepseek-ai/dsh` 已发布的 26 个版本**全是 prerelease**、普通 range 按 semver 排除 prerelease,会让整单安装以 `ERR_PNPM_NO_MATCHING_VERSION` 失败;optional peer 不会被自动安装,危害消失而门禁照常(冒烟断言锁死)。
+- **退回一条:`engines.dsh` 的旧宿主语义不变**。0.1.0…0.1.6 没有兼容性检查,peer 对它们完全不可见,双 era 运行时探测一行未动。
+- **冒烟补两条守卫(防回归)**。① `exports["./package.json"]` 必须存在:v0.5.6 的真身——桌面渲染进程走 `createRequire(baseUrl).resolve('<pkg>/package.json')` 回退分支(`packages/client/modules/src/index.ts:886`,遵守 exports map),缺这一行客户端半**永不进启动图且宿主日志全绿**;这个坑当年只修了、没上锁。② `@deepseek-ai/dsh` peer 必须与 `engines.dsh` 同值、且是 `>=X.Y.Z-0` 开放下界,并对 `0.1.2 / 0.1.6 / 0.1.7-alpha.1 / 0.1.7-rc.1 / 0.2.0` 逐版断言真能满足——把「不许再枚举版本」写成测试,而不是注释。
+- **挂载相对那条断言补上桌面文档基址**:桌面渲染进程 `dsh-app://app/` 不注入 `<base>`(官方架构笔记 `2026-09-14-web-document-relative-app-routes.md` 第 25 行:该 origin 的文档目录本来就是根),所以相对写法必须与它取代的绝对写法解析出**同一个 URL**;v0.7.1 只在文字里断言过「桌面端语义不变」,现在锁进测试。
+- **验证**:`npm test` 58/58 绿;`node scripts/ssr-check.mjs` 通过;`node scripts/layout-probe.mjs`(隔离实例 + 真数据)十一档宽度 chrome 正确、零 pageerror;真机双通道见下条。
+- **真机(rc.1 = 0.1.7-rc.1-46a7f68,隔离 DSH_HOME + 3114/3116/3117,演示仓库)**:原生通道面板满数据渲染(rail 13 按钮 / 分支行 11 / 引用 13 / 图谱节点 99 / 提交 35 / 变更 5 行),零 pageerror、零 console error;底座通道(dsh-better-sidebar 0.19.1)侧栏页签条里 **Git** 页签在列、点开同样是 13/11/13/99/35/5 的满数据面板;严格剥前缀反代(`/dsh/*` 外一律 404,官方 `apps/web/tests/prefix-proxy.ts` 同款)下 `document.baseURI` = 挂载目录,**挂载相对 fetch 200 ok=true repos=1**,而旧式绝对 `/dsh-ide-git/api/repos` 被反代 404(issue #4 的失败形态),证明 v0.7.1 的修法在 rc.1 依旧必需且有效。
+- **已知上游问题(与本插件无关,已复现)**:npm 上的 `dsh-better-sidebar@0.19.1` 在 0.1.6 起就注册不了 `conversation.chat.turnTail`——该槽在 0.1.5-rc.1 是 `kind: 'chain'`,0.1.6-alpha.2 起改成 `kind: 'list'`,而 rc.1 的 `packages/client/ui-slots/src/index.ts:1230` 要求 list 槽必须带 `options.id`,底座的 `src/client/intercept.tsx:113-114` 只给了 `select`。结果:客户端 apply 抛错、整个 shell 卡在「选择工作区」。本次仅在我自己的隔离 profile 里给底座副本补了 `id` 以完成底座通道验证(**用户 profile 一字未动**);底座发新版前,rc.1 上装了 0.19.1 的实例建议先禁用底座,本插件会自动落到原生右侧栏。
+
 ## v0.7.1 — 2026-09-23
 
 **类型**:fix(前端子路径访问支持;issue #4,by @shuangji66)

@@ -53,6 +53,44 @@ test('every published entry exists on disk', () => {
   }
   assert.equal(pkg.exports['.'], './' + pkg.main)
   assert.equal(pkg.exports['./client'], './src/client.js')
+  // The Electron renderer has no loader-internal resolver, so client-module
+  // discovery falls back to createRequire(baseUrl).resolve('<pkg>/package.json')
+  // — which honours the exports map. Without this key the client half never
+  // enters the boot graph and every host log stays green (v0.5.6, issue #2).
+  assert.equal(pkg.exports['./package.json'], './package.json')
+})
+
+test('the dsh peer survives the runtime compatibility check', () => {
+  // dsh 0.1.7+ enforces peerDependencies entries named @deepseek-ai/dsh* and
+  // ignores engines.dsh entirely (packages/boot/app-boot/src/plugin-compatibility.ts),
+  // so the plugin's floor has to live in BOTH fields with the same value.
+  const peer = pkg.peerDependencies['@deepseek-ai/dsh']
+  assert.equal(peer, pkg.engines.dsh, 'the dsh peer must mirror engines.dsh exactly')
+  // Open floor, prerelease-aware ('-0'): every host that can enforce the check
+  // is 0.1.7+, so a floor of 0.1.2-0 can never disable a host the plugin runs
+  // on, and a missing ceiling keeps a future minor from rejecting it the way
+  // version-enumerating peers did (dsh-any-background@0.3.0 on rc.1).
+  const floor = /^>=(\d+)\.(\d+)\.(\d+)-0$/.exec(peer)
+  assert.ok(floor, 'the dsh peer must stay an open >=X.Y.Z-0 floor: ' + peer)
+  const required = floor.slice(1).map(Number)
+  const satisfies = (version) => {
+    const m = /^(\d+)\.(\d+)\.(\d+)/.exec(version)
+    assert.ok(m, 'unparsable version ' + version)
+    const got = m.slice(1).map(Number)
+    for (let i = 0; i < 3; i += 1) {
+      if (got[i] !== required[i]) return got[i] > required[i]
+    }
+    return true
+  }
+  for (const version of ['0.1.2', '0.1.6', '0.1.7-alpha.1', '0.1.7-rc.1', '0.2.0']) {
+    assert.ok(satisfies(version), 'the dsh peer would reject ' + version)
+  }
+  // OPTIONAL keeps the gate intact while removing the install hazard: the gate
+  // reads peerDependencies only, but a package manager with autoInstallPeers
+  // (pnpm's default) resolves the range against the registry — and every
+  // published @deepseek-ai/dsh version is a prerelease, which a plain range
+  // excludes (ERR_PNPM_NO_MATCHING_VERSION for the whole install).
+  assert.equal(pkg.peerDependenciesMeta?.['@deepseek-ai/dsh']?.optional, true)
 })
 
 test('cordis patch mounts exactly one row named dsh-ide-git', () => {
@@ -101,6 +139,14 @@ test('client API base is mount-relative (sub-path support, issue #4)', () => {
     new URL(base + '/repos', 'http://dsh.internal/').pathname,
     '/dsh-ide-git/api/repos',
     'at the origin root the call must keep today\'s upstream path',
+  )
+  // The desktop renderer is the other document owner: it loads dsh-app://app/
+  // and injects no <base> (its document directory already is the root), so the
+  // relative form has to resolve to exactly the absolute form it replaced.
+  assert.equal(
+    new URL(base + '/repos', 'dsh-app://app/').href,
+    new URL('/' + base + '/repos', 'dsh-app://app/').href,
+    'the desktop document base must not change what the call resolves to',
   )
 })
 
