@@ -81,6 +81,29 @@ test('client half requires only baseline modules', () => {
   }
 })
 
+test('client API base is mount-relative (sub-path support, issue #4)', () => {
+  // dsh 0.1.7 serves the shell with <base href="./">: document.baseURI is the
+  // mount the page loaded from, and fetch() resolves relative URLs against it.
+  // An origin-absolute base ('/dsh-ide-git/api') would escape the mount and
+  // 404 behind any strict prefix-stripping proxy.
+  const match = client.match(/const API_BASE = '([^']+)'/)
+  assert.ok(match, 'API_BASE declaration missing')
+  const base = match[1]
+  assert.ok(!base.startsWith('/'), 'API_BASE must be document-relative, not origin-absolute: ' + base)
+  // Resolve the SHIPPED constant exactly the way the browser does, under both
+  // serving shapes: a prefix-stripping proxy mount and the origin root.
+  assert.equal(
+    new URL(base + '/repos', 'http://dsh.internal/dsh/').pathname,
+    '/dsh/dsh-ide-git/api/repos',
+    'under a sub-path mount the call must stay inside the mount',
+  )
+  assert.equal(
+    new URL(base + '/repos', 'http://dsh.internal/').pathname,
+    '/dsh-ide-git/api/repos',
+    'at the origin root the call must keep today\'s upstream path',
+  )
+})
+
 test('client half has two doors: better-sidebar first, native right sidebar as fallback', () => {
   assert.match(client, /const TAB_ID = 'dsh-ide-git:panel'/)
   assert.match(client, /single: true/)

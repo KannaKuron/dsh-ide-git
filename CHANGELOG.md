@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.7.1 — 2026-09-23
+
+**类型**:fix(前端子路径访问支持;issue #4,by @shuangji66)
+
+- **现象**:dsh 0.1.7 起 index 注入 `<base href="./">`(文档 base 冻结为页面加载所在的挂载目录),官方支持「源站根目录 + 剥前缀反代子路径挂载」两种形态;本插件客户端 `API_BASE = '/dsh-ide-git/api'` 是**源站绝对路径**,在子路径挂载下 fetch 会逃出挂载前缀(`/<挂载>/dsh-ide-git/api/*` 变成 `/dsh-ide-git/api/*`),被严格反代 404。
+- **修复**:`API_BASE` 改为**文档相对**的 `'dsh-ide-git/api'`——fetch 按 `document.baseURI` 解析,与宿主自家客户端姿势一致(file-upload 的 `FILE_UPLOAD_ROUTE` 去前导斜杠 + document base 解析)。挂载内落在 `<挂载>/dsh-ide-git/api/*`(剥前缀后正中宿主注册的上游路由),源站根目录解析结果与旧版逐字节相同。**宿主半零改动**;桌面端(同构 shell)语义不变。
+- **验证**:冒烟新增回归测试「client API base is mount-relative」(断言常量不得以 `/` 开头 + 以浏览器同款 `new URL` 数学在 `/dsh/` 挂载与源点根两种 base 下真实解析),57/57 全绿;`ssr-check` 通过;真机验证用 npm 发行版 `@deepseek-ai/dsh@0.1.7-alpha.2` + 独立 DSH_HOME(3099)+ 严格剥前缀代理(4099,`/dsh/*` 外一律 404):挂载内相对 fetch **HTTP 200 ok=true**、旧式绝对 fetch **404**(精确复现 issue #4)、源站根目录新旧 fetch 均通(向后兼容)。UI 层挂载验证受阻于依赖底座 **dsh-better-sidebar(omdsh-dev)同款绝对路径 fetch**(`/sidebar/api/shell.get` 等在挂载下 404)——上游问题,与本插件无关,已另行反馈。
+- 相关:[issue #4](https://github.com/KannaKuron/dsh-ide-git/issues/4)。
+
 ## v0.7.0 — 2026-09-22
 
 **类型**:feat(适配 dsh v0.1.7-alpha.1 展示面)

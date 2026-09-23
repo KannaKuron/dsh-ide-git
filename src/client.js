@@ -28,7 +28,15 @@ window.__ModuleLoader__.load({
     const useCallback = React.useCallback
     const useLayoutEffect = React.useLayoutEffect
 
-    const API_BASE = '/dsh-ide-git/api'
+    /* API base is MOUNT-RELATIVE (no leading slash). dsh 0.1.7 serves the
+       shell with <base href="./">, so document.baseURI is the mount the page
+       was loaded from — the origin root, or a prefix-stripping proxy's sub-path
+       (issue #4). fetch() resolves this relative path against the document
+       base, so the panel's calls land on /dsh-ide-git/api at the origin root
+       and on <mount>/dsh-ide-git/api under a sub-path, both matching the route
+       the host half registered at its upstream path. An origin-absolute base
+       would escape the mount and 404 behind any strict proxy. */
+    const API_BASE = 'dsh-ide-git/api'
     const TAB_ID = 'dsh-ide-git:panel'
     /* The namespace this plugin's dictionaries are published under in the DSH
        locale registry. */
