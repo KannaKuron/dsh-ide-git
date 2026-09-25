@@ -167,8 +167,20 @@ async function readState() {
         now: Number(gutter.getAttribute('aria-valuenow')),
         min: Number(gutter.getAttribute('aria-valuemin')),
         max: Number(gutter.getAttribute('aria-valuemax')),
+        tabIndex: gutter.getAttribute('tabindex'),
         box: box(gutter),
+        next: gutter.nextElementSibling === null ? null : gutter.nextElementSibling.getAttribute('data-pane'),
       })),
+      // A divider that occupies no space while still announcing a window of
+      // 0..0 is a dead control and must not exist at all (v0.8.0 shipped one in
+      // the columns chrome, focusable, with aria-valuenow === aria-valuemax === 0).
+      deadGutters: [...root.querySelectorAll('.dig-gutter')].filter((gutter) => {
+        const rect = gutter.getBoundingClientRect()
+        const now = Number(gutter.getAttribute('aria-valuenow'))
+        const max = Number(gutter.getAttribute('aria-valuemax'))
+        return rect.width === 0 || rect.height === 0 || (now === 0 && max === 0)
+      }).length,
+      paneStyles: [...root.querySelectorAll('[data-pane]')].map((node) => node.getAttribute('data-pane') + ':' + String(node.getAttribute('style'))),
       stored: window.localStorage.getItem('dsh-ide-git.panes.v1'),
     }
   })
@@ -206,8 +218,12 @@ async function dragGutter(index, delta) {
 function travel(gutter, current) {
   const up = gutter.max - current
   const down = current - gutter.min
-  if (up >= 40) return Math.min(70, Math.max(20, up - 10))
-  if (down >= 40) return -Math.min(70, Math.max(20, down - 10))
+  /* Growth first, however small the window is: a ceiling below the current size
+     is exactly the defect this probe hunts, so a cramped panel must still be able
+     to give the pane a few pixels. Only a pane that is already AT its ceiling is
+     moved the other way, to show the divider still works. */
+  if (up >= 8) return Math.min(70, up)
+  if (down >= 8) return -Math.min(70, down)
   return 0
 }
 
@@ -335,8 +351,11 @@ try {
 
   /* ---------- 2. wide-and-flat surface: its own bucket ---------- */
 
-  await page.setViewportSize({ width: 1920, height: 420 })
-  await settle(1600)
+  // 1600x520 is the size the reported bug was reproduced at: a 674-719px column
+  // where 200 + 290 + 240 cannot all hold, so the old ceiling came out BELOW the
+  // tree's own 201 and the first drag to the right dragged it down to 141.
+  await page.setViewportSize({ width: 1600, height: 520 })
+  await settle(1800)
   const wide0 = await readState()
   log('wide start: panel ' + wide0.panel.w + 'x' + wide0.panel.h + ' body ' + wide0.body.w + 'x' + wide0.body.h
     + ' chrome=' + wide0.chrome + ' bucket=' + bucketOf(wide0) + ' tree=' + wide0.tree.w + 'x' + wide0.tree.h)
@@ -351,15 +370,23 @@ try {
   rows.push({ step: 'wide default', bucket: wideBucket, tree: wide0.tree.w + 'px', stored: 'none (own bucket)' })
 
   const wideFirst = wide0.gutters[0]
+  check(wide0.deadGutters === 0, 'no dead divider in the columns chrome (' + wide0.deadGutters + ' found)')
+  check(wideFirst.now <= wideFirst.max && wideFirst.now >= wideFirst.min,
+    'the divider announces a window it is actually inside (now ' + wideFirst.now + ' in ' + wideFirst.min + '..' + wideFirst.max + ')')
+  // The pane must still have ROOM TO GROW here: a ceiling at or below the box it
+  // already occupies is the pinning bug, not a clamp.
+  check(wideFirst.max > Math.round(wide0.tree.w) + 8,
+    'the column ceiling leaves room to grow (' + wide0.tree.w + 'px wide, ceiling ' + wideFirst.max + ')')
   const wideDelta = travel(wideFirst, Math.round(wide0.tree.w))
-  check(wideDelta !== 0, 'the column divider has room to move (current ' + wide0.tree.w + 'px, limits '
-    + wideFirst.min + '..' + wideFirst.max + ')')
+  check(wideDelta > 0, 'and the probe therefore drags it WIDER (delta ' + wideDelta + ')')
   await dragGutter(0, wideDelta)
   const wide1 = await readState()
   const wideMoved = wide1.tree.w - wide0.tree.w
   log('wide after drag ' + wideDelta + ': tree width ' + wide0.tree.w + ' -> ' + wide1.tree.w + 'px (limits '
     + wide1.gutters[0].min + '..' + wide1.gutters[0].max + ')')
-  check(wideMoved * Math.sign(wideDelta) >= Math.min(20, Math.abs(wideDelta) / 2), 'the vertical divider resized the tree by ' + wideMoved + 'px')
+  check(wideMoved >= Math.max(8, wideDelta - 4), 'dragging right GREW the tree by ' + wideMoved + 'px (never shrank it)')
+  check(wide1.gutters[0].now <= wide1.gutters[0].max && wide1.gutters[0].now >= wide1.gutters[0].min,
+    'and the aria window stayed consistent (now ' + wide1.gutters[0].now + ' in ' + wide1.gutters[0].min + '..' + wide1.gutters[0].max + ')')
   const wideStore = stored(wide1)
   check(wideStore.panes[wideBucket] !== undefined, 'the wide drag was stored under ' + wideBucket)
   check(wideStore.panes[tallBucket].tree === tallRatio, 'the tall bucket was not touched by the wide drag')
@@ -371,9 +398,12 @@ try {
     const changesDelta = travel(wide1.gutters[1], Math.round(wide1.changes.w))
     check(changesDelta !== 0, 'the changes divider has room to move (limits '
       + wide1.gutters[1].min + '..' + wide1.gutters[1].max + ')')
-    await dragGutter(1, changesDelta)
+    // `side: next` again: the pane sits to the RIGHT of the divider, so the screen
+    // delta that grows it is the negative one.
+    await dragGutter(1, -changesDelta)
     const wide2 = await readState()
-    check(Math.abs(wide2.changes.w - wide1.changes.w) >= 20,
+    const changesMoved = wide2.changes.w - wide1.changes.w
+    check(changesMoved * Math.sign(changesDelta) >= Math.max(5, Math.abs(changesDelta) - 6),
       'the main↔changes divider resizes the changes column (' + wide1.changes.w + ' -> ' + wide2.changes.w + 'px)')
     check(stored(wide2).panes[wideBucket].changes !== undefined, 'and it is stored under the same bucket')
     rows.push({ step: 'wide changes dragged', bucket: wideBucket, tree: wide2.tree.w + 'px', stored: 'tree+changes' })
@@ -414,6 +444,45 @@ try {
   rows.push({ step: 'after two ArrowDown', bucket: tallBucket, tree: nudged.tree.h + 'px', stored: 'kept' })
 
   await page.locator('.dig-root').first().screenshot({ path: join(outDir, 'tall-nudged.png') })
+
+  /* ---------- 4b. the history↔diff divider really resizes the diff ---------- */
+
+  await page.setViewportSize({ width: 1500, height: 1000 })
+  await settle(1800)
+  const row = page.locator('.dig-root:visible .dig-changes-list .dig-row-file').first()
+  check(await row.count() > 0, 'the changes pane offers a file to diff')
+  if (await row.count() > 0) {
+    await row.click({ timeout: 8000 })
+    await settle(2500)
+  }
+  const diff0 = await readState()
+  log('diff: chrome=' + diff0.chrome + ' diff=' + (diff0.diff === null ? 'none' : diff0.diff.h + 'px')
+    + ' dividers=' + diff0.gutters.length + ' dead=' + diff0.deadGutters)
+  check(diff0.diff !== null, 'opening a file renders the diff pane')
+  check(diff0.deadGutters === 0, 'and no dead divider appeared with it (' + diff0.deadGutters + ')')
+  const diffGutterIndex = diff0.gutters.map((entry) => entry.next).indexOf('diff')
+  check(diffGutterIndex >= 0, 'the diff pane has its own divider (index ' + diffGutterIndex + ')')
+  if (diff0.diff !== null && diffGutterIndex >= 0) {
+    const handle = diff0.gutters[diffGutterIndex]
+    const diffDelta = travel(handle, Math.round(diff0.diff.h))
+    check(handle.max > handle.min, 'the diff divider has a usable window (' + handle.min + '..' + handle.max + ')')
+    check(diffDelta !== 0, 'and the probe found a direction to move it (' + diffDelta + ')')
+    // The diff divider is a `side: next` one (the pane it sizes sits BELOW it), so
+    // a screen drag upwards is what grows the diff.
+    await dragGutter(diffGutterIndex, -diffDelta)
+    const diff1 = await readState()
+    const moved = diff1.diff === null ? 0 : diff1.diff.h - diff0.diff.h
+    log('diff after drag ' + diffDelta + ': height ' + diff0.diff.h + ' -> ' + (diff1.diff === null ? 'gone' : diff1.diff.h)
+      + 'px, style=' + JSON.stringify(diff1.paneStyles.filter((entry) => entry.indexOf('diff:') === 0)))
+    check(moved * Math.sign(diffDelta) >= Math.max(5, Math.abs(diffDelta) - 6),
+      'dragging the diff divider really resized it by ' + moved + 'px (wanted ' + diffDelta + ')')
+    check(diff1.paneStyles.some((entry) => entry.indexOf('diff:height:') === 0 || entry.indexOf('diff: height:') >= 0),
+      'the diff pane carries the inline size the drag wrote')
+    const diffStore = stored(diff1)
+    check(diffStore.panes[tallBucket] !== undefined && typeof diffStore.panes[tallBucket].diff === 'number',
+      'and pointerup stored the diff ratio under ' + tallBucket)
+    rows.push({ step: 'diff divider', bucket: tallBucket, tree: diff1.diff === null ? 'gone' : diff1.diff.h + 'px', stored: 'diff kept' })
+  }
 
   /* ---------- 5. the narrow panel: overlays must still fit inside it ---------- */
 

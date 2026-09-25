@@ -3697,6 +3697,13 @@ window.__ModuleLoader__.load({
     }
     const PANE_MAIN_MIN_W = 240
     const PANE_MAIN_MIN_H = 150
+    /* The reserve above is the IDEAL the clamp aims for. When the panel is simply
+       too small for every default at once, aiming for it would put a pane's
+       ceiling BELOW the box that pane already occupies — and the first drag would
+       then shrink it instead of growing it. Below that point the middle pane
+       keeps this hard floor instead, and the pane's own current size always wins
+       (see paneGeometry). */
+    const PANE_MAIN_FLOOR_PX = 120
     const PANE_HISTORY_MIN_H = 120
     /* Hit area of one gutter, and how many of them sit in the body. The
        history↔diff separator lives inside the middle pane, so it is not counted
@@ -3800,16 +3807,28 @@ window.__ModuleLoader__.load({
       for (const key of ['changes', 'tree', 'diff']) {
         if (keys.indexOf(key) < 0) continue
         const spec = PANE_LIMITS[chrome + ':' + key]
-        let high = spec.max
+        const current = sizeOf(key)
+        let ceiling = spec.max
         if (key === 'diff') {
           const main = space - sizeOf('changes') - sizeOf('tree') - PANE_GUTTER_PX
-          high = Math.min(high, main - PANE_HISTORY_MIN_H)
+          ceiling = Math.min(ceiling, main - PANE_HISTORY_MIN_H)
         } else {
-          let taken = reserve
+          let taken = 0
           for (const other of keys) { if (other !== key && other !== 'diff') taken += sizeOf(other) }
-          high = Math.min(high, space - taken)
+          /* Two tiers, because one number cannot serve both jobs. The IDEAL keeps
+             the middle pane at its reserve — that is what a roomy panel gets. The
+             relaxed tier only kicks in when the ideal would land BELOW the box
+             this pane already occupies (a 674px column cannot hold 200 + 290 + 240
+             at once), and it exists so the clamp degrades to "you may not grow
+             much" instead of "the first drag to the right shrinks you". */
+          const ideal = space - reserve - taken
+          ceiling = Math.min(ceiling, current > ideal ? space - PANE_MAIN_FLOOR_PX - taken : ideal)
         }
-        high = Math.max(spec.min, Math.round(high))
+        /* The clamp may refuse to GROW a pane; it may never shrink one the user
+           did not touch — so the ceiling is never below the pane's current box,
+           and the aria window says exactly that. */
+        const cap = Math.max(spec.max, Math.round(current))
+        const high = Math.min(cap, Math.max(spec.min, Math.round(ceiling), Math.round(current)))
         limits[key] = { min: spec.min, max: high }
         const ratio = ratios[key]
         if (typeof ratio === 'number' && Number.isFinite(ratio)) {
@@ -5232,21 +5251,31 @@ window.__ModuleLoader__.load({
         return paneByWidth ? { width: px + 'px', maxWidth: px + 'px' } : { height: px + 'px', maxHeight: px + 'px' }
       }
 
-      const gutter = (key, side) => E(Gutter, {
+      /* A divider is a control, so it only exists when it can actually move
+         something: no pane of that key in this chrome, or a window with no travel
+         at all, means no element — and therefore no tab stop either (v0.8.0 shipped
+         a 0x0 focusable separator in the columns chrome that way). */
+      const gutter = (key, side) => {
+        const limit = paneLayout.limits[key]
+        if (limit === undefined || limit.max <= limit.min) return null
+        return E(Gutter, {
         key: 'gutter-' + key,
         t: t,
         nameKey: PANE_NAME_KEYS[key],
         vertical: paneByWidth,
         side: side,
         active: paneDragging === key,
-        value: Math.round(paneLayout.effective[key] === undefined ? 0 : paneLayout.effective[key]),
-        min: paneLayout.limits[key] === undefined ? 0 : paneLayout.limits[key].min,
-        max: paneLayout.limits[key] === undefined ? 0 : paneLayout.limits[key].max,
+        // Now is clamped into [min, max]: an aria window the panel contradicts is
+        // worse than no window at all.
+        value: Math.min(Math.max(Math.round(paneLayout.effective[key] === undefined ? 0 : paneLayout.effective[key]), limit.min), limit.max),
+        min: limit.min,
+        max: limit.max,
         onStart: () => setPaneDragging(key),
         onDrag: (px) => dragPane(key, px),
         onEnd: endPaneDrag,
         onReset: () => resetPane(key),
-      })
+        })
+      }
 
 // The action rail measures ITSELF, not the panel: how many buttons fit is a
       // function of the strip that holds them (a 1200x300 workbench and a 300x900
@@ -5700,7 +5729,7 @@ window.__ModuleLoader__.load({
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
           })
 
-      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff' },
+      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff') },
         E('div', { className: 'dig-diff-head' },
           E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
           E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null) } }, E(Icon, { name: 'close', size: 12 }))),

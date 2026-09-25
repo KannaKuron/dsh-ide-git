@@ -532,6 +532,7 @@ function paneCore() {
   assert.ok(start >= 0 && end > start, 'the pane sizing core must keep its markers')
   const exported = 'return { PANES_KEY: PANES_KEY, PANE_LIMITS: PANE_LIMITS, PANE_DEFAULTS: PANE_DEFAULTS,'
     + ' PANE_CHROME_KEYS: PANE_CHROME_KEYS, PANE_BUCKETS: PANE_BUCKETS, PANE_GUTTER_PX: PANE_GUTTER_PX,'
+    + ' PANE_MAIN_FLOOR_PX: PANE_MAIN_FLOOR_PX,'
     + ' panBucket: panBucket, normalizePanes: normalizePanes, withPaneRatio: withPaneRatio, paneGeometry: paneGeometry }'
   return new Function(client.slice(start, end) + '\n' + exported)()
 }
@@ -582,7 +583,7 @@ test('normalizePanes drops unknown buckets, unknown keys and out-of-range ratios
   assert.deepEqual(clean.panes['stack:tall'], { tree: 0.3 }, 'the update must not mutate its input')
 })
 
-test('the pane clamps hold at both ends and never squeeze a pane to zero', () => {
+test('the pane clamps hold at both ends and never shrink a pane below its own box', () => {
   const core = paneCore()
   const tall = { width: 500, height: 900 }
 
@@ -592,34 +593,47 @@ test('the pane clamps hold at both ends and never squeeze a pane to zero', () =>
   assert.deepEqual(fresh.overrides, {})
   assert.equal(fresh.bucket, 'stack:tall')
 
-  // Stored ratios become px, and every one of them obeys its own limits.
+  // Stored ratios become px, and every one of them obeys its own limits. With
+  // 0.9 asked for all three, the two stacked panes stop exactly where the middle
+  // pane's hard floor begins: 900 - 16 (gutters) - 120 = 764 for tree + changes.
   const stored = core.normalizePanes({ panes: { 'stack:tall': { tree: 0.9, changes: 0.9, diff: 0.9 } } })
   const geo = core.paneGeometry('stack', tall, stored)
-  // The changes pane asks for 810px and gets 900 - 150 (middle pane) - 324 (the
-  // tree, on its 36% default) - 16 (two gutters) = 410.
-  assert.equal(geo.overrides.changes, 410, 'the changes pane stops where the middle pane begins')
+  assert.equal(geo.overrides.changes, 440, 'the changes pane stops where the middle pane begins')
   assert.equal(geo.overrides.tree, 324, 'the tree gives way to the pane it shares the column with')
   assert.equal(geo.overrides.diff, 120, 'the diff can never eat the history list')
   assert.equal(geo.limits.diff.max, 120)
-  assert.ok(geo.overrides.tree + geo.overrides.changes + 2 * core.PANE_GUTTER_PX <= tall.height)
+  assert.equal(tall.height - geo.overrides.tree - geo.overrides.changes - 2 * core.PANE_GUTTER_PX, core.PANE_MAIN_FLOOR_PX,
+    'the middle pane keeps exactly its hard floor when both stacked panes are maxed')
 
   // Tiny stored ratios clamp UP to the minimums, never to 0.
   const tiny = core.paneGeometry('stack', tall, core.normalizePanes({ panes: { 'stack:tall': { tree: 0.001, changes: 0.001 } } }))
   assert.equal(tiny.overrides.tree, core.PANE_LIMITS['stack:tree'].min)
   assert.equal(tiny.overrides.changes, core.PANE_LIMITS['stack:changes'].min)
 
-  // A huge container does not lift the absolute maxima...
+  // A huge container still stops at the absolute maxima...
   const roomy = core.paneGeometry('columns', { width: 3000, height: 400 },
     core.normalizePanes({ panes: { 'columns:wide': { tree: 1, changes: 1 } } }))
   assert.equal(roomy.overrides.tree, core.PANE_LIMITS['columns:tree'].max)
   assert.equal(roomy.overrides.changes, core.PANE_LIMITS['columns:changes'].max)
-  // ...and a container too small for every minimum still never overflows: the
-  // minima win, the panes simply fill it.
-  const tight = core.paneGeometry('columns', { width: 500, height: 400 },
+  // ...and a container that cannot hold every default at once hands out what is
+  // left, still leaving the middle pane its floor — no overflow.
+  const fit = core.paneGeometry('columns', { width: 700, height: 400 },
     core.normalizePanes({ panes: { 'columns:wide': { tree: 1, changes: 1 } } }))
-  assert.equal(tight.overrides.tree, core.PANE_LIMITS['columns:tree'].min)
-  assert.equal(tight.overrides.changes, core.PANE_LIMITS['columns:changes'].min)
-  assert.ok(tight.overrides.tree + tight.overrides.changes + 2 * core.PANE_GUTTER_PX <= 500)
+  assert.equal(700 - fit.overrides.tree - fit.overrides.changes - 2 * core.PANE_GUTTER_PX, core.PANE_MAIN_FLOOR_PX)
+
+  // The 674px column of the reported bug (issue #5 follow-up): 200 + 290 + 240
+  // cannot all hold, and the OLD ceiling (140) came out below the tree's own 201.
+  // The ceiling now never goes below the box a pane already occupies, so the
+  // first drag to the right can only GROW it.
+  const boxes = { tree: 201, changes: 291 }
+  const pinned = core.paneGeometry('columns', { width: 674, height: 482 }, core.normalizePanes(null), boxes)
+  assert.equal(pinned.bucket, 'columns:wide')
+  assert.ok(pinned.limits.tree.max > boxes.tree, 'the tree keeps room to grow (max ' + pinned.limits.tree.max + ' vs ' + boxes.tree + ')')
+  assert.ok(pinned.limits.tree.max - boxes.tree >= 20, 'and it is a usable step, not a token pixel')
+  assert.ok(pinned.limits.tree.max >= core.PANE_DEFAULTS['columns:tree'].px, 'the ceiling is never below the pane\'s own default')
+  assert.ok(pinned.limits.tree.now === undefined || pinned.limits.tree.now <= pinned.limits.tree.max)
+  assert.equal(674 - 2 * core.PANE_GUTTER_PX - pinned.limits.tree.max - boxes.changes, core.PANE_MAIN_FLOOR_PX,
+    'the relaxed tier still keeps the middle pane its floor')
 
   // A folded tree frees its room instead of reserving it, and has no override.
   const folded = core.paneGeometry('stack', tall, core.normalizePanes({ treeOpen: false, panes: { 'stack:tall': { changes: 1 } } }))
@@ -640,6 +654,27 @@ test('the pane dividers are draggable, touch-safe and keyboard reachable', () =>
   assert.match(client, /onDoubleClick: \(\) => props\.onReset\(\)/)
   assert.match(client, /const step = event\.shiftKey === true \? 32 : 8/)
   assert.match(client, /role: 'separator'/)
+})
+
+test('a divider only exists when it can move something', () => {
+  // v0.8.0 shipped the history↔diff divider as a dead control: it wrote storage
+  // and moved its own aria while the diff pane never got the inline size (the
+  // render ignored it), and the columns chrome — whose key set has no diff pane —
+  // rendered an extra 0x0, all-zero, focusable separator.
+  assert.match(client, /className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle\('diff'\)/,
+    'the diff pane must actually consume the stored size')
+  assert.match(client, /if \(limit === undefined \|\| limit\.max <= limit\.min\) return null/,
+    'no pane in this chrome, or no travel in either direction, means no divider element')
+  assert.match(client, /value: Math\.min\(Math\.max\(Math\.round\(paneLayout\.effective\[key\]/, 'aria-valuenow is clamped into the window it announces')
+  // The columns chrome has no diff key, so its diff divider is never built.
+  const core = paneCore()
+  assert.deepEqual(core.PANE_CHROME_KEYS.columns, ['tree', 'changes'])
+  assert.equal(core.PANE_LIMITS['columns:diff'], undefined, 'and there is no window to hand out for it')
+  const columns = core.paneGeometry('columns', { width: 700, height: 400 }, core.normalizePanes(null), { diff: 150 })
+  assert.equal(columns.limits.diff, undefined, 'paneGeometry reports no diff window in the columns chrome')
+  const stacked = core.paneGeometry('stack', { width: 700, height: 800 }, core.normalizePanes(null), { diff: 150 })
+  assert.ok(stacked.limits.diff !== undefined && stacked.limits.diff.max > stacked.limits.diff.min,
+    'while the stacked chrome hands out a real diff window')
 })
 
 test('every overlay is clamped to the panel it lives in', () => {
