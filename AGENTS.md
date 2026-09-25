@@ -11,12 +11,14 @@
 - GitHub 操作一律用 gh(已认证 KannaKuron)。**npm 发布通道(v0.4.2 起)**:.github/workflows/npm-publish.yml(OIDC:node 24 + id-token: write,零令牌),Trusted Publisher 已登记(repo=KannaKuron/dsh-ide-git,file=npm-publish.yml,permissions=publish);日常发版 = 更新 CHANGELOG → npm version patch/minor → push --tags → gh release create,Release published 自动发 npm;发完 curl -X PUT https://registry.npmmirror.com/dsh-ide-git/sync 同步镜像。v0.4.1 为手动 bootstrap 首版(令牌建包,无 Release)。
 - CI(`.github/workflows/ci.yml`)只跑 `npm test`(smoke + api + graph 三层),不发布任何东西;npm 发布走 npm-publish.yml(Release 触发,见上一条)。
 - 本机联调:把包名加进 profile 的 `dsh.profile.bundles`(依赖指向仓库里的 tarball)→ 客户端半改动硬刷新页面即可,宿主半改动需要重启 `dsh web`(见不变量 11)——**重启由用户自己做**,规则见下一条。
+  - **`dsh plugin add file:<仓库目录>` 装出来的 `node_modules/<pkg>/src/` 与仓库文件是硬链接**(2026-09-26 真实踩到)。想往 `node_modules` 里放一份「改动前」的代码做对比基线时,`git show HEAD:src/client.js > node_modules/<pkg>/src/client.js` 这种就地写入会把**仓库里的实现一起打回 HEAD**(`>` 截断的是同一个 inode,那次丢了约 460 行未提交改动)。正确姿势:先 `rm -f <那个文件>` 断链,再 `cp`/重定向写;验证完再 `rm` + `cp` 换回来。反过来这也是个便利:改仓库 `src/client.js` 后页面刷新即生效,不必重新 `plugin add`。
 - **绝不替用户重启他的实例**(2026-09-14 用户明确要求)。`dsh web`(默认 3080)是用户自己的工作环境:重启会打断他正在进行的回合,而且「什么时候重启」必须由他掌握。
   - 要真机验证 → **自己起隔离实例**:独立 `DSH_HOME`(如 `/Users/kanna/sandbox/dsh-shot-home`)+ 独立端口(3099),验证完**自己杀掉**;3080 上的进程一律不碰。
   - 宿主半改动**只提示**用户(「宿主半改了,需要你重启 `dsh web` 后生效」),不代劳重启。
   - 万不得已动了用户的实例(动手前必须先告知):**收尾时把它杀掉**并说明当前状态,由用户自己重新敲命令启动——绝不留下一个「我们拉起来的」进程冒充他的环境。
   - **收尾清场**:本次启动的任何 `dsh web`(隔离实例、脚本拉起的进程)一个都不留,不留占用端口的孤儿进程(`lsof -tiTCP:<port> -sTCP:LISTEN` 自查)。
 - **两道自检,覆盖面不同**:`scripts/ssr-check.mjs` 渲染的是「还没解析出仓库」的初始态——它**显式不覆盖** rail / 分支树 / 历史 / 变更这些要有数据才出现的 chrome;`scripts/layout-probe.mjs` 才是带真数据的真机渲染(它会捕获 pageerror,面板一崩就以非零码退出)。2026-09-14 的教训:`BranchRow` 里写了 `t('branches.pickHint')` 却没有 `const t = props.t`——空态根本不渲染分支行,所以 ssr-check 全绿,而真机上整个面板被 better-sidebar 的错误边界吞掉、`.dig-root` 压根不出现。**改到「有数据才出现」的代码,必须跑 layout-probe**。
+  - **探针打开面板的选择器随底座版本变**:`dsh-better-sidebar` 0.21 把侧栏卡片渲染成带 `data-sidebar-right-guide-entry="<tab id>"` 的 guide-entry 按钮,**不再渲染 title/description 文案**(旧探针里那个 `span` 文案选择器因此一个都点不到,表现为 `the Git card is not on the sidebar start page`)。现在的写法是先用 `[data-sidebar-right-guide-entry="dsh-ide-git:panel"]`,取不到再回退到旧的描述文案探测;`scripts/panes-probe.mjs` / `scripts/dock-probe.mjs` 沿用同一套。
 
 ## 截图与演示仓库
 

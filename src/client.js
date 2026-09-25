@@ -115,6 +115,11 @@ window.__ModuleLoader__.load({
       'action.showDiff': '显示差异',
       'action.copyPath': '复制路径',
       'action.checkout': '签出',
+      'action.float': '浮动本页',
+      'action.dock': '收回停靠',
+      'action.split': '分栏',
+      'action.fullscreen': '全屏',
+      'action.exitFullscreen': '退出全屏',
       'action.newBranchFrom': '从该分支新建分支...',
       'action.newBranchHere': '在此新建分支...',
       'action.rename': '重命名...',
@@ -271,6 +276,11 @@ window.__ModuleLoader__.load({
       'action.showDiff': 'Show diff',
       'action.copyPath': 'Copy path',
       'action.checkout': 'Checkout',
+      'action.float': 'Float this page',
+      'action.dock': 'Dock back',
+      'action.split': 'Split pane',
+      'action.fullscreen': 'Full screen',
+      'action.exitFullscreen': 'Exit full screen',
       'action.newBranchFrom': 'New branch from here...',
       'action.newBranchHere': 'New branch here...',
       'action.rename': 'Rename...',
@@ -435,6 +445,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
         'action.checkout': '簽出',
+        'action.float': '浮動本頁',
+        'action.dock': '收回停靠',
+        'action.split': '分欄',
+        'action.fullscreen': '全螢幕',
+        'action.exitFullscreen': '結束全螢幕',
         'action.newBranchFrom': '由此新建分支...',
         'action.newBranchHere': '喺呢度新建分支...',
         'action.rename': '重新命名...',
@@ -591,6 +606,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
         'action.checkout': '簽出',
+        'action.float': '浮動本頁',
+        'action.dock': '收回停靠',
+        'action.split': '分割欄',
+        'action.fullscreen': '全螢幕',
+        'action.exitFullscreen': '結束全螢幕',
         'action.newBranchFrom': '由此新建分支...',
         'action.newBranchHere': '在此新建分支...',
         'action.rename': '重新命名...',
@@ -747,6 +767,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
         'action.checkout': '簽出',
+        'action.float': '浮動本頁',
+        'action.dock': '收回停靠',
+        'action.split': '分欄',
+        'action.fullscreen': '全螢幕',
+        'action.exitFullscreen': '結束全螢幕',
         'action.newBranchFrom': '由此新建分支...',
         'action.newBranchHere': '喺呢度新建分支...',
         'action.rename': '重新命名...',
@@ -903,6 +928,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': '差分を表示',
         'action.copyPath': 'パスをコピー',
         'action.checkout': 'チェックアウト',
+        'action.float': 'このページを浮動表示',
+        'action.dock': 'ドックに戻す',
+        'action.split': '分割',
+        'action.fullscreen': '全画面',
+        'action.exitFullscreen': '全画面を終了',
         'action.newBranchFrom': 'ここから新しいブランチ...',
         'action.newBranchHere': 'ここに新しいブランチ...',
         'action.rename': '名前を変更...',
@@ -1059,6 +1089,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': '차이 보기',
         'action.copyPath': '경로 복사',
         'action.checkout': '체크아웃',
+        'action.float': '이 페이지 띄우기',
+        'action.dock': '도킹으로 복귀',
+        'action.split': '분할',
+        'action.fullscreen': '전체 화면',
+        'action.exitFullscreen': '전체 화면 종료',
         'action.newBranchFrom': '여기서 새 브랜치...',
         'action.newBranchHere': '여기에 새 브랜치...',
         'action.rename': '이름 바꾸기...',
@@ -1215,6 +1250,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Diff anzeigen',
         'action.copyPath': 'Pfad kopieren',
         'action.checkout': 'Auschecken',
+        'action.float': 'Diese Seite schweben lassen',
+        'action.dock': 'Zurück andocken',
+        'action.split': 'Teilen',
+        'action.fullscreen': 'Vollbild',
+        'action.exitFullscreen': 'Vollbild beenden',
         'action.newBranchFrom': 'Neuer Branch von hier...',
         'action.newBranchHere': 'Neuer Branch hier...',
         'action.rename': 'Umbenennen...',
@@ -1371,6 +1411,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Afficher le diff',
         'action.copyPath': 'Copier le chemin',
         'action.checkout': 'Extraire',
+        'action.float': 'Détacher cette page',
+        'action.dock': 'Réancrer',
+        'action.split': 'Fractionner',
+        'action.fullscreen': 'Plein écran',
+        'action.exitFullscreen': 'Quitter le plein écran',
         'action.newBranchFrom': 'Nouvelle branche depuis ici...',
         'action.newBranchHere': 'Nouvelle branche ici...',
         'action.rename': 'Renommer...',
@@ -1527,6 +1572,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Показать различия',
         'action.copyPath': 'Скопировать путь',
         'action.checkout': 'Переключиться',
+        'action.float': 'Открепить страницу',
+        'action.dock': 'Вернуть в док',
+        'action.split': 'Разделить',
+        'action.fullscreen': 'Полный экран',
+        'action.exitFullscreen': 'Выйти из полного экрана',
         'action.newBranchFrom': 'Новая ветка отсюда...',
         'action.newBranchHere': 'Новая ветка здесь...',
         'action.rename': 'Переименовать...',
@@ -1683,6 +1733,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Mostrar diff',
         'action.copyPath': 'Copiar caminho',
         'action.checkout': 'Checkout',
+        'action.float': 'Flutuar esta página',
+        'action.dock': 'Reacoplar',
+        'action.split': 'Dividir',
+        'action.fullscreen': 'Tela cheia',
+        'action.exitFullscreen': 'Sair da tela cheia',
         'action.newBranchFrom': 'Nova branch a partir daqui...',
         'action.newBranchHere': 'Nova branch aqui...',
         'action.rename': 'Renomear...',
@@ -1839,6 +1894,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Mostra il diff',
         'action.copyPath': 'Copia percorso',
         'action.checkout': 'Checkout',
+        'action.float': 'Fluttua questa pagina',
+        'action.dock': 'Riaggancia',
+        'action.split': 'Dividi',
+        'action.fullscreen': 'Schermo intero',
+        'action.exitFullscreen': 'Esci da schermo intero',
         'action.newBranchFrom': 'Nuovo branch da qui...',
         'action.newBranchHere': 'Nuovo branch qui...',
         'action.rename': 'Rinomina...',
@@ -1995,6 +2055,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Diff tonen',
         'action.copyPath': 'Pad kopiëren',
         'action.checkout': 'Uitchecken',
+        'action.float': 'Deze pagina losmaken',
+        'action.dock': 'Terugdokken',
+        'action.split': 'Splitsen',
+        'action.fullscreen': 'Volledig scherm',
+        'action.exitFullscreen': 'Volledig scherm sluiten',
         'action.newBranchFrom': 'Nieuwe branch vanaf hier...',
         'action.newBranchHere': 'Nieuwe branch hier...',
         'action.rename': 'Hernoemen...',
@@ -2151,6 +2216,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Pokaż różnice',
         'action.copyPath': 'Kopiuj ścieżkę',
         'action.checkout': 'Przełącz',
+        'action.float': 'Odczep tę stronę',
+        'action.dock': 'Zadokuj z powrotem',
+        'action.split': 'Podziel',
+        'action.fullscreen': 'Pełny ekran',
+        'action.exitFullscreen': 'Wyjdź z pełnego ekranu',
         'action.newBranchFrom': 'Nowa gałąź stąd...',
         'action.newBranchHere': 'Nowa gałąź tutaj...',
         'action.rename': 'Zmień nazwę...',
@@ -2307,6 +2377,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Visa diff',
         'action.copyPath': 'Kopiera sökväg',
         'action.checkout': 'Checka ut',
+        'action.float': 'Friställ sidan',
+        'action.dock': 'Docka tillbaka',
+        'action.split': 'Dela',
+        'action.fullscreen': 'Helskärm',
+        'action.exitFullscreen': 'Avsluta helskärm',
         'action.newBranchFrom': 'Ny gren härifrån...',
         'action.newBranchHere': 'Ny gren här...',
         'action.rename': 'Byt namn...',
@@ -2463,6 +2538,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Farkı göster',
         'action.copyPath': 'Yolu kopyala',
         'action.checkout': 'Çıkar',
+        'action.float': 'Bu sayfayı yüzdür',
+        'action.dock': 'Yuvaya geri al',
+        'action.split': 'Böl',
+        'action.fullscreen': 'Tam ekran',
+        'action.exitFullscreen': 'Tam ekrandan çık',
         'action.newBranchFrom': 'Buradan yeni dal...',
         'action.newBranchHere': 'Burada yeni dal...',
         'action.rename': 'Yeniden adlandır...',
@@ -2619,6 +2699,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Tampilkan diff',
         'action.copyPath': 'Salin jalur',
         'action.checkout': 'Checkout',
+        'action.float': 'Apungkan halaman ini',
+        'action.dock': 'Kembalikan ke dok',
+        'action.split': 'Bagi',
+        'action.fullscreen': 'Layar penuh',
+        'action.exitFullscreen': 'Keluar dari layar penuh',
         'action.newBranchFrom': 'Branch baru dari sini...',
         'action.newBranchHere': 'Branch baru di sini...',
         'action.rename': 'Ganti nama...',
@@ -2775,6 +2860,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'Xem diff',
         'action.copyPath': 'Sao chép đường dẫn',
         'action.checkout': 'Checkout',
+        'action.float': 'Tách trang này',
+        'action.dock': 'Ghép lại vào dock',
+        'action.split': 'Chia',
+        'action.fullscreen': 'Toàn màn hình',
+        'action.exitFullscreen': 'Thoát toàn màn hình',
         'action.newBranchFrom': 'Nhánh mới từ đây...',
         'action.newBranchHere': 'Nhánh mới tại đây...',
         'action.rename': 'Đổi tên...',
@@ -2931,6 +3021,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'عرض الفروق',
         'action.copyPath': 'نسخ المسار',
         'action.checkout': 'تبديل',
+        'action.float': 'تعويم هذه الصفحة',
+        'action.dock': 'الإرجاع إلى الرصيف',
+        'action.split': 'تقسيم',
+        'action.fullscreen': 'ملء الشاشة',
+        'action.exitFullscreen': 'إنهاء ملء الشاشة',
         'action.newBranchFrom': 'فرع جديد من هنا...',
         'action.newBranchHere': 'فرع جديد هنا...',
         'action.rename': 'إعادة التسمية...',
@@ -3087,6 +3182,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'अंतर दिखाएँ',
         'action.copyPath': 'पथ कॉपी करें',
         'action.checkout': 'चेकआउट',
+        'action.float': 'इस पृष्ठ को तैराएँ',
+        'action.dock': 'डॉक पर वापस लाएँ',
+        'action.split': 'विभाजित करें',
+        'action.fullscreen': 'पूर्ण स्क्रीन',
+        'action.exitFullscreen': 'पूर्ण स्क्रीन से बाहर',
         'action.newBranchFrom': 'यहाँ से नई शाखा...',
         'action.newBranchHere': 'यहाँ नई शाखा...',
         'action.rename': 'नाम बदलें...',
@@ -3243,6 +3343,11 @@ window.__ModuleLoader__.load({
         'action.showDiff': 'แสดงความต่าง',
         'action.copyPath': 'คัดลอกพาธ',
         'action.checkout': 'เช็กเอาต์',
+        'action.float': 'ลอยหน้านี้',
+        'action.dock': 'กลับเข้าด็อก',
+        'action.split': 'แบ่งหน้าต่าง',
+        'action.fullscreen': 'เต็มหน้าจอ',
+        'action.exitFullscreen': 'ออกจากเต็มหน้าจอ',
         'action.newBranchFrom': 'แบรนช์ใหม่จากที่นี่...',
         'action.newBranchHere': 'แบรนช์ใหม่ที่นี่...',
         'action.rename': 'เปลี่ยนชื่อ...',
@@ -3490,6 +3595,16 @@ window.__ModuleLoader__.load({
        so a version that adds an action never breaks a stored config. */
     const RAIL_SPECS = [
       { id: 'refresh', icon: 'refresh', key: 'toolbar.refresh', tone: 'accent' },
+      /* View actions. The tree toggle lives here as well as in the compact header
+         because a persisted treeOpen=false would otherwise have no way back:
+         compact is the only chrome with a header button, and it used to render
+         that button only while the tree was OPEN. */
+      { id: 'tree', icon: 'branch', key: 'toolbar.tree', tone: 'secondary' },
+      /* The official right-sidebar dock (float / re-dock / split / full screen).
+         They only render where that service exists — see dockFaceOf(). */
+      { id: 'float', icon: 'float', key: 'action.float', tone: 'accent' },
+      { id: 'split', icon: 'split', key: 'action.split', tone: 'secondary' },
+      { id: 'fullscreen', icon: 'fullscreen', key: 'action.fullscreen', tone: 'secondary' },
       { id: 'newBranch', icon: 'plus', key: 'toolbar.newBranch', tone: 'success' },
       { id: 'checkout', icon: 'checkout', key: 'action.checkout', tone: 'accent' },
       { id: 'delete', icon: 'trash', key: 'action.delete', tone: 'danger' },
@@ -3503,6 +3618,10 @@ window.__ModuleLoader__.load({
       { id: 'push', icon: 'push', key: 'toolbar.push', tone: 'success' },
     ]
     const RAIL_IDS = RAIL_SPECS.map((spec) => spec.id)
+    /* Actions that arrange the view rather than touch the repository, so a running
+       git command never greys them out. */
+    const RAIL_VIEW_IDS = ['tree', 'float', 'split', 'fullscreen']
+    const RAIL_DOCK_IDS = ['float', 'split', 'fullscreen']
 
     function normalizeRail(raw) {
       const source = raw !== null && typeof raw === 'object' ? raw : {}
@@ -3714,6 +3833,66 @@ window.__ModuleLoader__.load({
 
     function writePanes(config) {
       try { window.localStorage.setItem(PANES_KEY, JSON.stringify(normalizePanes(config))) } catch (error) { void error }
+    }
+
+    /* ============================== dock actions ============================== */
+
+    /* ---- dock action core (pure: tests/smoke.mjs slices this block) ---- */
+
+    /* The official right sidebar (ui-sidebar-right) is the only surface that can
+       float a tab out, dock it back, split its pane or take it full screen, and it
+       is NOT there on every host: with dsh-better-sidebar loaded this panel lives
+       in THAT dock, an old host has no sidebarRight at all, and even on a host that
+       ships it the service is only provided once ui-sidebar-right has mounted —
+       reading it during apply() returns undefined (measured on 0.1.7-rc.2). So the
+       service is read at render time, and a missing one means these actions do not
+       exist for this mount: no button, no error, no console noise. */
+    function dockFaceOf(ctx) {
+      if (ctx === null || ctx === undefined || typeof ctx.get !== 'function') return null
+      let service
+      try { service = ctx.get('sidebarRight') } catch (error) { return null }
+      if (service === null || service === undefined || typeof service !== 'object') return null
+      if (typeof service.float !== 'function' || typeof service.dock !== 'function') return null
+      return service
+    }
+
+    /* What this mount can offer. `dock` is the wiring handed down to the panel
+       (null when nothing is wired, e.g. the better-sidebar door), `floatPaneId` is
+       the floating pane the panel is currently drawn in, read from the float
+       layer's own marker. The face publishes operations only — no layout snapshot —
+       so the float state has to come from there. */
+    function dockActionState(dock, floatPaneId) {
+      const wired = dock !== null && typeof dock === 'object' && typeof dock.tabId === 'string'
+        && dock.tabId !== '' && dock.service !== null && typeof dock.service === 'object'
+      const floating = typeof floatPaneId === 'string' && floatPaneId !== ''
+      return {
+        wired: wired,
+        floating: floating,
+        float: wired,
+        /* A float panel hosts exactly one tab: splitting it is not a thing. */
+        split: wired && floating === false,
+        fullscreen: wired && typeof dock.service.toggleFullscreen === 'function',
+      }
+    }
+    /* ---- end dock action core ---- */
+
+    /* The slot hands every tab body its own reader; it THROWS while the tab is not
+       committed in the session, so an unreadable tab means no dock actions rather
+       than a broken panel. Called from the component that owns the hook. */
+    function readDockInfo(useTabInfo, ctx) {
+      if (typeof useTabInfo !== 'function') return null
+      const service = dockFaceOf(ctx)
+      if (service === null) return null
+      let info = null
+      try { info = useTabInfo() } catch (error) { void error }
+      if (info === null || typeof info !== 'object' || info.tab === undefined || info.panel === undefined) return null
+      if (typeof info.tab.id !== 'string') return null
+      return {
+        service: service,
+        tabId: info.tab.id,
+        paneId: typeof info.panel.id === 'string' ? info.panel.id : '',
+        fullscreen: info.sidebar !== undefined && info.sidebar !== null && info.sidebar.fullscreen === true,
+      }
     }
 
     /* ============================== formatting ============================== */
@@ -3968,6 +4147,11 @@ window.__ModuleLoader__.load({
       grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
       filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
       check: ['M3.2 8.4 6.4 11.6 12.8 4.6'],
+      // dock actions (official right sidebar): lift a panel out, drop it back into
+      // the dock, split the pane, and the full-screen pair reuses expand/collapse.
+      float: ['M2.5 6.5v7h7v-3', 'M6 10 13.2 2.8', 'M9.4 2.8h3.8v3.8'],
+      dock: ['M2.5 3h11v10h-11z', 'M8 5.2v5.6', 'M5.4 8.2 8 10.8l2.6-2.6'],
+      split: ['M2.5 3h11v10h-11z', 'M8 3v10'],
       expand: ['M4.5 6.2 8 9.7l3.5-3.5', 'M3 12.4h10'],
       collapse: ['M4.5 9.8 8 6.3l3.5 3.5', 'M3 3.6h10'],
     }
@@ -4046,6 +4230,9 @@ window.__ModuleLoader__.load({
                   + (item.danger === true ? ' dig-menu-danger' : '')
                   + (item.disabled === true ? ' dig-menu-disabled' : '')
                   + (item.active === true ? ' dig-menu-item-active' : ''),
+                // The row keeps its id on the DOM so a `⋯ 更多` entry is addressable
+                // (the rail's own buttons do the same; probes click through either).
+                'data-action': item.id === undefined ? undefined : item.id,
                 disabled: item.disabled === true,
                 onClick: (event) => { closeRef.current(); item.run(event) },
               },
@@ -4876,6 +5063,11 @@ window.__ModuleLoader__.load({
       const [treeOpen, setTreeOpen] = useState(panes.treeOpen)
       const [paneDragging, setPaneDragging] = useState(null)
       const [paneSizes, setPaneSizes] = useState({})
+      /* The float pane this panel is drawn in, or null while it is docked. The
+         dock face exposes operations only, so the state comes from the float
+         layer's own marker around this panel — the same marker carries the pane
+         id dock() needs to put it back. */
+      const [floatPaneId, setFloatPaneId] = useState(null)
       const bodyRef = useRef(null)
       const [bodyBox, setBodyBox] = useState({ width: 0, height: 0 })
       const [detail, setDetail] = useState(null)
@@ -4983,6 +5175,14 @@ window.__ModuleLoader__.load({
         const found = measurePanes()
         setPaneSizes((current) => (samePaneSizes(current, found) ? current : found))
       })
+      useEffect(() => {
+        const node = hostRef.current
+        const holder = node === null || typeof node.closest !== 'function' ? null : node.closest('[data-dockkit-float]')
+        const next = holder === null ? null : holder.getAttribute('data-dockkit-float')
+        setFloatPaneId((current) => (current === next ? current : next))
+      })
+      const dock = props.dock === undefined ? null : props.dock
+      const dockState = dockActionState(dock, floatPaneId)
       const paneLayout = paneGeometry(chrome, paneBox, panes, paneSizes)
 
       const commitPanes = (next) => {
@@ -5579,13 +5779,44 @@ window.__ModuleLoader__.load({
         else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
         else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
         else if (spec.id === 'push') { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
-        if (busy === true && spec.id !== 'refresh') entry.disabled = true
+        else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
+        else if (spec.id === 'float') {
+          // Label AND icon follow where the panel actually is: floating panels get
+          // the way back, docked ones get the way out.
+          entry.available = dockState.float
+          entry.active = dockState.floating
+          entry.icon = dockState.floating === true ? 'dock' : 'float'
+          entry.label = dockState.floating === true ? t('action.dock') : t('action.float')
+          entry.run = () => {
+            if (dockState.floating === true) { dock.service.dock(floatPaneId); return }
+            dock.service.float(dock.tabId)
+          }
+        }
+        else if (spec.id === 'split') {
+          entry.available = dockState.split
+          entry.run = () => { dock.service.split(dock.paneId) }
+        }
+        else if (spec.id === 'fullscreen') {
+          entry.available = dockState.fullscreen
+          entry.active = dock !== null && dock.fullscreen === true
+          entry.icon = entry.active === true ? 'collapse' : 'expand'
+          entry.label = entry.active === true ? t('action.exitFullscreen') : t('action.fullscreen')
+          entry.run = () => {
+            const service = dock.service
+            const target = typeof service.commandTarget === 'function' ? service.commandTarget(document.activeElement) : undefined
+            if (target !== undefined && target !== null) service.toggleFullscreen(target)
+          }
+        }
+        // A running git command greys out the repository actions, never the view.
+        if (busy === true && spec.id !== 'refresh' && RAIL_VIEW_IDS.indexOf(spec.id) < 0) entry.disabled = true
         return entry
       })
 
       const railOrdered = railConfig.order
         .map((id) => railActions.find((action) => action.id === id))
-        .filter((action) => action !== undefined)
+        // An action this mount cannot perform is not rendered at all — hidden, not
+        // disabled: a greyed button for a service the host does not have is noise.
+        .filter((action) => action !== undefined && action.available !== false)
       const railVisible = railOrdered.filter((action) => railConfig.hidden.indexOf(action.id) < 0)
 
       const applyRail = (next) => { setRailConfig(next); writeRailConfig(next) }
@@ -5637,6 +5868,8 @@ window.__ModuleLoader__.load({
           key: action.id,
           type: 'button',
           className: 'dig-rail-btn dig-tone-' + action.tone + (action.active === true ? ' dig-rail-btn-active' : ''),
+          'data-action': action.id,
+          'aria-pressed': action.active === true ? 'true' : 'false',
           title: action.disabled === true ? action.label + ' · ' + reason : action.label,
           disabled: action.disabled === true,
           onClick: action.run,
@@ -5700,7 +5933,17 @@ window.__ModuleLoader__.load({
               ],
             }),
             E('span', { className: 'dig-topbar-spacer' }),
-            treeOpen ? E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-active', title: t('toolbar.tree'), onClick: () => foldTree(false) }, E(Icon, { name: 'branch' })) : null),
+            // Two-way on purpose: treeOpen is persisted, so a header button that
+            // only rendered while the tree was OPEN left a folded tree with no way
+            // back on this chrome (the rail now carries one too, for the others).
+            E('button', {
+              type: 'button',
+              className: 'dig-icon-btn' + (treeOpen ? ' dig-icon-btn-active' : ''),
+              'data-action': 'tree',
+              'aria-pressed': treeOpen ? 'true' : 'false',
+              title: t('toolbar.tree'),
+              onClick: () => foldTree(!treeOpen),
+            }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
           treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
@@ -6143,7 +6386,7 @@ window.__ModuleLoader__.load({
         return typeof unsubscribe === 'function' ? unsubscribe : undefined
       }, [])
       void tick
-      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible })
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock })
     }
 
     function NativePanel(props) {
@@ -6161,7 +6404,11 @@ window.__ModuleLoader__.load({
         }
       }
       const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
-      return E(LocaleLive, { ctx: props.ctx, scope: scope, t: props.t, visible: true })
+      /* The dock actions need this tab's own identity, which only the native seat
+         binds; the better-sidebar door has no sidebarRight tab id and therefore
+         wires nothing (a panel hosted elsewhere must not float a foreign tab). */
+      const dock = readDockInfo(props.useTabInfo, props.ctx)
+      return E(LocaleLive, { ctx: props.ctx, scope: scope, t: props.t, visible: true, dock: dock })
     }
 
     function apply(ctx) {

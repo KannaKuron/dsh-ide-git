@@ -102,15 +102,27 @@ async function enterSession(label) {
 /** The panel lives in the right-sidebar dock; its card carries the tab id.
  *  Creating a session closes that dock and can raise the credential onboarding,
  *  so the way back in is: dismiss the dialog, open the dock, click the card. */
+  /* The Git card, whichever door registered it: dsh-better-sidebar 0.21 keys its
+     guide-entry button by TAB id and renders no description text, while DSH's own
+     right sidebar keys it by the tab KIND and does render the description. */
+  const guideCard = async () => {
+    for (const selector of ['[data-sidebar-right-guide-entry="dsh-ide-git:panel"]', '[data-sidebar-right-guide-entry="ide-git"]']) {
+      const found = page.locator(selector).first()
+      if (await found.count() > 0) return found
+    }
+    const described = page.locator('button').filter({ hasText: 'IDE 级 Git 面板' }).first()
+    return await described.count() > 0 ? described : null
+  }
+
 async function ensurePanel() {
   if (await page.locator('.dig-root:visible').count() > 0) return true
-  const card = () => page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"]').first()
-  if (await card().count() === 0) {
+  if (await guideCard() === null) {
     await clickText('稍后配置', 900)
-    if (await card().count() === 0) await clickText('打开右侧边栏', 2500)
+    if (await guideCard() === null) await clickText('打开右侧边栏', 2500)
   }
-  if (await card().count() === 0) { log('MISS Git card'); return false }
-  await card().click({ timeout: 8000 })
+  const card = await guideCard()
+  if (card === null) { log('MISS Git card'); return false }
+  await card.click({ timeout: 8000 })
   await settle(5000)
   // The panel needs the branch/changes data before a gutter exists at all.
   await page.locator('.dig-body').first().waitFor({ timeout: 8000 }).catch(() => {})

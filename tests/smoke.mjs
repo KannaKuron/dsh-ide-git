@@ -370,12 +370,89 @@ test('a discard is reversible through the same undo stack', () => {
   }
 })
 
+test('the dock actions exist only where the right sidebar can perform them', () => {
+  // The official right sidebar is read at RENDER time: ctx.get('sidebarRight')
+  // returns undefined while ui-sidebar-right has not mounted yet (measured on
+  // 0.1.7-rc.2), and a host running dsh-better-sidebar or an old host has none at
+  // all. Missing service = no buttons, no error.
+  const start = client.indexOf('/* ---- dock action core')
+  const end = client.indexOf('/* ---- end dock action core')
+  assert.ok(start >= 0 && end > start, 'the dock action core must keep its markers')
+  const core = new Function(client.slice(start, end)
+    + '\nreturn { dockFaceOf: dockFaceOf, dockActionState: dockActionState }')()
+
+  const service = { float: () => {}, dock: () => {}, split: () => {}, toggleFullscreen: () => {} }
+  assert.equal(core.dockFaceOf(null), null, 'no ctx means no dock actions')
+  assert.equal(core.dockFaceOf({ get: () => undefined }), null, 'a host without sidebarRight degrades silently')
+  assert.equal(core.dockFaceOf({ get: () => { throw new Error('late service') } }), null, 'a throwing ctx.get must not escape')
+  assert.equal(core.dockFaceOf({ get: () => ({ float: () => {} }) }), null, 'half a service is not a service')
+  assert.equal(core.dockFaceOf({ get: () => service }), service)
+
+  const off = core.dockActionState(null, null)
+  assert.deepEqual([off.wired, off.float, off.split, off.fullscreen], [false, false, false, false],
+    'an unwired panel offers none of the dock actions')
+  const docked = core.dockActionState({ service: service, tabId: 'tab3', paneId: 'pane1' }, null)
+  assert.deepEqual([docked.wired, docked.float, docked.split, docked.fullscreen, docked.floating], [true, true, true, true, false])
+  const floating = core.dockActionState({ service: service, tabId: 'tab3', paneId: 'float4' }, 'float4')
+  assert.deepEqual([floating.float, floating.split, floating.floating], [true, false, true],
+    'a floating panel can be docked back, but not split again')
+  assert.equal(core.dockActionState({ service: service, tabId: '' }, null).wired, false, 'a tab without an id is not floatable')
+})
+
+test('the tree toggle is reachable again after it was folded', () => {
+  // treeOpen is persisted, so a header button that only rendered while the tree
+  // was OPEN left a folded tree with no way back (a workspace could only be
+  // repaired by clearing localStorage). The header button is two-way now, and the
+  // rail carries the action for the chromes that have no header button.
+  const bar = client.slice(client.indexOf("className: 'dig-compact-bar'"), client.indexOf("className: 'dig-compact-bar'") + 1400)
+  assert.match(bar, /'data-action': 'tree'/, 'the compact header keeps a tree control')
+  assert.match(bar, /onClick: \(\) => foldTree\(!treeOpen\)/, 'and it toggles BOTH ways')
+  assert.match(bar, /'aria-pressed': treeOpen \? 'true' : 'false'/)
+  assert.match(bar, /E\(Icon, \{ name: treeOpen \? 'eye' : 'eyeOff' \}\)/, 'the icon distinguishes the two states')
+  assert.doesNotMatch(client, /treeOpen \? E\('button'/, 'no chrome may render its tree control only while the tree is open')
+
+  const specs = client.slice(client.indexOf('const RAIL_SPECS = ['), client.indexOf('const RAIL_IDS ='))
+  for (const id of ['tree', 'float', 'split', 'fullscreen']) {
+    assert.match(specs, new RegExp("\\{ id: '" + id + "'"), 'RAIL_SPECS must carry the ' + id + ' action')
+  }
+  assert.match(client, /const RAIL_VIEW_IDS = \['tree', 'float', 'split', 'fullscreen'\]/,
+    'view actions must stay clickable while a git command runs')
+  assert.match(client, /action\.available !== false/, 'an action this mount cannot perform is not rendered at all')
+})
+
+test('the dock actions are wired on the native seat only', () => {
+  // Door 2 (the native right-sidebar seat) owns a sidebarRight tab id; door 1
+  // (dsh-better-sidebar) does not, and floating a foreign tab id is not a thing.
+  assert.match(client, /readDockInfo\(props\.useTabInfo, props\.ctx\)/, 'the native seat reads its own tab identity')
+  const better = client.slice(client.indexOf('betterSidebar.registerTab({'), client.indexOf('dsh-ide-git: Git tab'))
+  assert.doesNotMatch(better, /dock:/, 'the better-sidebar door must not wire dock actions')
+  assert.match(client, /try \{ info = useTabInfo\(\) \} catch \(error\) \{ void error \}/,
+    'the slot reader throws until the tab is committed; a missing answer is a missing button')
+  assert.match(client, /node\.closest\('\[data-dockkit-float\]'\)/, 'the float state comes from the float layer marker')
+})
+
 test('every shipped dictionary carries the same key set as zh', () => {
   // A locale block is preceded by a /* locale: <tag> */ marker, so the blocks
   // can be sliced without parsing the file. Equality matters because a key
   // missing from a third language falls back to English at lookup time — a
   // silent half-translated panel, which is exactly what this catches.
+  //
+  // Each block is cut at its OWN closing brace: the text after the last
+  // dictionary is ordinary code, and a perfectly innocent `'data-action': 'tree',`
+  // in a component reads exactly like a dictionary entry to a line scanner.
   const keyLines = (segment) => [...segment.matchAll(/^ +'([^']+)': '/gm)].map((match) => match[1]).sort()
+  const bodyOf = (segment) => {
+    const start = segment.indexOf('{')
+    let depth = 0
+    for (let index = start; index < segment.length; index += 1) {
+      if (segment[index] === '{') depth += 1
+      else if (segment[index] === '}') {
+        depth -= 1
+        if (depth === 0) return segment.slice(start, index + 1)
+      }
+    }
+    throw new Error('unterminated dictionary')
+  }
   const zhSegment = client.slice(client.indexOf('const ZH = {'), client.indexOf('const EN = {'))
   const zhKeys = keyLines(zhSegment)
   assert.ok(zhKeys.length >= 140, 'the zh dictionary looks truncated: ' + zhKeys.length)
@@ -384,7 +461,7 @@ test('every shipped dictionary carries the same key set as zh', () => {
   assert.ok(parts.length - 1 >= 3, 'expected at least three third-language dictionaries, saw ' + (parts.length - 1))
   for (let index = 1; index < parts.length; index += 1) {
     const tag = parts[index].slice(0, parts[index].indexOf(' */'))
-    assert.deepEqual(keyLines(parts[index]), zhKeys, 'dictionary ' + tag + ' does not match the zh key set')
+    assert.deepEqual(keyLines(bodyOf(parts[index])), zhKeys, 'dictionary ' + tag + ' does not match the zh key set')
   }
 })
 

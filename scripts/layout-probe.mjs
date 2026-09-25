@@ -102,10 +102,12 @@ async function enterSession() {
 async function openPanel() {
   await clickText('打开右侧边栏')
   await settle(3000)
-  const byId = page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"]').first()
-  const card = await byId.count() > 0
-    ? byId
-    : page.locator('button').filter({ has: page.locator('span', { hasText: 'IDE 级 Git 面板' }) }).first()
+  let card = null
+  for (const selector of ['[data-sidebar-right-guide-entry="dsh-ide-git:panel"]', '[data-sidebar-right-guide-entry="ide-git"]']) {
+    const found = page.locator(selector).first()
+    if (await found.count() > 0) { card = found; break }
+  }
+  if (card === null) card = page.locator('button').filter({ has: page.locator('span', { hasText: 'IDE 级 Git 面板' }) }).first()
   if (await card.count() === 0) throw new Error('the Git card is not on the sidebar start page')
   await card.click({ timeout: 8000 })
   await settle(6000)
