@@ -440,3 +440,162 @@ test('client half exposes t(key), never the raw dictionary object', () => {
     }
   }
 })
+
+/* ---------------------------------------------------------------------------
+ * Draggable panes (issue #5).
+ *
+ * The sizing core sits between two markers as a PURE block (no window, no DOM,
+ * no React), so these tests slice it out and drive the real implementation —
+ * a re-implemented clamp in the test would only ever agree with itself.
+ * ------------------------------------------------------------------------- */
+
+function paneCore() {
+  const start = client.indexOf('/* ---- pane sizing core')
+  const end = client.indexOf('/* ---- end pane sizing core')
+  assert.ok(start >= 0 && end > start, 'the pane sizing core must keep its markers')
+  const exported = 'return { PANES_KEY: PANES_KEY, PANE_LIMITS: PANE_LIMITS, PANE_DEFAULTS: PANE_DEFAULTS,'
+    + ' PANE_CHROME_KEYS: PANE_CHROME_KEYS, PANE_BUCKETS: PANE_BUCKETS, PANE_GUTTER_PX: PANE_GUTTER_PX,'
+    + ' panBucket: panBucket, normalizePanes: normalizePanes, withPaneRatio: withPaneRatio, paneGeometry: paneGeometry }'
+  return new Function(client.slice(start, end) + '\n' + exported)()
+}
+
+test('pane sizes are stored per surface under one versioned key', () => {
+  assert.match(client, /const PANES_KEY = 'dsh-ide-git\.panes\.v1'/)
+  assert.match(client, /localStorage\.getItem\(PANES_KEY\)/, 'reads must go through the versioned key')
+  assert.match(client, /localStorage\.setItem\(PANES_KEY, JSON\.stringify\(normalizePanes\(config\)\)\)/,
+    'writes must be normalised too, and wrapped in try/catch')
+
+  const core = paneCore()
+  // Six buckets: the bottom workbench and the right sidebar must never share a
+  // remembered size, even when they run the same chrome.
+  assert.deepEqual(core.PANE_BUCKETS, [
+    'columns:wide', 'columns:tall', 'stack:wide', 'stack:tall', 'compact:wide', 'compact:tall',
+  ])
+  assert.equal(core.panBucket('stack', { width: 500, height: 900 }), 'stack:tall')
+  assert.equal(core.panBucket('stack', { width: 900, height: 500 }), 'stack:wide')
+  assert.equal(core.panBucket('compact', { width: 300, height: 300 }), 'compact:wide', 'a square panel is not tall')
+})
+
+test('normalizePanes drops unknown buckets, unknown keys and out-of-range ratios', () => {
+  const core = paneCore()
+  assert.deepEqual(core.normalizePanes(null), { treeOpen: true, panes: {} }, 'the tree stays open by default')
+  assert.deepEqual(core.normalizePanes('nope'), { treeOpen: true, panes: {} })
+  assert.deepEqual(core.normalizePanes({ panes: 7 }), { treeOpen: true, panes: {} })
+
+  const clean = core.normalizePanes({
+    treeOpen: false,
+    panes: {
+      'stack:tall': { tree: 0.3, changes: 'wide', diff: 0, ghost: 0.5 },
+      'stack:wide': { tree: 1.2, changes: -0.1, diff: Number.NaN },
+      'stack:tallish': { tree: 0.5 },
+      bogus: { tree: 0.5 },
+    },
+  })
+  assert.equal(clean.treeOpen, false, 'a folded tree is remembered')
+  assert.deepEqual(clean.panes, { 'stack:tall': { tree: 0.3 } },
+    'only finite ratios in (0, 1] on known keys survive')
+
+  const one = core.withPaneRatio(clean, 'stack:tall', 'diff', 0.44)
+  assert.deepEqual(one.panes['stack:tall'], { tree: 0.3, diff: 0.44 })
+  assert.equal(one.treeOpen, false, 'the tree state rides along with the sizes')
+  assert.deepEqual(core.withPaneRatio(one, 'stack:tall', 'diff', null).panes['stack:tall'], { tree: 0.3 },
+    'a double-click reset removes the override')
+  const emptied = core.withPaneRatio(core.withPaneRatio(one, 'stack:tall', 'tree', null), 'stack:tall', 'diff', null)
+  assert.equal(emptied.panes['stack:tall'], undefined, 'an emptied bucket is not stored at all')
+  assert.deepEqual(clean.panes['stack:tall'], { tree: 0.3 }, 'the update must not mutate its input')
+})
+
+test('the pane clamps hold at both ends and never squeeze a pane to zero', () => {
+  const core = paneCore()
+  const tall = { width: 500, height: 900 }
+
+  // Nothing stored → no inline override at all: the stylesheet default (200px
+  // tree, 290px changes, the percentage caps) keeps rendering as before.
+  const fresh = core.paneGeometry('stack', tall, core.normalizePanes(null))
+  assert.deepEqual(fresh.overrides, {})
+  assert.equal(fresh.bucket, 'stack:tall')
+
+  // Stored ratios become px, and every one of them obeys its own limits.
+  const stored = core.normalizePanes({ panes: { 'stack:tall': { tree: 0.9, changes: 0.9, diff: 0.9 } } })
+  const geo = core.paneGeometry('stack', tall, stored)
+  // The changes pane asks for 810px and gets 900 - 150 (middle pane) - 324 (the
+  // tree, on its 36% default) - 16 (two gutters) = 410.
+  assert.equal(geo.overrides.changes, 410, 'the changes pane stops where the middle pane begins')
+  assert.equal(geo.overrides.tree, 324, 'the tree gives way to the pane it shares the column with')
+  assert.equal(geo.overrides.diff, 120, 'the diff can never eat the history list')
+  assert.equal(geo.limits.diff.max, 120)
+  assert.ok(geo.overrides.tree + geo.overrides.changes + 2 * core.PANE_GUTTER_PX <= tall.height)
+
+  // Tiny stored ratios clamp UP to the minimums, never to 0.
+  const tiny = core.paneGeometry('stack', tall, core.normalizePanes({ panes: { 'stack:tall': { tree: 0.001, changes: 0.001 } } }))
+  assert.equal(tiny.overrides.tree, core.PANE_LIMITS['stack:tree'].min)
+  assert.equal(tiny.overrides.changes, core.PANE_LIMITS['stack:changes'].min)
+
+  // A huge container does not lift the absolute maxima...
+  const roomy = core.paneGeometry('columns', { width: 3000, height: 400 },
+    core.normalizePanes({ panes: { 'columns:wide': { tree: 1, changes: 1 } } }))
+  assert.equal(roomy.overrides.tree, core.PANE_LIMITS['columns:tree'].max)
+  assert.equal(roomy.overrides.changes, core.PANE_LIMITS['columns:changes'].max)
+  // ...and a container too small for every minimum still never overflows: the
+  // minima win, the panes simply fill it.
+  const tight = core.paneGeometry('columns', { width: 500, height: 400 },
+    core.normalizePanes({ panes: { 'columns:wide': { tree: 1, changes: 1 } } }))
+  assert.equal(tight.overrides.tree, core.PANE_LIMITS['columns:tree'].min)
+  assert.equal(tight.overrides.changes, core.PANE_LIMITS['columns:changes'].min)
+  assert.ok(tight.overrides.tree + tight.overrides.changes + 2 * core.PANE_GUTTER_PX <= 500)
+
+  // A folded tree frees its room instead of reserving it, and has no override.
+  const folded = core.paneGeometry('stack', tall, core.normalizePanes({ treeOpen: false, panes: { 'stack:tall': { changes: 1 } } }))
+  assert.equal(folded.overrides.tree, undefined)
+  assert.equal(folded.overrides.changes, core.PANE_LIMITS['stack:changes'].max)
+})
+
+test('the pane dividers are draggable, touch-safe and keyboard reachable', () => {
+  const gutter = cssRule('.dig-gutter')
+  assert.match(gutter, /touch-action:none/, 'a touch drag must resize the pane, not scroll the panel')
+  assert.match(cssRule('.dig-gutter-v'), /width:8px/, 'the hit area is wider than the hairline it paints')
+  assert.match(cssRule('.dig-gutter-h'), /height:8px/)
+  assert.match(cssRule('.dig-gutter::after'), /var\(--dsw-alias-hairline,/, 'the hairline keeps the theme token')
+  assert.match(client, /setPointerCapture/, 'the drag must survive leaving the hit area')
+  assert.match(client, /\.dig-pane-dragging,\.dig-pane-dragging \*\{user-select:none\}/, 'no text selection while dragging')
+  assert.match(client, /onLostPointerCapture/, 'a dropped capture must still finish the gesture')
+  // Double-click resets and the arrow keys nudge (Shift = 4x).
+  assert.match(client, /onDoubleClick: \(\) => props\.onReset\(\)/)
+  assert.match(client, /const step = event\.shiftKey === true \? 32 : 8/)
+  assert.match(client, /role: 'separator'/)
+})
+
+test('every overlay is clamped to the panel it lives in', () => {
+  // Found while making the panel draggable (issue #5): the dock can now be dragged
+  // narrower than the overlays' own minimum, and a fixed min-width BEATS max-width
+  // in CSS — so the context menu came out wider than the panel and hung past its
+  // right edge. Invariant 13 is about the panel's box, not just its origin.
+  assert.match(cssRule('.dig-menu'), /box-sizing:border-box/)
+  assert.match(cssRule('.dig-menu'), /min-width:min\(200px,calc\(100% - 8px\)\)/, 'the menu minimum must yield to the panel')
+  assert.match(cssRule('.dig-menu'), /max-width:calc\(100% - 8px\)/)
+  assert.match(cssRule('.dig-dialog'), /box-sizing:border-box/, 'a content-box dialog adds its padding on top of the clamp')
+  assert.match(cssRule('.dig-dialog'), /min-width:min\(240px,100%\)/)
+  assert.match(cssRule('.dig-dialog'), /max-width:min\(420px,94%\)/)
+  assert.match(cssRule('.dig-dialog-wide'), /min-width:min\(360px,92%\)/)
+  assert.match(cssRule('.dig-toasts'), /max-width:min\(340px,92%\)/)
+  // Under the compact threshold the panel marks itself, and the nowrap labels that
+  // would otherwise be clipped start wrapping inside the clamped box.
+  assert.match(client, /compact \? ' dig-root-narrow' : ''/)
+  assert.match(client, /\.dig-root-narrow \.dig-menu-item\{white-space:normal\}/)
+  assert.match(client, /\.dig-root-narrow \.dig-toast-text\{white-space:normal\}/)
+})
+
+test('every pane name a divider announces exists in every dictionary', () => {  const mapped = client.match(/const PANE_NAME_KEYS = \{([^}]*)\}/)
+  assert.ok(mapped !== null, 'the pane name map must stay greppable')
+  const keys = [...mapped[1].matchAll(/'([^']+)'/g)].map((match) => match[1])
+  assert.deepEqual(keys, ['toolbar.tree', 'changes.title', 'pane.diff'])
+  const zh = client.slice(client.indexOf('const ZH = {'), client.indexOf('const EN = {'))
+  const en = client.slice(client.indexOf('const EN = {'), client.indexOf('const LOCALES = {'))
+  for (const key of keys) {
+    assert.ok(zh.includes("'" + key + "':"), 'ZH is missing ' + key)
+    assert.ok(en.includes("'" + key + "':"), 'EN is missing ' + key)
+  }
+  // The template that wraps the name is looked up through t(), so the shared
+  // dictionary test already covers all 21 languages for it.
+  assert.match(client, /fill\(props\.t\('pane\.resize'\), \{ name: props\.t\(props\.nameKey\) \}\)/)
+})

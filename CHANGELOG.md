@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.8.0 — 2026-09-26
+
+**类型**:feat(issue #5「侧边栏利用率」:三大分区尺寸全部可拖拽,并**按承载面分别记住**——底部工作台/右侧栏各记各的;顺带修掉「面板拖窄后浮层比面板还宽」的不变量 13 缺陷)
+
+- **可拖拽分区(三种 chrome 全覆盖)**:columns 两条竖向分隔条(分支树宽 / 变更宽)、stack 三条(树高 / 变更高 / 历史↔diff)、compact 两条(紧凑树高 / 历史↔diff)。分隔条命中区 8px、视觉是 1px 主题 hairline,hover/聚焦/拖动时高亮为 `--dsw-alias-brand-primary`;`touch-action:none` 让手机上是"拖尺寸"而不是"滚面板";`setPointerCapture` 保证指针拖出命中区也不断线;双击复位、聚焦后方向键 ±8px(Shift ±32px),`role="separator"` + aria-valuenow/min/max。
+- **按承载面持久化(`dsh-ide-git.panes.v1`)**:桶 = `chrome:wide|tall`,共 6 桶;每桶存**比例**,渲染时 × 当前容器尺寸再夹取,所以拖窄/拉宽窗口都不会崩。`normalizePanes()` 照 `normalizeRail()` 纪律丢弃未知桶/未知键/非有限数/越界比例,写盘 try/catch,**一次手势只写一次**(pointerup / 键盘微调 / 双击复位)。`treeOpen` 一并持久化(首次仍默认展开,默认行为不变)。
+- **clamp 用实测而不是猜**:夹取时用**相邻 pane 的真实盒子**(`data-pane` 标记 + ResizeObserver 后的测量值),不是它的百分比上限——否则内容只有 304px 的变更栏会按 46% 上限预留 414px,把上面的分支树彻底锁死。上下限都有常量:树宽 ≥140px、变更宽 ≥200px、各 pane 最小高 100~120px,并给中间 pane 留 `PANE_MAIN_MIN_W/H`。
+- **默认值零漂移**:没被拖过的 pane 继续吃样式表里的 200px / 290px / 36% / 46% / 42% / 55%,只有拖过的才写内联尺寸;双击即回到样式表默认。
+- **fix(不变量 13 跟随修复)**:面板可以被拖到比浮层自身最小宽度还窄,而 CSS 里 `min-width` 会压过 `max-width` —— 右键菜单在 172px 的面板里渲染成 200px 宽、溢出面板右缘(任务实测 `withinRoot=false`)。现在菜单/对话框按面板宽度夹取(`min-width:min(200px,calc(100% - 8px))`、对话框补 `box-sizing:border-box` 否则 padding 会加在夹取之外),窄于 compact 阈值时面板加 `dig-root-narrow`,菜单项与撤回浮窗文案改为换行而不是裁切。
+- **验证**:`npm test` 67 项(新增 6 项:分桶与 panes.v1 键名、`normalizePanes` 边界、clamp 上下限与"挤不成 0"、分隔条 `touch-action:none`/指针捕获/键盘/双击、浮层宽度夹取、浮层文案键逐语言齐);`scripts/ssr-check.mjs` 三态通过;`scripts/layout-probe.mjs` 退出码 0 且 11 档 chrome 与改动前**逐档一致**(不变量 7 零漂移);新增 `scripts/panes-probe.mjs` 真机 34 项断言全绿、零 pageerror——含"拖拽确实改变尺寸 325→396px""reload 后 396px""新会话后 396px""宽扁桶(columns:wide)与窄高桶(stack:tall)互不影响""199px 面板里菜单 191px / 对话框 183px 都在 `.dig-root` 内"。
+
 ## v0.7.3 — 2026-09-25
 
 **类型**:chore(适配 dsh 0.1.7-rc.2 展示面:rc.2 新立的四条样式契约——菜单材质归主题所有、elevation 取代「边框+自定义阴影」、单一键盘焦点色、圆角标尺;其余四面复核为零漂移,逐条给依据)

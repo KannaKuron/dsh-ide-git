@@ -138,6 +138,8 @@ window.__ModuleLoader__.load({
       'detail.back': '返回历史',
       'detail.noFiles': '没有文件变更',
       'diff.empty': '没有可显示的文本差异',
+      'pane.diff': '差异视图',
+      'pane.resize': '拖动调整{name}尺寸,双击复位,方向键微调',
       'diff.binary': '二进制文件',
       'diff.loading': '正在加载差异...',
       'toolbar.refresh': '刷新',
@@ -292,6 +294,8 @@ window.__ModuleLoader__.load({
       'detail.back': 'Back to history',
       'detail.noFiles': 'No file changes',
       'diff.empty': 'No textual diff to show',
+      'pane.diff': 'diff view',
+      'pane.resize': 'Drag to resize {name}: double-click resets, arrow keys nudge',
       'diff.binary': 'Binary file',
       'diff.loading': 'Loading diff...',
       'toolbar.refresh': 'Refresh',
@@ -454,6 +458,8 @@ window.__ModuleLoader__.load({
         'detail.back': '返回歷史',
         'detail.noFiles': '冇檔案變更',
         'diff.empty': '冇文字差異可以顯示',
+        'pane.diff': '差異檢視',
+        'pane.resize': '拖動調整{name}尺寸,雙擊復位,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
         'toolbar.refresh': '重新整理',
@@ -608,6 +614,8 @@ window.__ModuleLoader__.load({
         'detail.back': '返回歷史',
         'detail.noFiles': '沒有檔案變更',
         'diff.empty': '沒有文字差異可顯示',
+        'pane.diff': '差異檢視',
+        'pane.resize': '拖曳調整{name}尺寸,雙擊重設,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
         'toolbar.refresh': '重新整理',
@@ -762,6 +770,8 @@ window.__ModuleLoader__.load({
         'detail.back': '返回歷史',
         'detail.noFiles': '冇檔案變更',
         'diff.empty': '冇文字差異可以顯示',
+        'pane.diff': '差異檢視',
+        'pane.resize': '拖動調整{name}尺寸,雙擊復位,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
         'toolbar.refresh': '重新整理',
@@ -916,6 +926,8 @@ window.__ModuleLoader__.load({
         'detail.back': '履歴に戻る',
         'detail.noFiles': 'ファイルの変更はありません',
         'diff.empty': '表示できるテキスト差分がありません',
+        'pane.diff': '差分ビュー',
+        'pane.resize': '{name}のサイズをドラッグで調整(ダブルクリックでリセット、矢印キーで微調整)',
         'diff.binary': 'バイナリファイル',
         'diff.loading': '差分を読み込み中...',
         'toolbar.refresh': '更新',
@@ -1070,6 +1082,8 @@ window.__ModuleLoader__.load({
         'detail.back': '기록으로 돌아가기',
         'detail.noFiles': '파일 변경 없음',
         'diff.empty': '표시할 텍스트 차이가 없습니다',
+        'pane.diff': '차이 보기',
+        'pane.resize': '{name} 크기를 드래그해 조절(더블클릭 초기화, 화살표 키 미세 조정)',
         'diff.binary': '바이너리 파일',
         'diff.loading': '차이 불러오는 중...',
         'toolbar.refresh': '새로 고침',
@@ -1224,6 +1238,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Zurück zum Verlauf',
         'detail.noFiles': 'Keine Dateiänderungen',
         'diff.empty': 'Kein textueller Diff vorhanden',
+        'pane.diff': 'Diff-Ansicht',
+        'pane.resize': 'Größe von {name} per Ziehen ändern (Doppelklick setzt zurück, Pfeiltasten justieren)',
         'diff.binary': 'Binärdatei',
         'diff.loading': 'Diff wird geladen...',
         'toolbar.refresh': 'Aktualisieren',
@@ -1378,6 +1394,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Retour à l\'historique',
         'detail.noFiles': 'Aucune modification de fichier',
         'diff.empty': 'Aucun diff textuel à afficher',
+        'pane.diff': 'vue du diff',
+        'pane.resize': 'Glisser pour redimensionner {name} (double-clic pour réinitialiser, flèches pour ajuster)',
         'diff.binary': 'Fichier binaire',
         'diff.loading': 'Chargement du diff...',
         'toolbar.refresh': 'Rafraîchir',
@@ -1532,6 +1550,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Назад к истории',
         'detail.noFiles': 'Файлы не изменялись',
         'diff.empty': 'Нет текстовых различий для показа',
+        'pane.diff': 'просмотр diff',
+        'pane.resize': 'Перетащите, чтобы изменить размер {name} (двойной клик — сброс, стрелки — точная настройка)',
         'diff.binary': 'Двоичный файл',
         'diff.loading': 'Загрузка различий...',
         'toolbar.refresh': 'Обновить',
@@ -1686,6 +1706,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Voltar ao histórico',
         'detail.noFiles': 'Nenhuma alteração de arquivo',
         'diff.empty': 'Nenhum diff textual para mostrar',
+        'pane.diff': 'visualização do diff',
+        'pane.resize': 'Arraste para redimensionar {name} (duplo clique restaura, setas ajustam)',
         'diff.binary': 'Arquivo binário',
         'diff.loading': 'Carregando diff...',
         'toolbar.refresh': 'Atualizar',
@@ -1840,6 +1862,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Torna alla cronologia',
         'detail.noFiles': 'Nessuna modifica ai file',
         'diff.empty': 'Nessun diff testuale da mostrare',
+        'pane.diff': 'vista diff',
+        'pane.resize': 'Trascina per ridimensionare {name} (doppio clic ripristina, frecce per regolare)',
         'diff.binary': 'File binario',
         'diff.loading': 'Caricamento del diff...',
         'toolbar.refresh': 'Aggiorna',
@@ -1994,6 +2018,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Terug naar geschiedenis',
         'detail.noFiles': 'Geen bestandswijzigingen',
         'diff.empty': 'Geen tekstuele diff om te tonen',
+        'pane.diff': 'diff-weergave',
+        'pane.resize': 'Sleep om {name} te vergroten (dubbelklik herstelt, pijltjes stellen fijn af)',
         'diff.binary': 'Binair bestand',
         'diff.loading': 'Diff laden...',
         'toolbar.refresh': 'Vernieuwen',
@@ -2148,6 +2174,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Powrót do historii',
         'detail.noFiles': 'Brak zmian w plikach',
         'diff.empty': 'Brak różnic tekstowych do pokazania',
+        'pane.diff': 'widok diff',
+        'pane.resize': 'Przeciągnij, aby zmienić rozmiar {name} (podwójne kliknięcie przywraca, strzałki korygują)',
         'diff.binary': 'Plik binarny',
         'diff.loading': 'Wczytywanie różnic...',
         'toolbar.refresh': 'Odśwież',
@@ -2302,6 +2330,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Tillbaka till historiken',
         'detail.noFiles': 'Inga filändringar',
         'diff.empty': 'Ingen textdiff att visa',
+        'pane.diff': 'diff-vy',
+        'pane.resize': 'Dra för att ändra storleken på {name} (dubbelklick återställer, piltangenter finjusterar)',
         'diff.binary': 'Binär fil',
         'diff.loading': 'Laddar diff...',
         'toolbar.refresh': 'Uppdatera',
@@ -2456,6 +2486,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Geçmişe dön',
         'detail.noFiles': 'Dosya değişikliği yok',
         'diff.empty': 'Gösterilecek metin farkı yok',
+        'pane.diff': 'diff görünümü',
+        'pane.resize': '{name} boyutunu sürükleyerek ayarlayın (çift tıklama sıfırlar, ok tuşları ince ayar yapar)',
         'diff.binary': 'İkili dosya',
         'diff.loading': 'Fark yükleniyor...',
         'toolbar.refresh': 'Yenile',
@@ -2610,6 +2642,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Kembali ke riwayat',
         'detail.noFiles': 'Tidak ada perubahan berkas',
         'diff.empty': 'Tidak ada diff teks untuk ditampilkan',
+        'pane.diff': 'tampilan diff',
+        'pane.resize': 'Seret untuk mengubah ukuran {name} (klik ganda mengatur ulang, tombol panah menyesuaikan)',
         'diff.binary': 'Berkas biner',
         'diff.loading': 'Memuat diff...',
         'toolbar.refresh': 'Segarkan',
@@ -2764,6 +2798,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'Quay lại lịch sử',
         'detail.noFiles': 'Không có thay đổi tệp',
         'diff.empty': 'Không có diff văn bản để hiển thị',
+        'pane.diff': 'chế độ xem diff',
+        'pane.resize': 'Kéo để đổi kích thước {name} (nhấp đúp để đặt lại, phím mũi tên để tinh chỉnh)',
         'diff.binary': 'Tệp nhị phân',
         'diff.loading': 'Đang tải diff...',
         'toolbar.refresh': 'Làm mới',
@@ -2918,6 +2954,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'رجوع إلى السجل',
         'detail.noFiles': 'لا توجد تغييرات في الملفات',
         'diff.empty': 'لا توجد فروق نصية لعرضها',
+        'pane.diff': 'عرض الفروق',
+        'pane.resize': 'اسحب لتغيير حجم {name} (النقر المزدوج يعيد الضبط، ومفاتيح الأسهم للضبط الدقيق)',
         'diff.binary': 'ملف ثنائي',
         'diff.loading': 'جارٍ تحميل الفروق...',
         'toolbar.refresh': 'تحديث',
@@ -3072,6 +3110,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'इतिहास पर वापस',
         'detail.noFiles': 'कोई फ़ाइल परिवर्तन नहीं',
         'diff.empty': 'दिखाने के लिए कोई टेक्स्ट अंतर नहीं',
+        'pane.diff': 'डिफ़ व्यू',
+        'pane.resize': '{name} का आकार बदलने के लिए खींचें (डबल-क्लिक रीसेट, तीर कुंजियाँ सूक्ष्म समायोजन)',
         'diff.binary': 'बाइनरी फ़ाइल',
         'diff.loading': 'अंतर लोड हो रहा है...',
         'toolbar.refresh': 'ताज़ा करें',
@@ -3226,6 +3266,8 @@ window.__ModuleLoader__.load({
         'detail.back': 'กลับไปที่ประวัติ',
         'detail.noFiles': 'ไม่มีการเปลี่ยนแปลงไฟล์',
         'diff.empty': 'ไม่มีความต่างเชิงข้อความให้แสดง',
+        'pane.diff': 'มุมมอง diff',
+        'pane.resize': 'ลากเพื่อปรับขนาด {name} (ดับเบิลคลิกเพื่อรีเซ็ต ปุ่มลูกศรปรับละเอียด)',
         'diff.binary': 'ไฟล์ไบนารี',
         'diff.loading': 'กำลังโหลดความต่าง...',
         'toolbar.refresh': 'รีเฟรช',
@@ -3489,6 +3531,189 @@ window.__ModuleLoader__.load({
 
     function writeRailConfig(config) {
       try { window.localStorage.setItem(RAIL_KEY, JSON.stringify(config)) } catch (error) { void error }
+    }
+
+    /* ============================== pane sizes ============================== */
+
+    /* ---- pane sizing core (pure: tests/smoke.mjs slices this block and drives
+       it through new Function, so it must stay free of window/DOM/React) ---- */
+
+    /* Every fixed pane size in the layout became draggable (issue #5), and the
+       result is remembered PER SURFACE. The same registration renders in the
+       bottom workbench (wide and flat) and in the native right sidebar (narrow
+       and tall), and a 290px changes column that is right in one is half the
+       panel in the other. The bucket is therefore `chrome:wide|tall`, and what
+       is stored is a RATIO of the measured container: resizing the dock or the
+       window rescales the panes instead of breaking the layout. */
+    const PANES_KEY = 'dsh-ide-git.panes.v1'
+    const PANE_CHROME_KEYS = {
+      columns: ['tree', 'changes'],
+      stack: ['tree', 'changes', 'diff'],
+      compact: ['tree', 'diff'],
+    }
+    /* Whether a key measures a height (stacked chromes) or a width (columns). */
+    const PANE_HEIGHT_CHROME = { columns: false, stack: true, compact: true }
+    /* The pane a separator resizes, and the key its label is translated from. */
+    const PANE_NAME_KEYS = { tree: 'toolbar.tree', changes: 'changes.title', diff: 'pane.diff' }
+    /* Hard limits in px: a gutter moves a pane between these and nothing else,
+       so no pane can ever be dragged down to zero. */
+    const PANE_LIMITS = {
+      'columns:tree': { min: 140, max: 560 },
+      'columns:changes': { min: 200, max: 640 },
+      'stack:tree': { min: 100, max: 420 },
+      'stack:changes': { min: 120, max: 460 },
+      'stack:diff': { min: 120, max: 900 },
+      'compact:tree': { min: 100, max: 420 },
+      'compact:diff': { min: 120, max: 900 },
+    }
+    /* Today's fixed sizes stay the default — and stay in the stylesheet: a pane
+       the user never dragged keeps exactly the look it had before, while a
+       dragged one is remembered as a ratio. */
+    const PANE_DEFAULTS = {
+      'columns:tree': { px: 200 },
+      'columns:changes': { px: 290 },
+      'stack:tree': { ratio: 0.36 },
+      'stack:changes': { ratio: 0.46 },
+      'compact:tree': { ratio: 0.42 },
+    }
+    const PANE_MAIN_MIN_W = 240
+    const PANE_MAIN_MIN_H = 150
+    const PANE_HISTORY_MIN_H = 120
+    /* Hit area of one gutter, and how many of them sit in the body. The
+       history↔diff separator lives inside the middle pane, so it is not counted
+       against the body's own budget. */
+    const PANE_GUTTER_PX = 8
+    const PANE_BODY_GUTTERS = { columns: 2, stack: 2, compact: 1 }
+    const PANE_BUCKETS = Object.keys(PANE_CHROME_KEYS).reduce(
+      (all, chrome) => all.concat([chrome + ':wide', chrome + ':tall']), [])
+
+    /* Two measurements are the same when every pane they know about is. */
+    function samePaneSizes(current, next) {
+      const keys = Object.keys(current)
+      if (keys.length !== Object.keys(next).length) return false
+      for (const key of keys) { if (current[key] !== next[key]) return false }
+      return true
+    }
+
+    function panBucket(chrome, box) {
+      return chrome + (box.height > box.width ? ':tall' : ':wide')
+    }
+
+    /* Storage is untrusted, so this keeps normalizeRail()'s discipline: unknown
+       buckets, unknown keys, non-finite numbers and out-of-range ratios are all
+       dropped. A ratio is a fraction of the container, so it lives in (0, 1]. */
+    function normalizePanes(raw) {
+      const source = raw !== null && typeof raw === 'object' ? raw : {}
+      const stored = source.panes !== null && typeof source.panes === 'object' ? source.panes : {}
+      const panes = {}
+      for (const bucket of PANE_BUCKETS) {
+        const entry = stored[bucket]
+        if (entry === null || typeof entry !== 'object') continue
+        const keys = PANE_CHROME_KEYS[bucket.slice(0, bucket.indexOf(':'))]
+        const clean = {}
+        for (const key of keys) {
+          const value = entry[key]
+          if (typeof value !== 'number' || Number.isFinite(value) === false) continue
+          if (value <= 0 || value > 1) continue
+          clean[key] = value
+        }
+        if (Object.keys(clean).length > 0) panes[bucket] = clean
+      }
+      return { treeOpen: source.treeOpen !== false, panes: panes }
+    }
+
+    /* Immutable single-key update. ratio === null removes the override, which is
+       exactly what the double-click reset does. */
+    function withPaneRatio(config, bucket, key, ratio) {
+      const panes = {}
+      for (const name of PANE_BUCKETS) {
+        if (config.panes[name] !== undefined) panes[name] = config.panes[name]
+      }
+      const entry = {}
+      const current = panes[bucket] === undefined ? {} : panes[bucket]
+      for (const name of PANE_CHROME_KEYS[bucket.slice(0, bucket.indexOf(':'))]) {
+        if (current[name] !== undefined) entry[name] = current[name]
+      }
+      if (ratio === null) delete entry[key]
+      else entry[key] = ratio
+      if (Object.keys(entry).length === 0) delete panes[bucket]
+      else panes[bucket] = entry
+      return { treeOpen: config.treeOpen, panes: panes }
+    }
+
+    /* Stored ratios (or today's defaults) → concrete px for the current chrome,
+       clamped against the measured container. `overrides` holds only the panes
+       the user actually dragged (absent = leave the stylesheet default alone);
+       `effective` is what the clamp math used; `limits` is the range each gutter
+       is allowed to hand back. `laidOut` is what the panes actually measure right
+       now, which beats the stylesheet default when a pane is content-sized: the
+       stacked chrome caps the changes pane at 46%, but a three-file summary only
+       takes 30%, and reserving the cap would freeze the tree above it. */
+    function paneGeometry(chrome, box, config, laidOut) {
+      const height = PANE_HEIGHT_CHROME[chrome] === true
+      const reference = height ? box.height : box.width
+      const bucket = panBucket(chrome, box)
+      const ready = config !== null && typeof config === 'object'
+      const source = ready && config.panes !== null && typeof config.panes === 'object' ? config.panes : {}
+      const ratios = source[bucket] !== null && typeof source[bucket] === 'object' ? source[bucket] : {}
+      const measured = laidOut !== null && typeof laidOut === 'object' ? laidOut : {}
+      const keys = PANE_CHROME_KEYS[chrome].slice()
+      /* A folded tree has no pane and no gutter, so it must not reserve room. */
+      if (ready && config.treeOpen === false) {
+        const at = keys.indexOf('tree')
+        if (at >= 0) keys.splice(at, 1)
+      }
+      const overrides = {}
+      const effective = {}
+      const limits = {}
+      const sizeOf = (key) => (effective[key] === undefined ? 0 : effective[key])
+      for (const key of keys) {
+        const spec = PANE_DEFAULTS[chrome + ':' + key]
+        const fallback = spec === undefined ? 0 : (spec.px === undefined ? spec.ratio * reference : spec.px)
+        const live = measured[key]
+        effective[key] = typeof live === 'number' && Number.isFinite(live) && live > 0 ? live : fallback
+      }
+      const space = Math.max(0, reference - PANE_BODY_GUTTERS[chrome] * PANE_GUTTER_PX)
+      const reserve = height ? PANE_MAIN_MIN_H : PANE_MAIN_MIN_W
+      /* Deterministic order: changes, then tree, then diff. The diff is carved
+         out of the middle pane, so it is clamped last — against whatever the
+         first two left behind, minus the history list's own minimum. */
+      for (const key of ['changes', 'tree', 'diff']) {
+        if (keys.indexOf(key) < 0) continue
+        const spec = PANE_LIMITS[chrome + ':' + key]
+        let high = spec.max
+        if (key === 'diff') {
+          const main = space - sizeOf('changes') - sizeOf('tree') - PANE_GUTTER_PX
+          high = Math.min(high, main - PANE_HISTORY_MIN_H)
+        } else {
+          let taken = reserve
+          for (const other of keys) { if (other !== key && other !== 'diff') taken += sizeOf(other) }
+          high = Math.min(high, space - taken)
+        }
+        high = Math.max(spec.min, Math.round(high))
+        limits[key] = { min: spec.min, max: high }
+        const ratio = ratios[key]
+        if (typeof ratio === 'number' && Number.isFinite(ratio)) {
+          const px = Math.round(Math.min(Math.max(ratio * reference, spec.min), high))
+          overrides[key] = px
+          effective[key] = px
+        }
+      }
+      return { bucket: bucket, overrides: overrides, effective: effective, limits: limits }
+    }
+    /* ---- end pane sizing core ---- */
+
+    function readPanes() {
+      try {
+        const raw = window.localStorage.getItem(PANES_KEY)
+        if (raw === null || raw === '') return normalizePanes(null)
+        return normalizePanes(JSON.parse(raw))
+      } catch (error) { void error }
+      return normalizePanes(null)
+    }
+
+    function writePanes(config) {
+      try { window.localStorage.setItem(PANES_KEY, JSON.stringify(normalizePanes(config))) } catch (error) { void error }
     }
 
     /* ============================== formatting ============================== */
@@ -3958,6 +4183,77 @@ window.__ModuleLoader__.load({
           'data-active': props.value === item.id ? 'true' : 'false',
           onClick: () => props.onChange(item.id),
         }, item.label)))
+    }
+
+    /* A draggable divider between two panes. The pane it resizes is the sibling
+       it is rendered against, and its size is MEASURED at pointerdown — so a pane
+       still living on its stylesheet default (a percentage cap, or a diff pane
+       sized by its own content) drags from exactly where it looks. Pointer capture
+       keeps the drag alive once the pointer leaves the 8px hit area, and
+       touch-action:none is what stops a phone from scrolling the panel instead of
+       resizing it. Arrow keys nudge (Shift = 4x), double-click resets, and the
+       whole thing is focusable so the divider is reachable without a mouse. */
+    function Gutter(props) {
+      const dragRef = useRef(null)
+      const targetOf = (node) => (props.side === 'next' ? node.nextElementSibling : node.previousElementSibling)
+      const extentOf = (node) => {
+        if (node === null || typeof node.getBoundingClientRect !== 'function') return 0
+        const rect = node.getBoundingClientRect()
+        return props.vertical === true ? rect.width : rect.height
+      }
+      const sign = props.side === 'next' ? -1 : 1
+      const onPointerDown = (event) => {
+        if (event.button !== undefined && event.button !== 0) return
+        dragRef.current = {
+          id: event.pointerId,
+          at: props.vertical === true ? event.clientX : event.clientY,
+          size: extentOf(targetOf(event.currentTarget)),
+        }
+        if (typeof event.currentTarget.setPointerCapture === 'function') event.currentTarget.setPointerCapture(event.pointerId)
+        if (typeof event.currentTarget.focus === 'function') event.currentTarget.focus()
+        props.onStart()
+      }
+      const onPointerMove = (event) => {
+        const drag = dragRef.current
+        if (drag === null || drag.id !== event.pointerId) return
+        const at = props.vertical === true ? event.clientX : event.clientY
+        props.onDrag(drag.size + sign * (at - drag.at))
+      }
+      const onPointerUp = () => {
+        if (dragRef.current === null) return
+        dragRef.current = null
+        props.onEnd()
+      }
+      const onKeyDown = (event) => {
+        const step = event.shiftKey === true ? 32 : 8
+        const axis = props.vertical === true
+          ? (event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0)
+          : (event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0)
+        if (axis === 0) return
+        event.preventDefault()
+        props.onDrag(extentOf(targetOf(event.currentTarget)) + sign * axis * step)
+        props.onEnd()
+      }
+      const label = fill(props.t('pane.resize'), { name: props.t(props.nameKey) })
+      return E('div', {
+        className: 'dig-gutter ' + (props.vertical === true ? 'dig-gutter-v' : 'dig-gutter-h')
+          + (props.active === true ? ' dig-gutter-active' : ''),
+        role: 'separator',
+        tabIndex: 0,
+        'aria-orientation': props.vertical === true ? 'vertical' : 'horizontal',
+        'aria-label': label,
+        'aria-valuenow': props.value,
+        'aria-valuemin': props.min,
+        'aria-valuemax': props.max,
+        title: label,
+        onPointerDown: onPointerDown,
+        onPointerMove: onPointerMove,
+        onPointerUp: onPointerUp,
+        onPointerCancel: onPointerUp,
+        onLostPointerCapture: onPointerUp,
+        onDoubleClick: () => props.onReset(),
+        onKeyDown: onKeyDown,
+      })
     }
 
     function RepoSelect(props) {
@@ -4572,7 +4868,16 @@ window.__ModuleLoader__.load({
       const [note, setNote] = useState(null)
       const [busy, setBusy] = useState(false)
       const [view, setView] = useState('history')
-      const [treeOpen, setTreeOpen] = useState(true)
+      /* Pane sizes are remembered per surface (see the pane sizing core). The ref
+         is the value the pointer handlers write through: a drag updates state for
+         the preview and the ref for the single write that pointerup performs. */
+      const [panes, setPanes] = useState(readPanes)
+      const panesRef = useRef(panes)
+      const [treeOpen, setTreeOpen] = useState(panes.treeOpen)
+      const [paneDragging, setPaneDragging] = useState(null)
+      const [paneSizes, setPaneSizes] = useState({})
+      const bodyRef = useRef(null)
+      const [bodyBox, setBodyBox] = useState({ width: 0, height: 0 })
       const [detail, setDetail] = useState(null)
       const [selectedHash, setSelectedHash] = useState(null)
       const [selectedPath, setSelectedPath] = useState(null)
@@ -4621,6 +4926,127 @@ window.__ModuleLoader__.load({
       // height < 200 flip a 1320x180 workbench into the right-sidebar chrome.
       const compact = size.width > 0 && size.width < COMPACT_MAX_WIDTH
       const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
+
+      /* ---------- draggable panes (issue #5) ---------- */
+
+      // Like the rail, the panes measure the box that actually holds them instead
+      // of trusting the root probe: the column chrome keeps a vertical rail
+      // beside the body, and the header sits above it.
+      useEffect(() => {
+        const element = bodyRef.current
+        if (element === null) { setBodyBox({ width: 0, height: 0 }); return undefined }
+        const measure = () => {
+          const rect = element.getBoundingClientRect()
+          setBodyBox({ width: Math.round(rect.width), height: Math.round(rect.height) })
+        }
+        measure()
+        if (typeof ResizeObserver === 'function') {
+          const observer = new ResizeObserver(measure)
+          observer.observe(element)
+          return () => observer.disconnect()
+        }
+        window.addEventListener('resize', measure)
+        return () => window.removeEventListener('resize', measure)
+      }, [])
+
+      const chrome = compact ? 'compact' : columns ? 'columns' : 'stack'
+      const measured = bodyBox.width > 0 || bodyBox.height > 0
+      const paneBox = measured ? bodyBox : size
+      /* The column chrome's dividers are vertical LINES, and the panes they move
+         are sized by width; the stacked chromes move heights. One name for that
+         switch: it decides the divider's orientation, the inline size, the ratio
+         reference and the drag cursor, and getting it half-right is how a height
+         drag ends up writing a width. */
+      const paneByWidth = PANE_HEIGHT_CHROME[chrome] !== true
+      /* What the panes actually measure right now. The clamp needs the real box of
+         the pane it is NOT moving: a content-sized pane is usually shorter than
+         its own percentage cap, and reserving the cap would block the drag (or
+         snap a stored size back on the next render). The markers are data
+         attributes rather than class sniffing so the diff pane, nested inside the
+         middle pane, is found the same way. */
+      const measurePanes = () => {
+        const found = {}
+        const element = bodyRef.current
+        if (element === null) return found
+        for (const node of element.querySelectorAll('[data-pane]')) {
+          const rect = node.getBoundingClientRect()
+          found[node.getAttribute('data-pane')] = Math.round(paneByWidth ? rect.width : rect.height)
+        }
+        return found
+      }
+      /* Kept in state, not in a ref: a pane's box changes without the panel
+         re-rendering (content arrives, a dock resizes), and the render that
+         re-clamps a stored size has to see the same numbers the drag did — a drag
+         allowed further than the render allows snaps back under the cursor. The
+         bail-out comparison is what keeps this from looping. */
+      useEffect(() => {
+        const found = measurePanes()
+        setPaneSizes((current) => (samePaneSizes(current, found) ? current : found))
+      })
+      const paneLayout = paneGeometry(chrome, paneBox, panes, paneSizes)
+
+      const commitPanes = (next) => {
+        panesRef.current = next
+        setPanes(next)
+      }
+
+      /* The gutter hands back the px it wants; the clamp lives here, and what
+         gets stored is the ratio that reproduces it on this container. The live
+         measurement is pushed into state alongside the new ratio, so the render
+         that follows this gesture clamps with the very same box. */
+      const dragPane = (key, rawPx) => {
+        const live = measurePanes()
+        setPaneSizes((current) => (samePaneSizes(current, live) ? current : live))
+        const layout = paneGeometry(chrome, paneBox, panesRef.current, live)
+        const limit = layout.limits[key]
+        const reference = paneByWidth ? paneBox.width : paneBox.height
+        if (limit === undefined || !(reference > 0)) return
+        const px = Math.round(Math.min(Math.max(rawPx, limit.min), limit.max))
+        commitPanes(withPaneRatio(panesRef.current, layout.bucket, key, px / reference))
+      }
+
+      /* One write per gesture (pointerup / keyboard nudge / double-click), not one
+         per pointermove. */
+      const endPaneDrag = () => {
+        setPaneDragging(null)
+        writePanes(panesRef.current)
+      }
+
+      const resetPane = (key) => {
+        commitPanes(withPaneRatio(panesRef.current, paneLayout.bucket, key, null))
+        writePanes(panesRef.current)
+      }
+
+      const foldTree = (open) => {
+        setTreeOpen(open)
+        commitPanes({ treeOpen: open, panes: panesRef.current.panes })
+        writePanes(panesRef.current)
+      }
+
+      /* Only a pane the user actually dragged gets an inline size; everything
+         else keeps the stylesheet default (200px tree, 290px changes, the
+         percentage caps) — which is also what a double-click returns to. */
+      const paneStyle = (key) => {
+        const px = paneLayout.overrides[key]
+        if (px === undefined) return null
+        return paneByWidth ? { width: px + 'px', maxWidth: px + 'px' } : { height: px + 'px', maxHeight: px + 'px' }
+      }
+
+      const gutter = (key, side) => E(Gutter, {
+        key: 'gutter-' + key,
+        t: t,
+        nameKey: PANE_NAME_KEYS[key],
+        vertical: paneByWidth,
+        side: side,
+        active: paneDragging === key,
+        value: Math.round(paneLayout.effective[key] === undefined ? 0 : paneLayout.effective[key]),
+        min: paneLayout.limits[key] === undefined ? 0 : paneLayout.limits[key].min,
+        max: paneLayout.limits[key] === undefined ? 0 : paneLayout.limits[key].max,
+        onStart: () => setPaneDragging(key),
+        onDrag: (px) => dragPane(key, px),
+        onEnd: endPaneDrag,
+        onReset: () => resetPane(key),
+      })
 
 // The action rail measures ITSELF, not the panel: how many buttons fit is a
       // function of the strip that holds them (a 1200x300 workbench and a 300x900
@@ -5074,7 +5500,7 @@ window.__ModuleLoader__.load({
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
           })
 
-      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane' },
+      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff' },
         E('div', { className: 'dig-diff-head' },
           E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
           E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null) } }, E(Icon, { name: 'close', size: 12 }))),
@@ -5246,18 +5672,24 @@ window.__ModuleLoader__.load({
 
       /* ---------- body per chrome ---------- */
 
+      /* ---------- body per chrome ---------- */
+
+      /* The history↔diff separator only exists while a diff is on screen, and it
+         lives inside the middle pane — the diff is the pane below it. */
+      const diffGutter = diffPane === null ? null : gutter('diff', 'next')
+
       let body
       if (repoState === null) {
         /* The scan is still running: a neutral loading state, never the
            "no repository found" verdict (that text is reserved for a scan
            that actually came back empty). */
-        body = E('div', { className: 'dig-body' }, E('div', { className: 'dig-empty' }, t('status.loading')))
+        body = E('div', { className: 'dig-body', ref: bodyRef }, E('div', { className: 'dig-empty' }, t('status.loading')))
       } else if (repoRoot === null) {
-        body = E('div', { className: 'dig-body' }, E(RepoPicker, {
+        body = E('div', { className: 'dig-body', ref: bodyRef }, E(RepoPicker, {
           t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo,
         }))
       } else if (compact) {
-        body = E('div', { className: 'dig-body dig-body-compact' },
+        body = E('div', { className: 'dig-body dig-body-compact', ref: bodyRef },
           E('div', { className: 'dig-compact-bar' },
             E(Segmented, {
               value: view === 'detail' ? 'history' : view,
@@ -5268,19 +5700,24 @@ window.__ModuleLoader__.load({
               ],
             }),
             E('span', { className: 'dig-topbar-spacer' }),
-            treeOpen ? E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-active', title: t('toolbar.tree'), onClick: () => setTreeOpen(false) }, E(Icon, { name: 'branch' })) : null),
-          treeOpen ? E('div', { className: 'dig-compact-tree' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
-          view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
+            treeOpen ? E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-active', title: t('toolbar.tree'), onClick: () => foldTree(false) }, E(Icon, { name: 'branch' })) : null),
+          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? gutter('tree', 'prev') : null,
+          view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
-        body = E('div', { className: 'dig-body dig-body-columns' },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
-          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane),
-          E('div', { className: 'dig-pane dig-pane-changes' }, changesPane))
+        body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? gutter('tree', 'prev') : null,
+          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane),
+          gutter('changes', 'next'),
+          E('div', { className: 'dig-pane dig-pane-changes', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane))
       } else {
-        body = E('div', { className: 'dig-body dig-body-stack' },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack' }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
-          E('div', { className: 'dig-pane dig-pane-changes-stack' }, changesPane),
-          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffPane))
+        body = E('div', { className: 'dig-body dig-body-stack', ref: bodyRef },
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? gutter('tree', 'prev') : null,
+          E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
+          gutter('changes', 'prev'),
+          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       }
 
       /* ---------- overlays ---------- */
@@ -5406,7 +5843,14 @@ window.__ModuleLoader__.load({
       // narrow ones (the native right sidebar) get the same actions as one
       // horizontal row under the repo/branch bar, and every action lives in
       // exactly one place.
-      return E('div', { className: 'dig-root', ref: hostRef }, topBar,
+      // While a divider is being dragged the whole panel stops selecting text and
+      // keeps the resize cursor, even though the pointer has left the 8px gutter.
+      return E('div', {
+        className: 'dig-root'
+          + (compact ? ' dig-root-narrow' : '')
+          + (paneDragging === null ? '' : ' dig-pane-dragging' + (paneByWidth ? '-v' : '-h')),
+        ref: hostRef,
+      }, topBar,
         columns === true || repoRoot === null ? null : renderRail(false),
         banner, noteBanner,
         E('div', { className: 'dig-shell' },
@@ -5470,6 +5914,11 @@ window.__ModuleLoader__.load({
       '.dig-tone-violet{color:#b083f0}',
       '.dig-tone-cyan{color:#59b0d6}',
       '.dig-icon-btn-small{width:20px;height:20px;border-radius:var(--dsw-radius-xs,4px)}',
+      // A panel dragged narrower than COMPACT_MAX_WIDTH (the compact chrome) is the
+      // case where 'nowrap + ellipsis' stops being readable: the overlays clamp
+      // their own width, and their text wraps inside that box instead of clipping.
+      '.dig-root-narrow .dig-menu-item{white-space:normal}',
+      '.dig-root-narrow .dig-toast-text{white-space:normal}',
       '.dig-toasts{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:80;max-width:min(340px,92%)}',
       '.dig-toast{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--dsw-radius-sm,8px);background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:0;box-shadow:var(--dsw-elevation-prominent,0 8px 22px rgba(0,0,0,.32))}',
       '.dig-toast-icon{display:inline-flex;flex:none;color:var(--dsw-alias-label-secondary)}',
@@ -5499,6 +5948,20 @@ window.__ModuleLoader__.load({
       '.dig-pane-changes-stack{max-height:46%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
       '.dig-compact-bar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none}',
       '.dig-compact-tree{max-height:42%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      // A divider: an 8px hit area (a fingertip needs it) painted as a 1px hairline
+      // that lights up on hover, focus or while dragging. touch-action:none is what
+      // makes a touch drag resize the pane instead of scrolling the panel.
+      '.dig-gutter{flex:none;align-self:stretch;position:relative;z-index:1;touch-action:none;background:transparent;border:0;padding:0;cursor:col-resize}',
+      '.dig-gutter-v{width:8px}',
+      '.dig-gutter-h{height:8px;cursor:row-resize}',
+      '.dig-gutter::after{content:"";position:absolute;background:var(--dsw-alias-hairline,var(--dsw-alias-border-l1));transition:background .12s ease}',
+      '.dig-gutter-v::after{top:0;bottom:0;left:50%;width:1px;margin-left:-.5px}',
+      '.dig-gutter-h::after{left:0;right:0;top:50%;height:1px;margin-top:-.5px}',
+      '.dig-gutter:hover::after,.dig-gutter:focus-visible::after,.dig-gutter-active::after{background:var(--dsw-alias-brand-primary)}',
+      '.dig-gutter:focus-visible{outline:1px solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:-1px}',
+      '.dig-pane-dragging,.dig-pane-dragging *{user-select:none}',
+      '.dig-pane-dragging-v{cursor:col-resize}',
+      '.dig-pane-dragging-h{cursor:row-resize}',
       '.dig-seg{display:inline-flex;gap:2px;padding:2px;border-radius:var(--dsw-radius-sm,8px);background:var(--dsw-alias-interactive-bg-hover);flex:none}',
       '.dig-seg-item{border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;padding:2px 10px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;white-space:nowrap}',
       '.dig-seg-item:hover{color:var(--dsw-alias-label-primary)}',
@@ -5632,13 +6095,13 @@ window.__ModuleLoader__.load({
       '.dig-diff-hunk{color:var(--dsw-alias-brand-primary);background:color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent)}',
       '.dig-diff-meta{color:var(--dsw-alias-label-tertiary)}',
       '.dig-overlay{position:absolute;inset:0;padding:8px;box-sizing:border-box;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));-webkit-backdrop-filter:var(--dsw-mask-blur,none);backdrop-filter:var(--dsw-mask-blur,none);display:flex;align-items:center;justify-content:center;z-index:60}',
-      '.dig-dialog{min-width:240px;max-width:min(420px,94%);max-height:100%;overflow:auto;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:0;border-radius:var(--dsw-radius-panel,28px);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--dsw-elevation-prominent,0 12px 32px rgba(0,0,0,.35))}',
+      '.dig-dialog{box-sizing:border-box;min-width:min(240px,100%);max-width:min(420px,94%);max-height:100%;overflow:auto;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:0;border-radius:var(--dsw-radius-panel,28px);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--dsw-elevation-prominent,0 12px 32px rgba(0,0,0,.35))}',
       '.dig-dialog-wide{min-width:min(360px,92%)}',
       '.dig-dialog-title{font-weight:600}',
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      '.dig-menu{position:absolute;z-index:70;box-sizing:border-box;min-width:200px;max-width:calc(100% - 8px);max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
+      '.dig-menu{position:absolute;z-index:70;box-sizing:border-box;min-width:min(200px,calc(100% - 8px));max-width:calc(100% - 8px);max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
       '.dig-menu::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));pointer-events:none}',
       '.dig-menu-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column}',
       '.dig-menu-item{display:flex;align-items:center;gap:8px;padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;text-align:left;border-radius:var(--dsw-radius-sm,8px);cursor:pointer;white-space:nowrap;overflow:hidden}',

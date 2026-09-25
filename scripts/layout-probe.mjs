@@ -94,11 +94,18 @@ async function enterSession() {
 /** The panel's home moved: 0.1.6 hosts it in the right-sidebar dock, and the
  *  old bottom-workbench entry ("展开底部面板" / .nArs4W_tabBarPlus) is gone. The
  *  panel is opened from the sidebar's start page, where its card carries the
- *  title/description this plugin registered. */
+ *  title/description this plugin registered.
+ *
+ *  better-sidebar 0.21 renders that card as a guide-entry button that carries the
+ *  tab id but no description text, so the card is looked up by id first and only
+ *  falls back to the old description probe. */
 async function openPanel() {
   await clickText('打开右侧边栏')
   await settle(3000)
-  const card = page.locator('button').filter({ has: page.locator('span', { hasText: 'IDE 级 Git 面板' }) }).first()
+  const byId = page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"]').first()
+  const card = await byId.count() > 0
+    ? byId
+    : page.locator('button').filter({ has: page.locator('span', { hasText: 'IDE 级 Git 面板' }) }).first()
   if (await card.count() === 0) throw new Error('the Git card is not on the sidebar start page')
   await card.click({ timeout: 8000 })
   await settle(6000)
