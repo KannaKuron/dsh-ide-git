@@ -3,6 +3,50 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.7.3 — 2026-09-25
+
+**类型**:chore(适配 dsh 0.1.7-rc.2 展示面:rc.2 新立的四条样式契约——菜单材质归主题所有、elevation 取代「边框+自定义阴影」、单一键盘焦点色、圆角标尺;其余四面复核为零漂移,逐条给依据)
+
+- **复核为零漂移的四面(结论:不改;`src/` 相应位置一字未动)**:
+  - **挂载相对 / 子路径访问**。`packages/host/frontend-static/src/index.ts:119` 仍是「在 `<head>` 开标签之后插 `<base href="./">`」,`dsh-v0.1.7-rc.1..dsh-v0.1.7-rc.2` 对该文件**逐字节零 diff**;`packages/host/webserver/src` 的 `ctx.webServer.register({ kind, path, handler })` 与 `packages/client/modules/src`(打包宿主走的 `createRequire(baseUrl).resolve('<pkg>/package.json')` 回退分支)同样零 diff。→ v0.7.1 的文档相对 `API_BASE`(`src/client.js:39`)与 v0.7.2 的两条守卫在 rc.2 依旧正确且依旧必要。
+  - **exports / manifest / peer 声明**。rc.2 里 `packages/boot/app-boot/src/plugin-compatibility.ts`(0.1.7 起唯一被强制执行的兼容性检查)与 `packages/util/package-manifest/src` **零 diff**,变化只在 README/i18n 与包版本号。→ `exports["./package.json"]` 与 `@deepseek-ai/dsh >=0.1.2-0`(optional peer)均无改动理由。
+  - **slot / injection / locale**。`packages/client/ui-slots` rc.1→rc.2 **源码零 diff**;`packages/client/locale` 的 `register(ns, dicts)` / `subscribe` 契约零 diff。原生侧新增项全部**可选或框架内部**:`SidebarRightGuideEntry.commandId?`(`packages/client/ui-sidebar-right/src/client/tab-registry.ts:63`,可选)、`SidebarRightTabInfo.tab.refreshShortcut?`(同包 `tab-info.ts`,可选)、`SidebarRightTabActions.bindCommands`(同包 `contract/slots.ts`,必填,但本插件**不消费** `actions`——只用 `tabs.register` + `slots.inject/register` + `guide[]`)。`WorkspaceView{path,sessionIds}` 字段逐字未变(NativePanel 取 cwd 那条路径),rc.2 只删掉了本插件不用的 `WorkspaceInitializeDefaultRequest`。
+  - **diff 展示 / 语法高亮统一**。rc.2 的改动落在官方 `packages/client/ui-deliverables`(`FileDiff.tsx` 单侧差异改单列、`ChangedFiles.tsx` 单文件改紧凑单行卡)与新增的 `packages/util/code-language` + `ui-primitives/src/code-highlighting.ts`。本插件的 diff 是自绘 **unified 单列**(`diffLines` `src/client.js:3672` + `.dig-diff`),**没有 split 概念**——「单侧差异改单列」在本插件无对应面;本插件也不做语法高亮(纯 +/- 底色),该契约未被消费。变更列表是 IDE 语义的**变更集**(conflicted/staged/unstaged/untracked 分组,`src/client.js:4239`),分组头承载 git 索引语义,故不套用官方「单文件回合卡」的紧凑形态。
+- **命中①:菜单材质归还主题(rc.2 新规,这是本版唯一行为变化来源)**。`docs/web-styling.md`「Component rules」新增:**下拉/右键/子菜单/选择菜单必须用 `Menu` 或 `MenuSurface`,材质是主题拥有的 `--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`,feature 与 platform CSS 不得覆盖**;没有 `MenuSurface` macOS 不透明背板的自绘浮层改用 `--dsw-specific-menu`(darwin 下 94% 不透明,`design-platform.css` 新增)。旧 `.dig-menu` 三处全违反:自绘不透明 `--dsw-alias-bg-layer-2` 底、把 `--dsh-any-blur-card-panels`(背景插件 token)当模糊源、外加 `1px solid --dsw-alias-border-l2`。现在(`src/client.js:5641-5643`):卡片 `border:0` + `box-shadow:var(--dsw-elevation-prominent,…)` + `--dsw-elevation-stroke-color:var(--dsw-alias-border-l1)`(与官方 `Menu.module.css:12-17` 同款),材质在**隔离的 `::before` 层**(`z-index:-1`+`border-radius:inherit`+`pointer-events:none`,模糊不会把卡片变成 backdrop root / 绝对定位后代的包含块);滚动移到新的内层 `.dig-menu-scroll`,卡片本身仍是面板内 `position:absolute`(不变量 13 不破);卡片带 `data-menu-material="translucent"`,直接吃主题的深色菜单描边重绑(`gradient-shadow-text.css` 的 `body[data-ds-dark-theme] [data-menu-material]`)。
+- **命中②:elevation 取代「中性边框 + 自定义阴影」**。同一条规则明令「elevated surface 设 `border:0` 并取 `--dsw-elevation-*`;**绝不**把 `--dsw-alias-border-*` 边框与 lv/elevation 阴影并存」。`.dig-menu`、`.dig-dialog`(`src/client.js:5635`,另按 `docs/ui-radius.md` 取主包围面圆角 `--dsw-radius-panel`)、`.dig-toast`(`src/client.js:5474`)三处的 `border-l2` + 手写阴影全部换成 `border:0` + `var(--dsw-elevation-prominent, <旧的旧值>)`。模态遮罩(`src/client.js:5634`)补 `backdrop-filter:var(--dsw-mask-blur,none)`——rc.2 把该 token 定为 `none`,声明跟随主题、今天是无操作。
+- **命中③:单一键盘焦点色 + 指针模态**。rc.2 新增 `ui-theme/src/styles/focus.css`:焦点环颜色统一读 `--dsw-focus-ring-color`(回退 `--dsw-alias-state-business-primary`)、宽度 `--dsw-focus-ring-width`(2px),并且 `html[data-input-modality='pointer'] body :focus-visible:not(:read-write)` 把颜色置透明。旧 `.dig-select:focus{outline:1px solid var(--dsw-alias-brand-primary)}` 既自带颜色又用 `:focus`(鼠标点击也画环)两处都违反。现在改为 `:focus-visible` + 主题色(`src/client.js:5438`),密集顶栏保留 1px 与 inset offset(文档允许「密集表格与工具栏保留 1px」,offset 归组件)。文本框保持「自身反馈」路线并改用共享焦点色(`src/client.js:5509`/`5605`),与官方 `Input.module.css` 的 `outline:none` + `focus-within` 边框同构;主题对 `:read-write` 的豁免也因此成立。
+- **命中④:圆角标尺与全圆配对**。rc.2 新增 `docs/ui-radius.md` 与 `base.css` 的 `--dsw-radius-xs/sm/md/lg/xl/panel`;并强制「每个 `border-radius: 999px/50%` 必须同规则配 `corner-shape: round`」(corner-shape superellipse 会压扁胶囊)。本插件所有圆角字面量已换成 token:`6px→--dsw-radius-sm`(H20–28 紧凑控件区)、`5px→--dsw-radius-xs`(18/20px 小图标钮)、对话框 `10px→--dsw-radius-panel`、紧凑菜单外框 `--dsw-radius-md`(R12+4px 内边距+R8 项,正中 `ui-radius.md` 的 compact menu 行)、嵌套内圆角按标准公式 `calc(var(--dsw-radius-sm) - 2px)` 派生;三处 `999px`(`.dig-opchip`/`.dig-badge`/`.dig-ref`,`src/client.js:5481/5552/5565`)补 `corner-shape:round`。**双时代**:每个 rc.2 token 都带 fallback(旧宿主 0.1.2–0.1.6 无这些 token,解析回退到与改动前逐字相同的值)。
+- **附带修掉一个既有夹取缺陷(非 rc.2 引入)**:`.dig-menu` 补 `box-sizing:border-box`(`src/client.js:5641`)。此前 `max-height:calc(100% - 8px)` 只夹**内容盒**,4px×2 的内边距漏在夹取之外:底部工作台只有 185px 高时,13 项的分支右键菜单会溢出面板底边。对照实验——同一实例、同一操作,`HEAD`(v0.7.2)打包实测溢出 **6px**(菜单 187px vs 面板 185px),本版改动前 4px;加 border-box 后菜单 177px、`withinRoot=true`、`onScreen=true`(证据 `_verify-idegit/idegit-rc2/out-menu-position-baseline-v0.7.2.txt`)。
+- **未采纳项(有据)**:官方新增的 `--dsw-alias-toast-bg/--dsw-alias-toast-label`(rc.2 把系统提示统一成两种主题下都偏暗的表面)是给**官方 Toast 调用方**的;本插件的 `.dig-toast` 是面板内联提示条,底色必须跟随面板表面(透明主题 / 背景插件要能透出),改用该 token 会强制不透明深底并连带改掉图标与动作链接配色 —— 故只采纳其中的 elevation 与圆角契约,配色维持面板语义。
+- **验证**:`npm test` **61/61** 绿(新增 3 条 rc.2 契约守卫,见下);`node scripts/ssr-check.mjs` 三态通过。`node scripts/layout-probe.mjs`(隔离实例 + 真数据)**退出码 0**:
+
+  | 视口 | 面板宽 | chrome | rail | changes 头部 bleed |
+  |---|---|---|---|---|
+  | 1600 | 719 | stack | horizontal | 0 |
+  | 1440 | 719 | stack | horizontal | 0 |
+  | 1280 | 599 | stack | horizontal | 0 |
+  | 1120 | 439 | stack | horizontal | 0 |
+  | 980 | 523 | stack | horizontal | 0 |
+  | 860 | 403 | stack | horizontal | 0 |
+  | 760 | 759 | stack | horizontal | 0 |
+  | 660 | 659 | stack | horizontal | 0 |
+  | 560 | 559 | stack | horizontal | 0 |
+  | 460 | 459 | stack | horizontal | 0 |
+  | 380 | 379 | **compact** | horizontal | (compact 无该头部) |
+
+  判据:宽度是 chrome 的唯一判据(不变量 7),<400px 必须翻 `compact`;每档 `bleed=0` 即头部不溢出面板;`columns` 需 `width>=600 且 width>=height*1.15`,右侧栏 719×962 达不到比例故维持 `stack`——与 rc.1 基线同形。
+- **真机(隔离实例,rc.2 = `dsh --version` 0.1.7-rc.2)**。实例:`DSH_HOME=/Users/kanna/sandbox/dsh-idegit-home`(全新自建,**未动 `~/.dsh` 任何现有 profile**)+ 端口 3231/3232 + `scripts/demo-repo.mjs` 演示仓库(35 提交 / 5 分支 / 13 引用 / 5 处变更);`--dump-config` 确认组合里 `ide-git` **恰好一行**(不变量 11)。**启动配方**:本机自带 runtime node 与预编译 addon 的签名 Team ID 不匹配(`fatal: No usable native binding found`),把 `PATH` 换成 `/opt/homebrew/Cellar/node@24/24.21.0/bin` 即可(用户自己的 `dsh web` 就是这个 node 起的)。
+  - **原生右侧栏通道**:表面契约探针 **31/31 PASS**、零 pageerror、零 console error。面板满数据(rail 13 / 分支行 17 / 提交 35 / 变更 5 / 引用 13);菜单卡片 `border:0` + `border-radius:12px` + 背景 `rgba(0,0,0,0)` + 阴影首层 `0 0 0 0.5px`(elevation 发丝),`::before` 材质层 `position:absolute`/`z-index:-1`/`inset:0`/`border-radius:inherit`,滚动在内层 `.dig-menu-scroll`;对话框 `border:0` + `border-radius:28px` + 遮罩 `rgba(0,0,0,.24)` 且 `backdropFilter:none`;键盘模态焦点环 `1px solid rgb(65,118,230)`(= 主题 `--dsw-alias-state-business-primary`)、pointer 模态 `rgba(0,0,0,0)`(rc.2 指针抑制生效);胶囊 `999px` 的 computed `corner-shape` 归一为 `superellipse(1)`(= `round`)而普通控件仍是主题 `superellipse(1.5)`)。
+  - **材质四组合矩阵(证明材质归主题所有)**:浅色 `rgba(248,249,250,.58)`、深色 `rgba(67,69,74,.45)`、`html[data-platform=darwin]` 浅色 `…,.94`、深色 `rgba(48,49,54,.94)`;模糊 = 主题 `--dsw-menu-backdrop-filter` = `blur(40px) saturate(1.5)`。旧的 `--dsh-any-blur-card-panels` 覆盖已删除。
+  - **底座通道(dsh-better-sidebar 0.21.1,npm 最新)**:`+` 新标签页菜单里 **Git** 在列,底部工作台面板满数据(rail 5 / 分支 17 / 提交 35 / 变更 5)、零 pageerror。**rc.1 条目里记的上游 `turnTail` 槽 bug 在 0.21.1 已修**,该条建议作废。
+  - **面板内定位(不变量 13,含 `contain: layout style` 的底部工作台)**:用**真实指针事件**驱动(菜单按 `event.clientX/Y` 定位,合成事件坐标恒为 0,0 会得到假象)——两条通道的分支切换菜单与分支右键菜单全部 `withinRoot=true`、`onScreen=true`。
+  - **桌面端**:客户端半为纯 CSS,桌面渲染进程与 web 共用同一套 shell 资产与同一份 ui-theme token;`html[data-platform='darwin']` 分支已用上面四组合矩阵在真机实测,`dsh-app://app/` 文档基址与本次改动无关(v0.7.2 已锁测试)。**桌面 Electron 加载由 Lead 在集成阶段确认**(本轮不在打包客户端里直接起第二实例,避免抢 `--user-data-dir` 单例锁、扰动用户正在用的桌面端)。
+  - **证据**:`/Users/kanna/sandbox/_verify-idegit/idegit-rc2/`(12 张浅/深截图 + 5 个可重跑探针脚本 + 各探针原始输出)。**该目录在仓库之外,属临时取证目录,不随本仓库提交。**
+
+### 顺带修复(既有缺陷,非 rc.2 适配项;与上列改动解耦,可独立回退)
+
+- **菜单在受限高度下溢出面板底边**:`.dig-menu` 补一行 `box-sizing:border-box`(`src/client.js:5641`)。`max-height:calc(100% - 8px)` 原本只夹**内容盒**,4px×2 的内边距漏在夹取之外——底部工作台只有 185px 高时,13 项的分支右键菜单底部会伸出面板。**证明是既有缺陷**:把 `HEAD`(v0.7.2,未含本版任何改动)打成 tarball 装进同一隔离实例、同一操作,菜单 187px vs 面板 185px,**溢出 6px**;本版改动前 4px(材质层去掉了 1px 边框);加 border-box 后 177px,`withinRoot=true`、`onScreen=true`,两条通道都过。证据:`_verify-idegit/idegit-rc2/out-menu-position-baseline-v0.7.2.txt`(基线)与 `out-menu-position-{native,workbench}.txt`(修复后)。冒烟同步加一条断言:菜单必须 `box-sizing:border-box`,且 `max-height/max-width` 必须保持 `calc(100% - 8px)`——两者一起才等于「卡片整体落在面板内留 4px 边」。
+
 ## v0.7.2 — 2026-09-23
 
 **类型**:chore(适配 dsh 0.1.7-rc.1:契约复核零漂移 + 补齐版本兼容性声明与两条回归守卫)

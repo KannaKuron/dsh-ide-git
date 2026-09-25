@@ -150,6 +150,109 @@ test('client API base is mount-relative (sub-path support, issue #4)', () => {
   )
 })
 
+/** One rule out of the client half's injected stylesheet, by exact selector. */
+function cssRule(selector) {
+  const start = client.indexOf("'" + selector + '{')
+  assert.ok(start >= 0, 'stylesheet rule missing: ' + selector)
+  const end = client.indexOf("'", start + 1)
+  return client.slice(start + 1, end)
+}
+
+test('the rc.2 surface contract: theme-owned menu material on its own layer', () => {
+  // dsh 0.1.7-rc.2 (docs/web-styling.md "Component rules") made the menu material
+  // theme-owned: dropdown/context/selection menus take `--dsw-menu-surface-fill`
+  // plus `--dsw-menu-backdrop-filter` (or, without MenuSurface's macOS backing,
+  // `--dsw-specific-menu`, whose darwin fill is 94% opaque), and feature/platform
+  // CSS must not override either. The old rule painted its own opaque layer fill,
+  // borrowed `--dsh-any-blur-card-panels` as the filter and re-added a neutral
+  // border under a hand-rolled shadow — all three are now guarded.
+  const menu = cssRule('.dig-menu')
+  assert.match(menu, /border:0/, 'an elevated surface carries the hairline inside its shadow, not a border')
+  assert.doesNotMatch(menu, /background:var\(--dsw-alias-bg-layer-/, 'the menu must not override the theme material')
+  assert.doesNotMatch(menu, /--dsh-any-/, 'platform CSS must not override the theme material')
+  // Filtering stays on an isolated layer: on the card itself it would become the
+  // backdrop root and the containing block of every descendant.
+  const material = cssRule('.dig-menu::before')
+  assert.match(material, /z-index:-1/, 'the material must paint on its own layer behind the rows')
+  assert.match(material, /border-radius:inherit/)
+  assert.match(material, /background:var\(--dsw-specific-menu,/)
+  assert.match(material, /backdrop-filter:var\(--dsw-menu-backdrop-filter,/)
+  assert.match(material, /pointer-events:none/)
+  // Invariant 13 (panel-internal overlays) survives the restructure: the card is
+  // still absolute inside `.dig-root`, the scroller is a separate box, and the
+  // theme's dark-menu stroke hook rides the card exactly as MenuSurface sets it.
+  assert.match(menu, /position:absolute/)
+  assert.match(menu, /isolation:isolate/)
+  // border-box so `max-height: calc(100% - 8px)` caps the WHOLE card: content-box
+  // sizing let the 8px of padding escape the cap, and a tall context menu in a
+  // short bottom workbench (185px) stuck 4px past the panel edge. Measured with a
+  // HEAD (v0.7.2) baseline tarball in the same instance: 187px of menu in a 185px
+  // panel. The clamp only holds while BOTH declarations are present — border-box
+  // alone would still let a 16px menu escape an 8px inset, and the 8px inset alone
+  // only balances against `left/top >= 4` in ContextMenu.
+  assert.match(menu, /box-sizing:border-box/)
+  assert.match(menu, /max-height:calc\(100% - 8px\)/)
+  assert.match(menu, /max-width:calc\(100% - 8px\)/)
+  assert.match(client, /className: 'dig-menu-scroll'/)
+  assert.match(client, /'data-menu-material': 'translucent'/)
+  assert.doesNotMatch(client, /createPortal/, 'overlays must stay inside .dig-root')
+})
+
+test('the rc.2 surface contract: elevation instead of border plus shadow', () => {
+  // "Never pair a `--dsw-alias-border-*` border with an lv/elevation shadow"
+  // (docs/web-styling.md) — the 0.5px hairline is the first elevation layer.
+  // Dialogs take the panel radius; the menu keeps the compact tier (outer R12,
+  // 4px padding, R8 rows) from docs/ui-radius.md.
+  for (const selector of ['.dig-menu', '.dig-dialog', '.dig-toast']) {
+    const text = cssRule(selector)
+    assert.match(text, /box-shadow:var\(--dsw-elevation-(prominent|panel)/, selector + ' must take a shared elevation')
+    assert.doesNotMatch(text, /border:1px solid var\(--dsw-alias-border-/, selector + ' must not pair a neutral border with elevation')
+  }
+  assert.match(cssRule('.dig-menu'), /border-radius:var\(--dsw-radius-md,/)
+  assert.match(cssRule('.dig-dialog'), /border-radius:var\(--dsw-radius-panel,/)
+  // Modal masks keep the translucent dark fill and take their blur from the
+  // theme (`--dsw-mask-blur` is `none`, so the declaration is a no-op today).
+  assert.match(cssRule('.dig-overlay'), /backdrop-filter:var\(--dsw-mask-blur,/)
+})
+
+test('the rc.2 surface contract: one focus colour, radius tokens, round capsules', () => {
+  // The theme owns `--dsw-focus-ring-color` / `--dsw-focus-ring-width` and blanks
+  // the colour under `html[data-input-modality='pointer']` for everything that is
+  // not `:read-write` (ui-theme/src/styles/focus.css), so a component may own its
+  // offset and width but never its colour. The old rule used `:focus` with its own
+  // colour, which painted a ring on pointer clicks too.
+  assert.match(client, /\.dig-select:focus-visible\{outline:1px solid var\(--dsw-focus-ring-color,/)
+  assert.doesNotMatch(client, /\.dig-select:focus\{outline:/, 'focus feedback must follow the input modality')
+  // Text controls keep their own feedback (the shipped Input.module.css pattern:
+  // outline:none plus a focus-within border colour) and use the shared colour.
+  assert.match(client, /\.dig-input:focus\{border-color:var\(--dsw-alias-state-business-primary,/)
+  assert.match(client, /\.dig-textarea:focus\{border-color:var\(--dsw-alias-state-business-primary,/)
+
+  const css = client.slice(client.indexOf('const CSS = ['), client.indexOf('].join('))
+  // docs/ui-radius.md: consume the named scale instead of local values, except
+  // deliberate full-round shapes, which pair `corner-shape: round` in-rule so the
+  // superellipse does not deform them.
+  const radii = [...css.matchAll(/border-radius:([^;'}]+)/g)].map((match) => match[1].trim())
+  assert.ok(radii.length >= 12, 'expected the radius scale to be consumed throughout, saw ' + radii.length)
+  for (const value of radii) {
+    assert.match(
+      value,
+      /^(var\(--dsw-radius-|calc\(var\(--dsw-radius-|inherit$|50%$|999px$)/,
+      'off-scale radius literal (use a --dsw-radius-* token): ' + value,
+    )
+  }
+  const capsules = [...css.matchAll(/border-radius:999px;([^}]*)/g)]
+  assert.ok(capsules.length >= 3, 'expected the pill chips to survive, saw ' + capsules.length)
+  for (const capsule of capsules) {
+    assert.match(capsule[1], /corner-shape:round/, 'a full-round radius must pair corner-shape: round')
+  }
+  // Double-era posture: every rc.2 token needs a fallback, because the plugin
+  // still installs on hosts that predate the scale (engines.dsh >= 0.1.2-0).
+  for (const match of css.matchAll(/var\((--dsw-(?:radius|elevation|focus-ring|menu|mask|specific-menu)[a-z0-9-]*)\s*(,|\))/g)) {
+    assert.equal(match[2], ',', 'rc.2 token without a fallback: ' + match[1])
+  }
+})
+
 test('client half has two doors: better-sidebar first, native right sidebar as fallback', () => {
   assert.match(client, /const TAB_ID = 'dsh-ide-git:panel'/)
   assert.match(client, /single: true/)
