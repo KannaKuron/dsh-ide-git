@@ -162,6 +162,8 @@ window.__ModuleLoader__.load({
       'settings.rail.title': '动作条按钮',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
+      'settings.rail.writeFailed': '设置没写进去,已退回原状态;请重试。',
+      'settings.rail.readonly': '当前宿主把配置设为只读,开关不可修改。',
       'rail.settingsHint': '拖动或用箭头调整顺序,眼睛图标控制显示',
       'rail.reset': '恢复默认',
       'rail.up': '上移',
@@ -327,6 +329,8 @@ window.__ModuleLoader__.load({
       'settings.rail.title': 'Action rail buttons',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
+      'settings.rail.writeFailed': 'The setting did not save; the switch went back. Try again.',
+      'settings.rail.readonly': 'This host serves the configuration read-only.',
       'rail.settingsHint': 'Drag or use the arrows to reorder; the eye toggles visibility',
       'rail.reset': 'Restore defaults',
       'rail.up': 'Move up',
@@ -500,6 +504,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.rail.writeFailed': '設定寫唔入,已經退回原狀;請再試。',
+        'settings.rail.readonly': '目前宿主將設定設為唯讀,開關改唔到。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -665,6 +671,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
+        'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭頭排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -830,6 +838,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
+        'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -995,6 +1005,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'アクションレールのボタン',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
+        'settings.rail.writeFailed': '設定を保存できませんでした。元の状態に戻しました。もう一度お試しください。',
+        'settings.rail.readonly': 'このホストは設定を読み取り専用で提供しています。',
         'rail.settingsHint': 'ドラッグまたは矢印で並べ替え、目のアイコンで表示を切り替え',
         'rail.reset': '既定に戻す',
         'rail.up': '上へ',
@@ -1160,6 +1172,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '액션 레일 버튼',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
+        'settings.rail.writeFailed': '설정이 저장되지 않아 원래 상태로 되돌렸습니다. 다시 시도하세요.',
+        'settings.rail.readonly': '이 호스트는 설정을 읽기 전용으로 제공합니다.',
         'rail.settingsHint': '끌어서 또는 화살표로 순서를 바꾸고, 눈 아이콘으로 표시를 전환합니다',
         'rail.reset': '기본값 복원',
         'rail.up': '위로',
@@ -1325,6 +1339,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
+        'settings.rail.writeFailed': 'Die Einstellung wurde nicht gespeichert; der Schalter ist zurückgesprungen. Bitte erneut versuchen.',
+        'settings.rail.readonly': 'Dieser Host liefert die Konfiguration schreibgeschützt.',
         'rail.settingsHint': 'Ziehen oder Pfeile zum Sortieren, das Auge schaltet die Sichtbarkeit um',
         'rail.reset': 'Standard wiederherstellen',
         'rail.up': 'Nach oben',
@@ -1490,6 +1506,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Boutons de la barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
+        'settings.rail.writeFailed': 'Le réglage n’a pas été enregistré ; l’interrupteur est revenu en place. Réessayez.',
+        'settings.rail.readonly': 'Cet hôte fournit la configuration en lecture seule.',
         'rail.settingsHint': 'Glisser ou utiliser les flèches pour réordonner ; l\'œil bascule la visibilité',
         'rail.reset': 'Rétablir les valeurs par défaut',
         'rail.up': 'Monter',
@@ -1655,6 +1673,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Кнопки панели действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
+        'settings.rail.writeFailed': 'Настройка не сохранилась; переключатель вернулся назад. Попробуйте снова.',
+        'settings.rail.readonly': 'Этот хост отдаёт конфигурацию только для чтения.',
         'rail.settingsHint': 'Перетаскивайте или используйте стрелки для порядка; значок глаза переключает видимость',
         'rail.reset': 'Вернуть значения по умолчанию',
         'rail.up': 'Вверх',
@@ -1820,6 +1840,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Botões da barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
+        'settings.rail.writeFailed': 'A configuração não foi salva; o interruptor voltou ao lugar. Tente de novo.',
+        'settings.rail.readonly': 'Este host fornece a configuração somente para leitura.',
         'rail.settingsHint': 'Arraste ou use as setas para reordenar; o olho alterna a visibilidade',
         'rail.reset': 'Restaurar padrões',
         'rail.up': 'Mover para cima',
@@ -1985,6 +2007,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Pulsanti della barra azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
+        'settings.rail.writeFailed': 'L’impostazione non è stata salvata; l’interruttore è tornato indietro. Riprova.',
+        'settings.rail.readonly': 'Questo host fornisce la configurazione in sola lettura.',
         'rail.settingsHint': 'Trascina o usa le frecce per riordinare; l’occhio attiva o disattiva la visibilità',
         'rail.reset': 'Ripristina i valori predefiniti',
         'rail.up': 'Sposta su',
@@ -2150,6 +2174,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Knoppen van de actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
+        'settings.rail.writeFailed': 'De instelling is niet opgeslagen; de schakelaar sprong terug. Probeer opnieuw.',
+        'settings.rail.readonly': 'Deze host levert de configuratie alleen-lezen.',
         'rail.settingsHint': 'Sleep of gebruik de pijlen om te sorteren; het oog schakelt de zichtbaarheid',
         'rail.reset': 'Standaardwaarden herstellen',
         'rail.up': 'Omhoog',
@@ -2315,6 +2341,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Przyciski paska akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
+        'settings.rail.writeFailed': 'Ustawienie nie zostało zapisane; przełącznik wrócił na miejsce. Spróbuj ponownie.',
+        'settings.rail.readonly': 'Ten host udostępnia konfigurację tylko do odczytu.',
         'rail.settingsHint': 'Przeciągnij lub użyj strzałek, aby zmienić kolejność; oko przełącza widoczność',
         'rail.reset': 'Przywróć domyślne',
         'rail.up': 'W górę',
@@ -2480,6 +2508,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Knappar i åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
+        'settings.rail.writeFailed': 'Inställningen sparades inte; reglaget gick tillbaka. Försök igen.',
+        'settings.rail.readonly': 'Denna värd tillhandahåller konfigurationen skrivskyddad.',
         'rail.settingsHint': 'Dra eller använd pilarna för att sortera; ögat växlar synlighet',
         'rail.reset': 'Återställ standard',
         'rail.up': 'Flytta upp',
@@ -2645,6 +2675,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
+        'settings.rail.writeFailed': 'Ayar kaydedilemedi; anahtar eski konumuna döndü. Yeniden deneyin.',
+        'settings.rail.readonly': 'Bu ana bilgisayar yapılandırmayı salt okunur sunuyor.',
         'rail.settingsHint': 'Sıralamak için sürükleyin veya okları kullanın; göz simgesi görünürlüğü değiştirir',
         'rail.reset': 'Varsayılanlara dön',
         'rail.up': 'Yukarı taşı',
@@ -2810,6 +2842,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Tombol bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
+        'settings.rail.writeFailed': 'Pengaturan tidak tersimpan; tombol kembali ke posisi semula. Coba lagi.',
+        'settings.rail.readonly': 'Host ini menyajikan konfigurasi hanya-baca.',
         'rail.settingsHint': 'Seret atau pakai panah untuk mengurutkan; ikon mata mengalihkan visibilitas',
         'rail.reset': 'Kembalikan default',
         'rail.up': 'Naikkan',
@@ -2975,6 +3009,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Nút thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
+        'settings.rail.writeFailed': 'Cài đặt không lưu được; công tắc đã trở về trạng thái cũ. Hãy thử lại.',
+        'settings.rail.readonly': 'Máy chủ này chỉ cung cấp cấu hình ở chế độ chỉ đọc.',
         'rail.settingsHint': 'Kéo hoặc dùng mũi tên để sắp xếp; biểu tượng con mắt bật tắt hiển thị',
         'rail.reset': 'Khôi phục mặc định',
         'rail.up': 'Di chuyển lên',
@@ -3140,6 +3176,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'أزرار شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
+        'settings.rail.writeFailed': 'لم يتم حفظ الإعداد؛ عاد المفتاح إلى حاله. حاول مرة أخرى.',
+        'settings.rail.readonly': 'يوفّر هذا المضيف الإعدادات للقراءة فقط.',
         'rail.settingsHint': 'اسحب أو استخدم الأسهم لإعادة الترتيب؛ وأيقونة العين تبدّل الظهور',
         'rail.reset': 'استعادة الإعدادات الافتراضية',
         'rail.up': 'تحريك لأعلى',
@@ -3305,6 +3343,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'एक्शन रेल बटन',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
+        'settings.rail.writeFailed': 'सेटिंग सहेजी नहीं गई; स्विच वापस पुरानी स्थिति में आ गया। फिर से कोशिश करें।',
+        'settings.rail.readonly': 'यह होस्ट कॉन्फ़िगरेशन को केवल-पढ़ने के लिए देता है।',
         'rail.settingsHint': 'क्रम बदलने के लिए खींचें या तीरों का उपयोग करें; आँख आइकन दृश्यता बदलता है',
         'rail.reset': 'डिफ़ॉल्ट बहाल करें',
         'rail.up': 'ऊपर ले जाएँ',
@@ -3470,6 +3510,8 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
+        'settings.rail.writeFailed': 'บันทึกการตั้งค่าไม่สำเร็จ สวิตช์กลับไปสถานะเดิม ลองอีกครั้ง',
+        'settings.rail.readonly': 'โฮสต์นี้ให้บริการการตั้งค่าแบบอ่านอย่างเดียว',
         'rail.settingsHint': 'ลากหรือใช้ลูกศรเพื่อจัดลำดับ; ไอคอนตาใช้สลับการแสดง',
         'rail.reset': 'คืนค่าเริ่มต้น',
         'rail.up': 'เลื่อนขึ้น',
@@ -3736,6 +3778,9 @@ window.__ModuleLoader__.load({
        hosts have. `railForm` is that switch; null means legacy.
        --------------------------------------------------------------------- */
     const RAIL_NS = 'ide-git'
+    /* One write window for the settings card: a burst of switches becomes one
+       atomic mutation instead of a stream the Host can lose. */
+    const FLUSH_MS = 250
     const RAIL_MIGRATED_KEY = 'dsh-ide-git.rail.v1.migrated'
     let railForm = null
     const railWatchers = new Set()
@@ -3753,6 +3798,15 @@ window.__ModuleLoader__.load({
       const source = values !== null && typeof values === 'object' ? values : {}
       const hidden = RAIL_IDS.filter((id) => source[railFieldOf(id)] === false)
       return { order: RAIL_IDS.slice(), hidden: hidden }
+    }
+
+    /* The inverse of railFieldOf, for the one-field write path. Returns null for a
+       field no rail action owns, so a caller cannot invent a row-Config key. */
+    function railIdOfField(field) {
+      if (typeof field !== 'string' || field.indexOf('rail') !== 0 || field.length <= 4) return null
+      const name = field.slice(4)
+      const id = name.charAt(0).toLowerCase() + name.slice(1)
+      return RAIL_IDS.indexOf(id) < 0 ? null : id
     }
 
     function railValuesOfConfig(config) {
@@ -3814,6 +3868,58 @@ window.__ModuleLoader__.load({
       }
       if (railForm !== null) return
       try { window.localStorage.setItem(RAIL_KEY, JSON.stringify(config)) } catch (error) { void error }
+    }
+
+    /* One switch, one field, one write — computed from the value the user just
+       chose rather than from a whole-config snapshot that may predate the click.
+       The card edits one field at a time, and a full-config write derived from a
+       stale render clobbers whichever sibling was toggled a moment earlier
+       (measured on 16 rapid toggles: 4 fields never reached the row Config and
+       reverted on reload).
+       Returns the write's disposition so the caller can roll its optimistic value
+       back and say so instead of leaving a switch that lies:
+         sent:true            + settled:Promise<boolean> when the Host answers
+         sent:false, reason   'read-only' | 'not-ready' | 'unknown'. */
+    function writeRailFields(ops, form) {
+      const active = form !== undefined && form !== null && typeof form.getSnapshot === 'function' ? form : railForm
+      let ready = null
+      try {
+        const snapshot = active === null || active === undefined ? null : active.getSnapshot()
+        if (snapshot !== null && snapshot !== undefined && snapshot.status === 'ready' && snapshot.value !== undefined) ready = snapshot
+      } catch (error) { void error }
+      if (ready !== null) {
+        if (ready.writable !== true || typeof active.mutate !== 'function') return { sent: false, reason: 'read-only' }
+        railForm = active
+        const settled = Promise.resolve(active.mutate(ops)).then(
+          (accepted) => accepted !== false,
+          (error) => {
+            console.warn('[dsh-ide-git] rail setting write failed: ' + String(error && error.message ? error.message : error))
+            return false
+          },
+        )
+        return { sent: true, settled: settled }
+      }
+      /* A config surface that exists but has not answered yet must refuse rather
+         than fall through to the legacy home: two sources would be worse. */
+      if (railForm !== null) return { sent: false, reason: 'not-ready' }
+      const current = readRailConfig()
+      let hidden = current.hidden.slice()
+      for (const op of ops) {
+        const id = railIdOfField(String(op.path[0]))
+        if (id === null) return { sent: false, reason: 'unknown' }
+        const wanted = op.value === true
+        if (wanted === true) hidden = hidden.filter((entry) => entry !== id)
+        else if (hidden.indexOf(id) < 0) hidden = hidden.concat([id])
+      }
+      try { window.localStorage.setItem(RAIL_KEY, JSON.stringify({ order: current.order, hidden: hidden })) } catch (error) { void error }
+      notifyRailConfig()
+      return { sent: true }
+    }
+
+    /* One switch's write. The card batches a burst through writeRailFields so the
+       Host sees one atomic mutation instead of a stream of overlapping ones. */
+    function writeRailField(field, value, form) {
+      return writeRailFields([{ op: 'set', path: [field], value: value }], form)
     }
 
     /* One-shot move of the pre-settings rail config into the row Config: read the
@@ -4477,7 +4583,90 @@ window.__ModuleLoader__.load({
       const t = props.t
       const [tick, setTick] = useState(0)
       const [pending, setPending] = useState({})
+      const [note, setNote] = useState('')
+      /* The user's latest intent per field, written SYNCHRONOUSLY. React state is
+         not enough: two clicks inside one frame would both read the pre-click
+         snapshot, so the second click recomputed the same target and the toggle
+         was lost (measured: a fast double click on one switch netted one step
+         instead of returning to where it started). */
+      const intent = useRef({})
+      const timers = useRef(new Set())
+      const dirty = useRef(new Map())
+      const pendingFlush = useRef(null)
       const bump = () => setTick((value) => value + 1)
+      /* Writes the Host answers ok for can still be lost when several overlap its
+         persist cycle: measured on this surface, 16 switches toggled 55ms apart
+         left 3 fields at their old value in the row Config while every request
+         answered 200, and the same 16 at 500ms apart all landed. So a switch is
+         only "done" when the accepted document agrees — checked once after the
+         burst settles, re-issued once, and otherwise rolled back and reported. */
+      const reconcile = (field, want, attempt) => {
+        const timer = setTimeout(() => {
+          timers.current.delete(timer)
+          let hostValue
+          try {
+            const snapshot = scope === null || scope === undefined ? null : scope.getSnapshot()
+            hostValue = snapshot !== null && snapshot !== undefined && snapshot.value !== null && typeof snapshot.value === 'object' ? snapshot.value[field] : undefined
+          } catch (error) { hostValue = undefined }
+          if (hostValue === want) return
+          if (attempt === 0) {
+            const again = writeRailField(field, want, scope)
+            if (again.sent === true) {
+              if (again.settled !== undefined) void again.settled.then(() => { reconcile(field, want, 1) })
+              else reconcile(field, want, 1)
+              return
+            }
+          }
+          delete intent.current[field]
+          setPending((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+          setNote(t('settings.rail.writeFailed'))
+        }, 600)
+        timers.current.add(timer)
+      }
+      const rollbackFields = (fields) => {
+        for (const field of fields) {
+          delete intent.current[field]
+          setPending((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+        }
+      }
+      /* One atomic mutation for the whole burst. Sixteen separate writes 55ms
+         apart lost 3 fields inside the Host's persist cycle while every request
+         answered 200 (the same sixteen 500ms apart all landed), so the fix is to
+         stop producing a burst: collect the fields the user touched and submit
+         them together, at most one mutation per window. */
+      const flush = () => {
+        pendingFlush.current = null
+        /* The pending TARGET per field, not "whatever the render-time intent
+           happens to hold now": the accepted document can already agree with the
+           user's new value, which clears the optimistic intent before this flush
+           runs — reading it here would then submit the opposite of the click and
+           write the switch back to the wrong state. */
+        const targets = new Map(dirty.current)
+        dirty.current.clear()
+        const fields = Array.from(targets.keys())
+        if (fields.length === 0) return
+        const ops = fields.map((field) => ({ op: 'set', path: [field], value: targets.get(field) === true }))
+        const outcome = writeRailFields(ops, scope)
+        if (outcome.sent !== true) {
+          rollbackFields(fields)
+          setNote(t(outcome.reason === 'read-only' ? 'settings.rail.readonly' : 'settings.rail.writeFailed'))
+          return
+        }
+        if (outcome.settled === undefined) return
+        void outcome.settled.then((accepted) => {
+          if (accepted !== true) {
+            rollbackFields(fields)
+            setNote(t('settings.rail.writeFailed'))
+            return
+          }
+          for (const field of fields) reconcile(field, targets.get(field) === true, 0)
+        })
+      }
+      const scheduleFlush = () => {
+        if (pendingFlush.current !== null) return
+        pendingFlush.current = setTimeout(() => { pendingFlush.current = null; flush() }, FLUSH_MS)
+        timers.current.add(pendingFlush.current)
+      }
       /* Two handles, one document: the slot hands the card the framework's own
          form for this entry (`props.scope`), and our ctx.configForms handle is the
          fallback — both address the same namespace, so a write through either is
@@ -4492,7 +4681,12 @@ window.__ModuleLoader__.load({
           const unsubscribe = scope.subscribe(bump)
           if (typeof unsubscribe === 'function') offScope = unsubscribe
         }
-        return () => { offRail(); if (offScope !== undefined) offScope() }
+        return () => {
+          offRail()
+          if (offScope !== undefined) offScope()
+          for (const timer of Array.from(timers.current)) clearTimeout(timer)
+          timers.current.clear()
+        }
       }, [])
       void tick
       const head = E('div', { className: 'dig-settings-head' },
@@ -4510,7 +4704,13 @@ window.__ModuleLoader__.load({
           const next = {}
           let changed = false
           for (const key of keys) {
-            if (values[key] === current[key]) { changed = true; continue }
+            if (values[key] === current[key]) {
+              changed = true
+              /* The accepted document agrees: this intent is no longer pending.
+                 Deleting twice is harmless, so a re-invoked updater stays safe. */
+              delete intent.current[key]
+              continue
+            }
             next[key] = current[key]
           }
           return changed ? next : current
@@ -4528,23 +4728,49 @@ window.__ModuleLoader__.load({
          the accepted document agrees with it (then it is dropped). */
       const shown = (spec) => {
         const field = railFieldOf(spec.id)
-        return Object.prototype.hasOwnProperty.call(pending, field) ? pending[field] : config.hidden.indexOf(spec.id) < 0
+        if (Object.prototype.hasOwnProperty.call(intent.current, field)) return intent.current[field]
+        return config.hidden.indexOf(spec.id) < 0
       }
-      return E('div', { className: 'dig-settings', 'data-settings-status': status }, head,
+      /* A host that serves the document but refuses writes gets disabled switches
+         and a sentence, not controls that silently do nothing. */
+      const readOnly = snapshot.writable !== true
+      return E('div', { className: 'dig-settings', 'data-settings-status': status, 'data-settings-readonly': readOnly === true ? 'true' : 'false' }, head,
+        E('div', { className: readOnly === true ? 'dig-settings-note' : 'dig-settings-note dig-settings-note-hidden', 'data-settings-readonly-note': '' }, t('settings.rail.readonly')),
+        note === '' ? null : E('div', { className: 'dig-settings-error', 'data-settings-error': '' }, note),
         E('div', { className: 'dig-settings-list' }, RAIL_SPECS.map((spec) => {
           const inputId = 'dig-rail-' + spec.id
           const visible = shown(spec)
           /* A row, not a <label>: a label that both carries htmlFor and wraps its
              own input toggles twice per click (once for the input, once for the
              label activation), which reads as a stuck switch and writes twice. */
-          const toggle = () => {
-            const next = visible !== true
-            const hidden = next
-              ? config.hidden.filter((entry) => entry !== spec.id)
-              : config.hidden.concat([spec.id])
-            setPending((current) => Object.assign({}, current, { [railFieldOf(spec.id)]: next }))
-            writeRailConfig({ order: config.order, hidden: hidden }, scope)
+          const toggle = (event) => {
+            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+            const field = railFieldOf(spec.id)
+            /* The control's own answer when the browser gives it to us: a click that
+               lands while the previous one is still rendering would otherwise
+               compose from the pre-click snapshot and be lost (measured: a fast
+               double click netted one step instead of returning to its start). The
+               row's label span is not a control, so it falls back to the
+               synchronous intent — never to the render snapshot alone. */
+            const fromControl = event !== undefined && event !== null && event.target !== null
+              && event.target !== undefined && typeof event.target.checked === 'boolean'
+              ? event.target.checked
+              : null
+            /* The control already holds the state the user just asked for, so it is
+               the TARGET — inverting it here would write the opposite of the click.
+               Without a control (the row's label span) the target is the inverse of
+               the current intent, falling back to the accepted document. */
+            const wanted = fromControl !== null
+              ? fromControl
+              : (Object.prototype.hasOwnProperty.call(intent.current, field)
+                ? intent.current[field] !== true
+                : config.hidden.indexOf(spec.id) < 0 !== true)
+            intent.current[field] = wanted
+            dirty.current.set(field, wanted)
+            setPending((now) => Object.assign({}, now, { [field]: wanted }))
+            setNote('')
             bump()
+            scheduleFlush()
           }
           return E('div', { key: spec.id, className: 'dig-settings-row', 'data-rail-action': spec.id },
             E('input', {
@@ -4553,6 +4779,7 @@ window.__ModuleLoader__.load({
               className: 'dig-settings-check',
               'aria-labelledby': inputId + '-label',
               checked: visible,
+              disabled: readOnly === true,
               onChange: toggle,
             }),
             E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: spec.icon, size: 13 })),
@@ -6519,6 +6746,8 @@ window.__ModuleLoader__.load({
       '.dig-settings-title{font-weight:600;color:var(--dsw-alias-label-primary)}',
       '.dig-settings-hint{color:var(--dsw-alias-label-tertiary);font-weight:400}',
       '.dig-settings-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:400}',
+      '.dig-settings-note-hidden{display:none}',
+      '.dig-settings-error{color:var(--dsw-alias-state-error-primary);font-weight:400}',
       '.dig-settings-list{display:flex;flex-direction:column;gap:2px;max-height:min(46vh,360px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-sm,8px)}',
       '.dig-settings-row{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;min-width:0}',
       '.dig-settings-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',

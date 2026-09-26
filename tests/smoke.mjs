@@ -677,6 +677,76 @@ test('a divider only exists when it can move something', () => {
     'while the stacked chrome hands out a real diff window')
 })
 
+test('a rail switch writes exactly its own field, and a refused write rolls back', () => {
+  // task-30. Three shapes are locked here because each one produced a switch
+  // that lied about the Host's document:
+  //  1. one field per write — a whole-config write derived from a stale render
+  //     clobbers a sibling toggled a moment earlier (measured: 4 of 16 rapid
+  //     toggles never reached the row Config);
+  //  2. the user's intent is kept SYNCHRONOUSLY — two clicks inside one frame
+  //     both read the pre-click snapshot, so the second click recomputed the
+  //     same target and the toggle was lost (a fast double click netted one step);
+  //  3. a refused/failed write puts the switch back and says so — never a switch
+  //     that stays flipped while the Host still holds the old value.
+  const core = client.slice(client.indexOf('/* ---- rail config core'), client.indexOf('/* ---- end rail config core'))
+  const helpers = new Function('RAIL_IDS', core
+    + '\nreturn { railFieldOf: railFieldOf, railIdOfField: railIdOfField }')(['refresh', 'tree', 'float', 'newBranch'])
+  for (const id of ['refresh', 'tree', 'float', 'newBranch']) {
+    assert.equal(helpers.railIdOfField(helpers.railFieldOf(id)), id, 'railIdOfField must invert railFieldOf for ' + id)
+  }
+  assert.equal(helpers.railIdOfField('railNope'), null, 'a field no action owns must not become a row-Config key')
+  assert.equal(helpers.railIdOfField('rail'), null)
+
+  const writer = client.slice(client.indexOf('function writeRailFields('), client.indexOf('/* One-shot move of the pre-settings rail config'))
+  assert.ok(writer.length > 300, 'writeRailFields must exist')
+  assert.match(writer, /active\.mutate\(ops\)/, 'a burst is submitted as ONE atomic mutation')
+  assert.match(writer, /if \(ready\.writable !== true \|\| typeof active\.mutate !== 'function'\) return \{ sent: false, reason: 'read-only' \}/,
+    'a read-only document must refuse instead of pretending')
+  assert.match(writer, /if \(railForm !== null\) return \{ sent: false, reason: 'not-ready' \}/,
+    'a config surface that has not answered yet must refuse rather than fall through to the legacy home')
+  assert.match(writer, /railIdOfField\(String\(op\.path\[0\]\)\)/, 'the legacy branch addresses ids through the inverse map')
+  assert.match(client, /function writeRailField\(field, value, form\) \{\n\s+return writeRailFields\(\[\{ op: 'set', path: \[field\], value: value \}\], form\)/,
+    'the single-field writer is a wrapper over the batched one')
+
+  const card = client.slice(client.indexOf('function RailSettingsCard('), client.indexOf('function RailSettings('))
+  assert.match(card, /const intent = useRef\(\{\}\)/, 'the intent map must live in a ref (synchronous, survives re-render)')
+  assert.match(card, /Object\.prototype\.hasOwnProperty\.call\(intent\.current, field\)/,
+    'both shown() and toggle() must read the synchronous intent before the snapshot')
+  assert.match(card, /const FLUSH_MS = 250|FLUSH_MS/, 'the write window is a named constant')
+  assert.match(card, /const dirty = useRef\(new Map\(\)\)/, 'the card collects touched fields WITH their target')
+  assert.match(card, /dirty\.current\.set\(field, wanted\)/, 'the target is recorded per field')
+  // The accepted document can already agree with the user's new value, which
+  // clears the optimistic intent before the flush runs; a flush reading the
+  // render-time intent would then submit the OPPOSITE of the click (measured: a
+  // fast double click wrote the switch back to false).
+  assert.match(card, /const targets = new Map\(dirty\.current\)/, 'the flush reads the recorded targets, not the render-time intent')
+  assert.match(card, /value: targets\.get\(field\) === true/, 'the submitted value comes from the recorded target')
+  assert.match(card, /scheduleFlush\(\)/, 'a toggle schedules a flush instead of writing immediately')
+  assert.match(card, /const outcome = writeRailFields\(ops, scope\)/, 'the flush submits the whole burst at once')
+  assert.match(card, /const rollbackFields = \(fields\) => \{/, 'a refused or failed batch has a rollback')
+  assert.match(card, /delete intent\.current\[field\]/, 'the rollback clears the optimistic intent')
+  assert.match(card, /if \(accepted !== true\) \{/, 'the settled promise decides whether to roll back')
+  assert.match(card, /const reconcile = \(field, want, attempt\) => \{/, 'the card reconciles against the accepted document')
+  assert.match(card, /if \(hostValue === want\) return/, 'a converged field needs no further work')
+  assert.match(card, /if \(attempt === 0\) \{/, 'a lost write is re-issued exactly once')
+  // The control's own answer is the TARGET; inverting it writes the opposite.
+  assert.match(card, /const wanted = fromControl !== null/, 'the control value is the target when available')
+  assert.match(card, /\? fromControl\n/, 'fromControl is used as-is, never inverted')
+  assert.match(card, /typeof event\.target\.checked === 'boolean'/, 'the control is read through the event, with a fallback for the label span')
+  assert.match(card, /reconcile\(field, targets\.get\(field\) === true, 0\)/, 'every accepted batch schedules the check against its target')
+  assert.match(card, /for \(const timer of Array\.from\(timers\.current\)\) clearTimeout\(timer\)/, 'unmount clears pending checks')
+  assert.match(card, /t\('settings\.rail\.writeFailed'\)/, 'a refused write is told to the user')
+  assert.match(card, /t\('settings\.rail\.readonly'\)/, 'a read-only host is told to the user')
+  assert.match(card, /disabled: readOnly === true/, 'read-only switches are disabled, not dead controls')
+
+  // Both new sentences exist in every dictionary (the key-set test would also
+  // catch a missing one, but a named guard says WHY it must stay).
+  for (const key of ['settings.rail.writeFailed', 'settings.rail.readonly']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
+})
+
 test('the settings entry draws a gear, not a sunburst', () => {
   // The rail's settings button used to render a centre dot with eight rays — a
   // brightness glyph users read as "sun" — under the name `settings`. The entry
