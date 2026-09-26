@@ -1338,10 +1338,14 @@ function commitInputOf(stagedPatch, unstagedPatch) {
     if (COMMIT_BINARY.test(name)) { dropped += 1; continue }
     if (/(^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|Cargo\.lock|composer\.lock)$/.test(name)) { dropped += 1; continue }
     let body = 'diff --git ' + part
+    let trimmed = false
     const lines = body.split('\n')
-    if (lines.length > COMMIT_FILE_LINES) { body = lines.slice(0, COMMIT_FILE_LINES).join('\n'); truncated = true }
-    if (body.length > COMMIT_FILE_BYTES) { body = body.slice(0, COMMIT_FILE_BYTES); truncated = true }
+    if (lines.length > COMMIT_FILE_LINES) { body = lines.slice(0, COMMIT_FILE_LINES).join('\n'); trimmed = true }
+    if (body.length > COMMIT_FILE_BYTES) { body = body.slice(0, COMMIT_FILE_BYTES); trimmed = true }
+    /* A file the total budget then drops was never sent, so it must not report
+       as "truncated": truncated means "the model saw a shortened version". */
     if (bytes + body.length > COMMIT_TOTAL_BYTES) { dropped += 1; continue }
+    if (trimmed === true) truncated = true
     bytes += body.length
     files.push({ path: name, body: body })
   }
@@ -1433,57 +1437,65 @@ async function commitMessage(payload) {
   if (commitServices === null) {
     throw new PanelError('no-host-service', 'this host does not serve llm + sessions, so the message cannot be written here', 501)
   }
+  /* The single-flight window opens BEFORE the first await and covers the route
+     lookup, the git reads and the model call. Claiming it only around the stream
+     let four simultaneous clicks all pass the check and spend four model calls
+     (measured: 4x200 on one click burst), which is four times the user's quota. */
   if (commitBusy) throw new PanelError('busy', 'a commit message is already being written', 409)
-  const cwd = cwdOf(payload)
-  const route = await commitRouteOf(payload)
-  const sums = await summary({ cwd: cwd })
-  const stagedPatch = sums.changes.staged.length > 0 ? (await diff({ cwd: cwd, staged: true })).patch : ''
-  const input = commitInputOf(stagedPatch, (await diff({ cwd: cwd })).patch)
-  if (input.files.length === 0) throw badRequest('nothing to describe: stage or edit something first')
-  const asked = typeof payload.prompt === 'string' ? payload.prompt : ''
-  const prompt = asked.slice(0, COMMIT_MAX_PROMPT_CHARS)
-  const reasoning = typeof payload.reasoningEffort === 'string' ? payload.reasoningEffort.trim() : ''
-  const spoken = commitMessagesOf(input, prompt)
-  const options = {
-    provider: route.provider,
-    model: route.model,
-    system: spoken.system,
-    messages: [{ role: 'user', content: [{ type: 'text', text: spoken.user }] }],
-    maxTokens: 512,
-    temperature: 0.2,
-  }
-  if (reasoning !== '') options.reasoningEffort = reasoning
-  if (typeof payload.sessionId === 'string' && payload.sessionId !== '') options.sessionId = payload.sessionId
-  const started = Date.now()
   commitBusy = true
-  let collected
   try {
-    collected = await collectCommitStream(commitServices.llm.stream(options))
+    const cwd = cwdOf(payload)
+    const route = await commitRouteOf(payload)
+    const sums = await summary({ cwd: cwd })
+    const stagedPatch = sums.changes.staged.length > 0 ? (await diff({ cwd: cwd, staged: true })).patch : ''
+    const input = commitInputOf(stagedPatch, (await diff({ cwd: cwd })).patch)
+    if (input.files.length === 0) {
+      if (input.dropped > 0) {
+        throw new PanelError('only-ignored-changes', 'the only changes are lock files or binary files, which are not sent to the model; stage a source change first')
+      }
+      throw badRequest('nothing to describe: stage or edit something first')
+    }
+    const asked = typeof payload.prompt === 'string' ? payload.prompt : ''
+    const prompt = asked.slice(0, COMMIT_MAX_PROMPT_CHARS)
+    const reasoning = typeof payload.reasoningEffort === 'string' ? payload.reasoningEffort.trim() : ''
+    const spoken = commitMessagesOf(input, prompt)
+    const options = {
+      provider: route.provider,
+      model: route.model,
+      system: spoken.system,
+      messages: [{ role: 'user', content: [{ type: 'text', text: spoken.user }] }],
+      maxTokens: 512,
+      temperature: 0.2,
+    }
+    if (reasoning !== '') options.reasoningEffort = reasoning
+    if (typeof payload.sessionId === 'string' && payload.sessionId !== '') options.sessionId = payload.sessionId
+    const started = Date.now()
+    const collected = await collectCommitStream(commitServices.llm.stream(options))
+    /* An adapter failure is a terminal finish, not a throw: a missing check here
+       would turn "the call failed" into "the model said nothing" (假成功). */
+    const finish = collected.finish
+    if (finish === null || finish === undefined) {
+      throw gatewayError('llm-no-finish', 'the model stream ended without a finish reason; treat the result as unknown, not as success')
+    }
+    if (finish.kind === 'error') throw gatewayError('llm-error', failureTextOf(finish.failure))
+    if (finish.kind === 'aborted') throw gatewayError('llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
+    if (finish.kind !== 'stop') {
+      throw gatewayError('llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
+    }
+    const message = cleanupCommitMessage(collected.text)
+    if (message === '') throw gatewayError('empty-output', 'the model returned no text')
+    return {
+      message: message,
+      provider: route.provider,
+      model: route.model,
+      routeSource: route.source,
+      reasoningEffort: reasoning === '' ? null : reasoning,
+      elapsedMs: Date.now() - started,
+      input: { files: input.files.length, bytes: input.bytes, dropped: input.dropped, truncated: input.truncated },
+      promptTruncated: asked.length > COMMIT_MAX_PROMPT_CHARS,
+    }
   } finally {
     commitBusy = false
-  }
-  /* An adapter failure is a terminal finish, not a throw: a missing check here
-     would turn "the call failed" into "the model said nothing" (假成功). */
-  const finish = collected.finish
-  if (finish === null || finish === undefined) {
-    throw gatewayError('llm-no-finish', 'the model stream ended without a finish reason; treat the result as unknown, not as success')
-  }
-  if (finish.kind === 'error') throw gatewayError('llm-error', failureTextOf(finish.failure))
-  if (finish.kind === 'aborted') throw gatewayError('llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
-  if (finish.kind !== 'stop') {
-    throw gatewayError('llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
-  }
-  const message = cleanupCommitMessage(collected.text)
-  if (message === '') throw gatewayError('empty-output', 'the model returned no text')
-  return {
-    message: message,
-    provider: route.provider,
-    model: route.model,
-    routeSource: route.source,
-    reasoningEffort: reasoning === '' ? null : reasoning,
-    elapsedMs: Date.now() - started,
-    input: { files: input.files.length, bytes: input.bytes, dropped: input.dropped, truncated: input.truncated },
-    promptTruncated: asked.length > COMMIT_MAX_PROMPT_CHARS,
   }
 }
 

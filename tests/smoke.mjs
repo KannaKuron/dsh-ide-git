@@ -762,7 +762,7 @@ test('the ai commit message keeps the model honest and the input bounded', async
   const end = host.indexOf('const METHODS = {')
   assert.ok(start >= 0 && end > start, 'the ai commit block must keep its bounds')
   const block = host.slice(start, end)
-  const api = new Function(block + '\nreturn { collectCommitStream, commitInputOf, commitMessagesOf, cleanupCommitMessage, COMMIT_MAX_PROMPT_CHARS, COMMIT_TOTAL_BYTES, COMMIT_FILE_LINES, COMMIT_MAX_FILES }')()
+  const api = new Function(block + '\nreturn { collectCommitStream, commitInputOf, commitMessagesOf, cleanupCommitMessage, COMMIT_MAX_PROMPT_CHARS, COMMIT_TOTAL_BYTES, COMMIT_FILE_BYTES, COMMIT_FILE_LINES, COMMIT_MAX_FILES }')()
 
   // 1 — the finish is reported, whichever way the adapter failed.
   const ok = await api.collectCommitStream((async function* generate() {
@@ -794,6 +794,16 @@ test('the ai commit message keeps the model honest and the input bounded', async
   const capped = api.commitInputOf(many, '')
   assert.equal(capped.files.length, api.COMMIT_MAX_FILES, 'the file count is capped')
   assert.equal(capped.dropped, 5, 'what was left out is counted, so the UI can say so')
+  /* A file the total budget drops was never sent, so it must not be reported as
+     "truncated": truncated means the model saw a shortened version of it. */
+  const wide = api.commitInputOf('diff --git a/a.txt b/a.txt\n+' + 'x'.repeat(api.COMMIT_FILE_BYTES * 2), '')
+  assert.equal(wide.truncated, true, 'a file that IS sent is reported as truncated')
+  const manyBig = Array.from({ length: Math.ceil(api.COMMIT_TOTAL_BYTES / api.COMMIT_FILE_BYTES) + 1 },
+    (_, i) => 'diff --git a/f' + i + '.txt b/f' + i + '.txt\n+' + 'y'.repeat(api.COMMIT_FILE_BYTES * 2)).join('\n')
+  const droppedAfterTrim = api.commitInputOf(manyBig, '')
+  assert.equal(droppedAfterTrim.dropped, 1, 'the file past the total budget is dropped')
+  assert.ok(droppedAfterTrim.bytes <= api.COMMIT_TOTAL_BYTES)
+  assert.equal(droppedAfterTrim.truncated, true, 'the files that WERE sent were trimmed')
   assert.ok(capped.bytes <= api.COMMIT_TOTAL_BYTES)
 
   // 3 — the user's words steer style; they never replace the rules.
@@ -822,6 +832,84 @@ test('the ai commit message keeps the model honest and the input bounded', async
   assert.doesNotMatch(host, /export const inject = \[[^\]]*'llm'/, 'a host without llm must still load the plugin')
   assert.match(host, /options\.reasoningEffort = reasoning/, 'the effort is only sent when set')
   assert.match(host, /shape\.commitModel|commitModel/, 'the model setting lives in the row Config')
+})
+
+test('the legacy rail migration lands every field, or does not claim to have run', async () => {
+  // DEF-2 (P1): the migration used to fire sixteen unawaited set() calls and
+  // stamp the marker immediately, so an upgrading user silently lost rail
+  // settings (measured: 15 of 16 fields, and once all of them) and the marker
+  // stopped any retry. It now submits ONE atomic mutation and only stamps the
+  // marker once the Host accepted it.
+  const source = client.slice(client.indexOf('function migrateRailConfig('), client.indexOf('function subscribeRailConfig('))
+  assert.ok(source.length > 300, 'migrateRailConfig must exist')
+  const build = (storage, outcome, accepted) => {
+    const calls = []
+    const notify = []
+    const window = {
+      localStorage: {
+        getItem: (key) => (Object.prototype.hasOwnProperty.call(storage, key) ? storage[key] : null),
+        setItem: (key, value) => { storage[key] = value; notify.push(key) },
+      },
+    }
+    const writeRailFields = (ops, form) => { calls.push({ ops: ops, form: form }); return outcome }
+    const run = new Function('window', 'RAIL_KEY', 'RAIL_MIGRATED_KEY', 'RAIL_IDS', 'railFieldOf', 'railValuesOfConfig', 'normalizeRail', 'railFormReady', 'writeRailFields', 'console',
+      'let railMigrating = false\n' + source + '\nreturn migrateRailConfig')(window, 'dsh-ide-git.rail.v1', 'dsh-ide-git.rail.v1.migrated',
+      ['refresh', 'tag', 'push'],
+      (id) => 'rail' + id.charAt(0).toUpperCase() + id.slice(1),
+      (config) => ({ railRefresh: config.hidden.indexOf('refresh') < 0, railTag: config.hidden.indexOf('tag') < 0, railPush: config.hidden.indexOf('push') < 0 }),
+      (raw) => ({ order: [], hidden: Array.isArray(raw.hidden) ? raw.hidden : [] }),
+      () => ({ status: 'ready', value: accepted }),
+      writeRailFields,
+      { warn: () => {} })
+    return { run: run, calls: calls, storage: storage, notify: notify, form: { name: 'form' } }
+  }
+
+  // 1 — every legacy field goes in ONE atomic mutation, and the marker follows the write.
+  const ok = build({ 'dsh-ide-git.rail.v1': JSON.stringify({ order: [], hidden: ['refresh', 'tag'] }) }, { sent: true, settled: Promise.resolve(true) }, { railRefresh: true, railTag: true, railPush: true })
+  ok.run(ok.form)
+  assert.equal(ok.calls.length, 1, 'the migration submits exactly one write')
+  assert.deepEqual(ok.calls[0].ops, [
+    { op: 'set', path: ['railRefresh'], value: false },
+    { op: 'set', path: ['railTag'], value: false },
+  ], 'only the fields that actually differ are submitted, one op each')
+  assert.equal(ok.storage['dsh-ide-git.rail.v1.migrated'], undefined, 'the marker must not be stamped before the Host answers')
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(ok.storage['dsh-ide-git.rail.v1.migrated'], '1', 'the marker is stamped once the write was accepted')
+
+  // 2 — a refused write leaves the migration unmarked, and the next load retries.
+  const refused = build({ 'dsh-ide-git.rail.v1': JSON.stringify({ order: [], hidden: ['push'] }) }, { sent: true, settled: Promise.resolve(false) }, {})
+  refused.run(refused.form)
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(refused.storage['dsh-ide-git.rail.v1.migrated'], undefined, 'a refused write must not be marked as migrated')
+  refused.run(refused.form)
+  assert.equal(refused.calls.length, 2, 'the next load retries the migration')
+  const notReady = build({ 'dsh-ide-git.rail.v1': JSON.stringify({ order: [], hidden: ['push'] }) }, { sent: false, reason: 'read-only' }, {})
+  notReady.run(notReady.form)
+  assert.equal(notReady.storage['dsh-ide-git.rail.v1.migrated'], undefined, 'an unwritable document must not be marked as migrated')
+
+  // 3 — once migrated, it never runs twice, and a config that already agrees is a no-op.
+  const already = build({ 'dsh-ide-git.rail.v1': JSON.stringify({ order: [], hidden: ['push'] }), 'dsh-ide-git.rail.v1.migrated': '1' }, { sent: true, settled: Promise.resolve(true) }, {})
+  already.run(already.form)
+  assert.equal(already.calls.length, 0, 'a migrated profile is not migrated again')
+  const same = build({ 'dsh-ide-git.rail.v1': JSON.stringify({ order: [], hidden: [] }) }, { sent: true, settled: Promise.resolve(true) }, { railRefresh: true, railTag: true, railPush: true })
+  same.run(same.form)
+  assert.equal(same.calls.length, 0, 'a document that already matches is not rewritten')
+  assert.equal(same.storage['dsh-ide-git.rail.v1.migrated'], '1', 'and it still counts as migrated')
+})
+
+test('the overwrite-draft confirmation carries both button labels in every dictionary', () => {
+  // DEF-1 (P2): the AI overwrite dialog shipped without okLabel/cancelLabel, so
+  // both buttons rendered empty while the other seven dialogs had text.
+  const start = client.indexOf('const aiConfirmDialog =')
+  const end = client.indexOf('const composer = props.compact')
+  assert.ok(start > 0 && end > start, 'the confirm dialog must stay where the smoke test can see it')
+  const dialog = client.slice(start, end)
+  assert.match(dialog, /okLabel: t\('confirm\.ok'\)/, 'the confirm button needs a label')
+  assert.match(dialog, /cancelLabel: t\('confirm\.cancel'\)/, 'the cancel button needs a label')
+  for (const key of ['confirm.ok', 'confirm.cancel']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 21, key + ' must exist in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
 })
 
 test('the settings entry draws a gear, not a sunburst', () => {

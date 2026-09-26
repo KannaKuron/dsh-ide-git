@@ -582,3 +582,57 @@ test('commit-message: concurrent calls are serialized by one single-flight guard
   assert.equal(result.second.body.error.code, 'busy')
   assert.equal(result.first.status, 200)
 })
+
+test('commit-message: four simultaneous clicks spend the model exactly once', async () => {
+  // DEF-3: the single-flight window used to open only around the stream, so the
+  // route lookup, the git reads and the model call all sat outside it and four
+  // simultaneous requests each reached the provider (4x200, measured 3/3 rounds).
+  let providerCalls = 0
+  let release = null
+  const gate = new Promise((resolve) => { release = resolve })
+  const llm = {
+    listProviders: () => [{ id: 'p' }],
+    listModels: async () => [],
+    stream: () => {
+      providerCalls += 1
+      return (async function* generate() {
+        await gate
+        yield { type: 'text-delta', index: 0, text: 'feat: once' }
+        yield { type: 'finish', reason: { kind: 'stop' } }
+      })()
+    },
+  }
+  const statuses = await withServices(llm, fakeSessions({ provider: 'p', model: 'm' }), async (call) => {
+    const inflight = [
+      call('commit-message', { cwd: repo, sessionId: 'sess-1' }),
+      call('commit-message', { cwd: repo, sessionId: 'sess-1' }),
+      call('commit-message', { cwd: repo, sessionId: 'sess-1' }),
+      call('commit-message', { cwd: repo, sessionId: 'sess-1' }),
+    ]
+    await new Promise((resolve) => setTimeout(resolve, 150))
+    release()
+    const settled = await Promise.all(inflight)
+    return settled.map((row) => row.status)
+  })
+  assert.equal(statuses.filter((status) => status === 200).length, 1, 'exactly one request may generate')
+  assert.equal(statuses.filter((status) => status === 409).length, 3, 'the rest are refused as busy')
+  assert.equal(providerCalls, 1, 'the provider is called once, not four times')
+})
+
+test('commit-message: a lock file is not a describable change, and says so', async () => {
+  const lockRepo = mkdtempSync(join(tmpdir(), 'dsh-ide-git-lock-'))
+  const lockGit = (...args) => execFileSync('git', args, { cwd: lockRepo, encoding: 'utf8' })
+  lockGit('init', '-q', '-b', 'main')
+  lockGit('config', 'user.email', 't@example.com')
+  lockGit('config', 'user.name', 't')
+  writeFileSync(join(lockRepo, 'README.md'), 'base\n')
+  lockGit('add', 'README.md')
+  lockGit('commit', '-qm', 'init')
+  writeFileSync(join(lockRepo, 'pnpm-lock.yaml'), 'lockfileVersion: 9\n')
+  lockGit('add', 'pnpm-lock.yaml')
+  const result = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: lockRepo, sessionId: 'sess-1' }))
+  assert.equal(result.status, 400, JSON.stringify(result.body))
+  assert.equal(result.body.error.code, 'only-ignored-changes')
+  assert.match(result.body.error.message, /lock files or binary/)
+  rmSync(lockRepo, { recursive: true, force: true })
+})

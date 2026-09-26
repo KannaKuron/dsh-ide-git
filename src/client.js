@@ -4119,6 +4119,7 @@ window.__ModuleLoader__.load({
     const FLUSH_MS = 250
     const RAIL_MIGRATED_KEY = 'dsh-ide-git.rail.v1.migrated'
     let railForm = null
+    let railMigrating = false
     const railWatchers = new Set()
 
     /* ---- rail config core (pure: tests/smoke.mjs slices this block) ---- */
@@ -4276,19 +4277,44 @@ window.__ModuleLoader__.load({
     function migrateRailConfig(form) {
       try {
         if (window.localStorage.getItem(RAIL_MIGRATED_KEY) !== null) return
-        const raw = window.localStorage.getItem(RAIL_KEY)
-        const values = raw === null || raw === '' ? null : railValuesOfConfig(normalizeRail(JSON.parse(raw)))
-        for (const id of RAIL_IDS) {
-          if (values === null) break
-          const field = railFieldOf(id)
-          const written = form.set(field, values[field])
-          if (written !== undefined && written !== null && typeof written.then === 'function') {
-            void written.then((accepted) => {
-              if (accepted === false) console.warn('[dsh-ide-git] legacy rail setting "' + field + '" was refused by the host')
-            }, (error) => { console.warn('[dsh-ide-git] legacy rail migration failed: ' + String(error && error.message ? error.message : error)) })
-          }
+        if (railMigrating === true) return
+        const done = () => {
+          railMigrating = false
+          try { window.localStorage.setItem(RAIL_MIGRATED_KEY, '1') } catch (error) { void error }
         }
-        window.localStorage.setItem(RAIL_MIGRATED_KEY, '1')
+        const raw = window.localStorage.getItem(RAIL_KEY)
+        if (raw === null || raw === '') { done(); return }
+        const values = railValuesOfConfig(normalizeRail(JSON.parse(raw)))
+        const ready = railFormReady()
+        const accepted = ready !== null && ready.value !== null && typeof ready.value === 'object' ? ready.value : {}
+        const ops = []
+        for (const id of RAIL_IDS) {
+          const field = railFieldOf(id)
+          if (accepted[field] === values[field]) continue
+          ops.push({ op: 'set', path: [field], value: values[field] === true })
+        }
+        if (ops.length === 0) { done(); return }
+        /* ONE atomic mutation, and the marker ONLY once the Host accepted it.
+           The per-field set() loop this replaces fired sixteen unawaited writes
+           and stamped the marker right away, so on a real profile fifteen of the
+           sixteen fields (and in one case all of them) never reached the row
+           Config and were never retried — an upgrade silently lost the user's
+           rail settings while the marker claimed success. A refusal, a failed
+           write or a superseded one now leaves the marker unwritten so the next
+           load migrates again. */
+        railMigrating = true
+        const outcome = writeRailFields(ops, form)
+        if (outcome.sent !== true) {
+          railMigrating = false
+          console.warn('[dsh-ide-git] legacy rail migration was refused (' + String(outcome.reason) + '); it stays unmarked and is retried')
+          return
+        }
+        if (outcome.settled === undefined) { done(); return }
+        void outcome.settled.then((acceptedWrite) => {
+          if (acceptedWrite === true) { done(); return }
+          railMigrating = false
+          console.warn('[dsh-ide-git] legacy rail migration was not accepted; it stays unmarked and is retried')
+        })
       } catch (error) { void error }
     }
 
@@ -5705,6 +5731,8 @@ window.__ModuleLoader__.load({
         t: t,
         title: t('changes.aiOverwriteTitle'),
         text: t('changes.aiOverwriteText'),
+        okLabel: t('confirm.ok'),
+        cancelLabel: t('confirm.cancel'),
         onConfirm: () => { void aiRun() },
         onCancel: () => setAiAsk(false),
       })
@@ -5728,7 +5756,8 @@ window.__ModuleLoader__.load({
               type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
               disabled: message.trim() === '' || props.busy === true,
               onClick: () => { submit(false) },
-            }, t('changes.commit')))
+            }, t('changes.commit')),
+            E('span', { className: 'dig-commit-ai-hint dig-commit-ai-hint-block' }, t('changes.aiQuota')))
         : E('div', { className: 'dig-commit-box' },
             E('textarea', {
               className: 'dig-textarea', value: message, spellCheck: false,
@@ -7203,6 +7232,7 @@ window.__ModuleLoader__.load({
       '.dig-settings-input{width:100%;box-sizing:border-box;font:inherit}',
       '.dig-commit-ai{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}',
       '.dig-commit-ai-hint{color:var(--dsw-alias-label-tertiary);font-size:11px}',
+      '.dig-commit-ai-hint-block{flex:1 0 100%;font-size:11px}',
       '.dig-commit-ai-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-size:11px;margin-bottom:4px;word-break:break-word}',
       '.dig-settings-list{display:flex;flex-direction:column;gap:2px;max-height:min(46vh,360px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-sm,8px)}',
       '.dig-settings-row{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;min-width:0}',
@@ -7356,7 +7386,7 @@ window.__ModuleLoader__.load({
       '.dig-row:hover .dig-mini{opacity:1}',
       '.dig-mini:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-commit-box{flex:none;padding:6px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
-      '.dig-commit-box-compact{flex-direction:row;align-items:center;gap:6px;padding:4px 6px}',
+      '.dig-commit-box-compact{flex-direction:row;align-items:center;gap:6px;padding:4px 6px;flex-wrap:wrap}',
       '.dig-textarea{width:100%;box-sizing:border-box;min-height:50px;resize:vertical;padding:5px 6px;border-radius:var(--dsw-radius-sm,8px);border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;outline:none}',
       '.dig-textarea::placeholder{color:var(--dsw-alias-label-tertiary)}',
       '.dig-textarea:focus{border-color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary))}',
@@ -7602,7 +7632,11 @@ window.__ModuleLoader__.load({
         formCtx.effect(() => {
           railForm = form
           migrateRailConfig(form)
-          const unsubscribe = typeof form.subscribe === 'function' ? form.subscribe(() => notifyRailConfig()) : undefined
+          /* The row Config is still 'loading' at bind time, so the migration is
+             attempted here AND on every notification until it lands — it is
+             idempotent (marker-gated, re-entrancy-guarded) and only stamps the
+             marker once the Host accepted the write. */
+          const unsubscribe = typeof form.subscribe === 'function' ? form.subscribe(() => { notifyRailConfig(); migrateRailConfig(form) }) : undefined
           notifyRailConfig()
           return () => {
             railForm = null

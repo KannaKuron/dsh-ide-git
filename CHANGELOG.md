@@ -3,7 +3,31 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
-## v0.9.0 (未发版) — 2026-09-26
+## v0.9.0 — 2026-09-26
+
+**类型**:feat(AI 写提交信息,issue #6)+ fix(独立验收抓出的三个缺陷)
+
+- **fix(P1,升级用户静默丢设置)旧 `rail.v1` 迁移丢写**:迁移过去用 16 次 `form.set()`
+  逐个写、不等待、不合并,紧接着就打 `…rail.v1.migrated = 1` —— 实测 legacy
+  `hidden:['refresh','tag']` 只有 `railRefresh` 落盘(`railTag` 丢失),`hidden:['push']`
+  **一个字段都没落**,而标记已置位 ⇒ 永不重试。现在迁移走**同一套原子合并写**
+  (`writeRailFields` → 一次 `mutate` 多 op),且**只有写入被宿主接受后才打标记**:
+  被拒/失败/未就绪时标记不写,下次打开继续重试;已迁移或文档已一致时不再重复写。
+  断言:`tests/smoke.mjs`「the legacy rail migration lands every field, or does not
+  claim to have run」(多字段全量 op、成功后才置标记、失败不置且重试、已迁移不重跑)。
+- **fix(P2)并发单飞窗口漏洞**:`commitBusy` 过去只在 `llm.stream()` 前一行置位,
+  `commitRouteOf`(含 `listModels`)、`summary`、两次 `diff` 都在窗口外 —— 同时发 4 个
+  POST 会 **4×200 且真的调用 4 次模型**(烧 4 份额度)。现在**进入路由后、任何 await
+  之前**即占位,整段用 `try/finally` 释放。断言:`tests/api.test.mjs`「four simultaneous
+  clicks spend the model exactly once」(恰好 1×200 + 3×409、provider 只被调用 1 次),
+  并保留「流中第二次 = 409」用例防回归。
+- **fix(P2)「覆盖当前草稿?」确认框两个按钮无文案**:漏传 `okLabel` / `cancelLabel`
+  (其余 7 处同类调用都传了),两个按钮渲染成空串。已补 `confirm.ok` / `confirm.cancel`
+  (21 门齐),并加冒烟守卫断言该对话框必须带两个已本地化的按钮文案。
+- **fix(小项)**:①`truncated` 不再把「被总量上限丢弃的文件」算作已截断(未送出的文件
+  不算截断);②只有 lock / 二进制变更时返回 `only-ignored-changes` 并说明原因,不再说
+  "nothing to describe";③紧凑 composer 也**可见**地显示「会消耗你的额度」(原先只有
+  按钮的 `title`)。
 
 **类型**:feat(AI 写提交信息,issue #6)
 
