@@ -24,6 +24,46 @@ import path from 'node:path'
 export const name = 'dsh-ide-git'
 export const inject = ['webServer']
 
+/* Row Config = the plugin's settings surface on dsh >= 0.1.7: the host persists
+   these values under the loader row id ('ide-git', see cordis.patch.yml) and the
+   browser reads them through ctx.configForms, so the settings card on the
+   plugin's page and the action rail read ONE document. The rail's edit is one
+   switch per action (`railRefresh` … `railPush`); a missing field means "default"
+   (the action is shown), which is what keeps an action added by a later version
+   visible on an older profile.
+   `@deepseek-ai/schemastery` is resolved LAZILY: it is a host-provided module
+   (every sibling plugin declares its row Config the same way), and on a host that
+   cannot resolve it the row config is passed through unvalidated instead of the
+   whole row disappearing — so the browser keeps its localStorage home there. */
+let Schema = null
+try {
+  Schema = (await import('@deepseek-ai/schemastery')).default
+} catch (error) {
+  console.warn('[dsh-ide-git] @deepseek-ai/schemastery is not resolvable here; the row Config surface is absent'
+    + ' (the browser falls back to its localStorage rail config): ' + (error && error.message ? error.message : String(error)))
+}
+
+/** Rail action ids, in rail order. MUST mirror RAIL_SPECS in src/client.js. */
+const RAIL_CONFIG_IDS = [
+  'refresh', 'tree', 'float', 'split', 'fullscreen', 'newBranch', 'checkout', 'delete',
+  'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push',
+]
+
+/** Volatile refs (dsh >= 0.1.7 settings contract) or plain values on older hosts. */
+function live(schema) {
+  return typeof schema.volatile === 'function' ? schema.volatile() : schema
+}
+
+function railConfigSchema(schema) {
+  const shape = {}
+  for (const id of RAIL_CONFIG_IDS) {
+    shape['rail' + id.charAt(0).toUpperCase() + id.slice(1)] = live(schema.boolean().default(true))
+  }
+  return schema.object(shape)
+}
+
+export const Config = Schema === null ? undefined : railConfigSchema(Schema)
+
 const ROUTE_PREFIX = '/dsh-ide-git/api'
 const MAX_OUTPUT_BYTES = 8 * 1024 * 1024
 const MAX_DIFF_CHARS = 400 * 1024

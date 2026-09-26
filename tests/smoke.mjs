@@ -693,6 +693,58 @@ test('the settings entry draws a gear, not a sunburst', () => {
   assert.match(client, /E\(Icon, \{ name: 'settings', size: 15 \}\)/, 'the rail settings button still uses it')
 })
 
+test('the rail settings live in the row Config, with localStorage only as the legacy home', () => {
+  // One document, one editor. dsh >= 0.1.7 persists a plugin's settings as the
+  // row Config and serves it through ctx.configForms; the settings card on the
+  // plugin's page edits it, the rail reads it, and the pre-0.9 localStorage value
+  // is migrated once. An older host has no such service — there the localStorage
+  // home and the in-panel editor stay.
+  const start = client.indexOf('/* ---- rail config core')
+  const end = client.indexOf('/* ---- end rail config core')
+  assert.ok(start >= 0 && end > start, 'the rail config core must keep its markers')
+  const core = new Function('RAIL_IDS', client.slice(start, end)
+    + '\nreturn { railFieldOf: railFieldOf, railConfigOfValues: railConfigOfValues, railValuesOfConfig: railValuesOfConfig }')(['refresh', 'tree', 'float'])
+  assert.equal(core.railFieldOf('newBranch'), 'railNewBranch')
+  assert.equal(core.railFieldOf('float'), 'railFloat')
+  assert.deepEqual(core.railConfigOfValues({ railRefresh: true, railTree: false }), { order: ['refresh', 'tree', 'float'], hidden: ['tree'] })
+  assert.deepEqual(core.railConfigOfValues(null).hidden, [], 'a missing field means the default, which is shown')
+  assert.deepEqual(core.railValuesOfConfig({ hidden: ['float'] }), { railRefresh: true, railTree: true, railFloat: false })
+
+  // The host schema mirrors the client rail ids — a new action must not be
+  // silently missing from the settings surface.
+  const hostIds = host.slice(host.indexOf('const RAIL_CONFIG_IDS = ['), host.indexOf(']', host.indexOf('const RAIL_CONFIG_IDS = [')))
+  const schemaIds = [...hostIds.matchAll(/'([a-zA-Z]+)'/g)].map((match) => match[1])
+  const specIds = [...client.slice(client.indexOf('const RAIL_SPECS = ['), client.indexOf('const RAIL_IDS =')).matchAll(/\{ id: '([^']+)'/g)].map((match) => match[1])
+  assert.ok(specIds.length >= 12, 'RAIL_SPECS should still be the action authority')
+  assert.deepEqual(schemaIds, specIds, 'the host row Config must mirror RAIL_SPECS exactly (and in order)')
+  assert.match(host, /shape\['rail' \+ id\.charAt\(0\)\.toUpperCase\(\) \+ id\.slice\(1\)\] = live\(schema\.boolean\(\)\.default\(true\)\)/,
+    'every action is a volatile boolean defaulting to shown')
+  assert.match(host, /export const Config = Schema === null \? undefined : railConfigSchema\(Schema\)/,
+    'an unresolvable schema module must only disable the surface, never the row')
+
+  // Invariant 2, amended: the host half still imports only node: builtins; the
+  // single non-node module it may REACH (lazily, guarded) is the host-provided
+  // schema module every sibling plugin uses to declare its row Config.
+  const dynamicImports = [...host.matchAll(/await import\('([^']+)'\)/g)].map((match) => match[1])
+  assert.deepEqual(dynamicImports, ['@deepseek-ai/schemastery'], 'the only allowed non-node reach, and it must stay dynamic')
+  assert.doesNotMatch(host, /from '(?!node:)/, 'host half may only import node: builtins')
+
+  // Client wiring: both official seats, soft services, one-shot migration.
+  assert.match(client, /const SETTINGS_BUNDLE = 'dsh-ide-git'/)
+  assert.match(client, /const RAIL_NS = 'ide-git'/)
+  assert.match(client, /slots\.inject\('plugins\.bundle\.config'/)
+  assert.match(client, /\{ name: 'plugins\.bundle\.config', key: SETTINGS_BUNDLE, locale: LOCALE_NS \}/)
+  assert.match(client, /\{ name: 'settings\.plugin\.item', key: RAIL_NS, locale: LOCALE_NS \}/)
+  assert.match(client, /ctx\.inject\(\['configForms'\]/)
+  assert.match(client, /const RAIL_MIGRATED_KEY = 'dsh-ide-git\.rail\.v1\.migrated'/)
+  assert.match(client, /navigation\.openBundle\(SETTINGS_BUNDLE\)/, 'the gear opens the plugin page when the host has one')
+  assert.match(client, /const openSettings = navigation !== undefined && navigation !== null && typeof navigation\.openBundle === 'function'/,
+    'pluginNavigation is read at RENDER time and soft (it may be undefined)')
+  // The in-panel editor exists only where the row Config does not.
+  assert.match(client, /railForm === null \|\| props\.openSettings === null \|\| props\.openSettings === undefined \? 'panel' : 'page'/,
+    'the gear falls back to the in-panel editor only without the config/navigation pair')
+})
+
 test('every overlay is clamped to the panel it lives in', () => {
   // Found while making the panel draggable (issue #5): the dock can now be dragged
   // narrower than the overlays' own minimum, and a fixed min-width BEATS max-width

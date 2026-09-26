@@ -38,6 +38,9 @@ window.__ModuleLoader__.load({
        would escape the mount and 404 behind any strict proxy. */
     const API_BASE = 'dsh-ide-git/api'
     const TAB_ID = 'dsh-ide-git:panel'
+    /* The bundle's package name: the key the Plugins page uses for a bundle's own
+       page and its `plugins.bundle.config` slot. */
+    const SETTINGS_BUNDLE = 'dsh-ide-git'
     /* The namespace this plugin's dictionaries are published under in the DSH
        locale registry. */
     const LOCALE_NS = 'dsh-ide-git'
@@ -155,6 +158,10 @@ window.__ModuleLoader__.load({
       'toolbar.tree': '分支栏',
       'rail.more': '更多操作',
       'rail.settings': '动作条设置',
+      'rail.openSettings': '打开插件设置',
+      'settings.rail.title': '动作条按钮',
+      'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
+      'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
       'rail.settingsHint': '拖动或用箭头调整顺序,眼睛图标控制显示',
       'rail.reset': '恢复默认',
       'rail.up': '上移',
@@ -316,6 +323,10 @@ window.__ModuleLoader__.load({
       'toolbar.tree': 'Branch pane',
       'rail.more': 'More actions',
       'rail.settings': 'Action bar settings',
+      'rail.openSettings': 'Open plugin settings',
+      'settings.rail.title': 'Action rail buttons',
+      'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
+      'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
       'rail.settingsHint': 'Drag or use the arrows to reorder; the eye toggles visibility',
       'rail.reset': 'Restore defaults',
       'rail.up': 'Move up',
@@ -485,6 +496,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
+        'rail.openSettings': '開啟外掛設定',
+        'settings.rail.title': '動作列按鈕',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -646,6 +661,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
+        'rail.openSettings': '開啟外掛設定',
+        'settings.rail.title': '動作列按鈕',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'rail.settingsHint': '拖曳或用箭頭排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -807,6 +826,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
+        'rail.openSettings': '開啟外掛設定',
+        'settings.rail.title': '動作列按鈕',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
         'rail.reset': '還原預設',
         'rail.up': '上移',
@@ -968,6 +991,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'ブランチペイン',
         'rail.more': 'その他の操作',
         'rail.settings': 'アクションバーの設定',
+        'rail.openSettings': 'プラグイン設定を開く',
+        'settings.rail.title': 'アクションレールのボタン',
+        'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
+        'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
         'rail.settingsHint': 'ドラッグまたは矢印で並べ替え、目のアイコンで表示を切り替え',
         'rail.reset': '既定に戻す',
         'rail.up': '上へ',
@@ -1129,6 +1156,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '브랜치 창',
         'rail.more': '추가 작업',
         'rail.settings': '작업 표시줄 설정',
+        'rail.openSettings': '플러그인 설정 열기',
+        'settings.rail.title': '액션 레일 버튼',
+        'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
+        'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
         'rail.settingsHint': '끌어서 또는 화살표로 순서를 바꾸고, 눈 아이콘으로 표시를 전환합니다',
         'rail.reset': '기본값 복원',
         'rail.up': '위로',
@@ -1290,6 +1321,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Branch-Bereich',
         'rail.more': 'Weitere Aktionen',
         'rail.settings': 'Einstellungen der Aktionsleiste',
+        'rail.openSettings': 'Plugin-Einstellungen öffnen',
+        'settings.rail.title': 'Schaltflächen der Aktionsleiste',
+        'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
+        'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
         'rail.settingsHint': 'Ziehen oder Pfeile zum Sortieren, das Auge schaltet die Sichtbarkeit um',
         'rail.reset': 'Standard wiederherstellen',
         'rail.up': 'Nach oben',
@@ -1451,6 +1486,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Volet des branches',
         'rail.more': 'Plus d\'actions',
         'rail.settings': 'Réglages de la barre d\'actions',
+        'rail.openSettings': 'Ouvrir les réglages du plugin',
+        'settings.rail.title': 'Boutons de la barre d’actions',
+        'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
+        'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
         'rail.settingsHint': 'Glisser ou utiliser les flèches pour réordonner ; l\'œil bascule la visibilité',
         'rail.reset': 'Rétablir les valeurs par défaut',
         'rail.up': 'Monter',
@@ -1612,6 +1651,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Панель веток',
         'rail.more': 'Другие действия',
         'rail.settings': 'Настройки панели действий',
+        'rail.openSettings': 'Открыть настройки плагина',
+        'settings.rail.title': 'Кнопки панели действий',
+        'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
+        'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
         'rail.settingsHint': 'Перетаскивайте или используйте стрелки для порядка; значок глаза переключает видимость',
         'rail.reset': 'Вернуть значения по умолчанию',
         'rail.up': 'Вверх',
@@ -1773,6 +1816,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Painel de branches',
         'rail.more': 'Mais ações',
         'rail.settings': 'Configurações da barra de ações',
+        'rail.openSettings': 'Abrir configurações do plugin',
+        'settings.rail.title': 'Botões da barra de ações',
+        'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
+        'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
         'rail.settingsHint': 'Arraste ou use as setas para reordenar; o olho alterna a visibilidade',
         'rail.reset': 'Restaurar padrões',
         'rail.up': 'Mover para cima',
@@ -1934,6 +1981,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Riquadro dei branch',
         'rail.more': 'Altre azioni',
         'rail.settings': 'Impostazioni della barra delle azioni',
+        'rail.openSettings': 'Apri le impostazioni del plugin',
+        'settings.rail.title': 'Pulsanti della barra azioni',
+        'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
+        'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
         'rail.settingsHint': 'Trascina o usa le frecce per riordinare; l’occhio attiva o disattiva la visibilità',
         'rail.reset': 'Ripristina i valori predefiniti',
         'rail.up': 'Sposta su',
@@ -2095,6 +2146,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Branchpaneel',
         'rail.more': 'Meer acties',
         'rail.settings': 'Instellingen van de actiebalk',
+        'rail.openSettings': 'Plugin-instellingen openen',
+        'settings.rail.title': 'Knoppen van de actiebalk',
+        'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
+        'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
         'rail.settingsHint': 'Sleep of gebruik de pijlen om te sorteren; het oog schakelt de zichtbaarheid',
         'rail.reset': 'Standaardwaarden herstellen',
         'rail.up': 'Omhoog',
@@ -2256,6 +2311,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Panel gałęzi',
         'rail.more': 'Więcej działań',
         'rail.settings': 'Ustawienia paska działań',
+        'rail.openSettings': 'Otwórz ustawienia wtyczki',
+        'settings.rail.title': 'Przyciski paska akcji',
+        'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
+        'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
         'rail.settingsHint': 'Przeciągnij lub użyj strzałek, aby zmienić kolejność; oko przełącza widoczność',
         'rail.reset': 'Przywróć domyślne',
         'rail.up': 'W górę',
@@ -2417,6 +2476,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Grenpanel',
         'rail.more': 'Fler åtgärder',
         'rail.settings': 'Inställningar för åtgärdsfältet',
+        'rail.openSettings': 'Öppna plugininställningar',
+        'settings.rail.title': 'Knappar i åtgärdsfältet',
+        'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
+        'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
         'rail.settingsHint': 'Dra eller använd pilarna för att sortera; ögat växlar synlighet',
         'rail.reset': 'Återställ standard',
         'rail.up': 'Flytta upp',
@@ -2578,6 +2641,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Dal paneli',
         'rail.more': 'Diğer eylemler',
         'rail.settings': 'Eylem çubuğu ayarları',
+        'rail.openSettings': 'Eklenti ayarlarını aç',
+        'settings.rail.title': 'Eylem çubuğu düğmeleri',
+        'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
+        'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
         'rail.settingsHint': 'Sıralamak için sürükleyin veya okları kullanın; göz simgesi görünürlüğü değiştirir',
         'rail.reset': 'Varsayılanlara dön',
         'rail.up': 'Yukarı taşı',
@@ -2739,6 +2806,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Panel branch',
         'rail.more': 'Tindakan lain',
         'rail.settings': 'Pengaturan bilah tindakan',
+        'rail.openSettings': 'Buka pengaturan plugin',
+        'settings.rail.title': 'Tombol bilah aksi',
+        'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
+        'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
         'rail.settingsHint': 'Seret atau pakai panah untuk mengurutkan; ikon mata mengalihkan visibilitas',
         'rail.reset': 'Kembalikan default',
         'rail.up': 'Naikkan',
@@ -2900,6 +2971,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Bảng nhánh',
         'rail.more': 'Thao tác khác',
         'rail.settings': 'Cài đặt thanh thao tác',
+        'rail.openSettings': 'Mở cài đặt plugin',
+        'settings.rail.title': 'Nút thanh tác vụ',
+        'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
+        'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
         'rail.settingsHint': 'Kéo hoặc dùng mũi tên để sắp xếp; biểu tượng con mắt bật tắt hiển thị',
         'rail.reset': 'Khôi phục mặc định',
         'rail.up': 'Di chuyển lên',
@@ -3061,6 +3136,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'لوحة الفروع',
         'rail.more': 'مزيد من الإجراءات',
         'rail.settings': 'إعدادات شريط الإجراءات',
+        'rail.openSettings': 'فتح إعدادات الإضافة',
+        'settings.rail.title': 'أزرار شريط الإجراءات',
+        'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
+        'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
         'rail.settingsHint': 'اسحب أو استخدم الأسهم لإعادة الترتيب؛ وأيقونة العين تبدّل الظهور',
         'rail.reset': 'استعادة الإعدادات الافتراضية',
         'rail.up': 'تحريك لأعلى',
@@ -3222,6 +3301,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'शाखा पैनल',
         'rail.more': 'अधिक क्रियाएँ',
         'rail.settings': 'क्रिया पट्टी सेटिंग्स',
+        'rail.openSettings': 'प्लगइन सेटिंग खोलें',
+        'settings.rail.title': 'एक्शन रेल बटन',
+        'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
+        'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
         'rail.settingsHint': 'क्रम बदलने के लिए खींचें या तीरों का उपयोग करें; आँख आइकन दृश्यता बदलता है',
         'rail.reset': 'डिफ़ॉल्ट बहाल करें',
         'rail.up': 'ऊपर ले जाएँ',
@@ -3383,6 +3466,10 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'แผงแบรนช์',
         'rail.more': 'การทำงานเพิ่มเติม',
         'rail.settings': 'ตั้งค่าแถบการทำงาน',
+        'rail.openSettings': 'เปิดการตั้งค่าปลั๊กอิน',
+        'settings.rail.title': 'ปุ่มแถบการทำงาน',
+        'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
+        'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
         'rail.settingsHint': 'ลากหรือใช้ลูกศรเพื่อจัดลำดับ; ไอคอนตาใช้สลับการแสดง',
         'rail.reset': 'คืนค่าเริ่มต้น',
         'rail.up': 'เลื่อนขึ้น',
@@ -3639,7 +3726,54 @@ window.__ModuleLoader__.load({
       return { order, hidden }
     }
 
+    /* ---------------------------------------------------------------------
+       Where the rail config LIVES. On dsh >= 0.1.7 a plugin's configuration is
+       the row Config (the official settings surface, persisted by the host under
+       the loader row id) and the browser reads it through ctx.configForms — so
+       the settings card and the rail read ONE source and nothing is written
+       twice. An older host has no such service: there the rail keeps its
+       localStorage home and its in-panel editor, which is the only editor those
+       hosts have. `railForm` is that switch; null means legacy.
+       --------------------------------------------------------------------- */
+    const RAIL_NS = 'ide-git'
+    const RAIL_MIGRATED_KEY = 'dsh-ide-git.rail.v1.migrated'
+    let railForm = null
+    const railWatchers = new Set()
+
+    /* ---- rail config core (pure: tests/smoke.mjs slices this block) ---- */
+    function railFieldOf(id) {
+      return 'rail' + id.charAt(0).toUpperCase() + id.slice(1)
+    }
+
+    /* Stored booleans -> the { order, hidden } shape the rail has always used.
+       The order is the code order now: the settings card edits one switch per
+       action, so a stored permutation would have no editor left, and dropping it
+       keeps this surface honest rather than half-editable. */
+    function railConfigOfValues(values) {
+      const source = values !== null && typeof values === 'object' ? values : {}
+      const hidden = RAIL_IDS.filter((id) => source[railFieldOf(id)] === false)
+      return { order: RAIL_IDS.slice(), hidden: hidden }
+    }
+
+    function railValuesOfConfig(config) {
+      const values = {}
+      for (const id of RAIL_IDS) values[railFieldOf(id)] = config.hidden.indexOf(id) < 0
+      return values
+    }
+
+    /* ---- end rail config core ---- */
+
+    function railFormReady() {
+      if (railForm === null) return null
+      const snapshot = railForm.getSnapshot()
+      if (snapshot === null || snapshot === undefined || snapshot.status !== 'ready' || snapshot.value === undefined) return null
+      return snapshot
+    }
+
     function readRailConfig() {
+      const ready = railFormReady()
+      if (ready !== null) return railConfigOfValues(ready.value)
+      // Legacy home (and the state before the host answers): localStorage.
       try {
         const raw = window.localStorage.getItem(RAIL_KEY)
         if (raw === null || raw === '') return normalizeRail(null)
@@ -3648,8 +3782,72 @@ window.__ModuleLoader__.load({
       return normalizeRail(null)
     }
 
-    function writeRailConfig(config) {
+    /* `form` lets a caller write through the exact handle it read from (the
+       settings card gets the framework's own form); without it the module handle
+       is used. When a config surface EXISTS but is not ready yet, the write is
+       refused instead of silently landing in the legacy localStorage home — two
+       sources would be worse than a refused edit. */
+    function writeRailConfig(config, form) {
+      const active = form !== undefined && form !== null && typeof form.getSnapshot === 'function' ? form : railForm
+      let ready = null
+      try {
+        const snapshot = active === null || active === undefined ? null : active.getSnapshot()
+        if (snapshot !== null && snapshot !== undefined && snapshot.status === 'ready' && snapshot.value !== undefined) ready = snapshot
+      } catch (error) { void error }
+      if (ready !== null) {
+        if (ready.writable !== true || typeof active.set !== 'function') return
+        railForm = active
+        const current = ready.value !== null && typeof ready.value === 'object' ? ready.value : {}
+        // Only the fields that actually changed: one write, not sixteen.
+        for (const id of RAIL_IDS) {
+          const field = railFieldOf(id)
+          const visible = config.hidden.indexOf(id) < 0
+          if (current[field] === visible) continue
+          const written = active.set(field, visible)
+          if (written !== undefined && written !== null && typeof written.then === 'function') {
+            void written.then((accepted) => {
+              if (accepted === false) console.warn('[dsh-ide-git] rail setting "' + field + '" was refused by the host')
+            }, (error) => { console.warn('[dsh-ide-git] rail setting write failed: ' + String(error && error.message ? error.message : error)) })
+          }
+        }
+        return
+      }
+      if (railForm !== null) return
       try { window.localStorage.setItem(RAIL_KEY, JSON.stringify(config)) } catch (error) { void error }
+    }
+
+    /* One-shot move of the pre-settings rail config into the row Config: read the
+       legacy value ONCE, write it through, mark it done. After this the row Config
+       is the only source (the legacy key is left untouched as a paper trail, but
+       nothing writes it any more on this host). */
+    function migrateRailConfig(form) {
+      try {
+        if (window.localStorage.getItem(RAIL_MIGRATED_KEY) !== null) return
+        const raw = window.localStorage.getItem(RAIL_KEY)
+        const values = raw === null || raw === '' ? null : railValuesOfConfig(normalizeRail(JSON.parse(raw)))
+        for (const id of RAIL_IDS) {
+          if (values === null) break
+          const field = railFieldOf(id)
+          const written = form.set(field, values[field])
+          if (written !== undefined && written !== null && typeof written.then === 'function') {
+            void written.then((accepted) => {
+              if (accepted === false) console.warn('[dsh-ide-git] legacy rail setting "' + field + '" was refused by the host')
+            }, (error) => { console.warn('[dsh-ide-git] legacy rail migration failed: ' + String(error && error.message ? error.message : error)) })
+          }
+        }
+        window.localStorage.setItem(RAIL_MIGRATED_KEY, '1')
+      } catch (error) { void error }
+    }
+
+    function subscribeRailConfig(listener) {
+      railWatchers.add(listener)
+      return () => { railWatchers.delete(listener) }
+    }
+
+    function notifyRailConfig() {
+      for (const listener of Array.from(railWatchers)) {
+        try { listener() } catch (error) { void error }
+      }
     }
 
     /* ============================== pane sizes ============================== */
@@ -4267,6 +4465,101 @@ window.__ModuleLoader__.load({
        list is drag-sortable and arrow-sortable (the arrows also work with a
        keyboard); visibility is a per-action toggle, not a delete, so a hidden
        action keeps its position. */
+    /* The plugin's settings card. It is the SAME surface on the plugin's detail
+       page (slot `plugins.bundle.config`, keyed by the PACKAGE name) and in
+       Settings → Plugins (slot `settings.plugin.item`, keyed by the settings
+       namespace = the loader row id), and it is the only editor when the host
+       serves the row Config — the in-panel editor is not reachable there.
+
+       A host without that service still renders the card (the seat exists), so it
+       says so instead of pretending to have settings. */
+    function RailSettingsCard(props) {
+      const t = props.t
+      const [tick, setTick] = useState(0)
+      const [pending, setPending] = useState({})
+      const bump = () => setTick((value) => value + 1)
+      /* Two handles, one document: the slot hands the card the framework's own
+         form for this entry (`props.scope`), and our ctx.configForms handle is the
+         fallback — both address the same namespace, so a write through either is
+         the same row Config write. */
+      const scope = props.scope !== undefined && props.scope !== null && typeof props.scope.getSnapshot === 'function'
+        ? props.scope
+        : railForm
+      useEffect(() => {
+        const offRail = subscribeRailConfig(bump)
+        let offScope
+        if (scope !== null && scope !== undefined && typeof scope.subscribe === 'function') {
+          const unsubscribe = scope.subscribe(bump)
+          if (typeof unsubscribe === 'function') offScope = unsubscribe
+        }
+        return () => { offRail(); if (offScope !== undefined) offScope() }
+      }, [])
+      void tick
+      const head = E('div', { className: 'dig-settings-head' },
+        E('div', { className: 'dig-settings-title' }, t('settings.rail.title')),
+        E('div', { className: 'dig-settings-hint' }, t('settings.rail.hint')))
+      let snapshot = null
+      try { snapshot = scope === null || scope === undefined ? null : scope.getSnapshot() } catch (error) { void error }
+      const status = snapshot === null || snapshot === undefined || typeof snapshot.status !== 'string' ? 'absent' : snapshot.status
+      const values = snapshot !== null && snapshot !== undefined && snapshot.value !== null && typeof snapshot.value === 'object' ? snapshot.value : null
+      // Drop optimistic values the host has since confirmed (post-commit effect).
+      useEffect(() => {
+        setPending((current) => {
+          const keys = Object.keys(current)
+          if (keys.length === 0 || values === null) return current
+          const next = {}
+          let changed = false
+          for (const key of keys) {
+            if (values[key] === current[key]) { changed = true; continue }
+            next[key] = current[key]
+          }
+          return changed ? next : current
+        })
+      })
+      // Switches exist only where they can actually write: a host that does not
+      // serve this entry's settings gets a sentence instead of dead controls.
+      if (status !== 'ready' || values === null) {
+        return E('div', { className: 'dig-settings', 'data-settings-status': status }, head,
+          E('div', { className: 'dig-settings-note' }, t('settings.rail.unavailable')))
+      }
+      const config = railConfigOfValues(values)
+      /* A toggle is a host round trip, so the switch would snap back to the old
+         value for a moment and read as "stuck". The optimistic value wins until
+         the accepted document agrees with it (then it is dropped). */
+      const shown = (spec) => {
+        const field = railFieldOf(spec.id)
+        return Object.prototype.hasOwnProperty.call(pending, field) ? pending[field] : config.hidden.indexOf(spec.id) < 0
+      }
+      return E('div', { className: 'dig-settings', 'data-settings-status': status }, head,
+        E('div', { className: 'dig-settings-list' }, RAIL_SPECS.map((spec) => {
+          const inputId = 'dig-rail-' + spec.id
+          const visible = shown(spec)
+          /* A row, not a <label>: a label that both carries htmlFor and wraps its
+             own input toggles twice per click (once for the input, once for the
+             label activation), which reads as a stuck switch and writes twice. */
+          const toggle = () => {
+            const next = visible !== true
+            const hidden = next
+              ? config.hidden.filter((entry) => entry !== spec.id)
+              : config.hidden.concat([spec.id])
+            setPending((current) => Object.assign({}, current, { [railFieldOf(spec.id)]: next }))
+            writeRailConfig({ order: config.order, hidden: hidden }, scope)
+            bump()
+          }
+          return E('div', { key: spec.id, className: 'dig-settings-row', 'data-rail-action': spec.id },
+            E('input', {
+              id: inputId,
+              type: 'checkbox',
+              className: 'dig-settings-check',
+              'aria-labelledby': inputId + '-label',
+              checked: visible,
+              onChange: toggle,
+            }),
+            E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: spec.icon, size: 13 })),
+            E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t(spec.key)))
+        })))
+    }
+
     function RailSettings(props) {
       const t = props.t
       const [dragId, setDragId] = useState(null)
@@ -5104,6 +5397,7 @@ window.__ModuleLoader__.load({
       const [favTick, setFavTick] = useState(0)
       const [pathFilter, setPathFilter] = useState('')
       const [railConfig, setRailConfig] = useState(readRailConfig)
+      const [railTick, setRailTick] = useState(0)
       const [railSettings, setRailSettings] = useState(false)
       const [railBox, setRailBox] = useState({ width: 0, height: 0 })
       const [toasts, setToasts] = useState([])
@@ -5139,6 +5433,15 @@ window.__ModuleLoader__.load({
       // its own — v0.1.3 already made that mistake with a height < 330 test (a
       // 1500x300 workbench came out single-column) and v0.3.5 still let
       // height < 200 flip a 1320x180 workbench into the right-sidebar chrome.
+      /* Where the gear goes: the plugin's own settings page when this host has
+         both the row Config and the navigation to it, the in-panel editor
+         otherwise (see RAIL_NS / railForm). */
+      const railSettingsTarget = () => (railForm === null || props.openSettings === null || props.openSettings === undefined ? 'panel' : 'page')
+      const openSettingsPage = () => {
+        if (props.openSettings === null || props.openSettings === undefined) return
+        props.openSettings()
+      }
+
       const compact = size.width > 0 && size.width < COMPACT_MAX_WIDTH
       const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
 
@@ -5852,6 +6155,14 @@ window.__ModuleLoader__.load({
         .filter((action) => action !== undefined && action.available !== false)
       const railVisible = railOrdered.filter((action) => railConfig.hidden.indexOf(action.id) < 0)
 
+      /* The rail is drawn from the row Config when the host serves it: a change
+         made in the settings card must show up here without a reload. */
+      useEffect(() => subscribeRailConfig(() => {
+        setRailConfig(readRailConfig())
+        setRailTick((value) => value + 1)
+      }), [])
+      void railTick
+
       const applyRail = (next) => { setRailConfig(next); writeRailConfig(next) }
       const moveRailAction = (id, delta) => {
         const order = railConfig.order.slice()
@@ -5930,8 +6241,16 @@ window.__ModuleLoader__.load({
           key: 'settings',
           type: 'button',
           className: 'dig-rail-btn dig-rail-settings',
-          title: t('rail.settings'),
-          onClick: () => setRailSettings(true),
+          'data-action': 'settings',
+          // On a host that serves the row Config this button opens the plugin's own
+          // settings page (where the card below the description edits the rail);
+          // on an older host it keeps the in-panel editor. Never both.
+          title: railSettingsTarget() === 'page' ? t('rail.openSettings') : t('rail.settings'),
+          onClick: () => {
+            const target = railSettingsTarget()
+            if (target === 'page') { openSettingsPage(); return }
+            setRailSettings(true)
+          },
         }, E(Icon, { name: 'settings', size: 15 })))
         return E('div', { className: vertical ? 'dig-rail' : 'dig-rail-row', ref: railHostRef }, children)
       }
@@ -6193,6 +6512,20 @@ window.__ModuleLoader__.load({
       // A panel dragged narrower than COMPACT_MAX_WIDTH (the compact chrome) is the
       // case where 'nowrap + ellipsis' stops being readable: the overlays clamp
       // their own width, and their text wraps inside that box instead of clipping.
+      // The settings card (the host's plugin page renders it inside its own
+      // section): one row per rail action, themed entirely by tokens.
+      '.dig-settings{display:flex;flex-direction:column;gap:8px;min-width:0}',
+      '.dig-settings-head{display:flex;flex-direction:column;gap:2px}',
+      '.dig-settings-title{font-weight:600;color:var(--dsw-alias-label-primary)}',
+      '.dig-settings-hint{color:var(--dsw-alias-label-tertiary);font-weight:400}',
+      '.dig-settings-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:400}',
+      '.dig-settings-list{display:flex;flex-direction:column;gap:2px;max-height:min(46vh,360px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-sm,8px)}',
+      '.dig-settings-row{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;min-width:0}',
+      '.dig-settings-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-settings-check{flex:none;accent-color:var(--dsw-alias-brand-primary)}',
+      '.dig-settings-glyph{display:inline-flex;flex:none;color:var(--dsw-alias-label-secondary)}',
+      '.dig-settings-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}',
+      '.dig-root-narrow .dig-settings-label{white-space:normal}',
       '.dig-root-narrow .dig-menu-item{white-space:normal}',
       '.dig-root-narrow .dig-toast-text{white-space:normal}',
       '.dig-toasts{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:80;max-width:min(340px,92%)}',
@@ -6419,7 +6752,16 @@ window.__ModuleLoader__.load({
         return typeof unsubscribe === 'function' ? unsubscribe : undefined
       }, [])
       void tick
-      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock })
+      /* Read at RENDER time (the service may arrive after this plugin's apply) and
+         soft: a host without the plugin page simply keeps the in-panel editor. */
+      let navigation
+      try {
+        navigation = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('pluginNavigation')
+      } catch (error) { navigation = undefined }
+      const openSettings = navigation !== undefined && navigation !== null && typeof navigation.openBundle === 'function'
+        ? () => { navigation.openBundle(SETTINGS_BUNDLE) }
+        : null
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings })
     }
 
     function NativePanel(props) {
@@ -6559,6 +6901,55 @@ window.__ModuleLoader__.load({
       /* ctx.inject runs its callback straight away when the service is already
          there, so only a host without better-sidebar reaches the native seats. */
       if (!hostedByBetterSidebar) hostNatively()
+
+      /* ---- settings: the row Config is the rail's source of truth ---- */
+      /* dsh >= 0.1.7 serves a plugin's row Config to the browser through
+         ctx.configForms; from then on the settings card and the rail read that one
+         document (and the legacy localStorage value is migrated once). A host
+         without the service never fires this callback: railForm stays null and the
+         localStorage home + in-panel editor keep working there. */
+      ctx.inject(['configForms'], (formCtx) => {
+        const forms = formCtx.get('configForms')
+        if (forms === undefined || forms === null || typeof forms.get !== 'function') return
+        let form
+        try { form = forms.get(RAIL_NS) } catch (error) { void error }
+        if (form === undefined || form === null || typeof form.getSnapshot !== 'function') return
+        formCtx.effect(() => {
+          railForm = form
+          migrateRailConfig(form)
+          const unsubscribe = typeof form.subscribe === 'function' ? form.subscribe(() => notifyRailConfig()) : undefined
+          notifyRailConfig()
+          return () => {
+            railForm = null
+            if (typeof unsubscribe === 'function') unsubscribe()
+            notifyRailConfig()
+          }
+        }, 'dsh-ide-git: row config')
+      })
+
+      /* The settings card, on both official seats: the plugin's detail page
+         (keyed by the PACKAGE name) and Settings → Plugins (keyed by the settings
+         namespace = the loader row id). Both seats are optional — a host without
+         the slots keeps whatever surface it has. */
+      ctx.inject(['slots'], (slotCtx) => {
+        const slots = slotCtx.get('slots')
+        if (slots === undefined || slots === null || typeof slots.inject !== 'function') return
+        slotCtx.effect(() => {
+          const card = (cardProps) => E(RailSettingsCard, Object.assign({}, cardProps, { t: t }))
+          const offBundle = slots.inject('plugins.bundle.config', () => slots.register(
+            { name: 'plugins.bundle.config', key: SETTINGS_BUNDLE, locale: LOCALE_NS },
+            card,
+          ))
+          const offItem = slots.inject('settings.plugin.item', () => slots.register(
+            { name: 'settings.plugin.item', key: RAIL_NS, locale: LOCALE_NS },
+            card,
+          ))
+          return () => {
+            try { offBundle() } catch (error) { void error }
+            try { offItem() } catch (error) { void error }
+          }
+        }, 'dsh-ide-git: settings card')
+      })
     }
 
     return { name: 'dsh-ide-git', inject: [], apply }

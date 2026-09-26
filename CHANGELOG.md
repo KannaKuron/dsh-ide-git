@@ -3,6 +3,34 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.9.0 (未发版) — 2026-09-26
+
+**类型**:feat(动作条设置搬进官方插件设置面;齿轮按钮跳转插件详情页)
+
+- **动作条配置有了真正的设置项(行 Config)**:宿主半新增 `export const Config`
+  (`Schema.object({ railRefresh … railPush })`,每个动作一个 volatile 布尔、默认
+  `true`),浏览器经 `ctx.configForms.get('ide-git')` 读同一份文档;设置卡在
+  **插件详情页**(`plugins.bundle.config`,key=包名 `dsh-ide-git`)与**设置→插件**
+  (`settings.plugin.item`,key=行 id `ide-git`)两处注册同一个组件。旧动作条配置
+  (`dsh-ide-git.rail.v1`)首次读取时一次性迁移进 Config(写 `…rail.v1.migrated`
+  标记,丢弃排序),之后**单一真源**,不再写 localStorage。顺序固定为 `RAIL_SPECS`
+  顺序(用户已确认砍掉排序);新增动作的字段缺失即默认显示,老配置不会让新动作消失。
+- **齿轮按钮改为跳转插件详情页**:`ctx.get('pluginNavigation').openBundle('dsh-ide-git')`
+  (官方公开面,`ui-plugin-manager/src/client/index.ts:122-128`);服务**软取**,
+  拿不到时退回面板内的「动作条设置」弹层——现代宿主上弹层不再出现,老宿主(无
+  `configForms`)保持不变。
+- 文案:新增 4 键(`rail.openSettings`/`settings.rail.title`/`settings.rail.hint`/
+  `settings.rail.unavailable`)× ZH/EN + 19 门 LOCALES。
+- 不变量 2 的**明确修订**:宿主半仍只 `import` `node:` 内置模块;唯一允许触达的
+  非 node 模块是 `@deepseek-ai/schemastery`,且必须走**带 try/catch 的动态 import**
+  (与 `dsh-better-workspace`/`dsh-gitbash-shell` 同款)——它解析不到时只关闭设置面,
+  绝不让整行插件消失。冒烟测试把这条写成白名单守卫。
+
+**已知缺陷(未修完,如实记录)**:设置卡里**重新勾选**一个动作后,宿主写入成功
+(profile patch 出现 `railStash: true`),但复选框的视觉状态在 6 秒内不翻转
+(取消勾选方向正常)。根因未定位完(怀疑卡片被 slot 重挂载导致乐观态丢失 +
+镜像快照延迟)。复现:`_work-idegit-ui/probe-settings-card.mjs` 第 4 步。
+
 ## v0.8.0 — 2026-09-26
 
 **类型**:feat(issue #5「侧边栏利用率」:三大分区尺寸全部可拖拽,并**按承载面分别记住**——底部工作台/右侧栏各记各的;顺带修掉「面板拖窄后浮层比面板还宽」的不变量 13 缺陷)
