@@ -677,6 +677,22 @@ test('a divider only exists when it can move something', () => {
     'while the stacked chrome hands out a real diff window')
 })
 
+test('the settings entry draws a gear, not a sunburst', () => {
+  // The rail's settings button used to render a centre dot with eight rays — a
+  // brightness glyph users read as "sun" — under the name `settings`. The entry
+  // now carries the official product gear (toothed contour + centre hole).
+  const table = client.slice(client.indexOf('const ICONS = {'), client.indexOf('const NATIVE_ID'))
+  const line = table.slice(table.indexOf('settings: ['), table.indexOf('settings: [') + 2400)
+  const paths = [...line.slice(0, line.indexOf('],')).matchAll(/'([^']*)'/g)].map((match) => match[1])
+  assert.equal(paths.length, 2, 'a gear is a toothed contour plus a centre hole')
+  assert.ok(paths[0].length > 500, 'the contour must be the long toothed outline, not a small circle')
+  assert.ok(paths[1].length > 60 && paths[1].length < 400, 'the hole is the short circle path')
+  for (const ray of ['M8 1.8v1.5', 'M8 12.7v1.5', 'M1.8 8h1.5', 'M12.7 8h1.5']) {
+    assert.ok(line.indexOf(ray) < 0, 'no sun ray survives in the gear: ' + ray)
+  }
+  assert.match(client, /E\(Icon, \{ name: 'settings', size: 15 \}\)/, 'the rail settings button still uses it')
+})
+
 test('every overlay is clamped to the panel it lives in', () => {
   // Found while making the panel draggable (issue #5): the dock can now be dragged
   // narrower than the overlays' own minimum, and a fixed min-width BEATS max-width
