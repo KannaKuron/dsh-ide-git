@@ -402,3 +402,183 @@ test('only ANOTHER working tree marks a branch as occupied', async () => {
     rmSync(linked, { recursive: true, force: true })
   }
 })
+
+/* ============================== ai commit message (issue #6) ============================== */
+
+/** Drive one commit-message call against a fake llm/sessions pair. */
+async function withServices(llm, sessions, run) {
+  let route = null
+  let dispose = null
+  const ctx = {
+    effect: (fn) => fn(),
+    webServer: { register: (spec) => { route = spec; return () => {} } },
+    inject: (capabilities, callback) => {
+      assert.deepEqual(capabilities, ['llm', 'sessions'])
+      callback({
+        get: (name) => (name === 'llm' ? llm : (name === 'sessions' ? sessions : undefined)),
+        /* The service handle is module state: releasing it here keeps one test's
+           fake model out of the next test's host. */
+        effect: (fn) => { dispose = fn() },
+      })
+    },
+  }
+  apply(ctx)
+  const call = (method, payload) => new Promise((resolve, reject) => {
+    const req = new EventEmitter()
+    req.method = 'POST'
+    req.url = '/dsh-ide-git/api/' + method
+    req.headers = { host: '127.0.0.1:3080', 'content-type': 'application/json' }
+    req.destroy = () => {}
+    const res = {
+      statusCode: 0,
+      writeHead(status) { this.statusCode = status },
+      end(text) { try { resolve({ status: this.statusCode, body: JSON.parse(text) }) } catch (error) { reject(error) } },
+    }
+    void route.handler(req, res)
+    req.emit('data', Buffer.from(JSON.stringify(payload === undefined ? {} : payload)))
+    req.emit('end')
+  })
+  try {
+    return await run(call)
+  } finally {
+    if (typeof dispose === 'function') dispose()
+  }
+}
+
+const chunksOf = (list) => (async function* generate() { for (const chunk of list) yield chunk })()
+const fakeLlm = (chunks, seen) => ({
+  listProviders: () => [{ id: 'deepseek-official', name: 'DeepSeek' }],
+  listModels: async (provider) => (provider === 'deepseek-official' ? [{ provider, id: 'deepseek-flash', name: 'Flash' }] : []),
+  stream: (options) => { if (seen !== undefined) seen.push(options); return chunksOf(chunks) },
+})
+const fakeSessions = (config) => ({ list: () => [{ id: 'sess-1', requestHeader: () => ({ config }) }] })
+
+test('commit-message: the accepted stream decides success, never silence', async () => {
+  writeFileSync(join(repo, 'ai-subject.txt'), 'ai commit input\n')
+  git('add', 'ai-subject.txt')
+  const seen = []
+  const llm = fakeLlm([
+    { type: 'block-start', index: 0, blockType: 'text' },
+    { type: 'text-delta', index: 0, text: 'feat: add the ai subject file\n\n' },
+    { type: 'text-delta', index: 0, text: 'It exists so the message has something to describe.' },
+    { type: 'finish', reason: { kind: 'stop' } },
+  ], seen)
+  const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(result.status, 200, JSON.stringify(result.body))
+  assert.match(result.body.data.message, /^feat: add the ai subject file/)
+  assert.equal(result.body.data.provider, 'deepseek-official')
+  assert.equal(result.body.data.routeSource, 'session')
+  assert.ok(result.body.data.input.files >= 1, 'the change set reached the model')
+  // The user's own text is DATA in the message, never the system instruction.
+  assert.ok(seen.length === 1)
+  assert.ok(!seen[0].system.includes('Conventional Commits'), 'a user instruction must not become the system prompt')
+  assert.equal(seen[0].provider, 'deepseek-official')
+  assert.equal(seen[0].model, 'deepseek-flash')
+})
+
+test('commit-message: the user prompt is appended as data and capped', async () => {
+  const seen = []
+  const llm = fakeLlm([{ type: 'text-delta', index: 0, text: 'chore: x' }, { type: 'finish', reason: { kind: 'stop' } }], seen)
+  const long = 'A'.repeat(3000)
+  const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1', prompt: long }))
+  assert.equal(result.status, 200)
+  assert.equal(result.body.data.promptTruncated, true)
+  const text = seen[0].messages[0].content[0].text
+  assert.ok(text.includes('A'.repeat(2000)), 'the prompt is appended to the user message')
+  assert.ok(!text.includes('A'.repeat(2001)), 'the prompt is capped at the documented limit')
+  assert.match(seen[0].system, /commit messages/, 'the built-in rules stay in the system prompt')
+})
+
+test('commit-message: an error finish is a failure with the provider text, not an empty message', async () => {
+  const failure = { code: 'NO_CREDENTIAL', message: 'no API key for provider route "deepseek-official"; store DEEPSEEK_API_KEY' }
+  const llm = fakeLlm([{ type: 'finish', reason: { kind: 'error', failure } }])
+  const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(result.status, 502)
+  assert.equal(result.body.error.code, 'llm-error')
+  assert.match(result.body.error.message, /no API key for provider route/)
+})
+
+test('commit-message: aborted, truncated and finish-less streams all fail loud', async () => {
+  const aborted = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'aborted', failure: { code: 'ABORTED', message: 'user cancelled' } } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(aborted.body.error.code, 'llm-aborted')
+  const cut = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: 'feat: half' }, { type: 'finish', reason: { kind: 'max-tokens' } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(cut.status, 502)
+  assert.equal(cut.body.error.code, 'llm-unfinished')
+  const silent = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: 'feat: no finish' }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(silent.status, 502)
+  assert.equal(silent.body.error.code, 'llm-no-finish')
+  const empty = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: '   ' }, { type: 'finish', reason: { kind: 'stop' } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(empty.status, 502)
+  assert.equal(empty.body.error.code, 'empty-output')
+})
+
+test('commit-message: a thrown adapter failure is still a loud failure', async () => {
+  const llm = {
+    listProviders: () => [{ id: 'p' }],
+    listModels: async () => [],
+    stream: () => (async function* generate() { throw new Error('adapter exploded') })(),
+  }
+  const result = await withServices(llm, fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(result.status, 500)
+  assert.match(result.body.error.message, /adapter exploded/)
+})
+
+test('commit-message: no session route, unknown provider and unknown model are refused with a next step', async () => {
+  const noRoute = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }]), { list: () => [{ id: 'sess-1', requestHeader: () => ({ config: {} }) }] }, (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(noRoute.status, 502)
+  assert.equal(noRoute.body.error.code, 'no-route')
+  const noSession = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }]), { list: () => [] }, (call) => call('commit-message', { cwd: repo, sessionId: 'ghost' }))
+  assert.equal(noSession.body.error.code, 'no-session')
+  const badShape = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 's', model: 'deepseek-flash' }))
+  assert.equal(badShape.status, 400)
+  assert.match(badShape.body.error.message, /provider\/model/)
+  const badProvider = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 's', model: 'nope/x' }))
+  assert.equal(badProvider.body.error.code, 'unknown-provider')
+  const badModel = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 's', model: 'deepseek-official/nope' }))
+  assert.equal(badModel.body.error.code, 'unknown-model')
+  assert.match(badModel.body.error.message, /deepseek-flash/, 'the refusal names a model that does exist')
+})
+
+test('commit-message: a host without llm/sessions answers no-host-service instead of hanging', async () => {
+  let route = null
+  apply({ effect: (fn) => fn(), webServer: { register: (spec) => { route = spec; return () => {} } } })
+  const response = await new Promise((resolve, reject) => {
+    const req = new EventEmitter()
+    req.method = 'POST'
+    req.url = '/dsh-ide-git/api/commit-message'
+    req.headers = { host: '127.0.0.1:3080', 'content-type': 'application/json' }
+    req.destroy = () => {}
+    const res = { statusCode: 0, writeHead(status) { this.statusCode = status }, end(text) { try { resolve({ status: this.statusCode, body: JSON.parse(text) }) } catch (error) { reject(error) } } }
+    void route.handler(req, res)
+    req.emit('data', Buffer.from(JSON.stringify({ cwd: repo, sessionId: 'sess-1' })))
+    req.emit('end')
+  })
+  assert.equal(response.status, 501)
+  assert.equal(response.body.error.code, 'no-host-service')
+})
+
+test('commit-message: concurrent calls are serialized by one single-flight guard', async () => {
+  let release = null
+  const gate = new Promise((resolve) => { release = resolve })
+  const llm = {
+    listProviders: () => [{ id: 'p' }],
+    listModels: async () => [],
+    stream: () => (async function* generate() {
+      await gate
+      yield { type: 'text-delta', index: 0, text: 'feat: slow' }
+      yield { type: 'finish', reason: { kind: 'stop' } }
+    })(),
+  }
+  const result = await withServices(llm, fakeSessions({ provider: 'p', model: 'm' }), async (call) => {
+    const first = call('commit-message', { cwd: repo, sessionId: 'sess-1' })
+    /* Let the model call take its time; the second click must be refused while
+       the first is still in flight, and this timer is what ends the first. */
+    setTimeout(() => { release() }, 400)
+    await new Promise((resolve) => setTimeout(resolve, 120))
+    const second = await call('commit-message', { cwd: repo, sessionId: 'sess-1' })
+    return { first: await first, second }
+  })
+  assert.equal(result.second.status, 409)
+  assert.equal(result.second.body.error.code, 'busy')
+  assert.equal(result.first.status, 200)
+})

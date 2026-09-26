@@ -162,6 +162,22 @@ window.__ModuleLoader__.load({
       'settings.rail.title': '动作条按钮',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
+      'settings.commit.title': 'AI 提交信息',
+      'settings.commit.model': '使用的模型',
+      'settings.commit.modelHint': '留空 = 跟随当前会话(provider/model)',
+      'settings.commit.reasoning': '思考强度',
+      'settings.commit.reasoningHint': '留空 = 模型默认',
+      'settings.commit.prompt': '补充提示词',
+      'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超过 72 字符',
+      'settings.commit.tooLong': '超过 {n} 个字符的部分不会保存',
+      'changes.aiWrite': 'AI 写提交信息',
+      'changes.aiBusy': '正在生成…',
+      'changes.aiQuota': '会消耗你的额度',
+      'changes.aiOverwriteTitle': '覆盖当前草稿?',
+      'changes.aiOverwriteText': 'AI 生成的内容会替换你已经输入的提交信息(可以撤销)。',
+      'changes.aiUndo': '撤销,恢复我的草稿',
+      'changes.aiFailed': '生成失败:',
+      'changes.aiNotice': '部分变更没有发给模型(已截断或丢弃),信息可能不完整。',
       'settings.rail.writeFailed': '设置没写进去,已退回原状态;请重试。',
       'settings.rail.readonly': '当前宿主把配置设为只读,开关不可修改。',
       'rail.settingsHint': '拖动或用箭头调整顺序,眼睛图标控制显示',
@@ -329,6 +345,22 @@ window.__ModuleLoader__.load({
       'settings.rail.title': 'Action rail buttons',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
+      'settings.commit.title': 'AI commit message',
+      'settings.commit.model': 'Model',
+      'settings.commit.modelHint': 'Empty = follow this session (provider/model)',
+      'settings.commit.reasoning': 'Reasoning effort',
+      'settings.commit.reasoningHint': 'Empty = the model\'s default',
+      'settings.commit.prompt': 'Extra instructions',
+      'settings.commit.promptHint': 'e.g. Conventional Commits, Chinese subject, at most 72 characters',
+      'settings.commit.tooLong': 'Only the first {n} characters are saved',
+      'changes.aiWrite': 'Write with AI',
+      'changes.aiBusy': 'Writing…',
+      'changes.aiQuota': 'Uses your own quota',
+      'changes.aiOverwriteTitle': 'Replace the current draft?',
+      'changes.aiOverwriteText': 'The AI text will replace the commit message you typed (you can undo it).',
+      'changes.aiUndo': 'Undo, bring my draft back',
+      'changes.aiFailed': 'Could not write it:',
+      'changes.aiNotice': 'Some changes were not sent to the model (truncated or dropped); the message may be incomplete.',
       'settings.rail.writeFailed': 'The setting did not save; the switch went back. Try again.',
       'settings.rail.readonly': 'This host serves the configuration read-only.',
       'rail.settingsHint': 'Drag or use the arrows to reorder; the eye toggles visibility',
@@ -504,6 +536,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.commit.title': 'AI 提交訊息',
+        'settings.commit.model': '使用嘅模型',
+        'settings.commit.modelHint': '留空 = 跟隨當前對話(provider/model)',
+        'settings.commit.reasoning': '思考強度',
+        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.prompt': '補充提示詞',
+        'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,唔超過 72 字',
+        'settings.commit.tooLong': '超過 {n} 個字嘅部分唔會儲存',
+        'changes.aiWrite': 'AI 寫提交訊息',
+        'changes.aiBusy': '生成緊…',
+        'changes.aiQuota': '會消耗你嘅額度',
+        'changes.aiOverwriteTitle': '覆蓋當前草稿?',
+        'changes.aiOverwriteText': 'AI 生成嘅內容會換走你打咗嘅提交訊息(可以撤銷)。',
+        'changes.aiUndo': '撤銷,還原我嘅草稿',
+        'changes.aiFailed': '生成失敗:',
+        'changes.aiNotice': '有部分變更冇發俾模型(已截斷或丟棄),訊息可能唔完整。',
         'settings.rail.writeFailed': '設定寫唔入,已經退回原狀;請再試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關改唔到。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
@@ -671,6 +719,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.commit.title': 'AI 提交訊息',
+        'settings.commit.model': '使用的模型',
+        'settings.commit.modelHint': '留空 = 跟隨目前工作階段(provider/model)',
+        'settings.commit.reasoning': '思考強度',
+        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.prompt': '補充提示詞',
+        'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超過 72 字元',
+        'settings.commit.tooLong': '超過 {n} 個字元的部分不會儲存',
+        'changes.aiWrite': 'AI 寫提交訊息',
+        'changes.aiBusy': '正在生成…',
+        'changes.aiQuota': '會消耗你的額度',
+        'changes.aiOverwriteTitle': '覆蓋目前的草稿?',
+        'changes.aiOverwriteText': 'AI 生成的內容會取代你已輸入的提交訊息(可以復原)。',
+        'changes.aiUndo': '復原,還原我的草稿',
+        'changes.aiFailed': '生成失敗:',
+        'changes.aiNotice': '部分變更沒有傳給模型(已截斷或捨棄),訊息可能不完整。',
         'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭頭排序;眼睛圖示切換顯示',
@@ -838,6 +902,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
+        'settings.commit.title': 'AI 提交訊息',
+        'settings.commit.model': '使用的模型',
+        'settings.commit.modelHint': '留空 = 跟隨目前工作階段(provider/model)',
+        'settings.commit.reasoning': '思考強度',
+        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.prompt': '補充提示詞',
+        'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超過 72 字元',
+        'settings.commit.tooLong': '超過 {n} 個字元的部分不會儲存',
+        'changes.aiWrite': 'AI 寫提交訊息',
+        'changes.aiBusy': '正在生成…',
+        'changes.aiQuota': '會消耗你的額度',
+        'changes.aiOverwriteTitle': '覆蓋目前的草稿?',
+        'changes.aiOverwriteText': 'AI 生成的內容會取代你已輸入的提交訊息(可以復原)。',
+        'changes.aiUndo': '復原,還原我的草稿',
+        'changes.aiFailed': '生成失敗:',
+        'changes.aiNotice': '部分變更沒有傳給模型(已截斷或捨棄),訊息可能不完整。',
         'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
@@ -1005,6 +1085,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'アクションレールのボタン',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
+        'settings.commit.title': 'AI コミットメッセージ',
+        'settings.commit.model': '使用するモデル',
+        'settings.commit.modelHint': '空欄 = 現在のセッションに従う(provider/model)',
+        'settings.commit.reasoning': '思考の強度',
+        'settings.commit.reasoningHint': '空欄 = モデルの既定値',
+        'settings.commit.prompt': '追加の指示',
+        'settings.commit.promptHint': '例:Conventional Commits、subject は日本語、72 文字以内',
+        'settings.commit.tooLong': '{n} 文字を超える部分は保存されません',
+        'changes.aiWrite': 'AI で書く',
+        'changes.aiBusy': '生成中…',
+        'changes.aiQuota': 'あなたの利用枠を消費します',
+        'changes.aiOverwriteTitle': '現在の下書きを置き換えますか?',
+        'changes.aiOverwriteText': 'AI の文章が入力済みのコミットメッセージを置き換えます(元に戻せます)。',
+        'changes.aiUndo': '元に戻す',
+        'changes.aiFailed': '生成できませんでした:',
+        'changes.aiNotice': '一部の変更はモデルに送られていません(切り詰めまたは除外)。内容が不完全な可能性があります。',
         'settings.rail.writeFailed': '設定を保存できませんでした。元の状態に戻しました。もう一度お試しください。',
         'settings.rail.readonly': 'このホストは設定を読み取り専用で提供しています。',
         'rail.settingsHint': 'ドラッグまたは矢印で並べ替え、目のアイコンで表示を切り替え',
@@ -1172,6 +1268,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': '액션 레일 버튼',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
+        'settings.commit.title': 'AI 커밋 메시지',
+        'settings.commit.model': '사용할 모델',
+        'settings.commit.modelHint': '비우면 현재 세션을 따릅니다(provider/model)',
+        'settings.commit.reasoning': '추론 강도',
+        'settings.commit.reasoningHint': '비우면 모델 기본값',
+        'settings.commit.prompt': '추가 지시',
+        'settings.commit.promptHint': '예: Conventional Commits, 제목은 한국어, 72자 이내',
+        'settings.commit.tooLong': '{n}자를 넘는 부분은 저장되지 않습니다',
+        'changes.aiWrite': 'AI로 작성',
+        'changes.aiBusy': '생성 중…',
+        'changes.aiQuota': '사용자의 할당량을 소모합니다',
+        'changes.aiOverwriteTitle': '현재 초안을 바꿀까요?',
+        'changes.aiOverwriteText': 'AI 텍스트가 입력한 커밋 메시지를 대체합니다(되돌릴 수 있습니다).',
+        'changes.aiUndo': '되돌리기',
+        'changes.aiFailed': '생성하지 못했습니다:',
+        'changes.aiNotice': '일부 변경이 모델에 전달되지 않았습니다(잘림 또는 제외). 내용이 불완전할 수 있습니다.',
         'settings.rail.writeFailed': '설정이 저장되지 않아 원래 상태로 되돌렸습니다. 다시 시도하세요.',
         'settings.rail.readonly': '이 호스트는 설정을 읽기 전용으로 제공합니다.',
         'rail.settingsHint': '끌어서 또는 화살표로 순서를 바꾸고, 눈 아이콘으로 표시를 전환합니다',
@@ -1339,6 +1451,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
+        'settings.commit.title': 'KI-Commit-Nachricht',
+        'settings.commit.model': 'Modell',
+        'settings.commit.modelHint': 'Leer = dieser Sitzung folgen (provider/model)',
+        'settings.commit.reasoning': 'Denkaufwand',
+        'settings.commit.reasoningHint': 'Leer = Standard des Modells',
+        'settings.commit.prompt': 'Zusätzliche Anweisungen',
+        'settings.commit.promptHint': 'z. B. Conventional Commits, Betreff auf Deutsch, höchstens 72 Zeichen',
+        'settings.commit.tooLong': 'Nur die ersten {n} Zeichen werden gespeichert',
+        'changes.aiWrite': 'Mit KI schreiben',
+        'changes.aiBusy': 'Wird geschrieben…',
+        'changes.aiQuota': 'Verbraucht dein eigenes Kontingent',
+        'changes.aiOverwriteTitle': 'Aktuellen Entwurf ersetzen?',
+        'changes.aiOverwriteText': 'Der KI-Text ersetzt deine eingegebene Commit-Nachricht (rückgängig möglich).',
+        'changes.aiUndo': 'Rückgängig',
+        'changes.aiFailed': 'Konnte nicht schreiben:',
+        'changes.aiNotice': 'Einige Änderungen wurden nicht ans Modell gesendet (gekürzt oder verworfen); die Nachricht kann unvollständig sein.',
         'settings.rail.writeFailed': 'Die Einstellung wurde nicht gespeichert; der Schalter ist zurückgesprungen. Bitte erneut versuchen.',
         'settings.rail.readonly': 'Dieser Host liefert die Konfiguration schreibgeschützt.',
         'rail.settingsHint': 'Ziehen oder Pfeile zum Sortieren, das Auge schaltet die Sichtbarkeit um',
@@ -1506,6 +1634,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Boutons de la barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
+        'settings.commit.title': 'Message de commit par IA',
+        'settings.commit.model': 'Modèle',
+        'settings.commit.modelHint': 'Vide = suivre cette session (provider/model)',
+        'settings.commit.reasoning': 'Effort de raisonnement',
+        'settings.commit.reasoningHint': 'Vide = valeur par défaut du modèle',
+        'settings.commit.prompt': 'Instructions supplémentaires',
+        'settings.commit.promptHint': 'ex. Conventional Commits, sujet en français, 72 caractères maximum',
+        'settings.commit.tooLong': 'Seuls les {n} premiers caractères sont enregistrés',
+        'changes.aiWrite': 'Écrire avec l’IA',
+        'changes.aiBusy': 'Rédaction…',
+        'changes.aiQuota': 'Consomme votre propre quota',
+        'changes.aiOverwriteTitle': 'Remplacer le brouillon actuel ?',
+        'changes.aiOverwriteText': 'Le texte de l’IA remplacera le message saisi (annulable).',
+        'changes.aiUndo': 'Annuler, reprendre mon brouillon',
+        'changes.aiFailed': 'Échec de la rédaction :',
+        'changes.aiNotice': 'Certaines modifications n’ont pas été envoyées au modèle (tronquées ou écartées) ; le message peut être incomplet.',
         'settings.rail.writeFailed': 'Le réglage n’a pas été enregistré ; l’interrupteur est revenu en place. Réessayez.',
         'settings.rail.readonly': 'Cet hôte fournit la configuration en lecture seule.',
         'rail.settingsHint': 'Glisser ou utiliser les flèches pour réordonner ; l\'œil bascule la visibilité',
@@ -1673,6 +1817,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Кнопки панели действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
+        'settings.commit.title': 'Сообщение коммита от ИИ',
+        'settings.commit.model': 'Модель',
+        'settings.commit.modelHint': 'Пусто = как в этой сессии (provider/model)',
+        'settings.commit.reasoning': 'Усилие рассуждения',
+        'settings.commit.reasoningHint': 'Пусто = по умолчанию у модели',
+        'settings.commit.prompt': 'Дополнительные указания',
+        'settings.commit.promptHint': 'напр. Conventional Commits, тема по-русски, до 72 символов',
+        'settings.commit.tooLong': 'Сохраняются только первые {n} символов',
+        'changes.aiWrite': 'Написать с ИИ',
+        'changes.aiBusy': 'Генерация…',
+        'changes.aiQuota': 'Расходует вашу квоту',
+        'changes.aiOverwriteTitle': 'Заменить текущий черновик?',
+        'changes.aiOverwriteText': 'Текст ИИ заменит введённое сообщение коммита (можно отменить).',
+        'changes.aiUndo': 'Отменить',
+        'changes.aiFailed': 'Не удалось сгенерировать:',
+        'changes.aiNotice': 'Часть изменений не отправлена модели (обрезана или отброшена); сообщение может быть неполным.',
         'settings.rail.writeFailed': 'Настройка не сохранилась; переключатель вернулся назад. Попробуйте снова.',
         'settings.rail.readonly': 'Этот хост отдаёт конфигурацию только для чтения.',
         'rail.settingsHint': 'Перетаскивайте или используйте стрелки для порядка; значок глаза переключает видимость',
@@ -1840,6 +2000,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Botões da barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
+        'settings.commit.title': 'Mensagem de commit por IA',
+        'settings.commit.model': 'Modelo',
+        'settings.commit.modelHint': 'Vazio = seguir esta sessão (provider/model)',
+        'settings.commit.reasoning': 'Esforço de raciocínio',
+        'settings.commit.reasoningHint': 'Vazio = padrão do modelo',
+        'settings.commit.prompt': 'Instruções extras',
+        'settings.commit.promptHint': 'ex.: Conventional Commits, assunto em português, até 72 caracteres',
+        'settings.commit.tooLong': 'Só os primeiros {n} caracteres são salvos',
+        'changes.aiWrite': 'Escrever com IA',
+        'changes.aiBusy': 'Gerando…',
+        'changes.aiQuota': 'Consome a sua cota',
+        'changes.aiOverwriteTitle': 'Substituir o rascunho atual?',
+        'changes.aiOverwriteText': 'O texto da IA substituirá a mensagem que você digitou (dá para desfazer).',
+        'changes.aiUndo': 'Desfazer',
+        'changes.aiFailed': 'Não foi possível gerar:',
+        'changes.aiNotice': 'Algumas alterações não foram enviadas ao modelo (truncadas ou descartadas); a mensagem pode ficar incompleta.',
         'settings.rail.writeFailed': 'A configuração não foi salva; o interruptor voltou ao lugar. Tente de novo.',
         'settings.rail.readonly': 'Este host fornece a configuração somente para leitura.',
         'rail.settingsHint': 'Arraste ou use as setas para reordenar; o olho alterna a visibilidade',
@@ -2007,6 +2183,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Pulsanti della barra azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
+        'settings.commit.title': 'Messaggio di commit con IA',
+        'settings.commit.model': 'Modello',
+        'settings.commit.modelHint': 'Vuoto = segui questa sessione (provider/model)',
+        'settings.commit.reasoning': 'Sforzo di ragionamento',
+        'settings.commit.reasoningHint': 'Vuoto = predefinito del modello',
+        'settings.commit.prompt': 'Istruzioni aggiuntive',
+        'settings.commit.promptHint': 'es. Conventional Commits, oggetto in italiano, max 72 caratteri',
+        'settings.commit.tooLong': 'Solo i primi {n} caratteri vengono salvati',
+        'changes.aiWrite': 'Scrivi con l’IA',
+        'changes.aiBusy': 'Generazione…',
+        'changes.aiQuota': 'Consuma la tua quota',
+        'changes.aiOverwriteTitle': 'Sostituire la bozza attuale?',
+        'changes.aiOverwriteText': 'Il testo dell’IA sostituirà il messaggio digitato (puoi annullare).',
+        'changes.aiUndo': 'Annulla',
+        'changes.aiFailed': 'Scrittura non riuscita:',
+        'changes.aiNotice': 'Alcune modifiche non sono state inviate al modello (troncate o scartate); il messaggio può essere incompleto.',
         'settings.rail.writeFailed': 'L’impostazione non è stata salvata; l’interruttore è tornato indietro. Riprova.',
         'settings.rail.readonly': 'Questo host fornisce la configurazione in sola lettura.',
         'rail.settingsHint': 'Trascina o usa le frecce per riordinare; l’occhio attiva o disattiva la visibilità',
@@ -2174,6 +2366,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Knoppen van de actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
+        'settings.commit.title': 'AI-commitbericht',
+        'settings.commit.model': 'Model',
+        'settings.commit.modelHint': 'Leeg = deze sessie volgen (provider/model)',
+        'settings.commit.reasoning': 'Redeneerinspanning',
+        'settings.commit.reasoningHint': 'Leeg = standaard van het model',
+        'settings.commit.prompt': 'Extra instructies',
+        'settings.commit.promptHint': 'bv. Conventional Commits, onderwerp in het Nederlands, max. 72 tekens',
+        'settings.commit.tooLong': 'Alleen de eerste {n} tekens worden opgeslagen',
+        'changes.aiWrite': 'Met AI schrijven',
+        'changes.aiBusy': 'Bezig…',
+        'changes.aiQuota': 'Verbruikt je eigen quota',
+        'changes.aiOverwriteTitle': 'Huidig concept vervangen?',
+        'changes.aiOverwriteText': 'De AI-tekst vervangt je getypte commitbericht (ongedaan te maken).',
+        'changes.aiUndo': 'Ongedaan maken',
+        'changes.aiFailed': 'Kon niet schrijven:',
+        'changes.aiNotice': 'Sommige wijzigingen zijn niet naar het model gestuurd (afgekapt of overgeslagen); het bericht kan onvolledig zijn.',
         'settings.rail.writeFailed': 'De instelling is niet opgeslagen; de schakelaar sprong terug. Probeer opnieuw.',
         'settings.rail.readonly': 'Deze host levert de configuratie alleen-lezen.',
         'rail.settingsHint': 'Sleep of gebruik de pijlen om te sorteren; het oog schakelt de zichtbaarheid',
@@ -2341,6 +2549,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Przyciski paska akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
+        'settings.commit.title': 'Wiadomość commita od AI',
+        'settings.commit.model': 'Model',
+        'settings.commit.modelHint': 'Puste = zgodnie z tą sesją (provider/model)',
+        'settings.commit.reasoning': 'Poziom rozumowania',
+        'settings.commit.reasoningHint': 'Puste = domyślne modelu',
+        'settings.commit.prompt': 'Dodatkowe instrukcje',
+        'settings.commit.promptHint': 'np. Conventional Commits, temat po polsku, maks. 72 znaki',
+        'settings.commit.tooLong': 'Zapisywane jest tylko pierwszych {n} znaków',
+        'changes.aiWrite': 'Napisz z AI',
+        'changes.aiBusy': 'Generowanie…',
+        'changes.aiQuota': 'Zużywa twój limit',
+        'changes.aiOverwriteTitle': 'Zastąpić bieżący szkic?',
+        'changes.aiOverwriteText': 'Tekst AI zastąpi wpisaną wiadomość commita (można cofnąć).',
+        'changes.aiUndo': 'Cofnij',
+        'changes.aiFailed': 'Nie udało się wygenerować:',
+        'changes.aiNotice': 'Część zmian nie trafiła do modelu (przycięta lub pominięta); wiadomość może być niepełna.',
         'settings.rail.writeFailed': 'Ustawienie nie zostało zapisane; przełącznik wrócił na miejsce. Spróbuj ponownie.',
         'settings.rail.readonly': 'Ten host udostępnia konfigurację tylko do odczytu.',
         'rail.settingsHint': 'Przeciągnij lub użyj strzałek, aby zmienić kolejność; oko przełącza widoczność',
@@ -2508,6 +2732,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Knappar i åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
+        'settings.commit.title': 'AI-commitmeddelande',
+        'settings.commit.model': 'Modell',
+        'settings.commit.modelHint': 'Tomt = följ denna session (provider/model)',
+        'settings.commit.reasoning': 'Resonemangsinsats',
+        'settings.commit.reasoningHint': 'Tomt = modellens standard',
+        'settings.commit.prompt': 'Extra instruktioner',
+        'settings.commit.promptHint': 't.ex. Conventional Commits, ämne på svenska, högst 72 tecken',
+        'settings.commit.tooLong': 'Endast de första {n} tecknen sparas',
+        'changes.aiWrite': 'Skriv med AI',
+        'changes.aiBusy': 'Skriver…',
+        'changes.aiQuota': 'Använder din egen kvot',
+        'changes.aiOverwriteTitle': 'Ersätt nuvarande utkast?',
+        'changes.aiOverwriteText': 'AI-texten ersätter commitmeddelandet du skrev (går att ångra).',
+        'changes.aiUndo': 'Ångra',
+        'changes.aiFailed': 'Kunde inte skriva:',
+        'changes.aiNotice': 'Vissa ändringar skickades inte till modellen (kapade eller utelämnade); meddelandet kan vara ofullständigt.',
         'settings.rail.writeFailed': 'Inställningen sparades inte; reglaget gick tillbaka. Försök igen.',
         'settings.rail.readonly': 'Denna värd tillhandahåller konfigurationen skrivskyddad.',
         'rail.settingsHint': 'Dra eller använd pilarna för att sortera; ögat växlar synlighet',
@@ -2675,6 +2915,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
+        'settings.commit.title': 'AI commit mesajı',
+        'settings.commit.model': 'Model',
+        'settings.commit.modelHint': 'Boş = bu oturumu izle (provider/model)',
+        'settings.commit.reasoning': 'Düşünme yoğunluğu',
+        'settings.commit.reasoningHint': 'Boş = modelin varsayılanı',
+        'settings.commit.prompt': 'Ek yönergeler',
+        'settings.commit.promptHint': 'örn. Conventional Commits, konu Türkçe, en fazla 72 karakter',
+        'settings.commit.tooLong': 'Yalnızca ilk {n} karakter kaydedilir',
+        'changes.aiWrite': 'AI ile yaz',
+        'changes.aiBusy': 'Yazılıyor…',
+        'changes.aiQuota': 'Kendi kotanızı harcar',
+        'changes.aiOverwriteTitle': 'Geçerli taslağın yerine geçilsin mi?',
+        'changes.aiOverwriteText': 'AI metni yazdığınız commit mesajının yerine geçer (geri alınabilir).',
+        'changes.aiUndo': 'Geri al',
+        'changes.aiFailed': 'Yazılamadı:',
+        'changes.aiNotice': 'Bazı değişiklikler modele gönderilmedi (kısaltıldı veya atlandı); mesaj eksik olabilir.',
         'settings.rail.writeFailed': 'Ayar kaydedilemedi; anahtar eski konumuna döndü. Yeniden deneyin.',
         'settings.rail.readonly': 'Bu ana bilgisayar yapılandırmayı salt okunur sunuyor.',
         'rail.settingsHint': 'Sıralamak için sürükleyin veya okları kullanın; göz simgesi görünürlüğü değiştirir',
@@ -2842,6 +3098,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Tombol bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
+        'settings.commit.title': 'Pesan commit AI',
+        'settings.commit.model': 'Model',
+        'settings.commit.modelHint': 'Kosong = ikuti sesi ini (provider/model)',
+        'settings.commit.reasoning': 'Intensitas penalaran',
+        'settings.commit.reasoningHint': 'Kosong = bawaan model',
+        'settings.commit.prompt': 'Instruksi tambahan',
+        'settings.commit.promptHint': 'mis. Conventional Commits, subjek bahasa Indonesia, maks 72 karakter',
+        'settings.commit.tooLong': 'Hanya {n} karakter pertama yang disimpan',
+        'changes.aiWrite': 'Tulis dengan AI',
+        'changes.aiBusy': 'Menulis…',
+        'changes.aiQuota': 'Memakai kuota Anda',
+        'changes.aiOverwriteTitle': 'Ganti draf saat ini?',
+        'changes.aiOverwriteText': 'Teks AI akan menggantikan pesan commit yang Anda tulis (bisa dibatalkan).',
+        'changes.aiUndo': 'Batalkan',
+        'changes.aiFailed': 'Gagal menulis:',
+        'changes.aiNotice': 'Sebagian perubahan tidak dikirim ke model (dipotong atau dibuang); pesan bisa tidak lengkap.',
         'settings.rail.writeFailed': 'Pengaturan tidak tersimpan; tombol kembali ke posisi semula. Coba lagi.',
         'settings.rail.readonly': 'Host ini menyajikan konfigurasi hanya-baca.',
         'rail.settingsHint': 'Seret atau pakai panah untuk mengurutkan; ikon mata mengalihkan visibilitas',
@@ -3009,6 +3281,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'Nút thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
+        'settings.commit.title': 'Thông điệp commit do AI viết',
+        'settings.commit.model': 'Mô hình',
+        'settings.commit.modelHint': 'Trống = theo phiên này (provider/model)',
+        'settings.commit.reasoning': 'Mức suy luận',
+        'settings.commit.reasoningHint': 'Trống = mặc định của mô hình',
+        'settings.commit.prompt': 'Chỉ dẫn bổ sung',
+        'settings.commit.promptHint': 'ví dụ Conventional Commits, tiêu đề tiếng Việt, tối đa 72 ký tự',
+        'settings.commit.tooLong': 'Chỉ {n} ký tự đầu được lưu',
+        'changes.aiWrite': 'Viết bằng AI',
+        'changes.aiBusy': 'Đang viết…',
+        'changes.aiQuota': 'Dùng hạn mức của bạn',
+        'changes.aiOverwriteTitle': 'Thay bản nháp hiện tại?',
+        'changes.aiOverwriteText': 'Nội dung AI sẽ thay thế thông điệp commit bạn đã nhập (có thể hoàn tác).',
+        'changes.aiUndo': 'Hoàn tác',
+        'changes.aiFailed': 'Không viết được:',
+        'changes.aiNotice': 'Một số thay đổi chưa gửi tới mô hình (bị cắt hoặc bỏ); thông điệp có thể chưa đầy đủ.',
         'settings.rail.writeFailed': 'Cài đặt không lưu được; công tắc đã trở về trạng thái cũ. Hãy thử lại.',
         'settings.rail.readonly': 'Máy chủ này chỉ cung cấp cấu hình ở chế độ chỉ đọc.',
         'rail.settingsHint': 'Kéo hoặc dùng mũi tên để sắp xếp; biểu tượng con mắt bật tắt hiển thị',
@@ -3176,6 +3464,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'أزرار شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
+        'settings.commit.title': 'رسالة إيداع بالذكاء الاصطناعي',
+        'settings.commit.model': 'النموذج',
+        'settings.commit.modelHint': 'فارغ = اتبع هذه الجلسة (provider/model)',
+        'settings.commit.reasoning': 'مستوى التفكير',
+        'settings.commit.reasoningHint': 'فارغ = الافتراضي للنموذج',
+        'settings.commit.prompt': 'تعليمات إضافية',
+        'settings.commit.promptHint': 'مثال: Conventional Commits، والعنوان بالعربية، وبحد أقصى 72 حرفًا',
+        'settings.commit.tooLong': 'يُحفظ أول {n} حرفًا فقط',
+        'changes.aiWrite': 'اكتب بالذكاء الاصطناعي',
+        'changes.aiBusy': 'جارٍ الكتابة…',
+        'changes.aiQuota': 'يستهلك حصتك',
+        'changes.aiOverwriteTitle': 'استبدال المسودة الحالية؟',
+        'changes.aiOverwriteText': 'سيستبدل نص الذكاء الاصطناعي رسالة الإيداع التي كتبتها (يمكن التراجع).',
+        'changes.aiUndo': 'تراجع',
+        'changes.aiFailed': 'تعذّرت الكتابة:',
+        'changes.aiNotice': 'لم تُرسل بعض التغييرات إلى النموذج (مقتطعة أو متروكة)؛ قد تكون الرسالة ناقصة.',
         'settings.rail.writeFailed': 'لم يتم حفظ الإعداد؛ عاد المفتاح إلى حاله. حاول مرة أخرى.',
         'settings.rail.readonly': 'يوفّر هذا المضيف الإعدادات للقراءة فقط.',
         'rail.settingsHint': 'اسحب أو استخدم الأسهم لإعادة الترتيب؛ وأيقونة العين تبدّل الظهور',
@@ -3343,6 +3647,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'एक्शन रेल बटन',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
+        'settings.commit.title': 'AI कमिट संदेश',
+        'settings.commit.model': 'मॉडल',
+        'settings.commit.modelHint': 'खाली = इस सत्र का अनुसरण करें (provider/model)',
+        'settings.commit.reasoning': 'तर्क की तीव्रता',
+        'settings.commit.reasoningHint': 'खाली = मॉडल का डिफ़ॉल्ट',
+        'settings.commit.prompt': 'अतिरिक्त निर्देश',
+        'settings.commit.promptHint': 'जैसे Conventional Commits, विषय हिंदी में, अधिकतम 72 अक्षर',
+        'settings.commit.tooLong': 'केवल पहले {n} अक्षर सहेजे जाते हैं',
+        'changes.aiWrite': 'AI से लिखें',
+        'changes.aiBusy': 'लिखा जा रहा है…',
+        'changes.aiQuota': 'आपका कोटा खर्च होता है',
+        'changes.aiOverwriteTitle': 'मौजूदा ड्राफ़्ट बदलें?',
+        'changes.aiOverwriteText': 'AI पाठ आपके लिखे कमिट संदेश की जगह लेगा (पूर्ववत कर सकते हैं)।',
+        'changes.aiUndo': 'पूर्ववत करें',
+        'changes.aiFailed': 'लिख नहीं सका:',
+        'changes.aiNotice': 'कुछ बदलाव मॉडल को नहीं भेजे गए (काटे या छोड़े गए); संदेश अधूरा हो सकता है।',
         'settings.rail.writeFailed': 'सेटिंग सहेजी नहीं गई; स्विच वापस पुरानी स्थिति में आ गया। फिर से कोशिश करें।',
         'settings.rail.readonly': 'यह होस्ट कॉन्फ़िगरेशन को केवल-पढ़ने के लिए देता है।',
         'rail.settingsHint': 'क्रम बदलने के लिए खींचें या तीरों का उपयोग करें; आँख आइकन दृश्यता बदलता है',
@@ -3510,6 +3830,22 @@ window.__ModuleLoader__.load({
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
+        'settings.commit.title': 'ข้อความคอมมิตโดย AI',
+        'settings.commit.model': 'โมเดล',
+        'settings.commit.modelHint': 'ว่าง = ตามเซสชันนี้ (provider/model)',
+        'settings.commit.reasoning': 'ระดับการใช้เหตุผล',
+        'settings.commit.reasoningHint': 'ว่าง = ค่าเริ่มต้นของโมเดล',
+        'settings.commit.prompt': 'คำสั่งเพิ่มเติม',
+        'settings.commit.promptHint': 'เช่น Conventional Commits หัวข้อเป็นภาษาไทย ไม่เกิน 72 ตัวอักษร',
+        'settings.commit.tooLong': 'บันทึกเพียง {n} ตัวอักษรแรก',
+        'changes.aiWrite': 'เขียนด้วย AI',
+        'changes.aiBusy': 'กำลังเขียน…',
+        'changes.aiQuota': 'ใช้โควตาของคุณ',
+        'changes.aiOverwriteTitle': 'แทนที่ฉบับร่างปัจจุบันหรือไม่',
+        'changes.aiOverwriteText': 'ข้อความจาก AI จะแทนที่ข้อความคอมมิตที่คุณพิมพ์ (เลิกทำได้)',
+        'changes.aiUndo': 'เลิกทำ',
+        'changes.aiFailed': 'เขียนไม่สำเร็จ:',
+        'changes.aiNotice': 'มีการเปลี่ยนแปลงบางส่วนที่ไม่ได้ส่งให้โมเดล (ถูกตัดหรือทิ้ง) ข้อความอาจไม่ครบถ้วน',
         'settings.rail.writeFailed': 'บันทึกการตั้งค่าไม่สำเร็จ สวิตช์กลับไปสถานะเดิม ลองอีกครั้ง',
         'settings.rail.readonly': 'โฮสต์นี้ให้บริการการตั้งค่าแบบอ่านอย่างเดียว',
         'rail.settingsHint': 'ลากหรือใช้ลูกศรเพื่อจัดลำดับ; ไอคอนตาใช้สลับการแสดง',
@@ -3816,6 +4152,17 @@ window.__ModuleLoader__.load({
     }
 
     /* ---- end rail config core ---- */
+
+    /* The three AI-commit settings live in the same row Config document the
+       settings card writes; the panel reads them per render, so a change in the
+       card applies to the next click without a reload. */
+    function readCommitSettings() {
+      let values = {}
+      const ready = railFormReady()
+      if (ready !== null && ready.value !== null && typeof ready.value === 'object') values = ready.value
+      const text = (field, max) => (typeof values[field] === 'string' ? values[field].trim().slice(0, max) : '')
+      return { model: text('commitModel', 120), reasoning: text('commitReasoning', 60), prompt: text('commitPrompt', 2000) }
+    }
 
     function railFormReady() {
       if (railForm === null) return null
@@ -4584,6 +4931,9 @@ window.__ModuleLoader__.load({
       const [tick, setTick] = useState(0)
       const [pending, setPending] = useState({})
       const [note, setNote] = useState('')
+      /* The three AI-commit settings are free text, so they are drafted locally
+         and written on blur / Enter — one write per edit, never one per keystroke. */
+      const [textDraft, setTextDraft] = useState({})
       /* The user's latest intent per field, written SYNCHRONOUSLY. React state is
          not enough: two clicks inside one frame would both read the pre-click
          snapshot, so the second click recomputed the same target and the toggle
@@ -4634,6 +4984,41 @@ window.__ModuleLoader__.load({
          answered 200 (the same sixteen 500ms apart all landed), so the fix is to
          stop producing a burst: collect the fields the user touched and submit
          them together, at most one mutation per window. */
+      const commitTextField = (field, max) => {
+        const accepted = values[field] === undefined || values[field] === null ? '' : String(values[field])
+        const shown = Object.prototype.hasOwnProperty.call(textDraft, field) ? textDraft[field] : accepted
+        const wanted = shown.slice(0, max)
+        if (wanted === accepted) return
+        const outcome = writeRailFields([{ op: 'set', path: [field], value: wanted }], scope)
+        if (outcome.sent !== true) {
+          setNote(t(outcome.reason === 'read-only' ? 'settings.rail.readonly' : 'settings.rail.writeFailed'))
+          return
+        }
+        if (outcome.settled === undefined) return
+        void outcome.settled.then((ok) => {
+          if (ok !== true) { setNote(t('settings.rail.writeFailed')); return }
+          /* The accepted document now carries it: drop the draft so the control
+             shows the Host's own value again. */
+          setTextDraft((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+        })
+      }
+      const textRow = (field, labelKey, hintKey, max, multiline) => {
+        const accepted = values[field] === undefined || values[field] === null ? '' : String(values[field])
+        const shown = Object.prototype.hasOwnProperty.call(textDraft, field) ? textDraft[field] : accepted
+        const id = 'dig-' + field
+        const common = {
+          id: id, className: 'dig-input dig-settings-input', value: shown, spellCheck: false,
+          disabled: readOnly === true, placeholder: t(hintKey), 'aria-labelledby': id + '-label',
+          onChange: (event) => setTextDraft((now) => Object.assign({}, now, { [field]: event.target.value })),
+          onBlur: () => commitTextField(field, max),
+        }
+        if (multiline === true) common.onKeyDown = (event) => { if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) commitTextField(field, max) }
+        else common.onKeyDown = (event) => { if (event.key === 'Enter') commitTextField(field, max) }
+        return E('div', { className: 'dig-settings-text', key: field },
+          E('label', { id: id + '-label', className: 'dig-settings-text-label', htmlFor: id }, t(labelKey)),
+          multiline === true ? E('textarea', Object.assign({ rows: 3 }, common)) : E('input', Object.assign({ type: 'text' }, common)),
+          shown.length >= max ? E('div', { className: 'dig-settings-error' }, fill(t('settings.commit.tooLong'), { n: String(max) })) : null)
+      }
       const flush = () => {
         pendingFlush.current = null
         /* The pending TARGET per field, not "whatever the render-time intent
@@ -4784,7 +5169,11 @@ window.__ModuleLoader__.load({
             }),
             E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: spec.icon, size: 13 })),
             E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t(spec.key)))
-        })))
+        })),
+        E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
+        textRow('commitModel', 'settings.commit.model', 'settings.commit.modelHint', 120, false),
+        textRow('commitReasoning', 'settings.commit.reasoning', 'settings.commit.reasoningHint', 60, false),
+        textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true))
     }
 
     function RailSettings(props) {
@@ -5215,6 +5604,12 @@ window.__ModuleLoader__.load({
       const [message, setMessage] = useState('')
       const [amend, setAmend] = useState(false)
       const [collapsed, setCollapsed] = useState(false)
+      /* AI-written message (issue #6). The draft is kept so the write can be
+         undone, and an existing draft is never overwritten without a word. */
+      const [aiBusy, setAiBusy] = useState(false)
+      const [aiNote, setAiNote] = useState(null)
+      const [aiAsk, setAiAsk] = useState(false)
+      const [aiUndo, setAiUndo] = useState(null)
       // 'flat' keeps git's own grouping (staged / changes / untracked); 'dir'
       // clusters each group's files under their folder, the way "Group by:
       // Directory" does in an IDE. Folders are addressed by <group>|<dir>, so a
@@ -5228,6 +5623,32 @@ window.__ModuleLoader__.load({
       const untracked = changes === null ? [] : changes.untracked
       const ignored = changes === null || changes.ignored === undefined ? [] : changes.ignored
       const total = conflicted.length + staged.length + unstaged.length + untracked.length
+      const aiRun = async () => {
+        setAiAsk(false)
+        setAiBusy(true)
+        setAiNote(null)
+        try {
+          const settings = props.commitSettings === undefined ? { model: '', reasoning: '', prompt: '' } : props.commitSettings
+          const data = await props.request('commit-message', {
+            cwd: props.cwd,
+            sessionId: props.sessionId,
+            model: settings.model,
+            reasoningEffort: settings.reasoning,
+            prompt: settings.prompt,
+          })
+          setAiUndo(message === '' ? null : message)
+          setMessage(typeof data.message === 'string' ? data.message : '')
+          /* Say what the model did NOT see, instead of quietly sending less. */
+          const input = data.input === undefined ? {} : data.input
+          const incomplete = input.truncated === true || (typeof input.dropped === 'number' && input.dropped > 0) || data.promptTruncated === true
+          setAiNote(incomplete === true ? t('changes.aiNotice') : null)
+        } catch (error) {
+          const code = error !== null && error !== undefined && typeof error.code === 'string' ? error.code : 'unknown'
+          setAiNote(t('changes.aiFailed') + ' [' + code + '] ' + String(error && error.message ? error.message : error))
+        } finally {
+          setAiBusy(false)
+        }
+      }
       const submit = (push) => {
         if (message.trim() === '' || props.busy === true) return false
         props.onCommit(message, amend, push === true)
@@ -5280,6 +5701,13 @@ window.__ModuleLoader__.load({
           key === 'staged' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onUnstageAll() }, t('changes.unstageAll')) : null,
           key === 'unstaged' || key === 'untracked' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onStageAll(entries) }, t('changes.stageAll')) : null),
         rowsOf(key, entries))
+      const aiConfirmDialog = aiAsk !== true ? null : E(ConfirmDialog, {
+        t: t,
+        title: t('changes.aiOverwriteTitle'),
+        text: t('changes.aiOverwriteText'),
+        onConfirm: () => { void aiRun() },
+        onCancel: () => setAiAsk(false),
+      })
       const composer = props.compact === true
         ? E('div', { className: 'dig-commit-box dig-commit-box-compact' },
             E('input', {
@@ -5290,6 +5718,12 @@ window.__ModuleLoader__.load({
                 if (event.key === 'Enter') { event.preventDefault(); submit() }
               },
             }),
+            E('button', {
+              type: 'button', className: 'dig-btn dig-btn-small dig-btn-ai',
+              disabled: aiBusy === true || props.busy === true,
+              title: t('changes.aiQuota'),
+              onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
+            }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
             E('button', {
               type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
               disabled: message.trim() === '' || props.busy === true,
@@ -5304,6 +5738,18 @@ window.__ModuleLoader__.load({
                 if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); submit() }
               },
             }),
+            E('div', { className: 'dig-commit-ai' },
+              E('button', {
+                type: 'button', className: 'dig-btn dig-btn-small dig-btn-ai',
+                disabled: aiBusy === true || props.busy === true,
+                onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
+              }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
+              E('span', { className: 'dig-commit-ai-hint' }, t('changes.aiQuota')),
+              aiUndo === null ? null : E('button', {
+                type: 'button', className: 'dig-link',
+                onClick: () => { setMessage(aiUndo); setAiUndo(null); setAiNote(null) },
+              }, t('changes.aiUndo'))),
+            aiNote === null ? null : E('div', { className: 'dig-commit-ai-note', 'data-ai-note': '' }, aiNote),
             E('div', { className: 'dig-commit-actions' },
               E('label', { className: 'dig-check' },
                 E('input', { type: 'checkbox', checked: amend, onChange: (event) => setAmend(event.target.checked) }),
@@ -5353,6 +5799,7 @@ window.__ModuleLoader__.load({
           onClick: () => props.onToggleIgnored(),
         }, E(Icon, { name: props.showIgnored === true ? 'eye' : 'eyeOff', size: 13 })))
       return E('div', { className: 'dig-changes' },
+        aiConfirmDialog,
         head,
         E('div', { className: 'dig-changes-body' },
           E('div', { className: 'dig-changes-list' },
@@ -6226,8 +6673,10 @@ window.__ModuleLoader__.load({
         E('span', { className: 'dig-banner-text' }, note),
         E('button', { type: 'button', className: 'dig-link', onClick: () => setNote(null) }, t('error.dismiss')))
 
+      const commitSettings = readCommitSettings()
       const changesPane = E(ChangesPanel, {
         t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
+        request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings,
         showIgnored: showIgnored,
         onToggleIgnored: () => setShowIgnored((value) => !value),
         // Commit-and-push carries the confirm flag with it: the button already
@@ -6748,6 +7197,13 @@ window.__ModuleLoader__.load({
       '.dig-settings-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:400}',
       '.dig-settings-note-hidden{display:none}',
       '.dig-settings-error{color:var(--dsw-alias-state-error-primary);font-weight:400}',
+      '.dig-settings-sub{margin-top:6px;font-weight:600;color:var(--dsw-alias-label-primary)}',
+      '.dig-settings-text{display:flex;flex-direction:column;gap:3px;min-width:0}',
+      '.dig-settings-text-label{color:var(--dsw-alias-label-secondary);font-weight:400}',
+      '.dig-settings-input{width:100%;box-sizing:border-box;font:inherit}',
+      '.dig-commit-ai{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}',
+      '.dig-commit-ai-hint{color:var(--dsw-alias-label-tertiary);font-size:11px}',
+      '.dig-commit-ai-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-size:11px;margin-bottom:4px;word-break:break-word}',
       '.dig-settings-list{display:flex;flex-direction:column;gap:2px;max-height:min(46vh,360px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-sm,8px)}',
       '.dig-settings-row{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;min-width:0}',
       '.dig-settings-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',

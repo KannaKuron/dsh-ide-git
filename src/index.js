@@ -59,6 +59,12 @@ function railConfigSchema(schema) {
   for (const id of RAIL_CONFIG_IDS) {
     shape['rail' + id.charAt(0).toUpperCase() + id.slice(1)] = live(schema.boolean().default(true))
   }
+  /* AI commit message (issue #6), the three settings the user asked for. Empty
+     string means "follow whatever the session is using" / "no extra prompt", so
+     an untouched profile behaves exactly like the feature's default. */
+  shape.commitModel = live(schema.string().default(''))
+  shape.commitReasoning = live(schema.string().default(''))
+  shape.commitPrompt = live(schema.string().default(''))
   return schema.object(shape)
 }
 
@@ -1293,8 +1299,197 @@ function clampInt(value, min, max, fallback) {
   return Math.min(max, Math.max(min, Math.trunc(parsed)))
 }
 
+/* ============================== ai commit message ============================== */
+/* Issue #6: write the commit message with the session's own model route. The
+   settings arrive WITH the request (the browser reads them from the same row
+   Config document it renders), so a setting change takes effect on the next
+   click without the host caching anything. */
+const COMMIT_MAX_PROMPT_CHARS = 2000
+const COMMIT_TOTAL_BYTES = 12 * 1024
+const COMMIT_FILE_BYTES = 2048
+const COMMIT_FILE_LINES = 80
+const COMMIT_MAX_FILES = 30
+const COMMIT_BINARY = /\.(png|jpe?g|gif|webp|ico|pdf|zip|gz|tgz|bz2|xz|7z|jar|war|woff2?|ttf|otf|eot|mp[34]|mov|avi|mkv|so|dylib|dll|exe|bin|wasm|class|o|a)$/i
+
+/** One model call's text, plus how it ENDED (a failure arrives as a finish chunk). */
+async function collectCommitStream(stream) {
+  let text = ''
+  let finish = null
+  for await (const chunk of stream) {
+    if (chunk === null || chunk === undefined) continue
+    if (chunk.type === 'text-delta' && typeof chunk.text === 'string') text += chunk.text
+    else if (chunk.type === 'finish') finish = chunk.reason
+  }
+  return { text: text, finish: finish }
+}
+
+/** The change set, trimmed to a budget the model can actually be asked about. */
+function commitInputOf(stagedPatch, unstagedPatch) {
+  const patch = (stagedPatch === '' ? '' : stagedPatch) + (unstagedPatch === '' ? '' : (stagedPatch === '' ? '' : '\n') + unstagedPatch)
+  const files = []
+  let bytes = 0
+  let dropped = 0
+  let truncated = false
+  const parts = patch.split(/^diff --git /m).slice(1)
+  for (const part of parts) {
+    const head = /^a\/(.+?) b\//.exec(part)
+    const name = head === null ? '(unknown)' : head[1]
+    if (files.length >= COMMIT_MAX_FILES) { dropped += 1; continue }
+    if (COMMIT_BINARY.test(name)) { dropped += 1; continue }
+    if (/(^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|Cargo\.lock|composer\.lock)$/.test(name)) { dropped += 1; continue }
+    let body = 'diff --git ' + part
+    const lines = body.split('\n')
+    if (lines.length > COMMIT_FILE_LINES) { body = lines.slice(0, COMMIT_FILE_LINES).join('\n'); truncated = true }
+    if (body.length > COMMIT_FILE_BYTES) { body = body.slice(0, COMMIT_FILE_BYTES); truncated = true }
+    if (bytes + body.length > COMMIT_TOTAL_BYTES) { dropped += 1; continue }
+    bytes += body.length
+    files.push({ path: name, body: body })
+  }
+  return { files: files, bytes: bytes, dropped: dropped, truncated: truncated }
+}
+
+/** Built-in instruction + the change set + the user's own addition, as DATA. */
+function commitMessagesOf(input, userPrompt) {
+  const system = [
+    'You write git commit messages.',
+    'Reply with the commit message ONLY: no prose, no code fences, no quotes, no explanation.',
+    'First line: a concise subject, at most 72 characters, no trailing period.',
+    'Then one blank line and a short body explaining what changed and why, when it adds value.',
+    'Describe only what the diff shows. Never invent files, features or issue numbers.',
+  ].join('\n')
+  const user = [
+    'Write the commit message for these changes.',
+    '',
+    input.files.map((file) => file.body).join('\n'),
+  ].join('\n')
+  /* The user's text is DATA in the same message, never a system instruction: it
+     steers style (format, language, length) but cannot replace the rules above. */
+  const addition = typeof userPrompt === 'string' && userPrompt.trim() !== ''
+    ? '\n\nAdditional requirements from the user (style only; the rules above still apply):\n' + userPrompt.trim()
+    : ''
+  return { system: system, user: user + addition }
+}
+
+/** Strip what a model habitually wraps a message in; keep the text itself. */
+function cleanupCommitMessage(text) {
+  let out = String(text === null || text === undefined ? '' : text).trim()
+  const fence = /^```[a-zA-Z]*\n([\s\S]*?)\n?```$/.exec(out)
+  if (fence !== null) out = fence[1].trim()
+  if (out.length > 1 && ((out.startsWith('"') && out.endsWith('"')) || (out.startsWith('“') && out.endsWith('”')))) out = out.slice(1, -1).trim()
+  return out
+}
+
+/* ---- ai commit message: the route handler ---- */
+let commitServices = null
+let commitBusy = false
+
+function gatewayError(code, message) {
+  return new PanelError(code, message, 502)
+}
+
+function failureTextOf(failure) {
+  if (failure === null || failure === undefined) return ''
+  if (typeof failure.message === 'string' && failure.message !== '') return failure.message
+  return String(failure.code === undefined ? failure : failure.code)
+}
+
+/** Route the call exactly like the session does when it talks to the model. */
+async function commitRouteOf(payload) {
+  const wanted = typeof payload.model === 'string' ? payload.model.trim() : ''
+  if (wanted === '') {
+    const id = typeof payload.sessionId === 'string' ? payload.sessionId.trim() : ''
+    if (id === '') throw new PanelError('no-session', 'no session id: cannot follow the session model route', 502)
+    const list = commitServices.sessions.list()
+    const session = list.filter((row) => String(row.id) === id)[0]
+    if (session === undefined) throw new PanelError('no-session', 'unknown session "' + id + '"', 502)
+    let header = null
+    try { header = session.requestHeader() } catch (error) { header = null; void error }
+    const config = header === null || header === undefined || header.config === undefined || header.config === null ? {} : header.config
+    if (typeof config.provider !== 'string' || typeof config.model !== 'string') {
+      throw new PanelError('no-route', 'this session has no model route yet; pick a model in the session first', 502)
+    }
+    return { provider: config.provider, model: config.model, source: 'session' }
+  }
+  const slash = wanted.indexOf('/')
+  if (slash <= 0 || slash === wanted.length - 1 || wanted.indexOf('/', slash + 1) >= 0) {
+    throw badRequest('model must look like "provider/model"')
+  }
+  const provider = wanted.slice(0, slash)
+  const model = wanted.slice(slash + 1)
+  const known = commitServices.llm.listProviders().map((row) => row.id)
+  if (known.indexOf(provider) < 0) {
+    throw new PanelError('unknown-provider', 'unknown provider "' + provider + '"; this host serves: ' + known.join(', '))
+  }
+  /* The catalog is advisory (routing accepts unlisted ids), so an empty catalog
+     cannot prove a model wrong — only a non-empty one without this id can. */
+  const models = await commitServices.llm.listModels(provider)
+  if (models.length > 0 && !models.some((row) => row.id === model)) {
+    throw new PanelError('unknown-model', 'unknown model "' + model + '" for ' + provider + '; try: ' + models.map((row) => row.id).slice(0, 8).join(', '))
+  }
+  return { provider: provider, model: model, source: 'setting' }
+}
+
+async function commitMessage(payload) {
+  if (commitServices === null) {
+    throw new PanelError('no-host-service', 'this host does not serve llm + sessions, so the message cannot be written here', 501)
+  }
+  if (commitBusy) throw new PanelError('busy', 'a commit message is already being written', 409)
+  const cwd = cwdOf(payload)
+  const route = await commitRouteOf(payload)
+  const sums = await summary({ cwd: cwd })
+  const stagedPatch = sums.changes.staged.length > 0 ? (await diff({ cwd: cwd, staged: true })).patch : ''
+  const input = commitInputOf(stagedPatch, (await diff({ cwd: cwd })).patch)
+  if (input.files.length === 0) throw badRequest('nothing to describe: stage or edit something first')
+  const asked = typeof payload.prompt === 'string' ? payload.prompt : ''
+  const prompt = asked.slice(0, COMMIT_MAX_PROMPT_CHARS)
+  const reasoning = typeof payload.reasoningEffort === 'string' ? payload.reasoningEffort.trim() : ''
+  const spoken = commitMessagesOf(input, prompt)
+  const options = {
+    provider: route.provider,
+    model: route.model,
+    system: spoken.system,
+    messages: [{ role: 'user', content: [{ type: 'text', text: spoken.user }] }],
+    maxTokens: 512,
+    temperature: 0.2,
+  }
+  if (reasoning !== '') options.reasoningEffort = reasoning
+  if (typeof payload.sessionId === 'string' && payload.sessionId !== '') options.sessionId = payload.sessionId
+  const started = Date.now()
+  commitBusy = true
+  let collected
+  try {
+    collected = await collectCommitStream(commitServices.llm.stream(options))
+  } finally {
+    commitBusy = false
+  }
+  /* An adapter failure is a terminal finish, not a throw: a missing check here
+     would turn "the call failed" into "the model said nothing" (假成功). */
+  const finish = collected.finish
+  if (finish === null || finish === undefined) {
+    throw gatewayError('llm-no-finish', 'the model stream ended without a finish reason; treat the result as unknown, not as success')
+  }
+  if (finish.kind === 'error') throw gatewayError('llm-error', failureTextOf(finish.failure))
+  if (finish.kind === 'aborted') throw gatewayError('llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
+  if (finish.kind !== 'stop') {
+    throw gatewayError('llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
+  }
+  const message = cleanupCommitMessage(collected.text)
+  if (message === '') throw gatewayError('empty-output', 'the model returned no text')
+  return {
+    message: message,
+    provider: route.provider,
+    model: route.model,
+    routeSource: route.source,
+    reasoningEffort: reasoning === '' ? null : reasoning,
+    elapsedMs: Date.now() - started,
+    input: { files: input.files.length, bytes: input.bytes, dropped: input.dropped, truncated: input.truncated },
+    promptTruncated: asked.length > COMMIT_MAX_PROMPT_CHARS,
+  }
+}
+
 const METHODS = {
   version,
+  'commit-message': commitMessage,
   repos,
   summary,
   branches,
@@ -1421,4 +1616,17 @@ export function apply(ctx) {
     () => ctx.webServer.register({ kind: 'prefix', path: ROUTE_PREFIX, handler: handle }),
     'dsh-ide-git: /dsh-ide-git/api git routes',
   )
+  /* AI commit message (issue #6). `llm` and `sessions` are injected HERE and not
+     in `export const inject`: a host without them must still load the whole
+     plugin, it just answers commit-message with no-host-service. */
+  if (typeof ctx.inject !== 'function') return
+  ctx.inject(['llm', 'sessions'], (injected) => {
+    const llm = injected.get('llm')
+    const sessions = injected.get('sessions')
+    if (llm === undefined || llm === null || sessions === undefined || sessions === null) return
+    injected.effect(() => {
+      commitServices = { llm: llm, sessions: sessions }
+      return () => { commitServices = null }
+    }, 'dsh-ide-git: ai commit message')
+  })
 }

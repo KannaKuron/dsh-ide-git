@@ -747,6 +747,83 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   }
 })
 
+test('the ai commit message keeps the model honest and the input bounded', async () => {
+  // Issue #6. Four shapes are locked here because each one has produced (or could
+  // produce) a "false success" in this repository before:
+  //  1. an adapter failure arrives as a terminal `finish`, NOT as a throw — so the
+  //     collector must surface the finish and the caller must refuse to treat
+  //     "no text" as "the model said nothing";
+  //  2. the change set is bounded (per file, total, lock files, binaries) and the
+  //     accounting is returned so the UI can say what the model did NOT see;
+  //  3. the user's own instructions are DATA in the user message, never the system
+  //     prompt, and they are capped;
+  //  4. the reply is cleaned of the wrappers models habitually add.
+  const start = host.indexOf('const COMMIT_MAX_PROMPT_CHARS')
+  const end = host.indexOf('const METHODS = {')
+  assert.ok(start >= 0 && end > start, 'the ai commit block must keep its bounds')
+  const block = host.slice(start, end)
+  const api = new Function(block + '\nreturn { collectCommitStream, commitInputOf, commitMessagesOf, cleanupCommitMessage, COMMIT_MAX_PROMPT_CHARS, COMMIT_TOTAL_BYTES, COMMIT_FILE_LINES, COMMIT_MAX_FILES }')()
+
+  // 1 — the finish is reported, whichever way the adapter failed.
+  const ok = await api.collectCommitStream((async function* generate() {
+    yield { type: 'text-delta', index: 0, text: 'feat: x' }
+    yield { type: 'finish', reason: { kind: 'stop' } }
+  })())
+  assert.equal(ok.text, 'feat: x')
+  assert.equal(ok.finish.kind, 'stop')
+  const failed = await api.collectCommitStream((async function* generate() {
+    yield { type: 'finish', reason: { kind: 'error', failure: { code: 'NO_CREDENTIAL', message: 'no API key' } } }
+  })())
+  assert.equal(failed.text, '')
+  assert.equal(failed.finish.kind, 'error', 'an adapter failure must reach the caller as a finish')
+  assert.equal(failed.finish.failure.message, 'no API key')
+  const silent = await api.collectCommitStream((async function* generate() { yield { type: 'text-delta', index: 0, text: 'half' } })())
+  assert.equal(silent.finish, null, 'a stream without a finish must be distinguishable from a successful one')
+
+  // 2 — the budget: per-file lines, total bytes, lock files and binaries.
+  const long = 'diff --git a/big.txt b/big.txt\n' + Array.from({ length: 200 }, (_, i) => '+line ' + i).join('\n')
+  const lock = 'diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml\n+x'
+  const binary = 'diff --git a/logo.png b/logo.png\n+binary'
+  const bounded = api.commitInputOf(long, lock + '\n' + binary)
+  assert.equal(bounded.files.length, 1, 'lock files and binaries are dropped')
+  assert.equal(bounded.files[0].path, 'big.txt')
+  assert.ok(bounded.files[0].body.split('\n').length <= api.COMMIT_FILE_LINES + 1, 'a file is capped by lines')
+  assert.equal(bounded.dropped, 2)
+  assert.equal(bounded.truncated, true)
+  const many = Array.from({ length: api.COMMIT_MAX_FILES + 5 }, (_, i) => 'diff --git a/f' + i + '.txt b/f' + i + '.txt\n+x').join('\n')
+  const capped = api.commitInputOf(many, '')
+  assert.equal(capped.files.length, api.COMMIT_MAX_FILES, 'the file count is capped')
+  assert.equal(capped.dropped, 5, 'what was left out is counted, so the UI can say so')
+  assert.ok(capped.bytes <= api.COMMIT_TOTAL_BYTES)
+
+  // 3 — the user's words steer style; they never replace the rules.
+  const spoken = api.commitMessagesOf({ files: [{ path: 'a.txt', body: 'diff --git a/a.txt b/a.txt' }] }, 'Use Conventional Commits')
+  assert.match(spoken.system, /commit messages/)
+  assert.match(spoken.system, /ONLY/)
+  assert.ok(!spoken.system.includes('Conventional Commits'), 'a user instruction must not land in the system prompt')
+  assert.ok(spoken.user.includes('Use Conventional Commits'), 'the instruction is appended to the user message')
+  assert.ok(spoken.user.indexOf('Use Conventional Commits') > spoken.user.indexOf('diff --git'), 'it comes after the change set')
+  assert.equal(api.commitMessagesOf({ files: [] }, '   ').user.includes('Additional requirements'), false, 'a blank prompt adds nothing')
+
+  // 4 — the wrapper a model likes to add is removed, the text itself is kept.
+  assert.equal(api.cleanupCommitMessage('```\nfeat: x\n```'), 'feat: x')
+  assert.equal(api.cleanupCommitMessage('"feat: y"'), 'feat: y')
+  assert.equal(api.cleanupCommitMessage('feat: z\n\nbody'), 'feat: z\n\nbody')
+
+  // 5 — the route refuses instead of reporting an empty success.
+  assert.match(block, /if \(finish === null \|\| finish === undefined\)/, 'a stream with no finish is refused')
+  assert.match(block, /finish\.kind === 'error'/, 'an error finish is a failure')
+  assert.match(block, /finish\.kind !== 'stop'/, 'any non-stop finish is surfaced')
+  assert.match(block, /'llm-no-finish'|llm-no-finish/, 'the no-finish failure has its own code')
+  assert.match(block, /if \(commitBusy\) throw new PanelError\('busy'/, 'one generation at a time')
+  assert.match(block, /commitServices === null/, 'a host without llm/sessions is refused, not hung')
+  assert.match(block, /reasoningEffort/, 'the reasoning setting reaches GenerateOptions')
+  assert.match(host, /ctx\.inject\(\['llm', 'sessions'\]/, 'llm is injected, never exported as a hard dependency')
+  assert.doesNotMatch(host, /export const inject = \[[^\]]*'llm'/, 'a host without llm must still load the plugin')
+  assert.match(host, /options\.reasoningEffort = reasoning/, 'the effort is only sent when set')
+  assert.match(host, /shape\.commitModel|commitModel/, 'the model setting lives in the row Config')
+})
+
 test('the settings entry draws a gear, not a sunburst', () => {
   // The rail's settings button used to render a centre dot with eight rays — a
   // brightness glyph users read as "sun" — under the name `settings`. The entry

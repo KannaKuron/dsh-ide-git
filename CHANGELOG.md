@@ -5,6 +5,41 @@
 
 ## v0.9.0 (未发版) — 2026-09-26
 
+**类型**:feat(AI 写提交信息,issue #6)
+
+- **提交信息框旁新增「AI 写提交信息」**(`ChangesPanel`,原生右栏与底座两门共享同一
+  Panel ⇒ 两种承载面都成立),按钮旁**明示「会消耗你的额度」**(不计入 token-meter
+  会话用量)。生成中禁用按钮;已有草稿时**先确认再覆盖**,覆盖后提供**撤销**恢复原草稿;
+  失败一律 fail-loud,把宿主的原话与错误码一起显示(不静默、不写空内容)。
+- **宿主半新增 `POST /dsh-ide-git/api/commit-message`**,走既有路由与两道信任围栏;
+  `ctx.inject(['llm','sessions'])` 软取服务——**绝不写进 `export const inject`**
+  (没有 llm 的宿主仍要能加载整个插件,此时该路由返回 501 `no-host-service`)。
+- **调用的唯一入口是 `ctx.llm.stream()`**,并且**必须检查终止 `finish`**:适配器抛错会被
+  规范化成终止 finish 而不是 throw,不检查就会把「调用失败」当成「模型没说话」(假成功)。
+  失败矩阵全部 fail-loud:`no-host-service` / `no-session` / `no-route` /
+  `unknown-provider` / `unknown-model` / `busy`(单飞)/ `llm-error`(透传 provider 原文)/
+  `llm-aborted` / `llm-unfinished`(max-tokens、tool-calls)/ `llm-no-finish` / `empty-output`。
+- **路由**取自会话 `requestHeader()?.config`(与官方 auto-review / session-title 同源),
+  未配 key 时不需要用户另配:凭据由适配器自己从 credentials 服务取。
+- **输入有预算**:≤12KB 总量、单文件 ≤80 行或 ≤2KB、≤30 文件,丢弃 lock 文件与二进制,
+  返回 `truncated` / `dropped` 并在 UI 如实提示「部分变更没有发给模型」。
+- **三项设置(用户追加要求)**加进同一张设置卡与行 Config:`commitModel`(留空 = 跟随
+  当前会话,填 `provider/model` 固定)、`commitReasoning`(留空 = 模型默认;字段名证据:
+  `GenerateOptions.reasoningEffort?: ReasoningEffortId`,`packages/llm/llm/src/types.ts`,
+  取值域由适配器按路由给 `LlmModelReasoningInfo.efforts`,故按不透明 id 原样传递)、
+  `commitPrompt`(多行,追加在内置提示词之后,**作为数据而非 system 指令**,上限 2000 字符
+  并如实提示截断)。用户文本进 `messages[0].content[0].text`,内置安全与格式规则留在
+  `system`,不会被覆盖。
+- 文案 16 键 × 21 门;守卫:冒烟新增「AI 提交信息保持模型诚实、输入有界」(收流与 finish、
+  预算记账、提示词注入边界、回复清理、失败码与单飞),`tests/api.test.mjs` 新增 8 个端到端
+  用例(假 llm/sessions 驱动真实路由)。
+- **真机(隔离实例)**:按钮渲染与额度提示 ✓;设置卡三字段渲染并落盘到 `cordis.patch.yml` ✓;
+  **无凭据点击 → 界面显示 provider 原话**
+  (`llm-deepseek: no API key for provider route "deepseek-official"; …`)✓ —— 这条真的走通了
+  路由解析 → `llm.stream` → finish 检查 → fail-loud 全链路;**「生成出一段真实提交信息」
+  仍未验证**(本机无凭据,按用户要求不申请、不动其 profile)。
+
+
 **类型**:fix(设置卡的开关不再谎报宿主真值;三处由独立复核抓出)
 
 - **设置卡的开关按「一次原子写 + 写后核对」落盘**(独立复核 task-30 抓出三处):
