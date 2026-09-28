@@ -66,23 +66,51 @@ test('the dsh peer survives the runtime compatibility check', () => {
   // so the plugin's floor has to live in BOTH fields with the same value.
   const peer = pkg.peerDependencies['@deepseek-ai/dsh']
   assert.equal(peer, pkg.engines.dsh, 'the dsh peer must mirror engines.dsh exactly')
-  // Open floor, prerelease-aware ('-0'): every host that can enforce the check
-  // is 0.1.7+, so a floor of 0.1.2-0 can never disable a host the plugin runs
-  // on, and a missing ceiling keeps a future minor from rejecting it the way
-  // version-enumerating peers did (dsh-any-background@0.3.0 on rc.1).
-  const floor = /^>=(\d+)\.(\d+)\.(\d+)-0$/.exec(peer)
-  assert.ok(floor, 'the dsh peer must stay an open >=X.Y.Z-0 floor: ' + peer)
-  const required = floor.slice(1).map(Number)
+  // Open floor with a prerelease tag, NO ceiling. The floor tracks the oldest
+  // supported host (0.1.6-alpha.2 — the first one with the plugins.bundle.config
+  // seat; 0.1.6 never shipped a stable). The host gate satisfies with
+  // includePrerelease:true (app-boot plugin-compatibility.ts), so a single
+  // `>=X.Y.Z-tag` comparator is both honest and sufficient; the tag keeps a
+  // future prerelease floor expressible without a second branch.
+  const floor = /^>=(\d+)\.(\d+)\.(\d+)(-([0-9A-Za-z][0-9A-Za-z.-]*))?$/.exec(peer)
+  assert.ok(floor, 'the dsh peer must stay an open >=X.Y.Z[-tag] floor: ' + peer)
+  const required = floor.slice(1, 4).map(Number)
+  const floorTag = floor[5] || null
+  // semver prerelease identifier compare: numeric fields compare numerically,
+  // numeric < alphanumeric, longer wins when one is a prefix of the other.
+  const compareTag = (a, b) => {
+    const as = a === null ? [] : String(a).split('.')
+    const bs = b === null ? [] : String(b).split('.')
+    for (let i = 0; i < Math.max(as.length, bs.length); i += 1) {
+      const x = as[i]; const y = bs[i]
+      if (x === undefined) return -1
+      if (y === undefined) return 1
+      const xn = /^\d+$/.test(x); const yn = /^\d+$/.test(y)
+      if (xn && yn) { const d = Number(x) - Number(y); if (d !== 0) return d }
+      else if (xn !== yn) return xn ? -1 : 1
+      else if (x !== y) return x < y ? -1 : 1
+    }
+    return 0
+  }
+  // Mirror of the host gate (semver.satisfies with includePrerelease:true) at
+  // numeric + prerelease granularity.
   const satisfies = (version) => {
-    const m = /^(\d+)\.(\d+)\.(\d+)/.exec(version)
+    const m = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z][0-9A-Za-z.-]*))?$/.exec(version)
     assert.ok(m, 'unparsable version ' + version)
-    const got = m.slice(1).map(Number)
+    const got = m.slice(1, 4).map(Number)
     for (let i = 0; i < 3; i += 1) {
       if (got[i] !== required[i]) return got[i] > required[i]
     }
-    return true
+    if (floorTag === null) return true
+    if (m[4] === undefined) return true // a stable release outranks any prerelease
+    return compareTag(m[4], floorTag) >= 0
   }
-  for (const version of ['0.1.2', '0.1.6', '0.1.7-alpha.1', '0.1.7-rc.1', '0.2.0']) {
+  // Mirror of the host gate at numeric + prerelease granularity: 0.1.6-alpha.1
+  // and older hosts predate the plugins.bundle.config seat and are rejected.
+  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.1']) {
+    assert.ok(!satisfies(version), 'the dsh peer must reject ' + version)
+  }
+  for (const version of ['0.1.6-alpha.2', '0.1.6-alpha.3', '0.1.6', '0.1.7-alpha.1', '0.1.7-rc.1', '0.2.0']) {
     assert.ok(satisfies(version), 'the dsh peer would reject ' + version)
   }
   // OPTIONAL keeps the gate intact while removing the install hazard: the gate
@@ -964,12 +992,13 @@ test('the rail settings live in the row Config, with localStorage only as the le
   assert.deepEqual(dynamicImports, ['@deepseek-ai/schemastery'], 'the only allowed non-node reach, and it must stay dynamic')
   assert.doesNotMatch(host, /from '(?!node:)/, 'host half may only import node: builtins')
 
-  // Client wiring: both official seats, soft services, one-shot migration.
+  // Client wiring: the detail-page seat (the legacy Settings → Plugins seat went
+  // away with the raised host floor), soft services, one-shot migration.
   assert.match(client, /const SETTINGS_BUNDLE = 'dsh-ide-git'/)
   assert.match(client, /const RAIL_NS = 'ide-git'/)
   assert.match(client, /slots\.inject\('plugins\.bundle\.config'/)
   assert.match(client, /\{ name: 'plugins\.bundle\.config', key: SETTINGS_BUNDLE, locale: LOCALE_NS \}/)
-  assert.match(client, /\{ name: 'settings\.plugin\.item', key: RAIL_NS, locale: LOCALE_NS \}/)
+  assert.doesNotMatch(client, /settings\.plugin\.item/, 'the legacy settings-list seat must stay gone')
   assert.match(client, /ctx\.inject\(\['configForms'\]/)
   assert.match(client, /const RAIL_MIGRATED_KEY = 'dsh-ide-git\.rail\.v1\.migrated'/)
   assert.match(client, /navigation\.openBundle\(SETTINGS_BUNDLE\)/, 'the gear opens the plugin page when the host has one')

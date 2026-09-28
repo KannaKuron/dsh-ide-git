@@ -4986,19 +4986,19 @@ window.__ModuleLoader__.load({
        list is drag-sortable and arrow-sortable (the arrows also work with a
        keyboard); visibility is a per-action toggle, not a delete, so a hidden
        action keeps its position. */
-    /* The plugin's settings card. It is the SAME surface on the plugin's detail
-       page (slot `plugins.bundle.config`, keyed by the PACKAGE name) and in
-       Settings → Plugins (slot `settings.plugin.item`, keyed by the settings
-       namespace = the loader row id), and it is the only editor when the host
-       serves the row Config — the in-panel editor is not reachable there.
+    /* The plugin's settings card. It lives on the plugin's detail page (slot
+       `plugins.bundle.config`, keyed by the PACKAGE name), and it is the only
+       editor when the host serves the row Config — the in-panel editor is not
+       reachable there. The legacy Settings → Plugins seat went away with the
+       raised host floor.
 
        A host without that service still renders the card (the seat exists), so it
        says so instead of pretending to have settings. */
     function RailSettingsCard(props) {
       const t = props.t
       const [tick, setTick] = useState(0)
-      /* Collapse state of the card shell (the li card on the Settings → Plugins
-         seat). The plugin-page seat (props.view === 'page') renders flat. */
+      /* Collapse state of the card shell (the li card on the list seat). The
+         plugin-page seat (props.view === 'page') renders flat. */
       const [openCard, setOpenCard] = useState(false)
       const [pending, setPending] = useState({})
       const [note, setNote] = useState('')
@@ -7727,10 +7727,10 @@ window.__ModuleLoader__.load({
         }, 'dsh-ide-git: row config')
       })
 
-      /* The settings card, on both official seats: the plugin's detail page
-         (keyed by the PACKAGE name) and Settings → Plugins (keyed by the settings
-         namespace = the loader row id). Both seats are optional — a host without
-         the slots keeps whatever surface it has. */
+      /* The settings card, on the plugin detail page (plugins.bundle.config,
+         keyed by the PACKAGE name; dsh >= 0.1.6-alpha.2). The legacy settings-list
+         seat served pre-alpha.2 hosts only and is gone with the raised floor. The
+         seat is optional — a host without the slots keeps whatever surface it has. */
       ctx.inject(['slots'], (slotCtx) => {
         const slots = slotCtx.get('slots')
         if (slots === undefined || slots === null || typeof slots.inject !== 'function') return
@@ -7740,13 +7740,8 @@ window.__ModuleLoader__.load({
             { name: 'plugins.bundle.config', key: SETTINGS_BUNDLE, locale: LOCALE_NS },
             card,
           ))
-          const offItem = slots.inject('settings.plugin.item', () => slots.register(
-            { name: 'settings.plugin.item', key: RAIL_NS, locale: LOCALE_NS },
-            card,
-          ))
           return () => {
             try { offBundle() } catch (error) { void error }
-            try { offItem() } catch (error) { void error }
           }
         }, 'dsh-ide-git: settings card')
       })
