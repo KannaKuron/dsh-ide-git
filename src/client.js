@@ -159,6 +159,8 @@ window.__ModuleLoader__.load({
       'rail.more': '更多操作',
       'rail.settings': '动作条设置',
       'rail.openSettings': '打开插件设置',
+      'settings.card.title': 'Git 工具窗口设置',
+      'settings.card.desc': '动作条按钮与 AI 提交信息',
       'settings.rail.title': '动作条按钮',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
@@ -342,6 +344,8 @@ window.__ModuleLoader__.load({
       'rail.more': 'More actions',
       'rail.settings': 'Action bar settings',
       'rail.openSettings': 'Open plugin settings',
+      'settings.card.title': 'Git tool window settings',
+      'settings.card.desc': 'Action rail buttons and AI commit message',
       'settings.rail.title': 'Action rail buttons',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
@@ -533,6 +537,8 @@ window.__ModuleLoader__.load({
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
+        'settings.card.title': 'Git 工具視窗設定',
+        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -716,6 +722,8 @@ window.__ModuleLoader__.load({
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
+        'settings.card.title': 'Git 工具視窗設定',
+        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -899,6 +907,8 @@ window.__ModuleLoader__.load({
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
+        'settings.card.title': 'Git 工具視窗設定',
+        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1082,6 +1092,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'その他の操作',
         'rail.settings': 'アクションバーの設定',
         'rail.openSettings': 'プラグイン設定を開く',
+        'settings.card.title': 'Gitツールウィンドウの設定',
+        'settings.card.desc': 'アクションレールのボタンと AI コミットメッセージ',
         'settings.rail.title': 'アクションレールのボタン',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
@@ -1265,6 +1277,8 @@ window.__ModuleLoader__.load({
         'rail.more': '추가 작업',
         'rail.settings': '작업 표시줄 설정',
         'rail.openSettings': '플러그인 설정 열기',
+        'settings.card.title': 'Git 도구 창 설정',
+        'settings.card.desc': '액션 레일 버튼 및 AI 커밋 메시지',
         'settings.rail.title': '액션 레일 버튼',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
@@ -1448,6 +1462,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Weitere Aktionen',
         'rail.settings': 'Einstellungen der Aktionsleiste',
         'rail.openSettings': 'Plugin-Einstellungen öffnen',
+        'settings.card.title': 'Git-Werkzeugfenster-Einstellungen',
+        'settings.card.desc': 'Aktionsleisten-Schaltflächen und KI-Commit-Nachricht',
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
@@ -1631,6 +1647,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Plus d\'actions',
         'rail.settings': 'Réglages de la barre d\'actions',
         'rail.openSettings': 'Ouvrir les réglages du plugin',
+        'settings.card.title': 'Paramètres de la fenêtre d’outils Git',
+        'settings.card.desc': 'Boutons de la barre d’actions et message de commit par IA',
         'settings.rail.title': 'Boutons de la barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
@@ -1814,6 +1832,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Другие действия',
         'rail.settings': 'Настройки панели действий',
         'rail.openSettings': 'Открыть настройки плагина',
+        'settings.card.title': 'Настройки окна инструментов Git',
+        'settings.card.desc': 'Кнопки панели действий и сообщение коммита от ИИ',
         'settings.rail.title': 'Кнопки панели действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
@@ -1997,6 +2017,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Mais ações',
         'rail.settings': 'Configurações da barra de ações',
         'rail.openSettings': 'Abrir configurações do plugin',
+        'settings.card.title': 'Configurações da janela de ferramentas Git',
+        'settings.card.desc': 'Botões da barra de ações e mensagem de commit por IA',
         'settings.rail.title': 'Botões da barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
@@ -2180,6 +2202,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Altre azioni',
         'rail.settings': 'Impostazioni della barra delle azioni',
         'rail.openSettings': 'Apri le impostazioni del plugin',
+        'settings.card.title': 'Impostazioni della finestra strumenti Git',
+        'settings.card.desc': 'Pulsanti della barra azioni e messaggio di commit con IA',
         'settings.rail.title': 'Pulsanti della barra azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
@@ -2363,6 +2387,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Meer acties',
         'rail.settings': 'Instellingen van de actiebalk',
         'rail.openSettings': 'Plugin-instellingen openen',
+        'settings.card.title': 'Instellingen van het Git-werkvenster',
+        'settings.card.desc': 'Knoppen van de actiebalk en AI-commitbericht',
         'settings.rail.title': 'Knoppen van de actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
@@ -2546,6 +2572,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Więcej działań',
         'rail.settings': 'Ustawienia paska działań',
         'rail.openSettings': 'Otwórz ustawienia wtyczki',
+        'settings.card.title': 'Ustawienia okna narzędzi Git',
+        'settings.card.desc': 'Przyciski paska akcji i wiadomość commita od AI',
         'settings.rail.title': 'Przyciski paska akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
@@ -2729,6 +2757,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Fler åtgärder',
         'rail.settings': 'Inställningar för åtgärdsfältet',
         'rail.openSettings': 'Öppna plugininställningar',
+        'settings.card.title': 'Inställningar för Git-verktygsfönstret',
+        'settings.card.desc': 'Knappar i åtgärdsfältet och AI-commitmeddelande',
         'settings.rail.title': 'Knappar i åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
@@ -2912,6 +2942,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Diğer eylemler',
         'rail.settings': 'Eylem çubuğu ayarları',
         'rail.openSettings': 'Eklenti ayarlarını aç',
+        'settings.card.title': 'Git araç penceresi ayarları',
+        'settings.card.desc': 'Eylem çubuğu düğmeleri ve AI commit mesajı',
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
@@ -3095,6 +3127,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Tindakan lain',
         'rail.settings': 'Pengaturan bilah tindakan',
         'rail.openSettings': 'Buka pengaturan plugin',
+        'settings.card.title': 'Pengaturan jendela alat Git',
+        'settings.card.desc': 'Tombol bilah aksi dan pesan commit AI',
         'settings.rail.title': 'Tombol bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
@@ -3278,6 +3312,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'Thao tác khác',
         'rail.settings': 'Cài đặt thanh thao tác',
         'rail.openSettings': 'Mở cài đặt plugin',
+        'settings.card.title': 'Cài đặt cửa sổ công cụ Git',
+        'settings.card.desc': 'Nút thanh tác vụ và thông điệp commit do AI viết',
         'settings.rail.title': 'Nút thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
@@ -3461,6 +3497,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'مزيد من الإجراءات',
         'rail.settings': 'إعدادات شريط الإجراءات',
         'rail.openSettings': 'فتح إعدادات الإضافة',
+        'settings.card.title': 'إعدادات نافذة أدوات Git',
+        'settings.card.desc': 'أزرار شريط الإجراءات ورسالة إيداع بالذكاء الاصطناعي',
         'settings.rail.title': 'أزرار شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
@@ -3644,6 +3682,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'अधिक क्रियाएँ',
         'rail.settings': 'क्रिया पट्टी सेटिंग्स',
         'rail.openSettings': 'प्लगइन सेटिंग खोलें',
+        'settings.card.title': 'Git टूल विंडो सेटिंग्स',
+        'settings.card.desc': 'एक्शन रेल बटन और AI कमिट संदेश',
         'settings.rail.title': 'एक्शन रेल बटन',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
@@ -3827,6 +3867,8 @@ window.__ModuleLoader__.load({
         'rail.more': 'การทำงานเพิ่มเติม',
         'rail.settings': 'ตั้งค่าแถบการทำงาน',
         'rail.openSettings': 'เปิดการตั้งค่าปลั๊กอิน',
+        'settings.card.title': 'การตั้งค่าหน้าต่างเครื่องมือ Git',
+        'settings.card.desc': 'ปุ่มแถบการทำงานและข้อความคอมมิตโดย AI',
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
@@ -4955,6 +4997,9 @@ window.__ModuleLoader__.load({
     function RailSettingsCard(props) {
       const t = props.t
       const [tick, setTick] = useState(0)
+      /* Collapse state of the card shell (the li card on the Settings → Plugins
+         seat). The plugin-page seat (props.view === 'page') renders flat. */
+      const [openCard, setOpenCard] = useState(false)
       const [pending, setPending] = useState({})
       const [note, setNote] = useState('')
       /* The three AI-commit settings are free text, so they are drafted locally
@@ -5100,9 +5145,29 @@ window.__ModuleLoader__.load({
         }
       }, [])
       void tick
-      const head = E('div', { className: 'dig-settings-head' },
-        E('div', { className: 'dig-settings-title' }, t('settings.rail.title')),
-        E('div', { className: 'dig-settings-hint' }, t('settings.rail.hint')))
+      /* Card shell, shared by both seats — a visual twin of the pc-card /
+         dl-card / gb-card pattern in dsh-ptc-cordis-preset, dsh-agent-lang and
+         dsh-gitbash-shell: a collapsible li card on the Settings → Plugins
+         seat, a flat page card on the plugin-page seat. Title + description
+         come from the settings.card.* dictionary keys (every locale). */
+      const pageView = props.view === 'page'
+      const cardHead = E('span', { className: 'dig-card-head-text' },
+        E('span', { className: 'dig-card-name' }, t('settings.card.title')),
+        E('span', { className: 'dig-card-desc' }, t('settings.card.desc')))
+      const wrapCard = (body) => {
+        if (pageView) return E('div', { className: 'dig-card dig-card-page' },
+          E('div', { className: 'dig-card-header dig-card-header-flat' }, cardHead), body)
+        return E('li', { className: 'dig-card' + (openCard ? ' dig-card-open' : '') },
+          E('button', {
+            type: 'button',
+            className: 'dig-card-header',
+            'aria-expanded': openCard,
+            onClick: () => setOpenCard(!openCard),
+          }, cardHead,
+            E('span', { className: 'dig-card-chevron' + (openCard ? ' dig-card-chevron-open' : '') },
+              E(Icon, { name: 'chevron', size: 12 }))),
+          openCard ? body : null)
+      }
       let snapshot = null
       try { snapshot = scope === null || scope === undefined ? null : scope.getSnapshot() } catch (error) { void error }
       const status = snapshot === null || snapshot === undefined || typeof snapshot.status !== 'string' ? 'absent' : snapshot.status
@@ -5130,8 +5195,8 @@ window.__ModuleLoader__.load({
       // Switches exist only where they can actually write: a host that does not
       // serve this entry's settings gets a sentence instead of dead controls.
       if (status !== 'ready' || values === null) {
-        return E('div', { className: 'dig-settings', 'data-settings-status': status }, head,
-          E('div', { className: 'dig-settings-note' }, t('settings.rail.unavailable')))
+        return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': status },
+          E('div', { className: 'dig-settings-note' }, t('settings.rail.unavailable'))))
       }
       const config = railConfigOfValues(values)
       /* A toggle is a host round trip, so the switch would snap back to the old
@@ -5145,7 +5210,8 @@ window.__ModuleLoader__.load({
       /* A host that serves the document but refuses writes gets disabled switches
          and a sentence, not controls that silently do nothing. */
       const readOnly = snapshot.writable !== true
-      return E('div', { className: 'dig-settings', 'data-settings-status': status, 'data-settings-readonly': readOnly === true ? 'true' : 'false' }, head,
+      return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': status, 'data-settings-readonly': readOnly === true ? 'true' : 'false' },
+        E('div', { className: 'dig-settings-hint' }, t('settings.rail.hint')),
         E('div', { className: readOnly === true ? 'dig-settings-note' : 'dig-settings-note dig-settings-note-hidden', 'data-settings-readonly-note': '' }, t('settings.rail.readonly')),
         note === '' ? null : E('div', { className: 'dig-settings-error', 'data-settings-error': '' }, note),
         E('div', { className: 'dig-settings-list' }, RAIL_SPECS.map((spec) => {
@@ -5199,7 +5265,7 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
         textRow('commitModel', 'settings.commit.model', 'settings.commit.modelHint', 120, false),
         textRow('commitReasoning', 'settings.commit.reasoning', 'settings.commit.reasoningHint', 60, false),
-        textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true))
+        textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true)))
     }
 
     function RailSettings(props) {
@@ -7219,6 +7285,21 @@ window.__ModuleLoader__.load({
       // their own width, and their text wraps inside that box instead of clipping.
       // The settings card (the host's plugin page renders it inside its own
       // section): one row per rail action, themed entirely by tokens.
+      // The card shell below is the visual twin of the pc-card / dl-card /
+      // gb-card pattern the sibling plugins draw.
+      '.dig-card{list-style:none;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-3);transition:border-color .16s,background .16s}',
+      '.dig-card:hover{border-color:var(--dsw-alias-label-dimmed)}',
+      '.dig-card.dig-card-open{background:var(--dsw-alias-bg-layer-2);border-color:var(--dsw-alias-label-dimmed)}',
+      '.dig-card-header{width:100%;appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--dsw-radius-md,12px)}',
+      '.dig-card-header:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-2px}',
+      '.dig-card-header-flat{cursor:default}',
+      '.dig-card-head-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}',
+      '.dig-card-name{font-size:15px;font-weight:600;line-height:1.4;color:var(--dsw-alias-label-primary)}',
+      '.dig-card-desc{font-size:13px;line-height:1.5;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-card-chevron{flex:none;display:inline-flex;color:var(--dsw-alias-label-tertiary);transition:transform .16s}',
+      '.dig-card-chevron.dig-card-chevron-open{transform:rotate(180deg)}',
+      '.dig-card-body{padding:8px 16px 16px}',
+      '.dig-card-page{max-width:640px}',
       '.dig-settings{display:flex;flex-direction:column;gap:8px;min-width:0}',
       '.dig-settings-head{display:flex;flex-direction:column;gap:2px}',
       '.dig-settings-title{font-weight:600;color:var(--dsw-alias-label-primary)}',

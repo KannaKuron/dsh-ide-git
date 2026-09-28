@@ -3,6 +3,23 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.10.0 — 2026-09-28
+
+**类型**:feat(设置卡对齐生态视觉)
+
+- **设置卡卡片壳**:设置座位此前渲染的是裸表单(标题 + 控件直接平铺),与生态内
+  dsh-ptc-cordis-preset / dsh-agent-lang / dsh-gitbash-shell 的折叠卡(pc-card /
+  dl-card / gb-card 模式)差异明显。现在同一卡片组件按座位分形态:
+  - 设置列表座位渲染**折叠卡**(标题 + 描述 + chevron,默认收起,展开后是动作条勾选
+    与 AI 提交信息);
+  - 插件详情页(`view === 'page'`)渲染**带标题的平铺卡片**(圆角边框卡 + 卡名
+    「Git 工具窗口设置」+ 描述行),与官方详情页的插件卡形态一致。
+- 新增 `settings.card.title` / `settings.card.desc` 两组文案键,zh / en 与 19 门
+  LOCALES 全量同步(冒烟逐门键集对齐通过)。
+- CSS 纪律:卡片壳 radius 全部走 `--dsw-radius-*` token(冒烟守卫抓下一次裸 `12px`)。
+- 验证:ssr-check 三场景通过;隔离实例(独立 DSH_HOME + 3099 端口)真机截图确认
+  详情页卡片壳渲染,验证后实例已清理。
+
 ## v0.9.0 — 2026-09-26
 
 **类型**:feat(AI 写提交信息,issue #6)+ fix(独立验收抓出的三个缺陷)
