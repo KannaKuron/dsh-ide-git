@@ -446,9 +446,16 @@ async function withServices(llm, sessions, run) {
 }
 
 const chunksOf = (list) => (async function* generate() { for (const chunk of list) yield chunk })()
-const fakeLlm = (chunks, seen) => ({
+/* The default capability answer mirrors a real DeepSeek route: off and high
+   efforts, high as the adapter default — the exact combination issue #7 tripped
+   over (an unset effort resolves to reasoning ON, and the old hardcoded 512
+   budget covered reasoning + message together). */
+const fakeLlm = (chunks, seen, info) => ({
   listProviders: () => [{ id: 'deepseek-official', name: 'DeepSeek' }],
   listModels: async (provider) => (provider === 'deepseek-official' ? [{ provider, id: 'deepseek-flash', name: 'Flash' }] : []),
+  resolveModelInfo: async (provider, model) => (info === undefined
+    ? { provider, id: model, name: model, reasoning: { efforts: [{ id: 'off', name: 'Off' }, { id: 'high', name: 'High' }], defaultEffort: 'high' } }
+    : info),
   stream: (options) => { if (seen !== undefined) seen.push(options); return chunksOf(chunks) },
 })
 const fakeSessions = (config) => ({ list: () => [{ id: 'sess-1', requestHeader: () => ({ config }) }] })
@@ -474,6 +481,11 @@ test('commit-message: the accepted stream decides success, never silence', async
   assert.ok(!seen[0].system.includes('Conventional Commits'), 'a user instruction must not become the system prompt')
   assert.equal(seen[0].provider, 'deepseek-official')
   assert.equal(seen[0].model, 'deepseek-flash')
+  // Issue #7: the unset default asks for no reasoning, and the output cap is
+  // the model's own configuration, never a hardcoded number.
+  assert.equal(seen[0].reasoningEffort, 'off', 'an unset effort asks for off when the route offers it')
+  assert.equal(seen[0].maxTokens, undefined, 'no hardcoded output cap is sent')
+  assert.equal(result.body.data.reasoningEffort, 'off', 'the response reports the effort actually sent')
 })
 
 test('commit-message: the user prompt is appended as data and capped', async () => {
@@ -504,6 +516,13 @@ test('commit-message: aborted, truncated and finish-less streams all fail loud',
   const cut = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: 'feat: half' }, { type: 'finish', reason: { kind: 'max-tokens' } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
   assert.equal(cut.status, 502)
   assert.equal(cut.body.error.code, 'llm-unfinished')
+  /* Issue #7's exact signature: the budget (reasoning included) ran out
+     mid-thought, so there is no message text at all — and the failure says
+     what happened instead of a bare finish kind. */
+  const burnt = await withServices(fakeLlm([{ type: 'reasoning-delta', index: 0, text: 'thinking and thinking' }, { type: 'finish', reason: { kind: 'max-tokens' } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(burnt.status, 502)
+  assert.equal(burnt.body.error.code, 'llm-unfinished')
+  assert.match(burnt.body.error.message, /reasoning spent the whole output budget/, 'the diagnosis names the reasoning burn')
   const silent = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: 'feat: no finish' }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
   assert.equal(silent.status, 502)
   assert.equal(silent.body.error.code, 'llm-no-finish')
@@ -537,6 +556,82 @@ test('commit-message: no session route, unknown provider and unknown model are r
   const badModel = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 's', model: 'deepseek-official/nope' }))
   assert.equal(badModel.body.error.code, 'unknown-model')
   assert.match(badModel.body.error.message, /deepseek-flash/, 'the refusal names a model that does exist')
+})
+
+test('commit-message: the reasoning default is off when offered, and never assumed', async () => {
+  writeFileSync(join(repo, 'ai-effort.txt'), 'reasoning default probe\n')
+  git('add', 'ai-effort.txt')
+  // Offered -> asked for off; the cap stays the model's own configuration.
+  {
+    const seen = []
+    const llm = fakeLlm([{ type: 'text-delta', index: 0, text: 'chore: x' }, { type: 'finish', reason: { kind: 'stop' } }], seen)
+    const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+    assert.equal(result.status, 200, JSON.stringify(result.body))
+    assert.equal(seen[0].reasoningEffort, 'off')
+    assert.equal(seen[0].maxTokens, undefined)
+  }
+  // Not offered on the route -> nothing sent: the adapter default stands (a
+  // blind 'off' would be rejected by the runtime's efforts validation).
+  {
+    const seen = []
+    const llm = fakeLlm([{ type: 'text-delta', index: 0, text: 'chore: x' }, { type: 'finish', reason: { kind: 'stop' } }], seen, { provider: 'deepseek-official', id: 'deepseek-flash', name: 'Flash', reasoning: { efforts: [{ id: 'high', name: 'High' }] } })
+    const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+    assert.equal(result.status, 200, JSON.stringify(result.body))
+    assert.equal(seen[0].reasoningEffort, undefined, 'no off on the route: the effort is left to the adapter')
+    assert.equal(result.body.data.reasoningEffort, null)
+  }
+  // The user's explicit choice always wins.
+  {
+    const seen = []
+    const llm = fakeLlm([{ type: 'text-delta', index: 0, text: 'chore: x' }, { type: 'finish', reason: { kind: 'stop' } }], seen)
+    const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1', reasoningEffort: 'low' }))
+    assert.equal(result.status, 200, JSON.stringify(result.body))
+    assert.equal(seen[0].reasoningEffort, 'low', 'the explicit effort wins')
+    assert.equal(result.body.data.reasoningEffort, 'low')
+  }
+  // A capability lookup that fails is a preference that could not be applied,
+  // never a failed generation.
+  {
+    const seen = []
+    const llm = {
+      listProviders: () => [{ id: 'deepseek-official', name: 'DeepSeek' }],
+      listModels: async () => [],
+      resolveModelInfo: async () => { throw new Error('capability lookup down') },
+      stream: (options) => { seen.push(options); return chunksOf([{ type: 'text-delta', index: 0, text: 'chore: x' }, { type: 'finish', reason: { kind: 'stop' } }]) },
+    }
+    const result = await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+    assert.equal(result.status, 200, JSON.stringify(result.body))
+    assert.equal(seen[0].reasoningEffort, undefined, 'a failed lookup leaves the effort to the adapter')
+  }
+})
+
+test('commit-models and commit-efforts feed the settings card pickers', async () => {
+  const catalog = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-models', {}))
+  assert.equal(catalog.status, 200, JSON.stringify(catalog.body))
+  assert.equal(catalog.body.data.providers.length, 1)
+  assert.equal(catalog.body.data.providers[0].id, 'deepseek-official')
+  assert.equal(catalog.body.data.providers[0].name, 'DeepSeek')
+  assert.deepEqual(catalog.body.data.providers[0].models.map((row) => row.id), ['deepseek-flash'])
+  const efforts = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-efforts', { model: 'deepseek-official/deepseek-flash' }))
+  assert.equal(efforts.status, 200, JSON.stringify(efforts.body))
+  assert.deepEqual(efforts.body.data.efforts.map((row) => row.id), ['off', 'high'])
+  assert.equal(efforts.body.data.defaultEffort, 'high')
+  const badShape = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-efforts', { model: 'nope' }))
+  assert.equal(badShape.status, 400)
+  assert.match(badShape.body.error.message, /provider\/model/)
+  const badProvider = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-efforts', { model: 'ghost/x' }))
+  assert.equal(badProvider.body.error.code, 'unknown-provider')
+  /* The picker is a convenience, not a gate: a capability lookup that fails
+     answers an EMPTY list (the browser keeps its text field), not an error. */
+  const broken = {
+    listProviders: () => [{ id: 'deepseek-official', name: 'DeepSeek' }],
+    listModels: async () => [],
+    resolveModelInfo: async () => { throw new Error('capability lookup down') },
+    stream: () => chunksOf([]),
+  }
+  const quiet = await withServices(broken, fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-efforts', { model: 'deepseek-official/deepseek-flash' }))
+  assert.equal(quiet.status, 200, JSON.stringify(quiet.body))
+  assert.deepEqual(quiet.body.data.efforts, [])
 })
 
 test('commit-message: a host without llm/sessions answers no-host-service instead of hanging', async () => {

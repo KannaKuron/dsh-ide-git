@@ -167,8 +167,11 @@ window.__ModuleLoader__.load({
       'settings.commit.title': 'AI 提交信息',
       'settings.commit.model': '使用的模型',
       'settings.commit.modelHint': '留空 = 跟随当前会话(provider/model)',
+      'settings.commit.modelFollow': '跟随当前会话',
       'settings.commit.reasoning': '思考强度',
-      'settings.commit.reasoningHint': '留空 = 模型默认',
+      'settings.commit.reasoningHint': '留空 = 不思考',
+      'settings.commit.reasoningDefault': '不思考(默认)',
+      'settings.commit.reasoningFollowHint': '跟随会话时固定不思考;选择固定模型后可再选思考强度',
       'settings.commit.prompt': '补充提示词',
       'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超过 72 字符',
       'settings.commit.tooLong': '超过 {n} 个字符的部分不会保存',
@@ -352,8 +355,11 @@ window.__ModuleLoader__.load({
       'settings.commit.title': 'AI commit message',
       'settings.commit.model': 'Model',
       'settings.commit.modelHint': 'Empty = follow this session (provider/model)',
+      'settings.commit.modelFollow': 'Follow the current session',
       'settings.commit.reasoning': 'Reasoning effort',
-      'settings.commit.reasoningHint': 'Empty = the model\'s default',
+      'settings.commit.reasoningHint': 'Empty = no reasoning',
+      'settings.commit.reasoningDefault': 'No reasoning (default)',
+      'settings.commit.reasoningFollowHint': 'Following the session always uses no reasoning; pick a fixed model to choose an effort',
       'settings.commit.prompt': 'Extra instructions',
       'settings.commit.promptHint': 'e.g. Conventional Commits, Chinese subject, at most 72 characters',
       'settings.commit.tooLong': 'Only the first {n} characters are saved',
@@ -545,8 +551,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用嘅模型',
         'settings.commit.modelHint': '留空 = 跟隨當前對話(provider/model)',
+        'settings.commit.modelFollow': '跟隨當前對話',
         'settings.commit.reasoning': '思考強度',
-        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.reasoningHint': '留空 = 不思考',
+        'settings.commit.reasoningDefault': '不思考(預設)',
+        'settings.commit.reasoningFollowHint': '跟隨對話時固定不思考;選擇固定模型後可再選思考強度',
         'settings.commit.prompt': '補充提示詞',
         'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,唔超過 72 字',
         'settings.commit.tooLong': '超過 {n} 個字嘅部分唔會儲存',
@@ -730,8 +739,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用的模型',
         'settings.commit.modelHint': '留空 = 跟隨目前工作階段(provider/model)',
+        'settings.commit.modelFollow': '跟隨目前工作階段',
         'settings.commit.reasoning': '思考強度',
-        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.reasoningHint': '留空 = 不思考',
+        'settings.commit.reasoningDefault': '不思考(預設)',
+        'settings.commit.reasoningFollowHint': '跟隨工作階段時固定不思考;選擇固定模型後可再選思考強度',
         'settings.commit.prompt': '補充提示詞',
         'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超過 72 字元',
         'settings.commit.tooLong': '超過 {n} 個字元的部分不會儲存',
@@ -915,8 +927,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用的模型',
         'settings.commit.modelHint': '留空 = 跟隨目前工作階段(provider/model)',
+        'settings.commit.modelFollow': '跟隨目前工作階段',
         'settings.commit.reasoning': '思考強度',
-        'settings.commit.reasoningHint': '留空 = 模型預設',
+        'settings.commit.reasoningHint': '留空 = 不思考',
+        'settings.commit.reasoningDefault': '不思考(預設)',
+        'settings.commit.reasoningFollowHint': '跟隨工作階段時固定不思考;選擇固定模型後可再選思考強度',
         'settings.commit.prompt': '補充提示詞',
         'settings.commit.promptHint': '例如:用 Conventional Commits,subject 用中文,不超過 72 字元',
         'settings.commit.tooLong': '超過 {n} 個字元的部分不會儲存',
@@ -1100,8 +1115,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI コミットメッセージ',
         'settings.commit.model': '使用するモデル',
         'settings.commit.modelHint': '空欄 = 現在のセッションに従う(provider/model)',
+        'settings.commit.modelFollow': '現在のセッションに従う',
         'settings.commit.reasoning': '思考の強度',
-        'settings.commit.reasoningHint': '空欄 = モデルの既定値',
+        'settings.commit.reasoningHint': '空欄 = 思考なし',
+        'settings.commit.reasoningDefault': '思考なし(既定)',
+        'settings.commit.reasoningFollowHint': 'セッション追従では常に思考なし。固定モデルを選ぶと強度を選べます',
         'settings.commit.prompt': '追加の指示',
         'settings.commit.promptHint': '例:Conventional Commits、subject は日本語、72 文字以内',
         'settings.commit.tooLong': '{n} 文字を超える部分は保存されません',
@@ -1285,8 +1303,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI 커밋 메시지',
         'settings.commit.model': '사용할 모델',
         'settings.commit.modelHint': '비우면 현재 세션을 따릅니다(provider/model)',
+        'settings.commit.modelFollow': '현재 세션 따르기',
         'settings.commit.reasoning': '추론 강도',
-        'settings.commit.reasoningHint': '비우면 모델 기본값',
+        'settings.commit.reasoningHint': '비워 두면 추론 없음',
+        'settings.commit.reasoningDefault': '추론 없음(기본값)',
+        'settings.commit.reasoningFollowHint': '세션을 따를 때는 항상 추론을 건너뜁니다. 고정 모델을 선택하면 강도를 고를 수 있습니다',
         'settings.commit.prompt': '추가 지시',
         'settings.commit.promptHint': '예: Conventional Commits, 제목은 한국어, 72자 이내',
         'settings.commit.tooLong': '{n}자를 넘는 부분은 저장되지 않습니다',
@@ -1470,8 +1491,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'KI-Commit-Nachricht',
         'settings.commit.model': 'Modell',
         'settings.commit.modelHint': 'Leer = dieser Sitzung folgen (provider/model)',
+        'settings.commit.modelFollow': 'Dieser Sitzung folgen',
         'settings.commit.reasoning': 'Denkaufwand',
-        'settings.commit.reasoningHint': 'Leer = Standard des Modells',
+        'settings.commit.reasoningHint': 'Leer = kein Denken',
+        'settings.commit.reasoningDefault': 'Kein Denken (Standard)',
+        'settings.commit.reasoningFollowHint': 'Beim Folgen der Sitzung wird nie gedacht; wähle ein festes Modell, um eine Stufe zu wählen',
         'settings.commit.prompt': 'Zusätzliche Anweisungen',
         'settings.commit.promptHint': 'z. B. Conventional Commits, Betreff auf Deutsch, höchstens 72 Zeichen',
         'settings.commit.tooLong': 'Nur die ersten {n} Zeichen werden gespeichert',
@@ -1655,8 +1679,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Message de commit par IA',
         'settings.commit.model': 'Modèle',
         'settings.commit.modelHint': 'Vide = suivre cette session (provider/model)',
+        'settings.commit.modelFollow': 'Suivre cette session',
         'settings.commit.reasoning': 'Effort de raisonnement',
-        'settings.commit.reasoningHint': 'Vide = valeur par défaut du modèle',
+        'settings.commit.reasoningHint': 'Vide = sans raisonnement',
+        'settings.commit.reasoningDefault': 'Sans raisonnement (par défaut)',
+        'settings.commit.reasoningFollowHint': 'En suivant la session, jamais de raisonnement ; choisissez un modèle fixe pour en choisir l\'intensité',
         'settings.commit.prompt': 'Instructions supplémentaires',
         'settings.commit.promptHint': 'ex. Conventional Commits, sujet en français, 72 caractères maximum',
         'settings.commit.tooLong': 'Seuls les {n} premiers caractères sont enregistrés',
@@ -1840,8 +1867,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Сообщение коммита от ИИ',
         'settings.commit.model': 'Модель',
         'settings.commit.modelHint': 'Пусто = как в этой сессии (provider/model)',
+        'settings.commit.modelFollow': 'Как в этой сессии',
         'settings.commit.reasoning': 'Усилие рассуждения',
-        'settings.commit.reasoningHint': 'Пусто = по умолчанию у модели',
+        'settings.commit.reasoningHint': 'Пусто = без размышлений',
+        'settings.commit.reasoningDefault': 'Без размышлений (по умолчанию)',
+        'settings.commit.reasoningFollowHint': 'При следовании за сессией размышления всегда выключены; выберите фиксированную модель, чтобы выбрать уровень',
         'settings.commit.prompt': 'Дополнительные указания',
         'settings.commit.promptHint': 'напр. Conventional Commits, тема по-русски, до 72 символов',
         'settings.commit.tooLong': 'Сохраняются только первые {n} символов',
@@ -2025,8 +2055,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Mensagem de commit por IA',
         'settings.commit.model': 'Modelo',
         'settings.commit.modelHint': 'Vazio = seguir esta sessão (provider/model)',
+        'settings.commit.modelFollow': 'Seguir esta sessão',
         'settings.commit.reasoning': 'Esforço de raciocínio',
-        'settings.commit.reasoningHint': 'Vazio = padrão do modelo',
+        'settings.commit.reasoningHint': 'Vazio = sem raciocínio',
+        'settings.commit.reasoningDefault': 'Sem raciocínio (padrão)',
+        'settings.commit.reasoningFollowHint': 'Ao seguir a sessão, o raciocínio fica sempre desativado; escolha um modelo fixo para escolher o nível',
         'settings.commit.prompt': 'Instruções extras',
         'settings.commit.promptHint': 'ex.: Conventional Commits, assunto em português, até 72 caracteres',
         'settings.commit.tooLong': 'Só os primeiros {n} caracteres são salvos',
@@ -2210,8 +2243,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Messaggio di commit con IA',
         'settings.commit.model': 'Modello',
         'settings.commit.modelHint': 'Vuoto = segui questa sessione (provider/model)',
+        'settings.commit.modelFollow': 'Segui questa sessione',
         'settings.commit.reasoning': 'Sforzo di ragionamento',
-        'settings.commit.reasoningHint': 'Vuoto = predefinito del modello',
+        'settings.commit.reasoningHint': 'Vuoto = senza ragionamento',
+        'settings.commit.reasoningDefault': 'Senza ragionamento (predefinito)',
+        'settings.commit.reasoningFollowHint': 'Seguendo la sessione il ragionamento resta sempre spento; scegli un modello fisso per sceglierne il livello',
         'settings.commit.prompt': 'Istruzioni aggiuntive',
         'settings.commit.promptHint': 'es. Conventional Commits, oggetto in italiano, max 72 caratteri',
         'settings.commit.tooLong': 'Solo i primi {n} caratteri vengono salvati',
@@ -2395,8 +2431,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI-commitbericht',
         'settings.commit.model': 'Model',
         'settings.commit.modelHint': 'Leeg = deze sessie volgen (provider/model)',
+        'settings.commit.modelFollow': 'Deze sessie volgen',
         'settings.commit.reasoning': 'Redeneerinspanning',
-        'settings.commit.reasoningHint': 'Leeg = standaard van het model',
+        'settings.commit.reasoningHint': 'Leeg = geen redeneren',
+        'settings.commit.reasoningDefault': 'Geen redeneren (standaard)',
+        'settings.commit.reasoningFollowHint': 'Bij het volgen van de sessie wordt nooit geredeneerd; kies een vast model om een niveau te kiezen',
         'settings.commit.prompt': 'Extra instructies',
         'settings.commit.promptHint': 'bv. Conventional Commits, onderwerp in het Nederlands, max. 72 tekens',
         'settings.commit.tooLong': 'Alleen de eerste {n} tekens worden opgeslagen',
@@ -2580,8 +2619,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Wiadomość commita od AI',
         'settings.commit.model': 'Model',
         'settings.commit.modelHint': 'Puste = zgodnie z tą sesją (provider/model)',
+        'settings.commit.modelFollow': 'Zgodnie z tą sesją',
         'settings.commit.reasoning': 'Poziom rozumowania',
-        'settings.commit.reasoningHint': 'Puste = domyślne modelu',
+        'settings.commit.reasoningHint': 'Puste = bez rozumowania',
+        'settings.commit.reasoningDefault': 'Bez rozumowania (domyślnie)',
+        'settings.commit.reasoningFollowHint': 'Podążanie za sesją zawsze pomija rozumowanie; wybierz stały model, aby wybrać poziom',
         'settings.commit.prompt': 'Dodatkowe instrukcje',
         'settings.commit.promptHint': 'np. Conventional Commits, temat po polsku, maks. 72 znaki',
         'settings.commit.tooLong': 'Zapisywane jest tylko pierwszych {n} znaków',
@@ -2765,8 +2807,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI-commitmeddelande',
         'settings.commit.model': 'Modell',
         'settings.commit.modelHint': 'Tomt = följ denna session (provider/model)',
+        'settings.commit.modelFollow': 'Följ denna session',
         'settings.commit.reasoning': 'Resonemangsinsats',
-        'settings.commit.reasoningHint': 'Tomt = modellens standard',
+        'settings.commit.reasoningHint': 'Tomt = inget resonemang',
+        'settings.commit.reasoningDefault': 'Inget resonemang (standard)',
+        'settings.commit.reasoningFollowHint': 'När sessionen följs används aldrig resonemang; välj en fast modell för att välja en nivå',
         'settings.commit.prompt': 'Extra instruktioner',
         'settings.commit.promptHint': 't.ex. Conventional Commits, ämne på svenska, högst 72 tecken',
         'settings.commit.tooLong': 'Endast de första {n} tecknen sparas',
@@ -2950,8 +2995,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI commit mesajı',
         'settings.commit.model': 'Model',
         'settings.commit.modelHint': 'Boş = bu oturumu izle (provider/model)',
+        'settings.commit.modelFollow': 'Bu oturumu izle',
         'settings.commit.reasoning': 'Düşünme yoğunluğu',
-        'settings.commit.reasoningHint': 'Boş = modelin varsayılanı',
+        'settings.commit.reasoningHint': 'Boş = akıl yürütme yok',
+        'settings.commit.reasoningDefault': 'Akıl yürütme yok (varsayılan)',
+        'settings.commit.reasoningFollowHint': 'Oturumu izlerken akıl yürütme her zaman kapalıdır; bir düzey seçmek için sabit bir model seçin',
         'settings.commit.prompt': 'Ek yönergeler',
         'settings.commit.promptHint': 'örn. Conventional Commits, konu Türkçe, en fazla 72 karakter',
         'settings.commit.tooLong': 'Yalnızca ilk {n} karakter kaydedilir',
@@ -3135,8 +3183,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Pesan commit AI',
         'settings.commit.model': 'Model',
         'settings.commit.modelHint': 'Kosong = ikuti sesi ini (provider/model)',
+        'settings.commit.modelFollow': 'Ikuti sesi ini',
         'settings.commit.reasoning': 'Intensitas penalaran',
-        'settings.commit.reasoningHint': 'Kosong = bawaan model',
+        'settings.commit.reasoningHint': 'Kosong = tanpa penalaran',
+        'settings.commit.reasoningDefault': 'Tanpa penalaran (bawaan)',
+        'settings.commit.reasoningFollowHint': 'Saat mengikuti sesi, penalaran selalu nonaktif; pilih model tetap untuk memilih tingkat',
         'settings.commit.prompt': 'Instruksi tambahan',
         'settings.commit.promptHint': 'mis. Conventional Commits, subjek bahasa Indonesia, maks 72 karakter',
         'settings.commit.tooLong': 'Hanya {n} karakter pertama yang disimpan',
@@ -3320,8 +3371,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'Thông điệp commit do AI viết',
         'settings.commit.model': 'Mô hình',
         'settings.commit.modelHint': 'Trống = theo phiên này (provider/model)',
+        'settings.commit.modelFollow': 'Theo phiên này',
         'settings.commit.reasoning': 'Mức suy luận',
-        'settings.commit.reasoningHint': 'Trống = mặc định của mô hình',
+        'settings.commit.reasoningHint': 'Để trống = không suy luận',
+        'settings.commit.reasoningDefault': 'Không suy luận (mặc định)',
+        'settings.commit.reasoningFollowHint': 'Khi theo phiên, suy luận luôn tắt; chọn một mô hình cố định để chọn mức',
         'settings.commit.prompt': 'Chỉ dẫn bổ sung',
         'settings.commit.promptHint': 'ví dụ Conventional Commits, tiêu đề tiếng Việt, tối đa 72 ký tự',
         'settings.commit.tooLong': 'Chỉ {n} ký tự đầu được lưu',
@@ -3505,8 +3559,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'رسالة إيداع بالذكاء الاصطناعي',
         'settings.commit.model': 'النموذج',
         'settings.commit.modelHint': 'فارغ = اتبع هذه الجلسة (provider/model)',
+        'settings.commit.modelFollow': 'اتبع هذه الجلسة',
         'settings.commit.reasoning': 'مستوى التفكير',
-        'settings.commit.reasoningHint': 'فارغ = الافتراضي للنموذج',
+        'settings.commit.reasoningHint': 'فارغ = بدون استدلال',
+        'settings.commit.reasoningDefault': 'بدون استدلال (افتراضي)',
+        'settings.commit.reasoningFollowHint': 'عند اتباع الجلسة يكون الاستدلال معطلًا دائمًا؛ اختر نموذجًا ثابتًا لاختيار المستوى',
         'settings.commit.prompt': 'تعليمات إضافية',
         'settings.commit.promptHint': 'مثال: Conventional Commits، والعنوان بالعربية، وبحد أقصى 72 حرفًا',
         'settings.commit.tooLong': 'يُحفظ أول {n} حرفًا فقط',
@@ -3690,8 +3747,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'AI कमिट संदेश',
         'settings.commit.model': 'मॉडल',
         'settings.commit.modelHint': 'खाली = इस सत्र का अनुसरण करें (provider/model)',
+        'settings.commit.modelFollow': 'इस सत्र का पालन करें',
         'settings.commit.reasoning': 'तर्क की तीव्रता',
-        'settings.commit.reasoningHint': 'खाली = मॉडल का डिफ़ॉल्ट',
+        'settings.commit.reasoningHint': 'खाली = कोई तर्क नहीं',
+        'settings.commit.reasoningDefault': 'कोई तर्क नहीं (डिफ़ॉल्ट)',
+        'settings.commit.reasoningFollowHint': 'सत्र का पालन करते समय तर्क हमेशा बंद रहता है; स्तर चुनने के लिए एक निश्चित मॉडल चुनें',
         'settings.commit.prompt': 'अतिरिक्त निर्देश',
         'settings.commit.promptHint': 'जैसे Conventional Commits, विषय हिंदी में, अधिकतम 72 अक्षर',
         'settings.commit.tooLong': 'केवल पहले {n} अक्षर सहेजे जाते हैं',
@@ -3875,8 +3935,11 @@ window.__ModuleLoader__.load({
         'settings.commit.title': 'ข้อความคอมมิตโดย AI',
         'settings.commit.model': 'โมเดล',
         'settings.commit.modelHint': 'ว่าง = ตามเซสชันนี้ (provider/model)',
+        'settings.commit.modelFollow': 'ตามเซสชันนี้',
         'settings.commit.reasoning': 'ระดับการใช้เหตุผล',
-        'settings.commit.reasoningHint': 'ว่าง = ค่าเริ่มต้นของโมเดล',
+        'settings.commit.reasoningHint': 'เว้นว่าง = ไม่ใช้เหตุผล',
+        'settings.commit.reasoningDefault': 'ไม่ใช้เหตุผล (ค่าเริ่มต้น)',
+        'settings.commit.reasoningFollowHint': 'เมื่อตามเซสชันจะไม่ใช้เหตุผลเสมอ เลือกโมเดลคงที่เพื่อเลือกระดับ',
         'settings.commit.prompt': 'คำสั่งเพิ่มเติม',
         'settings.commit.promptHint': 'เช่น Conventional Commits หัวข้อเป็นภาษาไทย ไม่เกิน 72 ตัวอักษร',
         'settings.commit.tooLong': 'บันทึกเพียง {n} ตัวอักษรแรก',
@@ -4044,6 +4107,48 @@ window.__ModuleLoader__.load({
     }
 
     /* ============================== storage ============================== */
+
+    /* ---- ai commit pickers (issue #7): the model catalog and per-model
+       reasoning efforts, served by the host's commit-models / commit-efforts
+       routes. Cached for a short window so the settings card can mount twice
+       without asking twice; a failed or empty lookup degrades the row to its
+       plain text field (the hand-typed value keeps working: routing accepts
+       unlisted ids), never to an error. ---- */
+    const PICKER_TTL_MS = 30_000
+    let commitCatalogCache = null
+    let commitCatalogFlight = null
+    const commitEffortsCache = new Map()
+
+    function pickerProvidersOf(catalog) {
+      if (catalog === null || typeof catalog !== 'object' || !Array.isArray(catalog.providers)) return null
+      return catalog.providers
+    }
+
+    async function fetchCommitCatalog() {
+      if (commitCatalogCache !== null && Date.now() - commitCatalogCache.at < PICKER_TTL_MS) {
+        return pickerProvidersOf(commitCatalogCache.value)
+      }
+      if (commitCatalogFlight !== null) return commitCatalogFlight
+      commitCatalogFlight = request('commit-models', {})
+        .then(
+          (value) => {
+            commitCatalogCache = { at: Date.now(), value: value }
+            return pickerProvidersOf(value)
+          },
+          () => null,
+        )
+      commitCatalogFlight.then(() => { commitCatalogFlight = null }, () => { commitCatalogFlight = null })
+      return commitCatalogFlight
+      return commitCatalogFlight
+    }
+
+    async function fetchCommitEfforts(model) {
+      const hit = commitEffortsCache.get(model)
+      if (hit !== undefined && Date.now() - hit.at < PICKER_TTL_MS) return hit.value
+      const value = await request('commit-efforts', { model: model })
+      commitEffortsCache.set(model, { at: Date.now(), value: value })
+      return value
+    }
 
     function readRememberedRepo(sessionId) {
       try {
@@ -5005,6 +5110,12 @@ window.__ModuleLoader__.load({
       /* The three AI-commit settings are free text, so they are drafted locally
          and written on blur / Enter — one write per edit, never one per keystroke. */
       const [textDraft, setTextDraft] = useState({})
+      /* Picker data (issue #7): the model catalog once per mount, and the
+         reasoning efforts of whichever model the settings currently name.
+         null = not answered yet; an empty array = answered with nothing. Both
+         degrade the row to its plain text field, never to an error — a
+         hand-typed value keeps working because routing accepts unlisted ids. */
+      const [pickers, setPickers] = useState({ catalog: null, efforts: null })
       /* The user's latest intent per field, written SYNCHRONOUSLY. React state is
          not enough: two clicks inside one frame would both read the pre-click
          snapshot, so the second click recomputed the same target and the toggle
@@ -5073,6 +5184,32 @@ window.__ModuleLoader__.load({
           setTextDraft((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
         })
       }
+      /* A picker row writes on CHANGE (a select has no blur-edit cycle): the
+         optimistic value lands in the same textDraft the text rows use, so the
+         control does not snap back to the accepted document for the round trip
+         the host needs to echo the write. */
+      const commitSelectField = (field, value) => {
+        if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+        setTextDraft((now) => Object.assign({}, now, { [field]: value }))
+        const outcome = writeRailFields([{ op: 'set', path: [field], value: value }], scope)
+        if (outcome.sent !== true) {
+          setTextDraft((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+          setNote(t(outcome.reason === 'read-only' ? 'settings.rail.readonly' : 'settings.rail.writeFailed'))
+          return
+        }
+        if (outcome.settled === undefined) return
+        void outcome.settled.then((ok) => {
+          if (ok !== true) {
+            setTextDraft((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+            setNote(t('settings.rail.writeFailed'))
+            return
+          }
+          /* The accepted document now carries it: drop the draft so the control
+             shows the Host's own value again — the same contract a text row's
+             blur commit keeps. */
+          setTextDraft((now) => { const copy = Object.assign({}, now); delete copy[field]; return copy })
+        })
+      }
       const textRow = (field, labelKey, hintKey, max, multiline) => {
         const accepted = values[field] === undefined || values[field] === null ? '' : String(values[field])
         const shown = Object.prototype.hasOwnProperty.call(textDraft, field) ? textDraft[field] : accepted
@@ -5089,6 +5226,21 @@ window.__ModuleLoader__.load({
           E('label', { id: id + '-label', className: 'dig-settings-text-label', htmlFor: id }, t(labelKey)),
           multiline === true ? E('textarea', Object.assign({ rows: 3 }, common)) : E('input', Object.assign({ type: 'text' }, common)),
           shown.length >= max ? E('div', { className: 'dig-settings-error' }, fill(t('settings.commit.tooLong'), { n: String(max) })) : null)
+      }
+      /* A picker row: same shell as a text row, but a <select>. `children` are
+         the options (built by the caller); a stored value the list does not
+         carry is injected as its own option, because a controlled select whose
+         value matches no option renders blank and the setting would LOOK lost. */
+      const selectRow = (field, labelKey, value, children, disabled, hint) => {
+        const id = 'dig-' + field
+        return E('div', { className: 'dig-settings-text', key: field },
+          E('label', { id: id + '-label', className: 'dig-settings-text-label', htmlFor: id }, t(labelKey)),
+          E('select', {
+            id: id, className: 'dig-input dig-settings-input', value: value, disabled: disabled === true,
+            'aria-labelledby': id + '-label',
+            onChange: (event) => commitSelectField(field, event.target.value),
+          }, children),
+          hint === null ? null : E('div', { className: 'dig-settings-subnote' }, hint))
       }
       const flush = () => {
         pendingFlush.current = null
@@ -5192,6 +5344,39 @@ window.__ModuleLoader__.load({
           return changed ? next : current
         })
       })
+      /* The picker catalog loads once per mount (cached module-wide); a rejected
+         lookup answers null and the rows simply stay text fields. */
+      useEffect(() => {
+        let alive = true
+        fetchCommitCatalog().then(
+          (providers) => { if (alive === true) setPickers((now) => Object.assign({}, now, { catalog: providers })) },
+          () => { if (alive === true) setPickers((now) => Object.assign({}, now, { catalog: null })) },
+        )
+        return () => { alive = false }
+      }, [])
+      /* The efforts list follows whichever model the settings name — the draft
+         counts too, so the picker reacts to a fresh selection before the host
+         has echoed the write. Following the session has no fixed model, so
+         there is nothing to list (and nothing to ask). */
+      const pickerModel = Object.prototype.hasOwnProperty.call(textDraft, 'commitModel') && typeof textDraft.commitModel === 'string'
+        ? textDraft.commitModel
+        : (values === null ? '' : (values.commitModel === undefined || values.commitModel === null ? '' : String(values.commitModel)))
+      useEffect(() => {
+        let alive = true
+        if (pickerModel === '') {
+          setPickers((now) => (now.efforts === null ? now : Object.assign({}, now, { efforts: null })))
+          return () => { alive = false }
+        }
+        fetchCommitEfforts(pickerModel).then(
+          (value) => {
+            if (alive !== true) return
+            const rows = value !== null && typeof value === 'object' && Array.isArray(value.efforts) ? value.efforts : []
+            setPickers((now) => Object.assign({}, now, { efforts: rows }))
+          },
+          () => { if (alive === true) setPickers((now) => Object.assign({}, now, { efforts: null })) },
+        )
+        return () => { alive = false }
+      }, [pickerModel])
       // Switches exist only where they can actually write: a host that does not
       // serve this entry's settings gets a sentence instead of dead controls.
       if (status !== 'ready' || values === null) {
@@ -5263,8 +5448,51 @@ window.__ModuleLoader__.load({
             E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t(spec.key)))
         })),
         E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
-        textRow('commitModel', 'settings.commit.model', 'settings.commit.modelHint', 120, false),
-        textRow('commitReasoning', 'settings.commit.reasoning', 'settings.commit.reasoningHint', 60, false),
+        (() => {
+          /* The model row is a picker over the host's provider catalog; while
+             the catalog has not answered (or cannot), the row stays the plain
+             text field it always was. */
+          const accepted = values.commitModel === undefined || values.commitModel === null ? '' : String(values.commitModel)
+          const shown = Object.prototype.hasOwnProperty.call(textDraft, 'commitModel') && typeof textDraft.commitModel === 'string' ? textDraft.commitModel : accepted
+          if (Array.isArray(pickers.catalog)) {
+            const listed = pickers.catalog.some((provider) => Array.isArray(provider.models)
+              && provider.models.some((model) => provider.id + '/' + model.id === shown))
+            return selectRow('commitModel', 'settings.commit.model', shown, [
+              E('option', { key: 'follow', value: '' }, t('settings.commit.modelFollow')),
+              shown === '' || listed === true ? null : E('option', { key: 'kept', value: shown }, shown),
+            ].concat(pickers.catalog.map((provider) => E('optgroup', {
+              key: provider.id,
+              label: provider.name === provider.id ? provider.id : provider.name + ' (' + provider.id + ')',
+            }, (Array.isArray(provider.models) ? provider.models : []).map((model) => E('option', {
+              key: model.id, value: provider.id + '/' + model.id,
+            }, model.name === model.id ? model.id : model.name + ' — ' + model.id))))), false, null)
+          }
+          return textRow('commitModel', 'settings.commit.model', 'settings.commit.modelHint', 120, false)
+        })(),
+        (() => {
+          /* The reasoning row follows the model row: following the session has
+             no fixed model, so it is the fixed no-reasoning default (the host
+             asks for "off" for us); a fixed model lists exactly the efforts
+             that route accepts — hand-typing an effort id was issue #7's
+             error-prone path. No list (yet/unavailable) keeps the text field. */
+          if (pickerModel === '') {
+            return selectRow('commitReasoning', 'settings.commit.reasoning', '', [
+              E('option', { key: 'default', value: '' }, t('settings.commit.reasoningDefault')),
+            ], true, t('settings.commit.reasoningFollowHint'))
+          }
+          if (pickers.efforts !== null && pickers.efforts.length > 0) {
+            const accepted = values.commitReasoning === undefined || values.commitReasoning === null ? '' : String(values.commitReasoning)
+            const shown = Object.prototype.hasOwnProperty.call(textDraft, 'commitReasoning') && typeof textDraft.commitReasoning === 'string' ? textDraft.commitReasoning : accepted
+            const listed = pickers.efforts.some((row) => row.id === shown)
+            return selectRow('commitReasoning', 'settings.commit.reasoning', shown, [
+              E('option', { key: 'default', value: '' }, t('settings.commit.reasoningDefault')),
+              shown === '' || listed === true ? null : E('option', { key: 'kept', value: shown }, shown),
+            ].concat(pickers.efforts.map((row) => E('option', {
+              key: row.id, value: row.id,
+            }, row.name === row.id ? row.id : row.name + ' (' + row.id + ')'))), false, null)
+          }
+          return textRow('commitReasoning', 'settings.commit.reasoning', 'settings.commit.reasoningHint', 60, false)
+        })(),
         textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true)))
     }
 
@@ -7307,6 +7535,7 @@ window.__ModuleLoader__.load({
       '.dig-settings-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:400}',
       '.dig-settings-note-hidden{display:none}',
       '.dig-settings-error{color:var(--dsw-alias-state-error-primary);font-weight:400}',
+      '.dig-settings-subnote{color:var(--dsw-alias-label-tertiary);font-weight:400;font-size:12px}',
       '.dig-settings-sub{margin-top:6px;font-weight:600;color:var(--dsw-alias-label-primary)}',
       '.dig-settings-text{display:flex;flex-direction:column;gap:3px;min-width:0}',
       '.dig-settings-text-label{color:var(--dsw-alias-label-secondary);font-weight:400}',

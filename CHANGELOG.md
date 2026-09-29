@@ -3,6 +3,55 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.12.0 — 2026-09-29
+
+**类型**:fix(AI 写提交信息对思考模型必失败,[issue #7](https://github.com/KannaKuron/dsh-ide-git/issues/7))+ feat(模型 / 思考强度下拉)
+
+- **fix(P0,issue #7)AI 写提交信息报 `[llm-unfinished] the model stopped with
+  "max-tokens"`,跟随会话与手填模型都中招**。根因是两个设定相撞:①宿主半硬编码
+  `maxTokens: 512`;②DSH 的 llm 适配器把「未指定思考强度」解析为**思考开启 +
+  high**(llm-deepseek serialize:`reasoningEffort ?? 连接默认 ?? 'high'`),而
+  `max_tokens` 是**思考 + 正文的总输出预算**——high 档思考动辄上千 token,512 在
+  思考阶段就烧光,正文一个字没出即被截断(finish `max-tokens`),插件按 fail-loud
+  抛 `llm-unfinished`。旁证:DSH 会话调用本身不传 maxTokens(适配器回落连接配置,
+  默认 256K,所以会话一切正常);官方 session-title 一次性调用显式
+  `purpose: 'session-title'`,适配器把它硬编码解析为思考 off(官方早已确认一次性
+  小任务要关思考)。修复两半:
+  - **输出上限跟随所选模型配置**:`maxTokens` 不再硬编码——省略时 DSH 运行时自动
+    用 `resolveModelInfo().defaultMaxTokens` 垫底(与会话调用同源)。
+  - **默认不思考**:设置留空时,宿主半先 `resolveModelInfo` 查该路由 efforts,
+    含 `off` 就显式传 `off`(id 读自路由自己的档位表,绝不盲传——运行时会把不在
+    efforts 表里的值判 `UNSUPPORTED_REASONING_EFFORT`);服务面没有该方法 / 查询
+    失败 / 该路由无 off 一律静默退回适配器默认。用户显式选择的档位永远优先。
+- **feat 设置卡「模型」「思考强度」从手填改为下拉**(手填 id 极易拼错,且思考档位
+  取值域随 provider 不同):
+  - 新增只读路由 `commit-models`(各 provider + 模型目录)与 `commit-efforts`(按
+    `provider/model` 查该路由 efforts + 默认档),同走既有信任围栏;
+  - 模型下拉:「跟随当前会话」+ 按 provider 分组的模型;已存的手填值不在目录中时
+    作为独立选项保留显示(catalog 是咨询性的,路由对未列出 id 放行,手填值继续
+    有效);
+  - 思考强度下拉:随所选模型联动列出**该路由实际接受的档位**;「跟随会话」时固定
+    「不思考(默认)」并禁用(附说明文案);目录 / 档位拉不到或为空时该行退化为
+    原手填输入框;
+  - select 选中即写:复用 textDraft 乐观机制,写失败回滚并提示(补齐了初版漏掉的
+    成功后清 draft,否则宿主侧外部改动会被旧 draft 遮蔽)。
+- **诊断升级**:`collectCommitStream` 记录是否出现过 `reasoning-delta`;max-tokens
+  且正文为空且确实烧过思考时,错误从裸 finish kind 升级为「reasoning spent the
+  whole output budget; lower the reasoning effort …」的自助指引;响应的
+  `reasoningEffort` 改为回报**实际生效**档位(用户值 / 'off' / null)。
+- 文案:新增 `settings.commit.modelFollow` / `reasoningDefault` /
+  `reasoningFollowHint` 三键,`reasoningHint` 语义改为「留空 = 不思考」,21 门
+  全量同步(冒烟逐门键集比对通过)。
+- 验证:`npm test` 89/89;api 新增「reasoning default is off when offered, and
+  never assumed」(四分支:提供 off→传 off / 不提供→不传 / 显式 low 优先 /
+  查询失败静默)与「commit-models / commit-efforts」(目录、档位、形状与未知
+  provider 拒绝、查询失败回空列表)两组端到端用例,现有「fail loud」用例补 burnt
+  变体;冒烟守卫重写(无硬编码输出上限、off 探测、burnt 诊断、两条 picker 路由、
+  client 侧下拉文案键);ssr-check 三场景通过。
+- 已知边界:「跟随会话 + 显式指定思考档位」组合暂不支持(跟随会话时档位下拉禁用)
+  ——设置卡没有会话上下文,取不到会话模型的档位表;需要细选档位的用户请选固定
+  模型。
+
 ## v0.11.0 — 2026-09-28
 
 **类型**:chore(清理 0.1.6 以前的兼容:删旧设置座位,宿主下限提高到 0.1.6-alpha.2)

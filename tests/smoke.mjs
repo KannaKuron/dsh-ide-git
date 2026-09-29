@@ -807,6 +807,13 @@ test('the ai commit message keeps the model honest and the input bounded', async
   assert.equal(failed.finish.failure.message, 'no API key')
   const silent = await api.collectCommitStream((async function* generate() { yield { type: 'text-delta', index: 0, text: 'half' } })())
   assert.equal(silent.finish, null, 'a stream without a finish must be distinguishable from a successful one')
+  const thought = await api.collectCommitStream((async function* generate() {
+    yield { type: 'reasoning-delta', index: 0, text: 'thinking about it' }
+    yield { type: 'text-delta', index: 0, text: 'feat: x' }
+    yield { type: 'finish', reason: { kind: 'stop' } }
+  })())
+  assert.equal(thought.sawReasoning, true, 'a reasoning delta is recorded for the max-tokens diagnosis (issue #7)')
+  assert.equal(thought.text, 'feat: x', 'reasoning text never lands in the message')
 
   // 2 — the budget: per-file lines, total bytes, lock files and binaries.
   const long = 'diff --git a/big.txt b/big.txt\n' + Array.from({ length: 200 }, (_, i) => '+line ' + i).join('\n')
@@ -848,7 +855,8 @@ test('the ai commit message keeps the model honest and the input bounded', async
   assert.equal(api.cleanupCommitMessage('"feat: y"'), 'feat: y')
   assert.equal(api.cleanupCommitMessage('feat: z\n\nbody'), 'feat: z\n\nbody')
 
-  // 5 — the route refuses instead of reporting an empty success.
+  // 5 — the route refuses instead of reporting an empty success, and the model
+  // call asks for what a commit message needs.
   assert.match(block, /if \(finish === null \|\| finish === undefined\)/, 'a stream with no finish is refused')
   assert.match(block, /finish\.kind === 'error'/, 'an error finish is a failure')
   assert.match(block, /finish\.kind !== 'stop'/, 'any non-stop finish is surfaced')
@@ -858,7 +866,22 @@ test('the ai commit message keeps the model honest and the input bounded', async
   assert.match(block, /reasoningEffort/, 'the reasoning setting reaches GenerateOptions')
   assert.match(host, /ctx\.inject\(\['llm', 'sessions'\]/, 'llm is injected, never exported as a hard dependency')
   assert.doesNotMatch(host, /export const inject = \[[^\]]*'llm'/, 'a host without llm must still load the plugin')
-  assert.match(host, /options\.reasoningEffort = reasoning/, 'the effort is only sent when set')
+  /* Issue #7: the hardcoded maxTokens 512 plus "an unset effort resolves to
+     reasoning ON at high" died inside the reasoning phase on every model —
+     with thinking enabled the output cap budgets reasoning AND message
+     together, so 512 was spent before one word of the message existed. */
+  assert.doesNotMatch(block, /maxTokens: [0-9]/, 'no hardcoded output cap: the selected model\'s own configured cap is used')
+  assert.match(block, /quietOffEffortOf/, 'an unset effort asks for off instead of the adapter default')
+  assert.match(block, /row\.id === 'off'/, 'the off id is read from the route\'s efforts table, never assumed')
+  assert.match(block, /effectiveReasoning === '' \? null : effectiveReasoning/, 'the response reports the effort actually sent')
+  assert.match(block, /sawReasoning === true/, 'a budget burned by reasoning is named as such')
+  assert.match(block, /spent the whole output budget/, 'the max-tokens diagnosis says what to do about it')
+  assert.match(host, /'commit-models': commitModels/, 'the settings card has a model catalog route')
+  assert.match(host, /'commit-efforts': commitEfforts/, 'the settings card has a per-model efforts route')
+  assert.match(client, /commit-models/, 'the client queries the host model catalog for the picker')
+  assert.match(client, /commit-efforts/, 'the client queries the per-model efforts for the picker')
+  assert.match(client, /'settings\.commit\.modelFollow'/, 'the picker has its follow-the-session option')
+  assert.match(client, /'settings\.commit\.reasoningDefault'/, 'the picker has its no-reasoning default option')
   assert.match(host, /shape\.commitModel|commitModel/, 'the model setting lives in the row Config')
 })
 

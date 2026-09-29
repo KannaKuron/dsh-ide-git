@@ -1315,12 +1315,14 @@ const COMMIT_BINARY = /\.(png|jpe?g|gif|webp|ico|pdf|zip|gz|tgz|bz2|xz|7z|jar|wa
 async function collectCommitStream(stream) {
   let text = ''
   let finish = null
+  let sawReasoning = false
   for await (const chunk of stream) {
     if (chunk === null || chunk === undefined) continue
     if (chunk.type === 'text-delta' && typeof chunk.text === 'string') text += chunk.text
+    else if (chunk.type === 'reasoning-delta') sawReasoning = true
     else if (chunk.type === 'finish') finish = chunk.reason
   }
-  return { text: text, finish: finish }
+  return { text: text, finish: finish, sawReasoning: sawReasoning }
 }
 
 /** The change set, trimmed to a budget the model can actually be asked about. */
@@ -1433,6 +1435,89 @@ async function commitRouteOf(payload) {
   return { provider: provider, model: model, source: 'setting' }
 }
 
+/** The unset reasoning default: 'off' when this route offers it, '' otherwise.
+    Failures stay silent on purpose — this is a preference, not a contract: an
+    unreachable capability lookup must not turn a working model call into an
+    error; it just leaves the effort to the adapter's own default. */
+async function quietOffEffortOf(route) {
+  try {
+    const llm = commitServices.llm
+    if (typeof llm.resolveModelInfo !== 'function') return ''
+    const info = await llm.resolveModelInfo(route.provider, route.model)
+    const reasoning = info !== null && typeof info === 'object' && info.reasoning !== null && typeof info.reasoning === 'object' ? info.reasoning : null
+    const efforts = reasoning !== null && Array.isArray(reasoning.efforts) ? reasoning.efforts : []
+    return efforts.some((row) => row !== null && typeof row === 'object' && row.id === 'off') ? 'off' : ''
+  } catch (error) {
+    void error
+    return ''
+  }
+}
+
+/** The settings card's model picker: every provider route this host serves and
+    the models each one lists. The catalog is advisory (routing accepts
+    unlisted ids, see commitRouteOf), so a stored hand-typed value stays valid
+    even when it is not in this list. */
+async function commitModels() {
+  if (commitServices === null) {
+    throw new PanelError('no-host-service', 'this host does not serve llm + sessions, so there is no model catalog here', 501)
+  }
+  const providers = []
+  for (const row of commitServices.llm.listProviders()) {
+    /* One provider's discovery failing must not hide the others: its entry
+       ships with an empty model list and the picker still works. */
+    let models = []
+    try { models = await commitServices.llm.listModels(row.id) } catch (error) { models = []; void error }
+    providers.push({
+      id: row.id,
+      name: typeof row.name === 'string' && row.name !== '' ? row.name : row.id,
+      models: models
+        .filter((model) => model !== null && typeof model === 'object' && typeof model.id === 'string' && model.id !== '')
+        .map((model) => ({ id: model.id, name: typeof model.name === 'string' && model.name !== '' ? model.name : model.id })),
+    })
+  }
+  return { providers: providers }
+}
+
+/** The settings card's reasoning picker: the efforts one exact provider/model
+    route accepts. An unreachable capability lookup answers with an EMPTY list
+    (the browser falls back to its text field) instead of an error — the picker
+    is a convenience, not a gate. */
+async function commitEfforts(payload) {
+  if (commitServices === null) {
+    throw new PanelError('no-host-service', 'this host does not serve llm + sessions, so there are no reasoning efforts here', 501)
+  }
+  const wanted = typeof payload.model === 'string' ? payload.model.trim() : ''
+  const slash = wanted.indexOf('/')
+  if (slash <= 0 || slash === wanted.length - 1 || wanted.indexOf('/', slash + 1) >= 0) {
+    throw badRequest('model must look like "provider/model"')
+  }
+  const provider = wanted.slice(0, slash)
+  const model = wanted.slice(slash + 1)
+  const known = commitServices.llm.listProviders().map((row) => row.id)
+  if (known.indexOf(provider) < 0) {
+    throw new PanelError('unknown-provider', 'unknown provider "' + provider + '"; this host serves: ' + known.join(', '))
+  }
+  if (typeof commitServices.llm.resolveModelInfo !== 'function') {
+    return { provider: provider, model: model, efforts: [], defaultEffort: null }
+  }
+  try {
+    const info = await commitServices.llm.resolveModelInfo(provider, model)
+    const reasoning = info !== null && typeof info === 'object' && info.reasoning !== null && typeof info.reasoning === 'object' ? info.reasoning : null
+    const efforts = reasoning !== null && Array.isArray(reasoning.efforts) ? reasoning.efforts : []
+    return {
+      provider: provider,
+      model: model,
+      efforts: efforts
+        .filter((row) => row !== null && typeof row === 'object' && typeof row.id === 'string' && row.id !== '')
+        .map((row) => ({ id: row.id, name: typeof row.name === 'string' && row.name !== '' ? row.name : row.id })),
+      defaultEffort: reasoning !== null && typeof reasoning.defaultEffort === 'string' ? reasoning.defaultEffort : null,
+    }
+  } catch (error) {
+    void error
+    return { provider: provider, model: model, efforts: [], defaultEffort: null }
+  }
+}
+
 async function commitMessage(payload) {
   if (commitServices === null) {
     throw new PanelError('no-host-service', 'this host does not serve llm + sessions, so the message cannot be written here', 501)
@@ -1464,10 +1549,23 @@ async function commitMessage(payload) {
       model: route.model,
       system: spoken.system,
       messages: [{ role: 'user', content: [{ type: 'text', text: spoken.user }] }],
-      maxTokens: 512,
       temperature: 0.2,
     }
-    if (reasoning !== '') options.reasoningEffort = reasoning
+    /* No maxTokens on purpose: omitted, the runtime materializes the selected
+       model's own configured output cap (resolveModelInfo().defaultMaxTokens) —
+       exactly what a session call gets. The hardcoded 512 here was half of
+       issue #7: with thinking enabled, max_tokens is the budget for reasoning
+       AND message together, so 512 died inside the reasoning phase before one
+       word of the message existed. */
+    /* The other half of issue #7: an UNSET effort is not a neutral "model
+       default" — the DeepSeek adapter resolves "unspecified" to reasoning ON at
+       "high". A commit message is a formatting task, so the unset default now
+       asks for "off" whenever the route offers it. The id is read from the
+       route's own efforts table (resolveModelInfo), never assumed: the runtime
+       rejects an effort the route does not list, so a blind 'off' would trade
+       one loud failure for another. The user's explicit choice always wins. */
+    const effectiveReasoning = reasoning !== '' ? reasoning : await quietOffEffortOf(route)
+    if (effectiveReasoning !== '') options.reasoningEffort = effectiveReasoning
     if (typeof payload.sessionId === 'string' && payload.sessionId !== '') options.sessionId = payload.sessionId
     const started = Date.now()
     const collected = await collectCommitStream(commitServices.llm.stream(options))
@@ -1480,6 +1578,12 @@ async function commitMessage(payload) {
     if (finish.kind === 'error') throw gatewayError('llm-error', failureTextOf(finish.failure))
     if (finish.kind === 'aborted') throw gatewayError('llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
     if (finish.kind !== 'stop') {
+      /* The max-tokens + no-text + reasoning-delta shape is the exact signature
+         of issue #7: the budget (reasoning included) ran out mid-thought. Say
+         what happened and what to do, instead of a bare finish kind. */
+      if (finish.kind === 'max-tokens' && collected.text.trim() === '' && collected.sawReasoning === true) {
+        throw gatewayError('llm-unfinished', 'the model stopped with "max-tokens" before writing the message: its reasoning spent the whole output budget; lower the reasoning effort in the plugin settings or pick a lighter model')
+      }
       throw gatewayError('llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
     }
     const message = cleanupCommitMessage(collected.text)
@@ -1489,7 +1593,7 @@ async function commitMessage(payload) {
       provider: route.provider,
       model: route.model,
       routeSource: route.source,
-      reasoningEffort: reasoning === '' ? null : reasoning,
+      reasoningEffort: effectiveReasoning === '' ? null : effectiveReasoning,
       elapsedMs: Date.now() - started,
       input: { files: input.files.length, bytes: input.bytes, dropped: input.dropped, truncated: input.truncated },
       promptTruncated: asked.length > COMMIT_MAX_PROMPT_CHARS,
@@ -1502,6 +1606,8 @@ async function commitMessage(payload) {
 const METHODS = {
   version,
   'commit-message': commitMessage,
+  'commit-models': commitModels,
+  'commit-efforts': commitEfforts,
   repos,
   summary,
   branches,
