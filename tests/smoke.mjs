@@ -373,6 +373,17 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   assert.ok(handler.indexOf('preventDefault') < handler.indexOf('openMenuAt'), 'the browser menu is only suppressed for real diff selections')
   assert.match(handler, /DIFF_SNIPPET_MAX/, 'the snippet degradation truncates like the core promises')
 
+  // Forward-compat guard (v0.13.5): the rows may be HOST-rendered
+  // (ui-primitives DiffBlock), and a future DSH may give that component its
+  // own context-menu surface. React dispatches inner handlers first, so the
+  // pane handler MUST defer to defaultPrevented before doing anything —
+  // the host menu stands alone, never two menus, never an override. This
+  // assertion pins the check to the FIRST statement of the handler so a
+  // casual refactor cannot drop it.
+  const deferPos = handler.indexOf('if (event.defaultPrevented === true) return')
+  assert.ok(deferPos >= 0, 'the pane handler must defer to inner defaultPrevented (ours is a last resort, the host menu wins)')
+  assert.ok(deferPos < handler.indexOf('const saved = savedSelectionOf()'), 'the defer check runs before the selection is even read')
+
   // The funnel gains a chip+text leg: the @file chip first, then the line
   // sentence at the NEW draft tail (the chip changed draft and rev).
   assert.match(client, /slash\/input-insert-text', \{ text: payload\.text, span: tail \}/,

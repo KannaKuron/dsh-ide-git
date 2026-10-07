@@ -8231,8 +8231,32 @@ window.__ModuleLoader__.load({
          computed right here, so the menu items run from captured values and
          never depend on a selection that may no longer exist. A selection
          outside the diff rows keeps the browser's own menu: preventDefault is
-         skipped and no item appears (the old behaviour). */
+         skipped and no item appears (the old behaviour).
+
+         LAST-RESORT SEMANTICS (v0.13.5 forward compat): the rows under this
+         pane may be HOST-rendered (ui-primitives DiffBlock), and a future DSH
+         is free to add its own context-menu surface to that component. React
+         dispatches synthetic contextmenu handlers in bubble order — innermost
+         first — so an inner handler that claimed the event (opened its menu
+         or called preventDefault) has already set defaultPrevented by the
+         time this container handler runs. That check is the FIRST statement:
+         if the host handled it we return and the host menu stands alone —
+         never two menus at once, never an override. An unusable selection
+         also returns without preventDefault (browser menu preserved). Only a
+         valid diff selection that NOTHING else handled reaches our menu.
+         UPGRADE MEMO (diff-右键向前兼容): DiffBlock today exposes NO menu
+         surface and NO extension prop — DiffBlockProps is exactly
+         { diffs, labels, maxLines, className } (ui-primitives DiffBlock.tsx);
+         its only stable hook is the `data-diff` marker on the root div, which
+         this pane already keys on. When upstream ships a menu surface (most
+         likely an onRowContextMenu / items prop mounted on the row div or the
+         body container), MIGRATE to that prop — feed it our line-reference
+         items and RETIRE this container-level handler — the absorption
+         pattern dsh-better-workspace uses (host menu surface + host
+         dictionary, own entries appended last), not an event race. Until
+         then this handler stays deliberately last-resort. */
       const onDiffPaneContextMenu = useCallback((event) => {
+        if (event.defaultPrevented === true) return // an inner (host DiffBlock) handler already owns this event
         const saved = savedSelectionOf()
         const resolved = saved === null ? null : resolveDiffSelection(patch, saved)
         if (saved === null || resolved === null) return
