@@ -178,6 +178,56 @@ test('client API base is mount-relative (sub-path support, issue #4)', () => {
   )
 })
 
+test('plugin API calls fall back to the remote pairing proxy on auth rejection (issue #9)', () => {
+  // dsh-remote-web-ui's browser channel rewrites only the host's own /api/,
+  // /sidebar/, /git/ and /pet/ prefixes onto its /remote/ proxy — a
+  // plugin-owned route is not on the list, so from a paired remote client the
+  // direct call reaches the harness browser-auth gate and comes back
+  // 401/403 'forbidden' (both the sidebar tab and the dock panel refused to
+  // open). The fix retries the same request through the proxy, which serves
+  // any loopback path under /remote/<full pathname> with the device
+  // credentials — admitted by our own loopback fence.
+  const core = client.slice(
+    client.indexOf('/* ---- remote channel fallback core'),
+    client.indexOf('/* ---- end remote channel fallback core'))
+  assert.ok(core.length > 200, 'the pure fallback core must exist in the client half')
+  // URL shape mirrors the boot patch exactly: '/remote' + the request's FULL
+  // pathname (mount prefix included) + search — resolved through the same
+  // base the direct fetch used (document.baseURI, which honours <base href>).
+  const helpers = new Function('window', 'document', core
+    + '\nreturn { remoteFallbackUrl: remoteFallbackUrl, isAuthRejection: isAuthRejection }')
+  const atMount = helpers({ location: { href: 'http://dsh.internal/dsh/session' } },
+    { baseURI: 'http://dsh.internal/dsh/' })
+  assert.equal(atMount.remoteFallbackUrl('dsh-ide-git/api/resolve'),
+    '/remote/dsh/dsh-ide-git/api/resolve', 'under a sub-path mount the retry stays inside the mount')
+  const atRoot = helpers({ location: { href: 'http://dsh.internal/session/x' } },
+    { baseURI: 'http://dsh.internal/' })
+  assert.equal(atRoot.remoteFallbackUrl('dsh-ide-git/api/resolve'),
+    '/remote/dsh-ide-git/api/resolve', 'at the origin root the retry keeps the plugin path')
+  assert.equal(atRoot.remoteFallbackUrl('dsh-ide-git/api/list?q=1'),
+    '/remote/dsh-ide-git/api/list?q=1', 'the query string survives the rewrite')
+  // Without a document (SSR / exotic hosts) the page URL is the base, and
+  // without either the catch branch degrades to a plain prefix.
+  const pageBase = helpers({ location: { href: 'http://dsh.internal/dsh/session/' } }, undefined)
+  assert.equal(pageBase.remoteFallbackUrl('dsh-ide-git/api/resolve'),
+    '/remote/dsh/session/dsh-ide-git/api/resolve', 'the page URL resolves relative paths against its directory')
+  const bare = helpers(undefined, undefined)
+  assert.equal(bare.remoteFallbackUrl('dsh-ide-git/api/resolve'), '/remote/dsh-ide-git/api/resolve')
+  assert.equal(bare.remoteFallbackUrl('/dsh-ide-git/api/resolve'), '/remote/dsh-ide-git/api/resolve',
+    'a leading slash is not doubled')
+  // Only the auth fence trips the retry; real answers (200, 404, 422…) are
+  // never masked by a second request.
+  for (const status of [401, 403]) assert.equal(bare.isAuthRejection(status), true)
+  for (const status of [200, 400, 404, 422, 500]) assert.equal(bare.isAuthRejection(status), false)
+  // The retry is sticky: once the proxy answered, later calls skip the doomed
+  // direct round trip; a retry that is ITSELF an auth rejection never flips
+  // the switch (a genuine cross-site refusal cannot be masked).
+  const request = client.slice(client.indexOf('async function request(method, payload)'), client.indexOf('/* ============================== storage'))
+  assert.match(request, /viaRemoteChannel === true/, 'sticky mode short-circuits the direct call')
+  assert.match(request, /if \(isAuthRejection\(retried\.status\) !== true\) \{\n\s+viaRemoteChannel = true/, 'only a non-rejection from the proxy flips the sticky switch')
+  assert.match(request, /const retried = await fetch\(remoteFallbackUrl\(direct\), init\)/, 'the retry reuses the same init (method, headers, body)')
+})
+
 /** One rule out of the client half's injected stylesheet, by exact selector. */
 function cssRule(selector) {
   const start = client.indexOf("'" + selector + '{')
@@ -281,7 +331,7 @@ test('the rc.2 surface contract: one focus colour, radius tokens, round capsules
   }
 })
 
-test('client half has two doors: better-sidebar first, native right sidebar as fallback', () => {
+test('client half has three doors: better-sidebar, native right sidebar, conversation view tab', () => {
   assert.match(client, /const TAB_ID = 'dsh-ide-git:panel'/)
   assert.match(client, /single: true/)
   // Door 1 — dsh-better-sidebar, waited for through ctx.inject so a host that
@@ -305,10 +355,24 @@ test('client half has two doors: better-sidebar first, native right sidebar as f
   assert.match(client, /hostedByBetterSidebar = false/)
   assert.match(client, /hostNatively\(\)\n\s*\}/)
   assert.match(client, /inject: \[\], apply/)
+  // Door 3 — the conversation-area view tab (issue #8), beside 对话/轨迹: the
+  // ui-conversation `conversation.view` slot, the same contract dsh-context
+  // rides. ON by default; the row Config's `conversationTab` switch in the
+  // settings card drives it live (register/unregister, no reload), and a host
+  // without the row Config keeps the tab (no editor surface exists there).
+  assert.match(client, /const CONVERSATION_VIEW_ID = 'ide-git'/)
+  assert.match(client, /const conversationTabEnabled = \(\) => \{/)
+  assert.match(client, /return value !== false/, 'an absent or true field means the tab is shown')
+  assert.match(client, /slots\.inject\('conversation\.view', \(\) => slots\.register\(/)
+  assert.match(client, /name: 'conversation\.view', id: CONVERSATION_VIEW_ID, order: 30, locale: LOCALE_NS/)
+  // The seat follows the setting live through the rail-config watchers.
+  assert.match(client, /const unsubscribe = subscribeRailConfig\(sync\)/)
   const registrations = client.match(/registerTab\(/g) || []
   assert.equal(registrations.length, 1)
   const nativeTypes = client.match(/tabs\.register\(\{/g) || []
   assert.equal(nativeTypes.length, 1, 'exactly one native tab type registration')
+  const slotSeats = client.match(/slots\.register\(/g) || []
+  assert.equal(slotSeats.length, 3, 'three keyed-slot seats: native pane, settings card, conversation view')
 })
 
 test('host half is an ESM cordis plugin with argv-only git calls', () => {
@@ -770,6 +834,17 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   // Both new sentences exist in every dictionary (the key-set test would also
   // catch a missing one, but a named guard says WHY it must stay).
   for (const key of ['settings.rail.writeFailed', 'settings.rail.readonly']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
+
+  // The placement switch (issue #8) rides the same optimistic-write contract.
+  assert.match(card, /'data-placement-row': field/, 'the placement row is addressable')
+  assert.match(card, /const field = 'conversationTab'/, 'one row-Config field backs the switch')
+  assert.match(card, /values\[field\] !== false/, 'an absent value means the default: shown')
+  assert.match(host, /shape\.conversationTab = live\(schema\.boolean\(\)\.default\(true\)\)/,
+    'the host schema declares the field with default true')
+  for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint']) {
     const occurrences = client.split("'" + key + "'").length - 1
     assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
   }

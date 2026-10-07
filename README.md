@@ -4,7 +4,7 @@
 
 简体中文 | [English](README_EN.md)
 
-> 给 [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 的侧边栏装一个 **IDE 级的 Git 工具窗口**——左边分支树、中间提交图谱、右边变更与提交详情,操作方式对齐 JetBrains 系 IDE 的 Git 面板;以 [dsh-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) 原生 Tab 的形式注册,右侧栏与底部面板都能用。
+> 给 [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 的侧边栏装一个 **IDE 级的 Git 工具窗口**——左边分支树、中间提交图谱、右边变更与提交详情,操作方式对齐 JetBrains 系 IDE 的 Git 面板;以 [dsh-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) 原生 Tab 的形式注册,右侧栏与底部面板都能用;v0.13.0 起还可挂在**主对话区**(「对话 / 轨迹」旁边的 Git 标签页,设置里可关)。
 
 DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-ide-git` 补齐 IDE 用户习惯的那一层:**分支树 + 右键分支操作 + 提交图谱 + 提交详情 + 变更列表 + 提交框**。
 
@@ -64,6 +64,7 @@ DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-id
 |---|---|---|
 | **dsh-better-sidebar**(底座,可选) | 装了它 | 它的 Tab 系统:右侧栏里的原生 Tab **加上底部工作台**;它的设置页 `侧边卡片` 里能看到本插件的卡片 |
 | **DSH 原生右侧栏** | 没装底座时自动接管 | 右侧栏 Guide 页里的 **Git** 胶囊 → 点开就是同一个面板 |
+| **主对话区标签页**(v0.13.0 起) | 总是可用(可在设置里关闭) | 会话顶部「对话 / 轨迹」旁多一枚 **Git** 标签,点它整块主对话区变成 Git 工具窗口;开关在插件设置 →「面板放置」 |
 
 底座在场时以它为准(它还带底部工作台);底座**晚到**会顶掉原生注册再挂到它那边。所以**只装本插件也能用**,没有任何前置要求。
 

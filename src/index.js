@@ -65,6 +65,11 @@ function railConfigSchema(schema) {
   shape.commitModel = live(schema.string().default(''))
   shape.commitReasoning = live(schema.string().default(''))
   shape.commitPrompt = live(schema.string().default(''))
+  /* Conversation-area view tab (issue #8): on by default, switchable off from
+     the plugin settings card. false means "do not register the
+     conversation.view seat at all" — the sidebar and dock seats are not
+     affected; a missing field means the default (shown). */
+  shape.conversationTab = live(schema.boolean().default(true))
   return schema.object(shape)
 }
 

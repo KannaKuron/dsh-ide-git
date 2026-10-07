@@ -48,6 +48,7 @@
 | scripts/demo-repo.mjs | 生成用于截图的虚构演示仓库(幂等) |
 | scripts/screenshots.mjs | Playwright 驱动的截图流程(只截插件面板元素) |
 | scripts/ssr-check.mjs | 客户端半的 SSR 自检(真渲染一次 Tab 组件) |
+| scripts/conversation-probe.mjs | 主对话区 Git 标签页的回归探针(10 项断言:注册/挂载/真数据/开关翻转/`/remote` 回退/零 pageerror);要求隔离实例 + `DIG_PROBE_WORKSPACE` 指名的工作区(默认「演示仓库」) |
 
 ## 核心不变量(改代码前必读)
 
@@ -61,6 +62,7 @@
    - **没有它** → DSH **原生右侧栏**座位:`ctx.sidebarRightTabs.register({ id: 'dsh-ide-git', kind: 'ide-git', title, guide: [胶囊] })` 加上 keyed slot `sidebar.right.pane.tab`(键同 id)。`guide` **至少要有一项**——原生右侧栏里 guide 胶囊是打开一个 page 类型的唯一入口,没有它 tab 注册了也进不去。
    - 两条通道**永不并存**:原生注册留着 disposer,晚到的 better-sidebar 会先撤掉它再接管(`hostedByBetterSidebar`)。
    - 原生座位不给 cwd:`NativePanel` 从 `useWorkspaces(state => state.items)` 里找 **sessionIds 含当前会话**的 workspace,取它的 `path`——与底座通道的 `scope.cwd` 同源。
+   - **第三座位(独立于上两条,v0.13.0 起,issue #8):主对话区 `conversation.view` 槽**(ui-conversation 的 tab 环,「对话/轨迹」那一排;契约与 dsh-context 相同)。默认注册、由 row Config 字段 `conversationTab`(default true)经 `subscribeRailConfig` **实时**注册/注销;`ConversationPanel` 的 cwd 取 `ctx.get('sessions')` 的 `session.byId[sessionId].cwd`(带 subscribe 跟随)。`dsh.client.inject` 里声明了 `@deepseek-ai/dsh-client-ui-conversation`。回回归:`scripts/conversation-probe.mjs`(含开关翻转与 `/remote` 回退,10 项断言)。
 7. **布局用测量而不是猜测,而且宽度说了算**。`TabComponentProps` 不携带「我在右栏还是底部面板」的信息,所以只看容器尺寸:`compact`(**宽度 < 400** → 单行头部 + 变更/历史分段,即窄栏 chrome);否则 `width >= 600 且 width >= height * 1.15` → `columns`(三栏);其余 → `stack`(纵向)。**高度没有否决权**:它只参与 `columns` / `stack` 的区分,**绝不能单独触发 `compact`**——v0.1.3 用 `height < 330` 判紧凑,把 1500x300 的底部工作台判成了单栏;v0.3.5 仍留着 `height < 200`,于是 1320x180 的底部面板一拉矮就整块翻成右栏样式(用户报告,v0.3.6 修掉)。回归验证用 `scripts/layout-probe.mjs`(驱动干净实例把面板从 480 拉到 90px,逐档记录实际 chrome 并截图)。不要引入「按面板类型」的分支,也不要硬编码高度。
 8. **服务只在 client 半**。宿主半既没有 `ctx.betterSidebar` 也没有 `sidebarRightTabs`;宿主侧要读侧栏状态只能走它自己的 `/sidebar/*` 路由。宿主半不依赖任何插件;客户端半用 `ctx.get()` **探测**两个宿主服务,一个都没有时只挂样式、什么都不注册,绝不抛错。
 9. **版本两处一致**:`package.json` 与 `dsh.plugin.json` 的 version 必须相同(冒烟测试强制);`files[]` 里列出的每个文件都必须真实存在。

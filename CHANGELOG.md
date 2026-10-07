@@ -3,6 +3,40 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.13.0 — 2026-10-07
+
+**类型**:feat(主对话区 Git 标签页,[issue #8](https://github.com/KannaKuron/dsh-ide-git/issues/8))+ fix(远程配对客户端面板 forbidden,[issue #9](https://github.com/KannaKuron/dsh-ide-git/issues/9))
+
+- **feat(issue #8)第三种放置:主对话区 Git 标签页**。面板新增一扇门——注册进
+  ui-conversation 的 `conversation.view` 槽(与 dsh-context 同一契约),点会话顶部
+  「对话 / 轨迹」旁边的 **Git** 即可把整个主对话区切成 Git 工具窗口;面板组件从
+  sessions 服务取**会话自己的 cwd** 定位仓库(与侧栏座位同源),仓库由会话决定的
+  同时,空白会话安全落到选仓库界面。
+  - **默认开启、设置可关**(用户要求):插件设置卡新增「面板放置」区块,一枚
+    `在主对话区显示 Git 标签页` 开关;落库在既有 row Config(`conversationTab`,
+    schema `boolean().default(true)`),翻转即时生效——关闭当场注销座位、开启当场
+    重注册,**无需刷新**;宿主无 row Config 时保持开启(那些宿主没有可编辑面)。
+  - `dsh.client.inject` 增 `@deepseek-ai/dsh-client-ui-conversation`(该槽的属主
+    模块);客户端半仍只 require `react`,无构建不变量未动。
+  - 词典 21 门全量新增 `settings.placement.*` 三键,`settings.card.desc` 同步改写。
+- **fix(issue #9)远程 Web 访问(非本机)下侧栏与底部 Git 面板打不开,报
+  forbidden**。根因在链路:`@linxin666/dsh-remote-web-ui` 的浏览器通道(boot 补丁
+  `sf()`)只把宿主自有前缀(`/api/`、`/sidebar/`、`/git/`、`/pet/`)改写到它的
+  `/remote/` 代理;插件自有路由 `/dsh-ide-git/api/*` 不在名单里,直连请求落在
+  harness 浏览器认证门上,非回环绑定一律 **401/403 'forbidden'**——这正是上报者的
+  症状(两处面板都打不开)。修复在传输层:直连请求被 401/403 拒绝时,经
+  `/remote` + 完整路径名(以 `document.baseURI` 解析,含挂载前缀与查询串——与
+  boot 补丁产出的 URL 形状逐字一致)重试一次;代理应答即切换 **sticky 模式**,后续
+  调用直达代理省一个注定失败的往返。回环桌面浏览永远不触发(same-origin 恒可信),
+  真正的跨站拒绝也不会被代理掩掉(代理应答仍是 401/403 时维持原错误)。
+- **新探针 `scripts/conversation-probe.mjs`**(issue #8/#9 的回归锁):驱动隔离干净
+  实例断言 10 项——tab 环出现 Git、点击挂载面板、会话 cwd 出真数据、开关关闭/
+  开启的即时移除与恢复(严格语义:环必须在场,不许空过)、直连 403 模拟下经
+  `/remote` 代理照常加载(模拟 remote-web-ui 的路由拦截)、以及全程零 pageerror。
+- **验证**:`npm test` 90 项全绿(新增三扇门/远程回退/放置词典三组断言);
+  `ssr-check` 三态 OK;隔离实例(独立 DSH_HOME + 演示仓库)真机探针 **10/10 全绿**
+  (含 `conversation.view` 注册、设置翻转、`/remote` 回退各路径)。
+
 ## v0.12.1 — 2026-10-05
 
 **类型**:chore(清理 `dsh.client.inject` 里的死引用 `@deepseek-ai/dsh-client-runtime`)

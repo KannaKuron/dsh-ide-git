@@ -160,7 +160,10 @@ window.__ModuleLoader__.load({
       'rail.settings': '动作条设置',
       'rail.openSettings': '打开插件设置',
       'settings.card.title': 'Git 工具窗口设置',
-      'settings.card.desc': '动作条按钮与 AI 提交信息',
+      'settings.card.desc': '面板放置、动作条按钮与 AI 提交信息',
+      'settings.placement.title': '面板放置',
+      'settings.placement.tab': '在主对话区显示 Git 标签页',
+      'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
       'settings.rail.title': '动作条按钮',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
@@ -348,7 +351,10 @@ window.__ModuleLoader__.load({
       'rail.settings': 'Action bar settings',
       'rail.openSettings': 'Open plugin settings',
       'settings.card.title': 'Git tool window settings',
-      'settings.card.desc': 'Action rail buttons and AI commit message',
+      'settings.card.desc': 'Placement, action rail buttons and AI commit message',
+      'settings.placement.title': 'Placement',
+      'settings.placement.tab': 'Show the Git tab in the conversation area',
+      'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
       'settings.rail.title': 'Action rail buttons',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
@@ -544,7 +550,10 @@ window.__ModuleLoader__.load({
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
-        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
+        'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
+        'settings.placement.title': '面板放置',
+        'settings.placement.tab': '喺主對話區顯示 Git 分頁',
+        'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -732,7 +741,10 @@ window.__ModuleLoader__.load({
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
-        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
+        'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
+        'settings.placement.title': '面板放置',
+        'settings.placement.tab': '在主對話區顯示 Git 分頁',
+        'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -920,7 +932,10 @@ window.__ModuleLoader__.load({
         'rail.settings': '動作列設定',
         'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
-        'settings.card.desc': '動作列按鈕與 AI 提交訊息',
+        'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
+        'settings.placement.title': '面板放置',
+        'settings.placement.tab': '喺主對話區顯示 Git 分頁',
+        'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1108,7 +1123,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'アクションバーの設定',
         'rail.openSettings': 'プラグイン設定を開く',
         'settings.card.title': 'Gitツールウィンドウの設定',
-        'settings.card.desc': 'アクションレールのボタンと AI コミットメッセージ',
+        'settings.card.desc': 'パネル配置、アクションレールのボタンと AI コミットメッセージ',
+        'settings.placement.title': 'パネル配置',
+        'settings.placement.tab': '会話エリアに Git タブを表示',
+        'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
         'settings.rail.title': 'アクションレールのボタン',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
@@ -1296,7 +1314,10 @@ window.__ModuleLoader__.load({
         'rail.settings': '작업 표시줄 설정',
         'rail.openSettings': '플러그인 설정 열기',
         'settings.card.title': 'Git 도구 창 설정',
-        'settings.card.desc': '액션 레일 버튼 및 AI 커밋 메시지',
+        'settings.card.desc': '패널 배치, 액션 레일 버튼 및 AI 커밋 메시지',
+        'settings.placement.title': '패널 배치',
+        'settings.placement.tab': '대화 영역에 Git 탭 표시',
+        'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
         'settings.rail.title': '액션 레일 버튼',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
@@ -1484,7 +1505,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Einstellungen der Aktionsleiste',
         'rail.openSettings': 'Plugin-Einstellungen öffnen',
         'settings.card.title': 'Git-Werkzeugfenster-Einstellungen',
-        'settings.card.desc': 'Aktionsleisten-Schaltflächen und KI-Commit-Nachricht',
+        'settings.card.desc': 'Panel-Platzierung, Aktionsleisten-Schaltflächen und KI-Commit-Nachricht',
+        'settings.placement.title': 'Panel-Platzierung',
+        'settings.placement.tab': 'Git-Tab im Gesprächsbereich anzeigen',
+        'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
@@ -1672,7 +1696,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Réglages de la barre d\'actions',
         'rail.openSettings': 'Ouvrir les réglages du plugin',
         'settings.card.title': 'Paramètres de la fenêtre d’outils Git',
-        'settings.card.desc': 'Boutons de la barre d’actions et message de commit par IA',
+        'settings.card.desc': 'Placement du panneau, boutons de la barre d’actions et message de commit par IA',
+        'settings.placement.title': 'Placement du panneau',
+        'settings.placement.tab': 'Afficher l’onglet Git dans la zone de conversation',
+        'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
         'settings.rail.title': 'Boutons de la barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
@@ -1860,7 +1887,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Настройки панели действий',
         'rail.openSettings': 'Открыть настройки плагина',
         'settings.card.title': 'Настройки окна инструментов Git',
-        'settings.card.desc': 'Кнопки панели действий и сообщение коммита от ИИ',
+        'settings.card.desc': 'Размещение панели, кнопки панели действий и сообщение коммита от ИИ',
+        'settings.placement.title': 'Размещение панели',
+        'settings.placement.tab': 'Показывать вкладку Git в области диалога',
+        'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
         'settings.rail.title': 'Кнопки панели действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
@@ -2048,7 +2078,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Configurações da barra de ações',
         'rail.openSettings': 'Abrir configurações do plugin',
         'settings.card.title': 'Configurações da janela de ferramentas Git',
-        'settings.card.desc': 'Botões da barra de ações e mensagem de commit por IA',
+        'settings.card.desc': 'Posição do painel, botões da barra de ações e mensagem de commit por IA',
+        'settings.placement.title': 'Posição do painel',
+        'settings.placement.tab': 'Mostrar a aba Git na área de conversa',
+        'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
         'settings.rail.title': 'Botões da barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
@@ -2236,7 +2269,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Impostazioni della barra delle azioni',
         'rail.openSettings': 'Apri le impostazioni del plugin',
         'settings.card.title': 'Impostazioni della finestra strumenti Git',
-        'settings.card.desc': 'Pulsanti della barra azioni e messaggio di commit con IA',
+        'settings.card.desc': 'Posizione del pannello, pulsanti della barra azioni e messaggio di commit con IA',
+        'settings.placement.title': 'Posizione del pannello',
+        'settings.placement.tab': 'Mostra la scheda Git nell’area conversazione',
+        'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
         'settings.rail.title': 'Pulsanti della barra azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
@@ -2424,7 +2460,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Instellingen van de actiebalk',
         'rail.openSettings': 'Plugin-instellingen openen',
         'settings.card.title': 'Instellingen van het Git-werkvenster',
-        'settings.card.desc': 'Knoppen van de actiebalk en AI-commitbericht',
+        'settings.card.desc': 'Paneelplaatsing, knoppen van de actiebalk en AI-commitbericht',
+        'settings.placement.title': 'Paneelplaatsing',
+        'settings.placement.tab': 'Git-tabblad in het gespreksgebied tonen',
+        'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
         'settings.rail.title': 'Knoppen van de actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
@@ -2612,7 +2651,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Ustawienia paska działań',
         'rail.openSettings': 'Otwórz ustawienia wtyczki',
         'settings.card.title': 'Ustawienia okna narzędzi Git',
-        'settings.card.desc': 'Przyciski paska akcji i wiadomość commita od AI',
+        'settings.card.desc': 'Rozmieszczenie panelu, przyciski paska akcji i wiadomość commita od AI',
+        'settings.placement.title': 'Rozmieszczenie panelu',
+        'settings.placement.tab': 'Pokazuj kartę Git w obszarze rozmowy',
+        'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
         'settings.rail.title': 'Przyciski paska akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
@@ -2800,7 +2842,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Inställningar för åtgärdsfältet',
         'rail.openSettings': 'Öppna plugininställningar',
         'settings.card.title': 'Inställningar för Git-verktygsfönstret',
-        'settings.card.desc': 'Knappar i åtgärdsfältet och AI-commitmeddelande',
+        'settings.card.desc': 'Panelplacering, knappar i åtgärdsfältet och AI-commitmeddelande',
+        'settings.placement.title': 'Panelplacering',
+        'settings.placement.tab': 'Visa Git-fliken i konversationsytan',
+        'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
         'settings.rail.title': 'Knappar i åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
@@ -2988,7 +3033,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Eylem çubuğu ayarları',
         'rail.openSettings': 'Eklenti ayarlarını aç',
         'settings.card.title': 'Git araç penceresi ayarları',
-        'settings.card.desc': 'Eylem çubuğu düğmeleri ve AI commit mesajı',
+        'settings.card.desc': 'Panel yerleşimi, eylem çubuğu düğmeleri ve AI commit mesajı',
+        'settings.placement.title': 'Panel yerleşimi',
+        'settings.placement.tab': 'Konuşma alanında Git sekmesini göster',
+        'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
@@ -3176,7 +3224,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Pengaturan bilah tindakan',
         'rail.openSettings': 'Buka pengaturan plugin',
         'settings.card.title': 'Pengaturan jendela alat Git',
-        'settings.card.desc': 'Tombol bilah aksi dan pesan commit AI',
+        'settings.card.desc': 'Penempatan panel, tombol bilah aksi dan pesan commit AI',
+        'settings.placement.title': 'Penempatan panel',
+        'settings.placement.tab': 'Tampilkan tab Git di area percakapan',
+        'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
         'settings.rail.title': 'Tombol bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
@@ -3364,7 +3415,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'Cài đặt thanh thao tác',
         'rail.openSettings': 'Mở cài đặt plugin',
         'settings.card.title': 'Cài đặt cửa sổ công cụ Git',
-        'settings.card.desc': 'Nút thanh tác vụ và thông điệp commit do AI viết',
+        'settings.card.desc': 'Vị trí bảng, nút thanh tác vụ và thông điệp commit do AI viết',
+        'settings.placement.title': 'Vị trí bảng',
+        'settings.placement.tab': 'Hiện thẻ Git trong vùng hội thoại',
+        'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
         'settings.rail.title': 'Nút thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
@@ -3552,7 +3606,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'إعدادات شريط الإجراءات',
         'rail.openSettings': 'فتح إعدادات الإضافة',
         'settings.card.title': 'إعدادات نافذة أدوات Git',
-        'settings.card.desc': 'أزرار شريط الإجراءات ورسالة إيداع بالذكاء الاصطناعي',
+        'settings.card.desc': 'موضع اللوحة، أزرار شريط الإجراءات ورسالة إيداع بالذكاء الاصطناعي',
+        'settings.placement.title': 'موضع اللوحة',
+        'settings.placement.tab': 'إظهار تبويب Git في منطقة المحادثة',
+        'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
         'settings.rail.title': 'أزرار شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
@@ -3740,7 +3797,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'क्रिया पट्टी सेटिंग्स',
         'rail.openSettings': 'प्लगइन सेटिंग खोलें',
         'settings.card.title': 'Git टूल विंडो सेटिंग्स',
-        'settings.card.desc': 'एक्शन रेल बटन और AI कमिट संदेश',
+        'settings.card.desc': 'पैनल प्लेसमेंट, एक्शन रेल बटन और AI कमिट संदेश',
+        'settings.placement.title': 'पैनल प्लेसमेंट',
+        'settings.placement.tab': 'संवाद क्षेत्र में Git टैब दिखाएँ',
+        'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
         'settings.rail.title': 'एक्शन रेल बटन',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
@@ -3928,7 +3988,10 @@ window.__ModuleLoader__.load({
         'rail.settings': 'ตั้งค่าแถบการทำงาน',
         'rail.openSettings': 'เปิดการตั้งค่าปลั๊กอิน',
         'settings.card.title': 'การตั้งค่าหน้าต่างเครื่องมือ Git',
-        'settings.card.desc': 'ปุ่มแถบการทำงานและข้อความคอมมิตโดย AI',
+        'settings.card.desc': 'ตำแหน่งแผง, ปุ่มแถบการทำงานและข้อความคอมมิตโดย AI',
+        'settings.placement.title': 'ตำแหน่งแผง',
+        'settings.placement.tab': 'แสดงแท็บ Git ในพื้นที่บทสนทนา',
+        'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
@@ -4088,12 +4151,76 @@ window.__ModuleLoader__.load({
 
     /* ============================== api ============================== */
 
+    /* ---- remote channel fallback core (pure: tests/smoke.mjs slices this
+       block) ---- */
+    /* dsh-remote-web-ui's browser channel rewrites only the host's own /api/,
+       /sidebar/, /git/ and /pet/ prefixes onto its /remote/ proxy; a
+       plugin-owned route like ours is not on that list, so from a paired
+       remote client the direct call reaches the harness browser-auth gate and
+       comes back 401/403 "forbidden" (issue #9: both sidebar and dock panels
+       refused to open remotely). The proxy itself serves any loopback path
+       under /remote/<full pathname> with the paired device's credentials, so
+       the fallback is to retry the very same request through it — the exact
+       URL shape the boot patch produces for the host prefixes ('/remote' +
+       the request's full pathname, mount prefix included, query preserved). */
+    function remoteFallbackUrl(ofPath) {
+      /* Resolve through the SAME base the direct fetch used — document.baseURI
+         (which honours <base href>; dsh 0.1.7 mounts the shell with one), so
+         the retry lands on the proxy copy of the very URL that was rejected. */
+      let resolved = null
+      try {
+        let base
+        if (typeof document === 'object' && document !== null && typeof document.baseURI === 'string' && document.baseURI !== '') {
+          base = document.baseURI
+        } else if (typeof window === 'object' && window !== null && window.location !== undefined && window.location !== null) {
+          base = window.location.href
+        }
+        if (base !== undefined) resolved = new URL(ofPath, base)
+      } catch (error) { resolved = null }
+      if (resolved === null) return '/remote/' + String(ofPath).replace(/^\//, '')
+      return '/remote' + resolved.pathname + resolved.search
+    }
+
+    /* A rejection worth retrying through the remote channel: the auth gate
+       answers 401 (unauthenticated) or 403 (forbidden); every other status —
+       including this route's own JSON errors, which answer 200/4xx with a
+       parsed body — is a real answer, not a transport fence. */
+    function isAuthRejection(status) {
+      return status === 401 || status === 403
+    }
+    /* ---- end remote channel fallback core ---- */
+
+    /* Sticky remote-channel mode: once the proxy has answered, later calls go
+       there directly — otherwise every call from a remote client pays the
+       401/403 round trip first. Loopback desktop browsing never trips the
+       fallback at all (same-origin requests are always admitted). */
+    let viaRemoteChannel = false
+
     async function request(method, payload) {
-      const response = await fetch(API_BASE + '/' + method, {
+      const init = {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload === undefined ? {} : payload),
-      })
+      }
+      const direct = API_BASE + '/' + method
+      let response = null
+      if (viaRemoteChannel === true) {
+        response = await fetch(remoteFallbackUrl(direct), init)
+      } else {
+        response = await fetch(direct, init)
+        if (isAuthRejection(response.status) === true) {
+          /* Off the origin's trust path: try the pairing proxy once. With no
+             remote-web-ui installed the proxy path 404s — the retry then also
+             fails, and the ORIGINAL rejection is what the caller sees (a
+             proxy answer that is itself an auth rejection is discarded the
+             same way, so a genuine cross-site refusal can never be masked). */
+          const retried = await fetch(remoteFallbackUrl(direct), init)
+          if (isAuthRejection(retried.status) !== true) {
+            viaRemoteChannel = true
+            response = retried
+          }
+        }
+      }
       let body = null
       try { body = await response.json() } catch (error) { void error }
       if (body === null || typeof body !== 'object') throw new Error('HTTP ' + response.status)
@@ -5447,6 +5574,49 @@ window.__ModuleLoader__.load({
             E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: spec.icon, size: 13 })),
             E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t(spec.key)))
         })),
+        /* Placement (issue #8): one switch, the same optimistic-write contract
+           the rail rows keep. The conversation tab registers/unregisters live
+           (see door 3 in apply), so the flip is visible without a reload. */
+        E('div', { className: 'dig-settings-sub' }, t('settings.placement.title')),
+        (() => {
+          const field = 'conversationTab'
+          const inputId = 'dig-placement-' + field
+          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
+            ? intent.current[field] === true
+            : values[field] !== false
+          const toggle = (event) => {
+            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+            const fromControl = event !== undefined && event !== null && event.target !== null
+              && event.target !== undefined && typeof event.target.checked === 'boolean'
+              ? event.target.checked
+              : null
+            const wanted = fromControl !== null
+              ? fromControl
+              : (Object.prototype.hasOwnProperty.call(intent.current, field)
+                ? intent.current[field] !== true
+                : values[field] !== false) !== true
+            intent.current[field] = wanted
+            dirty.current.set(field, wanted)
+            setPending((now) => Object.assign({}, now, { [field]: wanted }))
+            setNote('')
+            bump()
+            scheduleFlush()
+          }
+          return E('div', { key: field },
+            E('div', { className: 'dig-settings-row', 'data-placement-row': field },
+              E('input', {
+                id: inputId,
+                type: 'checkbox',
+                className: 'dig-settings-check',
+                'aria-labelledby': inputId + '-label',
+                checked: shown,
+                disabled: readOnly === true,
+                onChange: toggle,
+              }),
+              E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'commit', size: 13 })),
+              E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.placement.tab'))),
+            E('div', { className: 'dig-settings-subnote' }, t('settings.placement.tabHint')))
+        })(),
         E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
         (() => {
           /* The model row is a picker over the host's provider catalog; while
@@ -7757,6 +7927,10 @@ window.__ModuleLoader__.load({
     const NATIVE_ID = 'dsh-ide-git'
     const NATIVE_KIND = 'ide-git'
     const NATIVE_WORKSPACE_ITEMS = (state) => state.items
+    /* The conversation.view slot id (issue #8). Order 30 sits the tab after
+       Chat (0) and Trajectory (10), and after dsh-context's tab (20) when both
+       are installed. */
+    const CONVERSATION_VIEW_ID = 'ide-git'
 
     /* The native seat hands a tab the standard props; the panel wants
        `{ scope, t }`. A session's working directory is the path of the
@@ -7787,6 +7961,55 @@ window.__ModuleLoader__.load({
         ? () => { navigation.openBundle(SETTINGS_BUNDLE) }
         : null
       return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings })
+    }
+
+    /* The conversation-area seat (issue #8): the same panel as a view tab
+       beside 对话/轨迹. The session's own cwd decides the repository — the
+       harness records it when the session starts in a workspace, so this is
+       the same source the sidebar seats resolve through. A session without a
+       cwd (blank workspace, or a host without the sessions service) shows the
+       panel's repo-pick state, never an error. */
+    function sessionCwdOf(ctx, sessionId) {
+      if (typeof sessionId !== 'string' || sessionId === '') return undefined
+      try {
+        const sessions = ctx.get('sessions')
+        const list = sessions !== undefined && sessions !== null ? sessions.list : undefined
+        if (list === undefined || typeof list.getSnapshot !== 'function') return undefined
+        const snapshot = list.getSnapshot()
+        const entry = snapshot !== null && typeof snapshot === 'object' && snapshot.byId !== undefined
+          && snapshot.byId[sessionId] !== undefined && snapshot.byId[sessionId] !== null
+          ? snapshot.byId[sessionId] : undefined
+        if (entry !== undefined && typeof entry.cwd === 'string' && entry.cwd !== '') return entry.cwd
+      } catch (error) { void error }
+      return undefined
+    }
+
+    function ConversationPanel(props) {
+      const ctx = props.ctx
+      const sessionId = typeof props.sessionId === 'string' ? props.sessionId : ''
+      const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
+      useEffect(() => {
+        let alive = true
+        const sync = () => { if (alive === true) setCwd(sessionCwdOf(ctx, sessionId)) }
+        sync()
+        /* The session list is a live store; without a subscription a later
+           start (first message in a blank session) would leave the tab on the
+           no-repo chrome until the next remount. */
+        let unsubscribe
+        try {
+          const sessions = ctx.get('sessions')
+          const list = sessions !== undefined && sessions !== null ? sessions.list : undefined
+          if (list !== undefined && typeof list.subscribe === 'function') unsubscribe = list.subscribe(sync)
+        } catch (error) { void error }
+        return () => {
+          alive = false
+          if (typeof unsubscribe === 'function') {
+            try { unsubscribe() } catch (error) { void error }
+          }
+        }
+      }, [ctx, sessionId])
+      const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
+      return E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true })
     }
 
     function NativePanel(props) {
@@ -7926,6 +8149,60 @@ window.__ModuleLoader__.load({
       /* ctx.inject runs its callback straight away when the service is already
          there, so only a host without better-sidebar reaches the native seats. */
       if (!hostedByBetterSidebar) hostNatively()
+
+      /* ---- door 3: the conversation-area view tab (issue #8) ---- */
+      /* A third seat beside 对话/轨迹, registered into ui-conversation's
+         `conversation.view` slot (the same contract dsh-context rides). It is
+         ON by default and follows the plugin settings card's switch (row
+         Config field `conversationTab`) live — no reload. Hosts without the
+         row Config keep the tab: there is no editor surface there to turn it
+         off with, and the card says as much for the rail already. The seat
+         rides `slots` (already a declared inject), so a host without
+         ui-conversation simply never mounts it — nothing throws. */
+      const conversationTabEnabled = () => {
+        const ready = railFormReady()
+        if (ready === null) return true
+        const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.conversationTab : undefined
+        return value !== false
+      }
+      ctx.inject(['slots'], (viewCtx) => {
+        const slots = viewCtx.get('slots')
+        if (slots === undefined || slots === null || typeof slots.inject !== 'function') return
+        viewCtx.effect(() => {
+          let offView = null
+          const view = (viewProps) => E(ConversationPanel, Object.assign({}, viewProps, { t: t, ctx: ctx }))
+          const sync = () => {
+            const enabled = conversationTabEnabled()
+            if (enabled === true && offView === null) {
+              try {
+                offView = slots.inject('conversation.view', () => slots.register(
+                  { name: 'conversation.view', id: CONVERSATION_VIEW_ID, order: 30, locale: LOCALE_NS, label: () => t('title') },
+                  view,
+                ))
+              } catch (error) {
+                /* A late re-registration can lose a race with the previous
+                   entry's asynchronous disposal (same keyed cell, same
+                   priority): better one missed re-registration — the next
+                   config change or reload retries — than a sync that throws
+                   inside every rail-config notification. */
+                console.warn('[dsh-ide-git] conversation seat registration failed: ' + String(error && error.message ? error.message : error))
+              }
+            } else if (enabled !== true && offView !== null) {
+              try { offView() } catch (error) { void error }
+              offView = null
+            }
+          }
+          sync()
+          const unsubscribe = subscribeRailConfig(sync)
+          return () => {
+            unsubscribe()
+            if (offView !== null) {
+              try { offView() } catch (error) { void error }
+              offView = null
+            }
+          }
+        }, 'dsh-ide-git: conversation view tab')
+      })
 
       /* ---- settings: the row Config is the rail's source of truth ---- */
       /* dsh >= 0.1.7 serves a plugin's row Config to the browser through
