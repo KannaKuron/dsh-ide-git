@@ -53,6 +53,7 @@
 - 未成 chip 的裸 `@name` 文本有 lexicon 扫描**装饰**(纯外观、非状态):`input/decorations.ts:66` 附近;plain-text pick 路径的说明见 `facade.ts:505-517` 注释(「no chip node; the chip look is a scan-derived decoration, never state」)。
 - mention 语法(`@path`,含空格用 `@"path"`,目录尾随 `/`,含控制字符/引号的路径不可表示):`formatFileMention`,`@deepseek-ai/dsh-file-reference/grammar` `grammar.ts:45-57`。
   - **勘误补充(2026-10-07,实现时核实)**:`@deepseek-ai/dsh-file-reference` **不在 seed 词表**(client/web `src/seed.ts` 仅 react/react-dom/cordis/store/ui-slots/ui-primitives/ui-dockkit),插件客户端半不能 require 它——`formatFileMention` 只能内联等价实现(实现见 src/client.js `fileMentionOf`,与 grammar.ts 语义逐条对齐:目录尾 `/`、含空白 `@"path"`、目录带引号不闭合、控制字符/引号返回不可表示)。上文代码片段同样采用的是内联写法,特此注明以免后人误 require。
+  - **勘误补充 2(2026-10-07,v0.13.5 行级引用实现时核实)**:file-reference 的 grammar/codec **没有行号 / 行段锚点的官方格式**——`FileReferenceCandidate` 只有 `path` + `kind`(types.ts),`formatFileMention` 与序列化 codec 均不携带行信息;想在 `@path` 之后追加行段,官方没有约定,插件用「结构化 chip + 纯文本后缀」的自行约定(chip 先插,行号句随后经 `slash/input-insert-text` 追加在草稿尾部;纯文本兜底时 `@…` 段仍严格按 grammar 生成,用户再编辑该行时 @ 解析不碎)。
 - 输入框的 @ 菜单 source 名为 **`reference`**(trigger `'@'`):ui-reference `src/client/index.ts:47,52-154`。
 
 ### 推荐用法片段(插件客户端半,v0.13 会话座位已知 `sessionId` 与 `cwd`)

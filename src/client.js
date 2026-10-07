@@ -156,6 +156,15 @@ window.__ModuleLoader__.load({
       'menu.sendFilePathToChat': '发送文件路径到对话',
       'send.commitText': 'git 提交 {hash}「{subject}」(仓库 {repo})',
       'send.branchText': 'git 分支 {name}(仓库 {repo})',
+      'menu.sendDiffLinesToChat': '发送选中行到对话',
+      'menu.sendDiffSnippetToChat': '发送选中片段到对话',
+      'menu.copyDiffRef': '复制选中引用',
+      'send.diffLinesCommit': '{lines}(提交 {hash}「{subject}」@ {branch})',
+      'send.diffLinesWorktree': '{lines}(工作区{state})',
+      'send.diffStaged': '已暂存',
+      'send.diffUnstaged': '未提交',
+      'send.diffNewLines': '第 {lines} 行',
+      'send.diffOldLines': '第 {lines} 行(旧行号)',
       'history.empty': '这个仓库还没有提交',
       'history.loadMore': '加载更多',
       'history.filter': '文本或哈希',
@@ -358,6 +367,15 @@ window.__ModuleLoader__.load({
       'menu.sendFilePathToChat': 'Send file path to chat',
       'send.commitText': 'git commit {hash} "{subject}" (repo {repo})',
       'send.branchText': 'git branch {name} (repo {repo})',
+      'menu.sendDiffLinesToChat': 'Send selected lines to chat',
+      'menu.sendDiffSnippetToChat': 'Send selected snippet to chat',
+      'menu.copyDiffRef': 'Copy the selection reference',
+      'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+      'send.diffLinesWorktree': '{lines} (worktree, {state})',
+      'send.diffStaged': 'staged',
+      'send.diffUnstaged': 'uncommitted',
+      'send.diffNewLines': 'lines {lines}',
+      'send.diffOldLines': 'lines {lines} (old numbering)',
       'history.empty': 'This repository has no commits yet',
       'history.loadMore': 'Load more',
       'history.filter': 'Text or hash',
@@ -568,6 +586,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
         'send.branchText': 'git 分支 {name}(存放庫 {repo})',
+        'menu.sendDiffLinesToChat': '傳送選中行到對話',
+        'menu.sendDiffSnippetToChat': '傳送選中片段到對話',
+        'menu.copyDiffRef': '複製選中引用',
+        'send.diffLinesCommit': '{lines}(提交 {hash}「{subject}」@ {branch})',
+        'send.diffLinesWorktree': '{lines}(工作區{state})',
+        'send.diffStaged': '已暫存',
+        'send.diffUnstaged': '未提交',
+        'send.diffNewLines': '第 {lines} 行',
+        'send.diffOldLines': '第 {lines} 行(舊行號)',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -770,6 +797,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(版本庫 {repo})',
         'send.branchText': 'git 分支 {name}(版本庫 {repo})',
+        'menu.sendDiffLinesToChat': '傳送選取行至對話',
+        'menu.sendDiffSnippetToChat': '傳送選取片段至對話',
+        'menu.copyDiffRef': '複製選取的引用',
+        'send.diffLinesCommit': '{lines}(提交 {hash}「{subject}」@ {branch})',
+        'send.diffLinesWorktree': '{lines}(工作區{state})',
+        'send.diffStaged': '已暫存',
+        'send.diffUnstaged': '未提交',
+        'send.diffNewLines': '第 {lines} 行',
+        'send.diffOldLines': '第 {lines} 行(舊行號)',
         'history.empty': '這個版本庫還沒有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -972,6 +1008,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
         'send.branchText': 'git 分支 {name}(存放庫 {repo})',
+        'menu.sendDiffLinesToChat': '傳送選中行至對話',
+        'menu.sendDiffSnippetToChat': '傳送選中片段至對話',
+        'menu.copyDiffRef': '複製選中引用',
+        'send.diffLinesCommit': '{lines}(提交 {hash}「{subject}」@ {branch})',
+        'send.diffLinesWorktree': '{lines}(工作區{state})',
+        'send.diffStaged': '已暫存',
+        'send.diffUnstaged': '未提交',
+        'send.diffNewLines': '第 {lines} 行',
+        'send.diffOldLines': '第 {lines} 行(舊行號)',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -1174,6 +1219,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'ファイルパスをチャットへ送る',
         'send.commitText': 'git コミット {hash}「{subject}」(リポジトリ {repo})',
         'send.branchText': 'git ブランチ {name}(リポジトリ {repo})',
+        'menu.sendDiffLinesToChat': '選択した行をチャットへ送る',
+        'menu.sendDiffSnippetToChat': '選択した範囲をチャットへ送る',
+        'menu.copyDiffRef': '選択範囲の参照をコピー',
+        'send.diffLinesCommit': '{lines}(コミット {hash}「{subject}」@ {branch})',
+        'send.diffLinesWorktree': '{lines}(作業ツリー、{state})',
+        'send.diffStaged': 'ステージ済み',
+        'send.diffUnstaged': '未コミット',
+        'send.diffNewLines': '{lines} 行目',
+        'send.diffOldLines': '{lines} 行目(旧番号)',
         'history.empty': 'このリポジトリにはまだコミットがありません',
         'history.loadMore': 'さらに読み込む',
         'history.filter': 'テキストまたはハッシュ',
@@ -1376,6 +1430,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': '파일 경로를 대화로 보내기',
         'send.commitText': 'git 커밋 {hash} "{subject}" (저장소 {repo})',
         'send.branchText': 'git 브랜치 {name} (저장소 {repo})',
+        'menu.sendDiffLinesToChat': '선택한 줄 대화로 보내기',
+        'menu.sendDiffSnippetToChat': '선택한 조각 대화로 보내기',
+        'menu.copyDiffRef': '선택 범위 참조 복사',
+        'send.diffLinesCommit': '{lines}(커밋 {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines}(작업 트리, {state})',
+        'send.diffStaged': '스테이징됨',
+        'send.diffUnstaged': '커밋되지 않음',
+        'send.diffNewLines': '{lines}행',
+        'send.diffOldLines': '{lines}행(이전 번호)',
         'history.empty': '이 저장소에는 아직 커밋이 없습니다',
         'history.loadMore': '더 불러오기',
         'history.filter': '텍스트 또는 해시',
@@ -1578,6 +1641,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Dateipfad im Chat senden',
         'send.commitText': 'git-Commit {hash} "{subject}" (Repository {repo})',
         'send.branchText': 'git-Branch {name} (Repository {repo})',
+        'menu.sendDiffLinesToChat': 'Ausgewählte Zeilen in den Chat senden',
+        'menu.sendDiffSnippetToChat': 'Ausgewählten Ausschnitt in den Chat senden',
+        'menu.copyDiffRef': 'Auswahlbezug kopieren',
+        'send.diffLinesCommit': '{lines} (Commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (Arbeitsbaum, {state})',
+        'send.diffStaged': 'staged',
+        'send.diffUnstaged': 'nicht committet',
+        'send.diffNewLines': 'Zeilen {lines}',
+        'send.diffOldLines': 'Zeilen {lines} (alte Nummerierung)',
         'history.empty': 'Dieses Repository hat noch keine Commits',
         'history.loadMore': 'Mehr laden',
         'history.filter': 'Text oder Hash',
@@ -1780,6 +1852,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Envoyer le chemin du fichier dans la conversation',
         'send.commitText': 'commit git {hash} « {subject} » (dépôt {repo})',
         'send.branchText': 'branche git {name} (dépôt {repo})',
+        'menu.sendDiffLinesToChat': 'Envoyer les lignes sélectionnées dans la conversation',
+        'menu.sendDiffSnippetToChat': 'Envoyer l\'extrait sélectionné dans la conversation',
+        'menu.copyDiffRef': 'Copier la référence de la sélection',
+        'send.diffLinesCommit': '{lines} (commit {hash} « {subject} » @ {branch})',
+        'send.diffLinesWorktree': '{lines} (arbre de travail, {state})',
+        'send.diffStaged': 'indexé',
+        'send.diffUnstaged': 'non commité',
+        'send.diffNewLines': 'lignes {lines}',
+        'send.diffOldLines': 'lignes {lines} (ancienne numérotation)',
         'history.empty': 'Ce dépôt n\'a pas encore de commit',
         'history.loadMore': 'Charger plus',
         'history.filter': 'Texte ou empreinte',
@@ -1982,6 +2063,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Отправить путь к файлу в чат',
         'send.commitText': 'git-коммит {hash} «{subject}» (репозиторий {repo})',
         'send.branchText': 'git-ветка {name} (репозиторий {repo})',
+        'menu.sendDiffLinesToChat': 'Отправить выбранные строки в чат',
+        'menu.sendDiffSnippetToChat': 'Отправить выбранный фрагмент в чат',
+        'menu.copyDiffRef': 'Скопировать ссылку на выделение',
+        'send.diffLinesCommit': '{lines} (коммит {hash} «{subject}» @ {branch})',
+        'send.diffLinesWorktree': '{lines} (рабочее дерево, {state})',
+        'send.diffStaged': 'в индексе',
+        'send.diffUnstaged': 'не закоммичено',
+        'send.diffNewLines': 'строки {lines}',
+        'send.diffOldLines': 'строки {lines} (старая нумерация)',
         'history.empty': 'В этом репозитории ещё нет коммитов',
         'history.loadMore': 'Загрузить ещё',
         'history.filter': 'Текст или хеш',
@@ -2184,6 +2274,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Enviar caminho do arquivo para a conversa',
         'send.commitText': 'commit git {hash} "{subject}" (repositório {repo})',
         'send.branchText': 'branch git {name} (repositório {repo})',
+        'menu.sendDiffLinesToChat': 'Enviar linhas selecionadas para a conversa',
+        'menu.sendDiffSnippetToChat': 'Enviar trecho selecionado para a conversa',
+        'menu.copyDiffRef': 'Copiar a referência da seleção',
+        'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (árvore de trabalho, {state})',
+        'send.diffStaged': 'preparado',
+        'send.diffUnstaged': 'não commitado',
+        'send.diffNewLines': 'linhas {lines}',
+        'send.diffOldLines': 'linhas {lines} (numeração antiga)',
         'history.empty': 'Este repositório ainda não tem commits',
         'history.loadMore': 'Carregar mais',
         'history.filter': 'Texto ou hash',
@@ -2386,6 +2485,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Invia il percorso del file alla conversazione',
         'send.commitText': 'commit git {hash} "{subject}" (repository {repo})',
         'send.branchText': 'branch git {name} (repository {repo})',
+        'menu.sendDiffLinesToChat': 'Invia le righe selezionate alla conversazione',
+        'menu.sendDiffSnippetToChat': 'Invia il frammento selezionato alla conversazione',
+        'menu.copyDiffRef': 'Copia il riferimento alla selezione',
+        'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (albero di lavoro, {state})',
+        'send.diffStaged': 'in stage',
+        'send.diffUnstaged': 'senza commit',
+        'send.diffNewLines': 'righe {lines}',
+        'send.diffOldLines': 'righe {lines} (numerazione precedente)',
         'history.empty': 'Questo repository non ha ancora commit',
         'history.loadMore': 'Carica altro',
         'history.filter': 'Testo o hash',
@@ -2588,6 +2696,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Bestandspad naar het gesprek verzenden',
         'send.commitText': 'git-commit {hash} "{subject}" (repository {repo})',
         'send.branchText': 'git-branch {name} (repository {repo})',
+        'menu.sendDiffLinesToChat': 'Geselecteerde regels naar het gesprek verzenden',
+        'menu.sendDiffSnippetToChat': 'Geselecteerd fragment naar het gesprek verzenden',
+        'menu.copyDiffRef': 'Selectiereferentie kopiëren',
+        'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (werkboom, {state})',
+        'send.diffStaged': 'staged',
+        'send.diffUnstaged': 'niet vastgelegd',
+        'send.diffNewLines': 'regels {lines}',
+        'send.diffOldLines': 'regels {lines} (oude nummering)',
         'history.empty': 'Deze repository heeft nog geen commits',
         'history.loadMore': 'Meer laden',
         'history.filter': 'Tekst of hash',
@@ -2790,6 +2907,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Wyślij ścieżkę pliku do rozmowy',
         'send.commitText': 'commit git {hash} „{subject}" (repozytorium {repo})',
         'send.branchText': 'gałąź git {name} (repozytorium {repo})',
+        'menu.sendDiffLinesToChat': 'Wyślij zaznaczone wiersze do rozmowy',
+        'menu.sendDiffSnippetToChat': 'Wyślij zaznaczony fragment do rozmowy',
+        'menu.copyDiffRef': 'Skopiuj odwołanie do zaznaczenia',
+        'send.diffLinesCommit': '{lines} (commit {hash} „{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (drzewo robocze, {state})',
+        'send.diffStaged': 'przygotowane',
+        'send.diffUnstaged': 'niezacommitowane',
+        'send.diffNewLines': 'wiersze {lines}',
+        'send.diffOldLines': 'wiersze {lines} (stara numeracja)',
         'history.empty': 'To repozytorium nie ma jeszcze commitów',
         'history.loadMore': 'Wczytaj więcej',
         'history.filter': 'Tekst lub hash',
@@ -2992,6 +3118,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Skicka filsökvägen till samtalet',
         'send.commitText': 'git-commit {hash} ”{subject}” (arkiv {repo})',
         'send.branchText': 'git-gren {name} (arkiv {repo})',
+        'menu.sendDiffLinesToChat': 'Skicka markerade rader till samtalet',
+        'menu.sendDiffSnippetToChat': 'Skicka markerat utdrag till samtalet',
+        'menu.copyDiffRef': 'Kopiera markeringens referens',
+        'send.diffLinesCommit': '{lines} (incheckning {hash} ”{subject}” @ {branch})',
+        'send.diffLinesWorktree': '{lines} (arbetskopia, {state})',
+        'send.diffStaged': 'staged',
+        'send.diffUnstaged': 'ej incheckad',
+        'send.diffNewLines': 'rader {lines}',
+        'send.diffOldLines': 'rader {lines} (gammal numrering)',
         'history.empty': 'Det här arkivet har inga commits ännu',
         'history.loadMore': 'Ladda mer',
         'history.filter': 'Text eller hash',
@@ -3194,6 +3329,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Dosya yolunu sohbete gönder',
         'send.commitText': 'git commit {hash} "{subject}" (depo {repo})',
         'send.branchText': 'git dalı {name} (depo {repo})',
+        'menu.sendDiffLinesToChat': 'Seçili satırları sohbete gönder',
+        'menu.sendDiffSnippetToChat': 'Seçili parçayı sohbete gönder',
+        'menu.copyDiffRef': 'Seçim referansını kopyala',
+        'send.diffLinesCommit': '{lines} (işleme {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (çalışma ağacı, {state})',
+        'send.diffStaged': 'hazırlanmış',
+        'send.diffUnstaged': 'işlenmemiş',
+        'send.diffNewLines': 'satırlar {lines}',
+        'send.diffOldLines': 'satırlar {lines} (eski numaralandırma)',
         'history.empty': 'Bu depoda henüz commit yok',
         'history.loadMore': 'Daha fazla yükle',
         'history.filter': 'Metin veya hash',
@@ -3396,6 +3540,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Kirim jalur berkas ke obrolan',
         'send.commitText': 'commit git {hash} "{subject}" (repositori {repo})',
         'send.branchText': 'cabang git {name} (repositori {repo})',
+        'menu.sendDiffLinesToChat': 'Kirim baris terpilih ke obrolan',
+        'menu.sendDiffSnippetToChat': 'Kirim cuplikan terpilih ke obrolan',
+        'menu.copyDiffRef': 'Salin referensi pilihan',
+        'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (pohon kerja, {state})',
+        'send.diffStaged': 'di-stage',
+        'send.diffUnstaged': 'belum di-commit',
+        'send.diffNewLines': 'baris {lines}',
+        'send.diffOldLines': 'baris {lines} (penomoran lama)',
         'history.empty': 'Repositori ini belum punya commit',
         'history.loadMore': 'Muat lebih banyak',
         'history.filter': 'Teks atau hash',
@@ -3598,6 +3751,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'Gửi đường dẫn tệp vào hội thoại',
         'send.commitText': 'git commit {hash} "{subject}" (kho {repo})',
         'send.branchText': 'nhánh git {name} (kho {repo})',
+        'menu.sendDiffLinesToChat': 'Gửi các dòng đã chọn vào hội thoại',
+        'menu.sendDiffSnippetToChat': 'Gửi đoạn đã chọn vào hội thoại',
+        'menu.copyDiffRef': 'Sao chép tham chiếu vùng chọn',
+        'send.diffLinesCommit': '{lines} (commit {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (cây làm việc, {state})',
+        'send.diffStaged': 'đã staged',
+        'send.diffUnstaged': 'chưa commit',
+        'send.diffNewLines': 'dòng {lines}',
+        'send.diffOldLines': 'dòng {lines} (đánh số cũ)',
         'history.empty': 'Kho này chưa có commit nào',
         'history.loadMore': 'Tải thêm',
         'history.filter': 'Văn bản hoặc hash',
@@ -3800,6 +3962,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'إرسال مسار الملف إلى المحادثة',
         'send.commitText': 'التزام git {hash} "{subject}" (المستودع {repo})',
         'send.branchText': 'فرع git {name} (المستودع {repo})',
+        'menu.sendDiffLinesToChat': 'إرسال الأسطر المحددة إلى المحادثة',
+        'menu.sendDiffSnippetToChat': 'إرسال المقتطف المحدد إلى المحادثة',
+        'menu.copyDiffRef': 'نسخ مرجع التحديد',
+        'send.diffLinesCommit': '{lines} (التزام {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (شجرة العمل، {state})',
+        'send.diffStaged': 'مُرحَّل',
+        'send.diffUnstaged': 'غير مُلتزم',
+        'send.diffNewLines': 'الأسطر {lines}',
+        'send.diffOldLines': 'الأسطر {lines} (ترقيم قديم)',
         'history.empty': 'لا توجد التزامات في هذا المستودع بعد',
         'history.loadMore': 'تحميل المزيد',
         'history.filter': 'نص أو تجزئة',
@@ -4002,6 +4173,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'फ़ाइल पथ बातचीत में भेजें',
         'send.commitText': 'git कमिट {hash} "{subject}" (रिपॉज़िटरी {repo})',
         'send.branchText': 'git ब्रांच {name} (रिपॉज़िटरी {repo})',
+        'menu.sendDiffLinesToChat': 'चयनित पंक्तियाँ बातचीत में भेजें',
+        'menu.sendDiffSnippetToChat': 'चयनित अंश बातचीत में भेजें',
+        'menu.copyDiffRef': 'चयन का संदर्भ कॉपी करें',
+        'send.diffLinesCommit': '{lines} (कमिट {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (वर्कट्री, {state})',
+        'send.diffStaged': 'स्टेज्ड',
+        'send.diffUnstaged': 'अनकमिटेड',
+        'send.diffNewLines': 'पंक्तियाँ {lines}',
+        'send.diffOldLines': 'पंक्तियाँ {lines} (पुरानी क्रमांक)',
         'history.empty': 'इस रिपॉज़िटरी में अभी कोई कमिट नहीं है',
         'history.loadMore': 'और लोड करें',
         'history.filter': 'टेक्स्ट या हैश',
@@ -4204,6 +4384,15 @@ window.__ModuleLoader__.load({
         'menu.sendFilePathToChat': 'ส่งพาธไฟล์ไปยังบทสนทนา',
         'send.commitText': 'git คอมมิต {hash} "{subject}" (รีโพซิทอรี {repo})',
         'send.branchText': 'git บรานช์ {name} (รีโพซิทอรี {repo})',
+        'menu.sendDiffLinesToChat': 'ส่งบรรทัดที่เลือกไปยังบทสนทนา',
+        'menu.sendDiffSnippetToChat': 'ส่งข้อความที่เลือกไปยังบทสนทนา',
+        'menu.copyDiffRef': 'คัดลอกการอ้างอิงที่เลือก',
+        'send.diffLinesCommit': '{lines} (คอมมิต {hash} "{subject}" @ {branch})',
+        'send.diffLinesWorktree': '{lines} (แผนผังงาน, {state})',
+        'send.diffStaged': 'สเตจแล้ว',
+        'send.diffUnstaged': 'ยังไม่คอมมิต',
+        'send.diffNewLines': 'บรรทัด {lines}',
+        'send.diffOldLines': 'บรรทัด {lines} (เลขบรรทัดเดิม)',
         'history.empty': 'รีโพซิทอรีนี้ยังไม่มีคอมมิต',
         'history.loadMore': 'โหลดเพิ่ม',
         'history.filter': 'ข้อความหรือแฮช',
@@ -5576,7 +5765,11 @@ window.__ModuleLoader__.load({
         } else if (line.indexOf('@@') === 0) {
           kind = 'hunk'
           const match = /^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@/.exec(line)
-          if (match !== null) { oldLine = Number.parseInt(match[1], 10); newLine = Number.parseInt(match[2], 10) }
+          // The @@ header names the FIRST content line (git semantics), but the
+          // counters below are PRE-INCREMENTED before they land in a row — so
+          // seed one less. Off by one otherwise: v0.13.3's hand-drawn gutter
+          // numbered every line one too high (surfaced by the selection core).
+          if (match !== null) { oldLine = Number.parseInt(match[1], 10) - 1; newLine = Number.parseInt(match[2], 10) - 1 }
         } else if (line.indexOf('+') === 0) { kind = 'add'; newLine += 1 }
         else if (line.indexOf('-') === 0) { kind = 'del'; oldLine += 1 }
         else if (line.indexOf('\\') === 0) { kind = 'meta' }
@@ -5589,6 +5782,250 @@ window.__ModuleLoader__.load({
       }
       return out
     }
+
+    /* ---- diff selection core
+       Pure line-number plumbing for the diff-pane context menu (v0.13.5).
+       The host DiffBlock draws rows WITHOUT line-number attributes — a row is
+       `<div class={line + kindClass}>{row.text}</div>` (DiffBlock.tsx:204) and
+       the `+`/`-`/two-space prefixes live in CSS `::before` content — so the
+       menu reconstructs numbers by replaying the ROW KINDS in document order
+       from the patch's first hunk header. The hand-drawn rows already carry
+       parsed numbers (diffLines above). Kept DOM-free between the markers so
+       tests/smoke.mjs can slice the block and drive the real implementation. */
+
+    const DIFF_SNIPPET_MAX = 600
+
+    /* First hunk header of a single-file patch → the absolute numbers the
+       replay starts from (`@@ -a,b +c,d @@`: a/c are the sides' first lines).
+       A patch without any header (binary, mode-only) has no coordinates. */
+    function hunkStartOf(patch) {
+      const headers = hunkHeadersOf(patch)
+      return headers === null ? null : headers[0]
+    }
+
+    /* Every hunk header in patch order: a multi-hunk diff restarts BOTH
+       counters at each `@@` line, so the replay needs one seed per hunk. */
+    function hunkHeadersOf(patch) {
+      const text = typeof patch === 'string' ? patch : ''
+      if (text.indexOf('@@') < 0) return null
+      const headers = []
+      const pattern = /^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@/gm
+      let match = pattern.exec(text)
+      while (match !== null) {
+        headers.push({ oldLine: Number.parseInt(match[1], 10), newLine: Number.parseInt(match[2], 10) })
+        match = pattern.exec(text)
+      }
+      return headers.length === 0 ? null : headers
+    }
+
+    /* getComputedStyle(el, '::before').content → the row kind DiffBlock
+       paints: `- ` del, `+ ` add, two spaces context, nothing for path/gap
+       chrome. Browsers quote the value ("+ "); strip quotes before comparing. */
+    function beforeContentKind(content) {
+      if (typeof content !== 'string') return null
+      const value = content.length >= 2 && content.charAt(0) === '"' && content.charAt(content.length - 1) === '"'
+        ? content.slice(1, -1)
+        : content
+      if (value === '- ') return 'del'
+      if (value === '+ ') return 'add'
+      if (value === '  ') return 'ctx'
+      return null
+    }
+
+    /* Replay kinds[0..to] (document order), collecting the span covered by
+       kinds[from..to]. Each hunk restarts BOTH counters from its own header:
+       a chrome row (path/gap, kind null) marks the boundary, and the next
+       content row consumes the NEXT header in patch order — the path row at
+       the top then the gap rows between hunks. New-side numbers win; a purely
+       deleted span reports the OLD numbers with old: true — deleted rows
+       exist on that side only. */
+    function lineSpanFromKinds(kinds, from, to, headers) {
+      if (Array.isArray(kinds) === false || Array.isArray(headers) === false || headers.length === 0) return null
+      if (!(from >= 0 && to >= from && to < kinds.length)) return null
+      let headerIndex = 0
+      let oldLine = 0
+      let newLine = 0
+      let started = false
+      let newFrom = null
+      let newTo = null
+      let oldFrom = null
+      let oldTo = null
+      for (let index = 0; index <= to; index += 1) {
+        const kind = kinds[index]
+        if (kind !== 'del' && kind !== 'add' && kind !== 'ctx') {
+          started = false // chrome row: the next content row starts a new hunk
+          continue
+        }
+        if (started === false) {
+          if (headerIndex >= headers.length) break // more hunks than headers: stop, don't guess
+          const header = headers[headerIndex]
+          headerIndex += 1
+          oldLine = header.oldLine
+          newLine = header.newLine
+          started = true
+        }
+        let oldHit = null
+        let newHit = null
+        if (kind === 'del') { oldHit = oldLine; oldLine += 1 }
+        else if (kind === 'add') { newHit = newLine; newLine += 1 }
+        else { oldHit = oldLine; newHit = newLine; oldLine += 1; newLine += 1 }
+        if (index >= from) {
+          if (oldHit !== null) { oldFrom = oldFrom === null ? oldHit : oldFrom; oldTo = oldHit }
+          if (newHit !== null) { newFrom = newFrom === null ? newHit : newFrom; newTo = newHit }
+        }
+      }
+      if (newFrom !== null) return { start: newFrom, end: newTo === null ? newFrom : newTo, old: false }
+      if (oldFrom !== null) return { start: oldFrom, end: oldTo === null ? oldFrom : oldTo, old: true }
+      return null
+    }
+
+    /* The hand-drawn rows already carry parsed numbers: reduce the selected
+       row range exactly like lineSpanFromKinds reduces replayed kinds. */
+    function rowSpanOfRows(rows, from, to) {
+      if (Array.isArray(rows) === false) return null
+      if (!(from >= 0 && to >= from && to < rows.length)) return null
+      let newFrom = null
+      let newTo = null
+      let oldFrom = null
+      let oldTo = null
+      for (let index = from; index <= to; index += 1) {
+        const row = rows[index]
+        if (row === undefined || row === null) continue
+        const newHit = typeof row.newLine === 'number' ? row.newLine : null
+        const oldHit = typeof row.oldLine === 'number' ? row.oldLine : null
+        if (newHit !== null) { newFrom = newFrom === null ? newHit : newFrom; newTo = newHit }
+        if (oldHit !== null) { oldFrom = oldFrom === null ? oldHit : oldFrom; oldTo = oldHit }
+      }
+      if (newFrom !== null) return { start: newFrom, end: newTo === null ? newFrom : newTo, old: false }
+      if (oldFrom !== null) return { start: oldFrom, end: oldTo === null ? oldFrom : oldTo, old: true }
+      return null
+    }
+
+    /* '7' or '7–9' — the {lines} value the payload templates receive. */
+    function linesLabelOf(start, end) {
+      return start === end ? String(start) : String(start) + '–' + String(end)
+    }
+
+    /* The localized line-span fragment the payload templates embed: new-side
+       numbers read plain, old-side numbers say so instead of pretending. */
+    function lineSpanLabelOf(t, span) {
+      const lines = linesLabelOf(span.start, span.end)
+      return fill(t(span.old === true ? 'send.diffOldLines' : 'send.diffNewLines'), { lines: lines })
+    }
+
+    /* The self-describing line reference text for one resolved span.
+       Commit context carries hash + subject (truncated like the commit send)
+       and the HEAD branch; the worktree pane says staged or uncommitted. */
+    function diffSpanTextOf(t, context, span, branchName) {
+      const lines = lineSpanLabelOf(t, span)
+      if (context === null || context === undefined || context.kind !== 'commit') {
+        return fill(t('send.diffLinesWorktree'), {
+          lines: lines,
+          state: t(context !== null && context !== undefined && context.staged === true ? 'send.diffStaged' : 'send.diffUnstaged'),
+        })
+      }
+      const subject = typeof context.subject === 'string' ? context.subject.trim().slice(0, 60) : ''
+      return fill(t('send.diffLinesCommit'), {
+        lines: lines,
+        hash: typeof context.hash === 'string' && context.hash !== '' ? context.hash.slice(0, 7) : '—',
+        subject: subject === '' ? '—' : subject,
+        branch: typeof branchName === 'string' && branchName !== '' ? branchName : '—',
+      })
+    }
+
+    /* ---- end diff selection core */
+
+    /* ---------- DOM side of the diff-pane context menu (browser only) ----------
+       SSR never calls these: they run inside the pane's onContextMenu, after
+       the selection has been captured. The row element under a selection
+       endpoint is either a hand-drawn `.dig-diff-line`, or a DiffBlock row —
+       a div child of the body whose OWN parent carries the `data-diff`
+       marker. `data-diff` is a component attribute (DiffBlock.tsx:199), not a
+       hashed CSS-module class, so the lookup does not bet on build-time class
+       renaming; the row KIND comes from the `::before` content the kinds are
+       painted with, for the same reason. */
+
+    function savedSelectionOf() {
+      try {
+        const selection = window.getSelection()
+        if (selection === null || selection.rangeCount === 0) return null
+        const text = String(selection)
+        if (text === '') return null
+        return { text: text, range: selection.getRangeAt(0).cloneRange() }
+      } catch (error) { void error; return null }
+    }
+
+    function selectionRowOf(node) {
+      let element = node === null || node === undefined ? null
+        : node.nodeType === 3 ? (node.parentElement === null ? null : node.parentElement)
+        : node.nodeType === 1 ? node
+        : null
+      for (let hop = 0; element !== null && element !== undefined && hop < 8; hop += 1) {
+        if (element.classList !== undefined && element.classList.contains('dig-diff-line') === true) {
+          return { kind: 'drawn', row: element, body: element.parentElement }
+        }
+        const parent = element.parentElement
+        if (parent !== null && parent.getAttribute !== undefined && parent.hasAttribute('data-diff') === false) {
+          const root = parent.parentElement
+          if (root !== null && root.getAttribute !== undefined && root.hasAttribute('data-diff') === true) {
+            return { kind: 'host', row: element, body: parent }
+          }
+        }
+        element = parent
+      }
+      return null
+    }
+
+    /* The rendered rows of a DiffBlock body, with the kind each one paints.
+       The (never-rendered at this panel's maxLines) fold toggle is a button,
+       not a div — skipped so it cannot shift the row indexes. */
+    function hostRowKinds(body) {
+      const children = body === null || body === undefined ? [] : body.children
+      const rows = []
+      const kinds = []
+      for (let index = 0; index < children.length; index += 1) {
+        const child = children[index]
+        if (child === null || child === undefined || child.tagName === 'BUTTON') continue
+        rows.push(child)
+        let kind = null
+        try { kind = beforeContentKind(window.getComputedStyle(child, '::before').content) } catch (error) { void error; kind = null }
+        kinds.push(kind)
+      }
+      return { rows: rows, kinds: kinds }
+    }
+
+    /* { kind: 'lines', span } for a selection inside ONE diff body, or
+       { kind: 'snippet' } when the rows are there but the numbers cannot be
+       reconstructed. null (rows missing entirely) means "not a diff
+       selection": the menu keeps its old behaviour. */
+    function resolveDiffSelection(patch, saved) {
+      if (saved === null || saved === undefined || saved.text === '' || saved.range === null || saved.range === undefined) return null
+      const from = selectionRowOf(saved.range.startContainer)
+      const to = selectionRowOf(saved.range.endContainer)
+      if (from === null || to === null) return null
+      if (from.kind !== to.kind || from.body !== to.body) return { kind: 'snippet', text: saved.text }
+      let span = null
+      if (from.kind === 'drawn') {
+        const rows = diffLines(patch)
+        const all = from.body === null || from.body === undefined ? [] : Array.prototype.slice.call(from.body.querySelectorAll('.dig-diff-line'))
+        const fromIndex = all.indexOf(from.row)
+        const toIndex = all.indexOf(to.row)
+        if (fromIndex >= 0 && toIndex >= 0) span = rowSpanOfRows(rows, Math.min(fromIndex, toIndex), Math.max(fromIndex, toIndex))
+      } else {
+        const headers = hunkHeadersOf(patch)
+        if (headers !== null) {
+          const collected = hostRowKinds(from.body)
+          const fromIndex = collected.rows.indexOf(from.row)
+          const toIndex = collected.rows.indexOf(to.row)
+          if (fromIndex >= 0 && toIndex >= 0) {
+            span = lineSpanFromKinds(collected.kinds, Math.min(fromIndex, toIndex), Math.max(fromIndex, toIndex), headers)
+          }
+        }
+      }
+      if (span === null) return { kind: 'snippet', text: saved.text }
+      return { kind: 'lines', span: span, text: saved.text }
+    }
+
 
     /* DiffBlock's own 16-line cap would REPLACE scrolling with a fold button;
        this panel keeps the old contract (render everything, scroll inside the
@@ -7157,6 +7594,11 @@ window.__ModuleLoader__.load({
       const [selectedPath, setSelectedPath] = useState(null)
       const [patch, setPatch] = useState('')
       const [patchLoading, setPatchLoading] = useState(false)
+      /* What the open diff pane shows (v0.13.5): the pane is shared by the
+         commit detail (hash + subject) and the working tree (staged or not),
+         and the selection menu's payload must say which. Cleared everywhere
+         the patch is cleared. */
+      const [diffContext, setDiffContext] = useState(null)
       const [menu, setMenu] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
@@ -7523,6 +7965,7 @@ window.__ModuleLoader__.load({
         setDetail(null)
         setSelectedHash(null)
         setPatch('')
+        setDiffContext(null)
         setView('history')
         setPathFilter('')
       }, [sessionId])
@@ -7544,6 +7987,7 @@ window.__ModuleLoader__.load({
         setSelectedHash(commit.hash)
         setSelectedPath(null)
         setPatch('')
+        setDiffContext(null)
         setView('detail')
         setDetail(null)
         try {
@@ -7620,6 +8064,38 @@ window.__ModuleLoader__.load({
          and a toast says so. */
       const sendToComposer = useCallback((payload) => {
         const applied = insertIntoComposer(props.ctx, sessionId, (actx, input, span) => {
+          if (payload.mention !== undefined && payload.text !== undefined) {
+            // Chip + trailing sentence (v0.13.5 diff line refs): the @file chip
+            // first, then the line-range text at the NEW draft tail (the chip
+            // changed both the draft and its rev). The facade appends a
+            // separating space after a chip when none follows, so the text leg
+            // goes in verbatim. If the text leg loses its CAS race twice the
+            // chip still stands — the reference made it, that reads as sent.
+            let chipApplied = false
+            try {
+              chipApplied = input.insertReference({
+                source: 'reference',
+                ref: payload.mention,
+                label: payload.label,
+                appearance: payload.appearance,
+                clipboardText: payload.mention,
+              }, span) === true
+            } catch (error) { void error; chipApplied = false }
+            if (chipApplied === false) return false
+            try {
+              let state = input.state.getSnapshot()
+              for (let attempt = 0; attempt < 2; attempt += 1) {
+                if (state !== undefined && state !== null && typeof state.draft === 'string' && typeof state.draftRev === 'number') {
+                  const tail = { start: state.draft.length, end: state.draft.length, draftRev: state.draftRev }
+                  let textApplied = false
+                  try { textApplied = actx.bail(actx, 'slash/input-insert-text', { text: payload.text, span: tail }) === true } catch (error) { void error; textApplied = false }
+                  if (textApplied === true) return true
+                }
+                try { state = input.state.getSnapshot() } catch (error) { void error; return true }
+              }
+            } catch (error) { void error }
+            return true
+          }
           if (payload.appearance !== undefined) {
             return input.insertReference({
               source: 'reference',
@@ -7717,7 +8193,7 @@ window.__ModuleLoader__.load({
 
       const changeMenu = useCallback((event, item, group) => {
         const items = [
-          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { void openDiff({ path: item.path, staged: group === 'staged' }) } },
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { setDiffContext({ kind: 'worktree', staged: group === 'staged' }); void openDiff({ path: item.path, staged: group === 'staged' }) } },
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
           { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: item.path, fallback: item.path }) },
           null,
@@ -7735,7 +8211,11 @@ window.__ModuleLoader__.load({
          staging verbs: a committed file's diff replays against its commit. */
       const detailFileMenu = useCallback((event, file) => {
         openMenuAt(event, [
-          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { setSelectedPath(file.path); void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path }) } },
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => {
+            setSelectedPath(file.path)
+            setDiffContext({ kind: 'commit', hash: detail === null || detail === undefined ? undefined : detail.hash, subject: detail === null || detail === undefined ? '' : detail.subject })
+            void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path })
+          } },
           null,
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(file.path) },
           { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: file.path, fallback: file.path }) },
@@ -7743,6 +8223,42 @@ window.__ModuleLoader__.load({
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(file.path) } },
         ])
       }, [detail, openDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t])
+
+      /* The diff pane's own context menu (v0.13.5): select text in the diff,
+         right-click, send a self-describing line reference to the composer.
+         The window selection is read BEFORE the menu opens — some platforms
+         clear it the moment a context menu shows — and the whole payload is
+         computed right here, so the menu items run from captured values and
+         never depend on a selection that may no longer exist. A selection
+         outside the diff rows keeps the browser's own menu: preventDefault is
+         skipped and no item appears (the old behaviour). */
+      const onDiffPaneContextMenu = useCallback((event) => {
+        const saved = savedSelectionOf()
+        const resolved = saved === null ? null : resolveDiffSelection(patch, saved)
+        if (saved === null || resolved === null) return
+        event.preventDefault()
+        const path = selectedPath
+        const hasFile = typeof path === 'string' && path !== ''
+        const branchName = branches === null ? '' : branches.branch
+        const mention = hasFile === true ? fileMentionOf(path) : null
+        const snippet = resolved.text.length > DIFF_SNIPPET_MAX ? resolved.text.slice(0, DIFF_SNIPPET_MAX) : resolved.text
+        const text = resolved.kind === 'lines' && hasFile === true
+          ? diffSpanTextOf(t, diffContext, resolved.span, branchName)
+          : snippet
+        const plain = (mention === null ? (hasFile === true ? path : '') : mention) + ' ' + text
+        const sendChip = () => {
+          if (mention === null || hasFile === false) { sendToComposer({ text: text, fallback: text }); return }
+          sendToComposer({ mention: mention, label: baseName(path), appearance: 'file', text: text, fallback: plain })
+        }
+        const items = [
+          hasFile === true && resolved.kind === 'lines'
+            ? { id: 'sendDiffLines', icon: 'send', tone: 'accent', label: t('menu.sendDiffLinesToChat'), run: sendChip }
+            : { id: 'sendDiffSnippet', icon: 'send', tone: 'accent', label: t(resolved.kind === 'lines' ? 'menu.sendDiffLinesToChat' : 'menu.sendDiffSnippetToChat'), run: sendChip },
+          null,
+          { id: 'copyDiffRef', icon: 'tag', tone: 'secondary', label: t('menu.copyDiffRef'), run: () => { copyText(plain) } },
+        ]
+        openMenuAt(event, items)
+      }, [patch, selectedPath, diffContext, branches, openMenuAt, sendToComposer, t])
 
       const submitDialog = useCallback(async (state, value) => {
         setDialog(null)
@@ -7915,16 +8431,17 @@ window.__ModuleLoader__.load({
         onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
         onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
         onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
-        onDiff: (item, group) => { void openDiff({ path: item.path, staged: group === 'staged' }) },
+        onDiff: (item, group) => { setDiffContext({ kind: 'worktree', staged: group === 'staged' }); void openDiff({ path: item.path, staged: group === 'staged' }) },
         onChangeMenu: changeMenu,
       })
 
       const historyPane = view === 'detail'
         ? E(CommitDetail, {
             t: t, detail: detail, selectedPath: selectedPath,
-            onBack: () => { setView('history'); setSelectedPath(null); setPatch('') },
+            onBack: () => { setView('history'); setSelectedPath(null); setPatch(''); setDiffContext(null) },
             onSelectFile: (file) => {
               setSelectedPath(file.path)
+              setDiffContext({ kind: 'commit', hash: detail === null || detail === undefined ? undefined : detail.hash, subject: detail === null || detail === undefined ? '' : detail.subject })
               void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path })
             },
             onFileMenu: detailFileMenu,
@@ -7938,10 +8455,10 @@ window.__ModuleLoader__.load({
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
           })
 
-      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff') },
+      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
         E('div', { className: 'dig-diff-head' },
           E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
-          E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null) } }, E(Icon, { name: 'close', size: 12 }))),
+          E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null); setDiffContext(null) } }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
 
       /* ---------- rail (IDE-style left action strip) ---------- */
@@ -8180,7 +8697,7 @@ window.__ModuleLoader__.load({
           E('div', { className: 'dig-compact-bar' },
             E(Segmented, {
               value: view === 'detail' ? 'history' : view,
-              onChange: (next) => { setView(next); setPatch('') },
+              onChange: (next) => { setView(next); setPatch(''); setDiffContext(null) },
               items: [
                 { id: 'changes', label: fill(t('seg.changes'), { n: dirty }) },
                 { id: 'history', label: t('seg.history') },

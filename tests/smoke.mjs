@@ -214,6 +214,191 @@ test('send payloads are self-describing (git commit / branch + repo, v0.13.3 fee
   assert.ok(menuDeps >= 2, 'branch and commit menus must both list the funnel + repoLabel (saw ' + menuDeps + ')')
 })
 
+/* The host DiffBlock paints rows WITHOUT line-number attributes (a row is a
+   plain div carrying `row.text`; the +/- prefixes live in CSS ::before
+   content), so the diff-pane menu reconstructs numbers by replaying the row
+   kinds from the patch's first hunk header. That plumbing sits between two
+   markers as a PURE block — slice it out and drive the real implementation,
+   exactly like the pane sizing core. `fill` (used by the payload templates)
+   and `diffLines` (used by the hand-drawn rows) are sliced along. */
+function diffSelectionCore() {
+  const fillStart = client.indexOf('function fill(template, values)')
+  const fillEnd = client.indexOf('/* ============================== api')
+  assert.ok(fillStart >= 0 && fillEnd > fillStart, 'the fill() helper must stay sliceable')
+  const start = client.indexOf('function diffLines(patch)')
+  const coreStart = client.indexOf('/* ---- diff selection core')
+  const coreEnd = client.indexOf('/* ---- end diff selection core')
+  assert.ok(start >= 0 && coreStart > start && coreEnd > coreStart, 'the diff selection core must keep its markers')
+  return new Function(client.slice(fillStart, fillEnd) + '\n' + client.slice(start, coreEnd)
+    + '\nreturn { DIFF_SNIPPET_MAX: DIFF_SNIPPET_MAX, hunkStartOf: hunkStartOf, hunkHeadersOf: hunkHeadersOf,'
+    + ' beforeContentKind: beforeContentKind, lineSpanFromKinds: lineSpanFromKinds, rowSpanOfRows: rowSpanOfRows,'
+    + ' linesLabelOf: linesLabelOf, lineSpanLabelOf: lineSpanLabelOf, diffSpanTextOf: diffSpanTextOf,'
+    + ' diffLines: diffLines, fill: fill }')()
+}
+
+test('the diff selection core maps hunk headers to file line numbers (v0.13.5)', () => {
+  const core = diffSelectionCore()
+
+  /* A realistic two-hunk patch. Hunk 1: @@ -10,7 +10,8 @@ — 3 ctx + 1 del + 3
+     add + ... let the numbers below carry it. Hunk 2 sits 40 lines lower, so
+     every replay has to CROSS the second header to prove the first header
+     seeds the whole walk and per-kind counters do the rest. */
+  const PATCH = [
+    'diff --git a/src/app.js b/src/app.js',
+    'index 1111111..2222222 100644',
+    '--- a/src/app.js',
+    '+++ b/src/app.js',
+    '@@ -10,7 +10,8 @@ const config = {',
+    ' const a = 1',        // ctx: old 10, new 10
+    ' const b = 2',        // ctx: old 11, new 11
+    '-const removed = 3',  // del: old 12
+    '+const added = 4',    // add: new 12
+    '+const added2 = 5',   // add: new 13
+    ' const c = 6',        // ctx: old 13, new 14
+    ' const d = 7',        // ctx: old 14, new 15
+    ' const e = 8',        // ctx: old 15, new 16
+    '@@ -50,6 +52,7 @@ export function main() {',
+    ' main()',             // ctx: old 50, new 52
+    ' prep()',             // ctx: old 51, new 53
+    '-gone()',             // del: old 52
+    '-gone2()',            // del: old 53
+    '+here()',             // add: new 54
+    '+here2()',            // add: new 55
+    '+here3()',            // add: new 56
+    ' finish()',           // ctx: old 54, new 57
+    ' end()',              // ctx: old 55, new 58
+  ].join('\n')
+
+  // The first header seeds the replay, and only the first one counts.
+  assert.deepEqual(core.hunkStartOf(PATCH), { oldLine: 10, newLine: 10 })
+  assert.deepEqual(core.hunkStartOf('@@ -3,1 +3,1 @@\n x'), { oldLine: 3, newLine: 3 })
+  assert.equal(core.hunkStartOf('diff --git a/x b/x\nbinary'), null, 'a headerless patch has no coordinates')
+  // A multi-hunk diff restarts BOTH counters at every @@ line: the replay
+  // needs one seed per hunk, in patch order.
+  const headers = core.hunkHeadersOf(PATCH)
+  assert.deepEqual(headers, [{ oldLine: 10, newLine: 10 }, { oldLine: 50, newLine: 52 }])
+
+  /* Host-diffBlock path. A real body renders: the path row (chrome), hunk 1,
+     a `⋯` gap row (chrome), hunk 2 — and the CHROME ROWS are what re-bases
+     the counters to the next header. A flat kinds list without them would
+     keep counting straight through the second header, so the cross-hunk
+     assertions run against the WITH-chrome sequence only. */
+  const rows = core.diffLines(PATCH)
+  const kinds = rows.filter((row) => row.kind === 'ctx' || row.kind === 'del' || row.kind === 'add').map((row) => row.kind)
+  assert.equal(kinds.length, 17)
+  const withChrome = [null].concat(kinds.slice(0, 8), [null], kinds.slice(8))
+  // path row, hunk 1 (8 rows), gap row, hunk 2 (9 rows)
+  assert.equal(withChrome.length, 19)
+  // First hunk, flat kinds: numbers from the first header.
+  assert.deepEqual(core.lineSpanFromKinds(kinds, 0, 1, headers), { start: 10, end: 11, old: false })
+  assert.deepEqual(core.lineSpanFromKinds(kinds, 2, 4, headers), { start: 12, end: 13, old: false },
+    'mixed del+add span rides the new side')
+  assert.deepEqual(core.lineSpanFromKinds(kinds, 2, 2, headers), { start: 12, end: 12, old: true },
+    'a pure deletion reports OLD numbers, flagged as such')
+  assert.deepEqual(core.lineSpanFromKinds(kinds, 3, 3, headers), { start: 12, end: 12, old: false },
+    'one added line reports its new number, start == end')
+  // With the chrome rows in: the gap re-bases to the second header.
+  assert.equal(core.lineSpanFromKinds(withChrome, 0, 0, headers), null, 'the path row alone has no numbers')
+  assert.deepEqual(core.lineSpanFromKinds(withChrome, 1, 2, headers), { start: 10, end: 11, old: false })
+  assert.deepEqual(core.lineSpanFromKinds(withChrome, 12, 15, headers), { start: 54, end: 55, old: false },
+    'a span across the gap reads on the NEW side of the SECOND header')
+  assert.deepEqual(core.lineSpanFromKinds(withChrome, 12, 13, headers), { start: 52, end: 53, old: true },
+    "a pure deletion in the second hunk reports that hunk's OLD numbers")
+  assert.deepEqual(core.lineSpanFromKinds(withChrome, 14, 14, headers), { start: 54, end: 54, old: false })
+  assert.deepEqual(core.lineSpanFromKinds(withChrome, 17, 18, headers), { start: 57, end: 58, old: false },
+    'context after the additions keeps counting from the same header')
+  // Chrome-only span (path row or gap): no numbers at all.
+  assert.equal(core.lineSpanFromKinds(withChrome, 9, 9, headers), null)
+  assert.equal(core.lineSpanFromKinds([null, null], 0, 1, headers), null, 'a selection on path/gap rows has no line numbers')
+  assert.equal(core.lineSpanFromKinds('nope', 0, 0, headers), null, 'non-array input degrades to null')
+  assert.equal(core.lineSpanFromKinds(kinds, 0, 1, []), null, 'no headers, no coordinates')
+
+  /* Hand-drawn path: diffLines rows carry both numbers already; the span
+     must agree with the replayed one (row indexes include meta/hunk rows). */
+  // rows: 0 diff, 1 index, 2 ---, 3 +++, 4 @@1, 5..12 body1, 13 @@2, 14..22 body2
+  assert.deepEqual(core.rowSpanOfRows(rows, 7, 7), { start: 12, end: 12, old: true }, 'the deleted row reports its old number')
+  assert.deepEqual(core.rowSpanOfRows(rows, 7, 9), { start: 12, end: 13, old: false }, 'mixed span rides the new side')
+  assert.deepEqual(core.rowSpanOfRows(rows, 14, 15), { start: 52, end: 53, old: false }, 'the second hunk header re-bases both counters')
+  assert.deepEqual(core.rowSpanOfRows(rows, 16, 19), { start: 54, end: 55, old: false }, 'cross-header spans stay on the new side')
+  assert.deepEqual(core.rowSpanOfRows(rows, 20, 22), { start: 56, end: 58, old: false }, 'context after the additions keeps counting')
+  assert.equal(core.rowSpanOfRows(rows, 0, 1), null, 'meta rows carry no numbers')
+  assert.equal(core.rowSpanOfRows(rows, 3, 2), null, 'an inverted range is refused')
+
+  // Labels: a single line stays bare, a range takes the en dash.
+  assert.equal(core.linesLabelOf(7, 7), '7')
+  assert.equal(core.linesLabelOf(7, 9), '7–9')
+})
+
+test('diff line payloads are self-describing in the 21-gate dictionaries (v0.13.5)', () => {
+  const core = diffSelectionCore()
+  const zhStart = client.indexOf('const ZH = {')
+  let depth = 0
+  let zhEnd = -1
+  for (let index = client.indexOf('{', zhStart); index < client.length; index += 1) {
+    if (client[index] === '{') depth += 1
+    else if (client[index] === '}') {
+      depth -= 1
+      if (depth === 0) { zhEnd = index + 1; break }
+    }
+  }
+  const ZH = new Function(client.slice(zhStart, zhEnd) + '\nreturn ZH')()
+  const t = (key) => ZH[key]
+  assert.equal(t('send.diffLinesCommit'), '{lines}(提交 {hash}「{subject}」@ {branch})', 'the zh templates must stay intact for this test to read them')
+
+  // Commit context: short hash, subject truncated to 60, HEAD branch.
+  const long = 'word '.repeat(30).trim()
+  assert.equal(core.diffSpanTextOf(t, { kind: 'commit', hash: 'a1b2c3d4e5f6', subject: 'Fix the thing' }, { start: 7, end: 9, old: false }, 'main'),
+    '第 7–9 行(提交 a1b2c3d「Fix the thing」@ main)')
+  assert.equal(core.diffSpanTextOf(t, { kind: 'commit', hash: 'a1b2c3d4e5f6', subject: long }, { start: 3, end: 3, old: false }, ''),
+    '第 3 行(提交 a1b2c3d「' + long.slice(0, 60) + '」@ —)', 'the subject is truncated and a missing branch degrades to a dash')
+  assert.equal(core.diffSpanTextOf(t, { kind: 'commit', hash: '', subject: '' }, { start: 5, end: 6, old: true }, 'dev'),
+    '第 5–6 行(旧行号)(提交 —「—」@ dev)', 'an old-numbered span says so; an unknown hash/subject degrade, never fake')
+
+  // Worktree context: staged vs uncommitted comes from the pane's own state.
+  assert.equal(core.diffSpanTextOf(t, { kind: 'worktree', staged: true }, { start: 12, end: 12, old: false }, ''),
+    '第 12 行(工作区已暂存)')
+  assert.equal(core.diffSpanTextOf(t, null, { start: 18, end: 19, old: true }, ''),
+    '第 18–19 行(旧行号)(工作区未提交)', 'a null context reads as the working tree, uncommitted')
+})
+
+test('the diff pane context menu reads the selection before the menu opens (v0.13.5)', () => {
+  // The pane carries its own menu; a selection OUTSIDE the diff rows keeps
+  // the browser's own menu (no preventDefault, no items).
+  assert.match(client, /onContextMenu: onDiffPaneContextMenu/, 'the diff pane must carry its own context menu')
+  const handler = client.slice(client.indexOf('const onDiffPaneContextMenu'), client.indexOf('const submitDialog'))
+  assert.ok(handler.length > 200 && handler.length < 4000, 'the handler must be found whole')
+  assert.match(handler, /const saved = savedSelectionOf\(\)/, 'the window selection is captured FIRST')
+  assert.match(client, /getRangeAt\(0\)\.cloneRange\(\)/, 'the captured range is a CLONE — some platforms clear it under the menu')
+  assert.match(handler, /if \(saved === null \|\| resolved === null\) return/, 'no diff selection keeps the browser menu (preventDefault skipped)')
+  assert.ok(handler.indexOf('preventDefault') < handler.indexOf('openMenuAt'), 'the browser menu is only suppressed for real diff selections')
+  assert.match(handler, /DIFF_SNIPPET_MAX/, 'the snippet degradation truncates like the core promises')
+
+  // The funnel gains a chip+text leg: the @file chip first, then the line
+  // sentence at the NEW draft tail (the chip changed draft and rev).
+  assert.match(client, /slash\/input-insert-text', \{ text: payload\.text, span: tail \}/,
+    'the line-range sentence rides the text leg after the chip')
+  assert.match(client, /if \(chipApplied === false\) return false/, 'a lost chip leg retries the whole payload')
+  assert.match(client, /return true\n          \}\n          if \(payload\.appearance !== undefined\) \{/,
+    'a chip that landed reads as sent even when the text leg lost its race')
+
+  // The pane context rides the patch state and clears wherever the patch does
+  // (pickRepo, selectCommit, onBack, pane close, view switch).
+  assert.match(client, /const \[diffContext, setDiffContext\] = useState\(null\)/)
+  const clears = (client.match(/setDiffContext\(null\)/g) || []).length
+  assert.ok(clears >= 5, 'the diff context must clear wherever the patch clears (saw ' + clears + ')')
+  assert.match(client, /setDiffContext\(\{ kind: 'worktree', staged: group === 'staged' \}\)/,
+    'the worktree pane remembers whether it shows staged or unstaged')
+  assert.match(client, /setDiffContext\(\{ kind: 'commit', hash: detail === null \|\| detail === undefined \? undefined : detail\.hash, subject: detail === null \|\| detail === undefined \? '' : detail\.subject \}\)/,
+    'the commit-detail pane carries hash + subject at open time')
+
+  // Nine new keys × 21 gates (the key-set test checks exact equality; this
+  // says WHY they exist).
+  for (const key of ['menu.sendDiffLinesToChat', 'menu.sendDiffSnippetToChat', 'menu.copyDiffRef', 'send.diffLinesCommit', 'send.diffLinesWorktree', 'send.diffStaged', 'send.diffUnstaged', 'send.diffNewLines', 'send.diffOldLines']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 21, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
+})
+
 test('the conversation seat convergence is a controlled loop with a content trigger (v0.13.3 fix)', () => {
   // One feedback pass was not enough on the real host: content mounts AFTER
   // the first pass (composer, hero, diff) and re-opens the overflow, and the
