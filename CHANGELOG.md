@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.13.5 — 2026-10-07
+
+**类型**:feat(diff 选区右键发送行级引用)+ fix(右键向前兼容 / 行号偏移 / composer 双投影坐标)
+
+- **feat diff 选区 → 右键发送行级引用**(用户需求:选中 diff 片段告诉 AI 是哪个提交/哪个文件/哪几行)。提交详情与工作区变更两个 diff 容器均支持:选中若干行 → 右键 → 「发送选中行到对话」,载荷 = `@文件` chip(严格 DSH file-reference 语法)+ `第 N–M 行(提交 hash「标题」@ 分支 / 工作区已暂存|未提交)`。行号解析:DiffBlock 行 DOM 无行号属性,按「硬编码 `data-diff` 根标记定位行容器 + `::before` content 判行类 + patch 全部 `@@` 头序列重放」兜底实现——多 hunk 每段从头重置、纯删除区间报旧号并标注、无法定位退「发送选中片段」(截 600 字符),绝不编造。selection 先 cloneRange 保存再开菜单,不依赖右键瞬间的选区存活。
+- **fix 右键向前兼容**(用户要求:diff 用的是 DSH 组件,DSH 更新加右键时不能顶掉):diff 容器处理器第一条语句尊重 `event.defaultPrevented`——内层(DiffBlock 未来)处理器已处理即退场;无选区维持浏览器默认菜单;升级备忘(官方暴露菜单 prop 时迁移)已写入注释。调研了 dsh-better-workspace 的三层吸收模式(官方 ui.Menu 渲染 / 条目镜像+方法门控 / 官方词典绑定)作为后续演进参照。
+- **fix(P0)发送的行号句静默丢失**:宿主 composer 有两套文本投影——`detectText`(每个 chip 记 1 字符)与 `clipboardText`(chip 展开完整 @path)——插入动词的 span 是 **detect 坐标**,而我们的 span 用 `draft.length`(clipboard 长度)构造:草稿里有任意 chip 时 span 必然越界,`selectSpan` 静默拒绝 → 行号句(以及一切「草稿已有 chip 时的纯文本发送」)全部静默丢失。修复:`detectTailSpanOf()` 按 Occurrence 契约把尾 span 换算回 detect 坐标,接入单段与两段式两条路径(草稿有 chip 时纯文本发送从此正确)。
+- **fix 手绘 gutter 行号整体偏大 1**(v0.13.3 起):`@@` 头语义误读,首个内容行被记成 N+1;已修,选中行号与显示行号一致。
+- **docs**:中英 README 新增「右键发送到对话」专节(diff 选区行级引用、提交/分支/文件发送、图标与 DiffBlock 渲染、可拖 diff 高度),功能一览表同步。
+- **验证**:`npm test` **104/104**(多 hunk 行号映射纯函数切片、detectTailSpanOf 单测含真机失败形态、右键兼容守卫、词典 21 门键集);`ssr-check` 零警告;隔离实例真机探针 **15/15 全绿**——含端到端断言「选 3 行右键发送 → composer 收到 `formats.md 第 1–3 行(提交 cdd0348「docs: 导出格式说明」@ main)`」。
+
 ## v0.13.4 — 2026-10-07
 
 **类型**:fix(用户对 v0.13.3 两处真机反馈)

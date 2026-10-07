@@ -337,7 +337,10 @@ try {
          sidebar layout, shifting everything down. The seat is now pinned to
          the scrollport's visible height, so the chrome must stay `columns` and
          the panel must not grow past the viewport. */
-      const commitRow = page.locator('.dig-root:visible .dig-commit').first()
+      /* The newest demo commit is a MERGE — git show on a merge is empty by
+         default, which hides the diff pane legitimately. Probe a regular
+         commit instead (second row). */
+      const commitRow = page.locator('.dig-root:visible .dig-commit').nth(1)
       if (await commitRow.count() > 0) {
         await commitRow.click({ timeout: 6000 })
         await settle(4000)
@@ -345,7 +348,7 @@ try {
            diff is the tallest content that used to trigger the flip. */
         const fileRow = page.locator('.dig-root:visible .dig-detail-files .dig-row-file').first()
         if (await fileRow.count() > 0) {
-          try { await fileRow.click({ timeout: 5000 }) } catch (error) { void error }
+          try { await fileRow.click({ timeout: 5000 }) } catch (error) { log('file click failed: ' + String(error && error.message ? error.message : error).slice(0, 120)) }
           await settle(3500)
         }
         const chrome = await page.evaluate(() => {
@@ -380,6 +383,68 @@ try {
         check(scrollGap !== null && scrollGap <= 1,
           'the scrollport has no residual wheel scroll after convergence (gap ' + String(scrollGap) + 'px)')
         await page.screenshot({ path: join(outDir, 'conversation-git-detail.png') })
+        /* 2c-b — diff selection → right-click → send (v0.13.5): select a few
+           rendered diff lines programmatically, open the context menu, and
+           assert the two send items appear; clicking one must land a
+           line-anchored reference in the session composer. */
+        const sel = await page.evaluate(() => {
+          const root = [...document.querySelectorAll('.dig-root')].find((el) => el.getBoundingClientRect().height > 40)
+          if (root === undefined) return { lines: 0 }
+          const lines = [...root.querySelectorAll('[data-diff] div[class*="line"], [data-diff] > div')].filter((el) => {
+            const r = el.getBoundingClientRect()
+            return r.height > 0 && (el.textContent || '').length > 0
+          })
+          if (lines.length < 5) {
+            /* Diagnostic payload returned to Node — page context has no logger. */
+            return {
+              lines: lines.length,
+              diag: {
+                dataDiff: document.querySelectorAll('[data-diff]').length,
+                dataDiffChildren: document.querySelectorAll('[data-diff] > div').length,
+                lineClass: document.querySelectorAll('[class*="line"]').length,
+                detailFiles: document.querySelectorAll('.dig-detail-files .dig-row-file').length,
+                patchPre: document.querySelectorAll('.dig-root pre, .dig-root [class*="diff"]').length,
+                diffPane: document.querySelectorAll('.dig-diff-pane').length,
+                selectedRow: document.querySelectorAll('.dig-row-selected').length,
+              },
+            }
+          }
+          const range = document.createRange()
+          range.selectNodeContents(lines[2])
+          if (lines[4] !== undefined) range.setEnd(lines[4], 0)
+          const selection = window.getSelection()
+          selection.removeAllRanges()
+          selection.addRange(range)
+          const target = lines[3]
+          const r = target.getBoundingClientRect()
+          return { lines: lines.length, x: r.x + Math.min(40, r.width / 2), y: r.y + r.height / 2, file: (root.querySelector('.dig-detail-files .dig-row-selected, .dig-detail-files .dig-row-file') || {}).textContent || '' }
+        })
+        if (sel === null || sel.lines < 5) {
+          log('selection diagnostics: ' + JSON.stringify(sel))
+        } else {
+          await page.mouse.click(sel.x, sel.y, { button: 'right' })
+          await settle(1200)
+          const items = await page.evaluate(() => {
+            const menus = [...document.querySelectorAll('.dig-root [class*="menu"], .dig-root .dig-menu')]
+            const text = menus.map((m) => m.textContent || '').join('|')
+            return { hasLines: text.indexOf('发送选中行') >= 0, hasSnippet: text.indexOf('发送选中片段') >= 0 }
+          })
+          check(items.hasLines === true || items.hasSnippet === true,
+            'selecting diff lines offers the send-to-chat menu items (lines=' + String(items.hasLines) + ' snippet=' + String(items.hasSnippet) + ')')
+          if (items.hasLines === true || items.hasSnippet === true) {
+            const sendItem = page.locator('.dig-root button, .dig-root [role="menuitem"]')
+              .filter({ hasText: items.hasLines === true ? '发送选中行' : '发送选中片段' }).first()
+            await sendItem.click({ timeout: 5000 })
+            await settle(2500)
+            const composerText = await page.evaluate(() => {
+              const areas = [...document.querySelectorAll('[contenteditable="true"]')]
+              return areas.map((a) => (a.textContent || '').trim() + ' ||HTML ' + a.innerHTML.slice(0, 400)).join(' :: ')
+            })
+            check(/第\s*\d+/.test(composerText) === true || /行/.test(composerText) === true,
+              'the composer receives the line-anchored reference: ' + composerText.slice(0, 80))
+          }
+          await page.evaluate(() => { const s = window.getSelection(); if (s !== null) s.removeAllRanges() })
+        }
         /* Back to the history so the later steps start from a known surface. */
         const back = page.locator('.dig-root:visible button', { hasText: '返回历史' }).first()
         if (await back.count() > 0) { try { await back.click({ timeout: 4000 }) } catch (error) { void error } await settle(2000) }
