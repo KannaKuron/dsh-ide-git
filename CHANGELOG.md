@@ -3,6 +3,19 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.13.3 — 2026-10-07
+
+**类型**:feat(右键发送到对话 + 文件图标与 diff 复用 DSH 渲染)+ perf(多仓库发现提速)+ fix(残余滚轮滚动),用户与 [issue #8](https://github.com/KannaKuron/dsh-ide-git/issues/8#issuecomment-6035026378) 反馈batch。
+
+- **feat 右键「发送到对话」**:提交行、分支行、变更文件行(含提交详情的文件列表,本次补上右键菜单)右键可把引用发进当前会话输入框——文件走官方 `conversation.input.for(会话).insertReference`(即 @文件 的结构化 chip,对模型就是 `@路径` 原文),提交插短哈希、分支插分支名;成功 toast 确认,服务缺失/发送中被拒/CAS 冲突重试仍败 → **剪贴板兜底** + toast,绝不死点击。(用户需求:像 @文件 一样快速告诉 AI 要改什么。)
+- **feat 文件图标 + diff 渲染复用 DSH**:变更文件行与详情文件行行首加 **FileTypeIcon**(按扩展名着色,目录行显式 folder);diff 预览从裸 `<pre>` 换成 ui-primitives 的 **DiffBlock**(DSH 自家渲染组件,视觉与宿主一致;binary / rename-only / mode-only 回退自绘元行)。宿主无该模块时判空降级现状,绝不抛错。(回应 #8「sidebar 的 diff 丑」「ui-deliverables 没法复用」:deliverables 本体不可跨包 require,但它的渲染基座 ui-primitives 在平台 seed 词表里,可直接用。)
+- **feat 提交详情 diff 窗口高度可拖拽**(上一条 #8 反馈「展示位置在 message 下面空间很小」):diff 窗接入既有 pane 拖拽机制——水平拖拽条调高(键盘/触摸/双击恢复),按 surface 持久化,默认 55% 与原 CSS 逐像素一致。
+- **perf 多仓库工作区发现提速**:①宿主砍掉子模块发现里的重复 spawn(`--recursive` 单次已列全层,原实现按深度重跑第二遍;多 checkout 工作区冷扫的 git 进程数从 ~(1+N)/仓库 降到 1/仓库);②宿主 repos 结果加 15s 进程内缓存(响应带 `cached: true`,形状不变);③客户端首屏种子 TTL 30s→10min 并落 sessionStorage——「切到对话再回来」整刷后也能秒出首屏,后台刷新保证新鲜度。
+- **fix 会话区残余滚轮滚动**:composer 座位 sticky 仍占流式空间,座位钉高后滚动容器还剩一截可滚;量测后反馈收敛一次,把该溢出吃掉——Git 视图里滚轮不再滚动整个窗口。
+- **研究入库**:`docs/research/host-api-notes.md`——composer 插入官方通道(`conversation.input.for` + insertReference,注释明文允许插件使用)、@提及的 Lexical 表示与模型序列化、ui-primitives seed 直取清单、`dsh.client.inject` 机制;后续迭代不必再摸黑。
+- **验证**:`npm test` **98/98**(新增发送通道守卫/判空降级/菜单接线/缓存行为等);`ssr-check` 零警告;隔离实例真机探针 **13/13 全绿**(含详情+diff 保持 columns、面板 796px ≤ 视口 924px)。
+- 团队批次:本版由 4 名队员并行交付(研究 / 客户端性能 / 宿主缓存 / 功能实现),lead 集成验证。
+
 ## v0.13.2 — 2026-10-07
 
 **类型**:fix(主对话区座位三处,用户对 v0.13.1 的截图反馈)
