@@ -147,6 +147,37 @@ test('client half requires only baseline modules', () => {
   }
 })
 
+test('send-to-chat rides the composer facade with a guarded primitives require', () => {
+  // The insertion channel is ui-conversation's SessionInput facade, reached
+  // through ctx.get() probes (research brief docs/research/host-api-notes.md):
+  // files insert structured reference chips, plain text rides the scoped
+  // insert-text bail event. `inputTriggers...openReference` is a PREVIEW — it
+  // never inserts, so the panel must not even call it.
+  assert.match(client, /function composerTargetOf\(ctx, sessionId\)/, 'the probed composer target must exist')
+  assert.match(client, /function insertIntoComposer\(ctx, sessionId, apply\)/, 'the CAS-retrying insert must exist')
+  assert.match(client, /ctx\.get\('conversation'\)/, 'the conversation service is the insertion channel')
+  assert.match(client, /ctx\.get\('sessions'\)/, 'the retained session scope comes from the sessions service')
+  assert.match(client, /input\.insertReference\(/, 'file rows insert structured reference chips')
+  assert.match(client, /slash\/input-insert-text/, 'plain text rides the scoped insert-text bail event')
+  assert.match(client, /function fileMentionOf\(relPath\)/, 'the @-mention grammar must be inlined (the grammar package is not on the seed table)')
+  assert.doesNotMatch(client, /\.openReference\(/, 'openReference opens a preview and must never be called for insertion')
+  // A host without the seed module must degrade, not throw (invariant 1's spirit).
+  assert.match(client, /let UIPrimitives = null/, 'the primitives module handle must default to null')
+  assert.match(client, /try \{ UIPrimitives = require\('@deepseek-ai\/dsh-client-ui-primitives'\) \} catch/, 'the require must be guarded')
+  assert.match(client, /UIPrimitives !== null && typeof UIPrimitives\.DiffBlock === 'function'/, 'the diff block must check the handle before use')
+  assert.match(client, /UIPrimitives === null \|\| typeof UIPrimitives\.FileTypeIcon !== 'function'/, 'the file glyph must check the handle before use')
+})
+
+test('every send-to-chat surface is wired to the shared funnel', () => {
+  // Branch rows and commit rows send plain text; change rows AND the
+  // commit-detail file list get both the reference and the raw path item.
+  const hits = (key) => (client.match(new RegExp("t\\('" + key.replace(/\./g, '\\.') + "'\\)", 'g')) || []).length
+  assert.ok(hits('menu.sendToChat') >= 4, 'menu.sendToChat must appear in branch, commit, change and detail-file menus (saw ' + hits('menu.sendToChat') + ')')
+  assert.ok(hits('menu.sendFilePathToChat') >= 2, 'menu.sendFilePathToChat must appear in the change and detail-file menus (saw ' + hits('menu.sendFilePathToChat') + ')')
+  assert.match(client, /commit\.hash\.slice\(0, 7\)/, 'commit rows send the short hash')
+  assert.match(client, /onFileMenu: detailFileMenu/, 'the commit-detail file list must carry the context menu')
+})
+
 test('client API base is mount-relative (sub-path support, issue #4)', () => {
   // dsh 0.1.7 serves the shell with <base href="./">: document.baseURI is the
   // mount the page loaded from, and fetch() resolves relative URLs against it.

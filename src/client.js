@@ -34,6 +34,12 @@ window.__ModuleLoader__.load({
        without a frame loop (the SSR self-check's shims) get the plain effect —
        there is no paint to sync with there, and no server warning either. */
     const useMeasureLayoutEffect = typeof requestAnimationFrame === 'function' ? useLayoutEffect : useEffect
+    /* Host-rendering reuse (v0.14): the file-type glyphs and the diff block come
+       from the platform seed table, so a plain require always hits — but a host
+       that predates the seed entry must degrade to the hand-drawn rows instead
+       of throwing at load time. Every consumer checks for null first. */
+    let UIPrimitives = null
+    try { UIPrimitives = require('@deepseek-ai/dsh-client-ui-primitives') } catch (error) { void error }
 
     /* API base is MOUNT-RELATIVE (no leading slash). dsh 0.1.7 serves the
        shell with <base href="./">, so document.baseURI is the mount the page
@@ -146,6 +152,8 @@ window.__ModuleLoader__.load({
       'action.resetHard': '重置到此(丢弃更改)',
       'action.copyHash': '复制修订号',
       'action.details': '提交详情',
+      'menu.sendToChat': '发送到对话',
+      'menu.sendFilePathToChat': '发送文件路径到对话',
       'history.empty': '这个仓库还没有提交',
       'history.loadMore': '加载更多',
       'history.filter': '文本或哈希',
@@ -157,6 +165,11 @@ window.__ModuleLoader__.load({
       'pane.resize': '拖动调整{name}尺寸,双击复位,方向键微调',
       'diff.binary': '二进制文件',
       'diff.loading': '正在加载差异...',
+      'diff.codeLabel': '差异',
+      'diff.wrapLabel': '自动换行',
+      'diff.unwrapLabel': '按源列宽显示',
+      'diff.copy': '复制',
+      'diff.copied': '已复制',
       'toolbar.refresh': '刷新',
       'toolbar.newBranch': '新建分支',
       'toolbar.fetch': '抓取(Fetch)',
@@ -223,6 +236,8 @@ window.__ModuleLoader__.load({
       'toast.discarded': '已丢弃 {path} 的更改',
       'toast.discardNoUndo': '已丢弃 {path} 的更改(文件过大或过多,未保留撤回)',
       'toast.restored': '已恢复',
+      'toast.sentToChat': '已发送到对话框',
+      'toast.sendCopied': '无法发送,已复制到剪贴板',
       'undo.menu': '最近可撤回的操作',
       'undo.empty': '现在没有可撤回的操作',
       'undo.branch': '分支',
@@ -337,6 +352,8 @@ window.__ModuleLoader__.load({
       'action.resetHard': 'Reset here (discard changes)',
       'action.copyHash': 'Copy revision number',
       'action.details': 'Commit details',
+      'menu.sendToChat': 'Send to chat',
+      'menu.sendFilePathToChat': 'Send file path to chat',
       'history.empty': 'This repository has no commits yet',
       'history.loadMore': 'Load more',
       'history.filter': 'Text or hash',
@@ -348,6 +365,11 @@ window.__ModuleLoader__.load({
       'pane.resize': 'Drag to resize {name}: double-click resets, arrow keys nudge',
       'diff.binary': 'Binary file',
       'diff.loading': 'Loading diff...',
+      'diff.codeLabel': 'Diff',
+      'diff.wrapLabel': 'Wrap lines',
+      'diff.unwrapLabel': 'Keep source columns',
+      'diff.copy': 'Copy',
+      'diff.copied': 'Copied',
       'toolbar.refresh': 'Refresh',
       'toolbar.newBranch': 'New branch',
       'toolbar.fetch': 'Fetch',
@@ -414,6 +436,8 @@ window.__ModuleLoader__.load({
       'toast.discarded': 'Discarded changes in {path}',
       'toast.discardNoUndo': 'Discarded changes in {path} (too large to keep an undo)',
       'toast.restored': 'Restored',
+      'toast.sentToChat': 'Sent to the chat box',
+      'toast.sendCopied': 'Could not send — copied to the clipboard instead',
       'undo.menu': 'Recently deleted (undo)',
       'undo.empty': 'Nothing to undo right now',
       'undo.branch': 'Branch',
@@ -536,6 +560,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': '重置到此(丟棄變更)',
         'action.copyHash': '複製修訂號',
         'action.details': '提交詳情',
+        'menu.sendToChat': '傳送到對話',
+        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -547,6 +573,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '拖動調整{name}尺寸,雙擊復位,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
+        'diff.codeLabel': '差異',
+        'diff.wrapLabel': '自動換行',
+        'diff.unwrapLabel': '按原始欄寬顯示',
+        'diff.copy': '複製',
+        'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
@@ -613,6 +644,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '已丟棄 {path} 嘅變更',
         'toast.discardNoUndo': '已丟棄 {path} 嘅變更(太大,冇保留撤回)',
         'toast.restored': '已還原',
+        'toast.sentToChat': '已傳送到對話框',
+        'toast.sendCopied': '無法傳送,已複製到剪貼板',
         'undo.menu': '最近刪除(撤回)',
         'undo.empty': '暫時冇嘢可以撤回',
         'undo.branch': '分支',
@@ -727,6 +760,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': '重置到此(丟棄變更)',
         'action.copyHash': '複製修訂編號',
         'action.details': '提交詳情',
+        'menu.sendToChat': '傳送至對話',
+        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'history.empty': '這個版本庫還沒有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -738,6 +773,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '拖曳調整{name}尺寸,雙擊重設,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
+        'diff.codeLabel': '差異',
+        'diff.wrapLabel': '自動換行',
+        'diff.unwrapLabel': '依原始欄寬顯示',
+        'diff.copy': '複製',
+        'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
@@ -804,6 +844,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '已丟棄 {path} 的變更',
         'toast.discardNoUndo': '已丟棄 {path} 的變更(太大,未保留撤回)',
         'toast.restored': '已還原',
+        'toast.sentToChat': '已傳送至對話框',
+        'toast.sendCopied': '無法傳送,已複製到剪貼簿',
         'undo.menu': '最近刪除(撤回)',
         'undo.empty': '目前沒有可撤回的項目',
         'undo.branch': '分支',
@@ -918,6 +960,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': '重置到此(丟棄變更)',
         'action.copyHash': '複製修訂號',
         'action.details': '提交詳情',
+        'menu.sendToChat': '傳送至對話',
+        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -929,6 +973,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '拖動調整{name}尺寸,雙擊復位,方向鍵微調',
         'diff.binary': '二進位檔案',
         'diff.loading': '正在載入差異...',
+        'diff.codeLabel': '差異',
+        'diff.wrapLabel': '自動換行',
+        'diff.unwrapLabel': '依原始欄寬顯示',
+        'diff.copy': '複製',
+        'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
@@ -995,6 +1044,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '已丟棄 {path} 嘅變更',
         'toast.discardNoUndo': '已丟棄 {path} 嘅變更(太大,冇保留撤回)',
         'toast.restored': '已還原',
+        'toast.sentToChat': '已傳送至對話框',
+        'toast.sendCopied': '無法傳送,已複製到剪貼簿',
         'undo.menu': '最近刪除(撤回)',
         'undo.empty': '暫時冇嘢可以撤回',
         'undo.branch': '分支',
@@ -1109,6 +1160,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'ここにリセット(変更を破棄)',
         'action.copyHash': 'リビジョン番号をコピー',
         'action.details': 'コミットの詳細',
+        'menu.sendToChat': 'チャットへ送る',
+        'menu.sendFilePathToChat': 'ファイルパスをチャットへ送る',
         'history.empty': 'このリポジトリにはまだコミットがありません',
         'history.loadMore': 'さらに読み込む',
         'history.filter': 'テキストまたはハッシュ',
@@ -1120,6 +1173,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '{name}のサイズをドラッグで調整(ダブルクリックでリセット、矢印キーで微調整)',
         'diff.binary': 'バイナリファイル',
         'diff.loading': '差分を読み込み中...',
+        'diff.codeLabel': '差分',
+        'diff.wrapLabel': '折り返し',
+        'diff.unwrapLabel': 'ソースの列幅を維持',
+        'diff.copy': 'コピー',
+        'diff.copied': 'コピーしました',
         'toolbar.refresh': '更新',
         'toolbar.newBranch': '新しいブランチ',
         'toolbar.fetch': 'フェッチ',
@@ -1186,6 +1244,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '{path} の変更を破棄しました',
         'toast.discardNoUndo': '{path} の変更を破棄しました(大きすぎるため取り消しは保持していません)',
         'toast.restored': '復元しました',
+        'toast.sentToChat': '入力欄に送りました',
+        'toast.sendCopied': '送信できなかったためクリップボードにコピーしました',
         'undo.menu': '最近の削除(元に戻す)',
         'undo.empty': '今すぐ元に戻せるものはありません',
         'undo.branch': 'ブランチ',
@@ -1300,6 +1360,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': '여기로 리셋(변경 버림)',
         'action.copyHash': '리비전 번호 복사',
         'action.details': '커밋 상세',
+        'menu.sendToChat': '대화로 보내기',
+        'menu.sendFilePathToChat': '파일 경로를 대화로 보내기',
         'history.empty': '이 저장소에는 아직 커밋이 없습니다',
         'history.loadMore': '더 불러오기',
         'history.filter': '텍스트 또는 해시',
@@ -1311,6 +1373,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '{name} 크기를 드래그해 조절(더블클릭 초기화, 화살표 키 미세 조정)',
         'diff.binary': '바이너리 파일',
         'diff.loading': '차이 불러오는 중...',
+        'diff.codeLabel': '차이',
+        'diff.wrapLabel': '줄 바꿈',
+        'diff.unwrapLabel': '원본 열 너비 유지',
+        'diff.copy': '복사',
+        'diff.copied': '복사됨',
         'toolbar.refresh': '새로 고침',
         'toolbar.newBranch': '새 브랜치',
         'toolbar.fetch': '페치',
@@ -1377,6 +1444,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '{path}의 변경 사항을 버렸습니다',
         'toast.discardNoUndo': '{path}의 변경 사항을 버렸습니다(너무 커서 되돌리기를 보관하지 않음)',
         'toast.restored': '복원했습니다',
+        'toast.sentToChat': '입력창에 보냈습니다',
+        'toast.sendCopied': '보낼 수 없어 클립보드에 복사했습니다',
         'undo.menu': '최근 삭제(되돌리기)',
         'undo.empty': '지금 되돌릴 항목이 없습니다',
         'undo.branch': '브랜치',
@@ -1491,6 +1560,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Hierher zurücksetzen (Änderungen verwerfen)',
         'action.copyHash': 'Revisionsnummer kopieren',
         'action.details': 'Commit-Details',
+        'menu.sendToChat': 'Im Chat senden',
+        'menu.sendFilePathToChat': 'Dateipfad im Chat senden',
         'history.empty': 'Dieses Repository hat noch keine Commits',
         'history.loadMore': 'Mehr laden',
         'history.filter': 'Text oder Hash',
@@ -1502,6 +1573,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Größe von {name} per Ziehen ändern (Doppelklick setzt zurück, Pfeiltasten justieren)',
         'diff.binary': 'Binärdatei',
         'diff.loading': 'Diff wird geladen...',
+        'diff.codeLabel': 'Diff',
+        'diff.wrapLabel': 'Zeilen umbrechen',
+        'diff.unwrapLabel': 'Quellspalten beibehalten',
+        'diff.copy': 'Kopieren',
+        'diff.copied': 'Kopiert',
         'toolbar.refresh': 'Aktualisieren',
         'toolbar.newBranch': 'Neuer Branch',
         'toolbar.fetch': 'Fetch',
@@ -1568,6 +1644,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Änderungen in {path} verworfen',
         'toast.discardNoUndo': 'Änderungen in {path} verworfen (zu groß für ein Rückgängig)',
         'toast.restored': 'Wiederhergestellt',
+        'toast.sentToChat': 'In das Eingabefeld eingefügt',
+        'toast.sendCopied': 'Senden nicht möglich – stattdessen in die Zwischenablage kopiert',
         'undo.menu': 'Zuletzt gelöscht (rückgängig)',
         'undo.empty': 'Derzeit nichts rückgängig zu machen',
         'undo.branch': 'Branch',
@@ -1682,6 +1760,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Réinitialiser ici (abandonner les modifications)',
         'action.copyHash': 'Copier le numéro de révision',
         'action.details': 'Détails du commit',
+        'menu.sendToChat': 'Envoyer dans la conversation',
+        'menu.sendFilePathToChat': 'Envoyer le chemin du fichier dans la conversation',
         'history.empty': 'Ce dépôt n\'a pas encore de commit',
         'history.loadMore': 'Charger plus',
         'history.filter': 'Texte ou empreinte',
@@ -1693,6 +1773,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Glisser pour redimensionner {name} (double-clic pour réinitialiser, flèches pour ajuster)',
         'diff.binary': 'Fichier binaire',
         'diff.loading': 'Chargement du diff...',
+        'diff.codeLabel': 'Diff',
+        'diff.wrapLabel': 'Renvoyer à la ligne',
+        'diff.unwrapLabel': 'Conserver les colonnes de la source',
+        'diff.copy': 'Copier',
+        'diff.copied': 'Copié',
         'toolbar.refresh': 'Rafraîchir',
         'toolbar.newBranch': 'Nouvelle branche',
         'toolbar.fetch': 'Récupérer',
@@ -1759,6 +1844,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Modifications de {path} abandonnées',
         'toast.discardNoUndo': 'Modifications de {path} abandonnées (trop volumineuses pour être annulées)',
         'toast.restored': 'Restauré',
+        'toast.sentToChat': 'Envoyé dans la zone de saisie',
+        'toast.sendCopied': 'Envoi impossible — copié dans le presse-papiers à la place',
         'undo.menu': 'Supprimés récemment (annuler)',
         'undo.empty': 'Rien à annuler pour le moment',
         'undo.branch': 'Branche',
@@ -1873,6 +1960,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Сбросить сюда (отбросить изменения)',
         'action.copyHash': 'Скопировать номер ревизии',
         'action.details': 'Сведения о коммите',
+        'menu.sendToChat': 'Отправить в чат',
+        'menu.sendFilePathToChat': 'Отправить путь к файлу в чат',
         'history.empty': 'В этом репозитории ещё нет коммитов',
         'history.loadMore': 'Загрузить ещё',
         'history.filter': 'Текст или хеш',
@@ -1884,6 +1973,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Перетащите, чтобы изменить размер {name} (двойной клик — сброс, стрелки — точная настройка)',
         'diff.binary': 'Двоичный файл',
         'diff.loading': 'Загрузка различий...',
+        'diff.codeLabel': 'Различия',
+        'diff.wrapLabel': 'Переносить строки',
+        'diff.unwrapLabel': 'Сохранять исходные колонки',
+        'diff.copy': 'Копировать',
+        'diff.copied': 'Скопировано',
         'toolbar.refresh': 'Обновить',
         'toolbar.newBranch': 'Новая ветка',
         'toolbar.fetch': 'Получить',
@@ -1950,6 +2044,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Изменения в {path} отменены',
         'toast.discardNoUndo': 'Изменения в {path} отменены (слишком велики, отмена не сохранена)',
         'toast.restored': 'Восстановлено',
+        'toast.sentToChat': 'Отправлено в поле ввода',
+        'toast.sendCopied': 'Не удалось отправить — скопировано в буфер обмена',
         'undo.menu': 'Недавно удалённое (отменить)',
         'undo.empty': 'Сейчас нечего отменять',
         'undo.branch': 'Ветка',
@@ -2064,6 +2160,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Redefinir aqui (descartar alterações)',
         'action.copyHash': 'Copiar número da revisão',
         'action.details': 'Detalhes do commit',
+        'menu.sendToChat': 'Enviar para a conversa',
+        'menu.sendFilePathToChat': 'Enviar caminho do arquivo para a conversa',
         'history.empty': 'Este repositório ainda não tem commits',
         'history.loadMore': 'Carregar mais',
         'history.filter': 'Texto ou hash',
@@ -2075,6 +2173,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Arraste para redimensionar {name} (duplo clique restaura, setas ajustam)',
         'diff.binary': 'Arquivo binário',
         'diff.loading': 'Carregando diff...',
+        'diff.codeLabel': 'Diff',
+        'diff.wrapLabel': 'Quebrar linhas',
+        'diff.unwrapLabel': 'Manter colunas do código',
+        'diff.copy': 'Copiar',
+        'diff.copied': 'Copiado',
         'toolbar.refresh': 'Atualizar',
         'toolbar.newBranch': 'Nova branch',
         'toolbar.fetch': 'Buscar',
@@ -2141,6 +2244,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Alterações em {path} descartadas',
         'toast.discardNoUndo': 'Alterações em {path} descartadas (grandes demais para desfazer)',
         'toast.restored': 'Restaurado',
+        'toast.sentToChat': 'Enviado para a caixa de entrada',
+        'toast.sendCopied': 'Não foi possível enviar — copiado para a área de transferência',
         'undo.menu': 'Excluídos recentemente (desfazer)',
         'undo.empty': 'Nada para desfazer agora',
         'undo.branch': 'Branch',
@@ -2255,6 +2360,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Ripristina qui (scarta le modifiche)',
         'action.copyHash': 'Copia il numero di revisione',
         'action.details': 'Dettagli del commit',
+        'menu.sendToChat': 'Invia alla conversazione',
+        'menu.sendFilePathToChat': 'Invia il percorso del file alla conversazione',
         'history.empty': 'Questo repository non ha ancora commit',
         'history.loadMore': 'Carica altro',
         'history.filter': 'Testo o hash',
@@ -2266,6 +2373,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Trascina per ridimensionare {name} (doppio clic ripristina, frecce per regolare)',
         'diff.binary': 'File binario',
         'diff.loading': 'Caricamento del diff...',
+        'diff.codeLabel': 'Diff',
+        'diff.wrapLabel': 'A capo automatico',
+        'diff.unwrapLabel': 'Mantieni le colonne originali',
+        'diff.copy': 'Copia',
+        'diff.copied': 'Copiato',
         'toolbar.refresh': 'Aggiorna',
         'toolbar.newBranch': 'Nuovo branch',
         'toolbar.fetch': 'Fetch',
@@ -2332,6 +2444,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Modifiche in {path} scartate',
         'toast.discardNoUndo': 'Modifiche in {path} scartate (troppo grandi per essere annullate)',
         'toast.restored': 'Ripristinato',
+        'toast.sentToChat': 'Inviato nella casella di input',
+        'toast.sendCopied': 'Impossibile inviare — copiato negli appunti',
         'undo.menu': 'Eliminati di recente (annulla)',
         'undo.empty': 'Niente da annullare al momento',
         'undo.branch': 'Branch',
@@ -2446,6 +2560,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Hierheen resetten (wijzigingen weggooien)',
         'action.copyHash': 'Revisienummer kopiëren',
         'action.details': 'Commit-details',
+        'menu.sendToChat': 'Naar het gesprek verzenden',
+        'menu.sendFilePathToChat': 'Bestandspad naar het gesprek verzenden',
         'history.empty': 'Deze repository heeft nog geen commits',
         'history.loadMore': 'Meer laden',
         'history.filter': 'Tekst of hash',
@@ -2457,6 +2573,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Sleep om {name} te vergroten (dubbelklik herstelt, pijltjes stellen fijn af)',
         'diff.binary': 'Binair bestand',
         'diff.loading': 'Diff laden...',
+        'diff.codeLabel': 'Diff',
+        'diff.wrapLabel': 'Regels afbreken',
+        'diff.unwrapLabel': 'Bronkolommen behouden',
+        'diff.copy': 'Kopiëren',
+        'diff.copied': 'Gekopieerd',
         'toolbar.refresh': 'Vernieuwen',
         'toolbar.newBranch': 'Nieuwe branch',
         'toolbar.fetch': 'Fetch',
@@ -2523,6 +2644,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Wijzigingen in {path} weggegooid',
         'toast.discardNoUndo': 'Wijzigingen in {path} weggegooid (te groot om ongedaan te maken)',
         'toast.restored': 'Hersteld',
+        'toast.sentToChat': 'In het invoerveld geplaatst',
+        'toast.sendCopied': 'Kon niet worden verzonden — in plaats daarvan naar het klembord gekopieerd',
         'undo.menu': 'Onlangs verwijderd (ongedaan maken)',
         'undo.empty': 'Nu niets om ongedaan te maken',
         'undo.branch': 'Branch',
@@ -2637,6 +2760,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Przywróć tutaj (odrzuć zmiany)',
         'action.copyHash': 'Kopiuj numer wersji',
         'action.details': 'Szczegóły commita',
+        'menu.sendToChat': 'Wyślij do rozmowy',
+        'menu.sendFilePathToChat': 'Wyślij ścieżkę pliku do rozmowy',
         'history.empty': 'To repozytorium nie ma jeszcze commitów',
         'history.loadMore': 'Wczytaj więcej',
         'history.filter': 'Tekst lub hash',
@@ -2648,6 +2773,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Przeciągnij, aby zmienić rozmiar {name} (podwójne kliknięcie przywraca, strzałki korygują)',
         'diff.binary': 'Plik binarny',
         'diff.loading': 'Wczytywanie różnic...',
+        'diff.codeLabel': 'Różnice',
+        'diff.wrapLabel': 'Zawijaj wiersze',
+        'diff.unwrapLabel': 'Zachowaj kolumny źródła',
+        'diff.copy': 'Kopiuj',
+        'diff.copied': 'Skopiowano',
         'toolbar.refresh': 'Odśwież',
         'toolbar.newBranch': 'Nowa gałąź',
         'toolbar.fetch': 'Pobierz',
@@ -2714,6 +2844,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Odrzucono zmiany w {path}',
         'toast.discardNoUndo': 'Odrzucono zmiany w {path} (zbyt duże, aby zachować cofnięcie)',
         'toast.restored': 'Przywrócono',
+        'toast.sentToChat': 'Wysłano do pola wprowadzania',
+        'toast.sendCopied': 'Nie udało się wysłać — skopiowano do schowka',
         'undo.menu': 'Ostatnio usunięte (cofnij)',
         'undo.empty': 'Teraz nie ma czego cofać',
         'undo.branch': 'Gałąź',
@@ -2828,6 +2960,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Återställ hit (förkasta ändringar)',
         'action.copyHash': 'Kopiera revisionsnummer',
         'action.details': 'Commit-detaljer',
+        'menu.sendToChat': 'Skicka till samtalet',
+        'menu.sendFilePathToChat': 'Skicka filsökvägen till samtalet',
         'history.empty': 'Det här arkivet har inga commits ännu',
         'history.loadMore': 'Ladda mer',
         'history.filter': 'Text eller hash',
@@ -2839,6 +2973,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Dra för att ändra storleken på {name} (dubbelklick återställer, piltangenter finjusterar)',
         'diff.binary': 'Binär fil',
         'diff.loading': 'Laddar diff...',
+        'diff.codeLabel': 'Skillnad',
+        'diff.wrapLabel': 'Radbryt rader',
+        'diff.unwrapLabel': 'Behåll kolumner från källan',
+        'diff.copy': 'Kopiera',
+        'diff.copied': 'Kopierat',
         'toolbar.refresh': 'Uppdatera',
         'toolbar.newBranch': 'Ny gren',
         'toolbar.fetch': 'Fetch',
@@ -2905,6 +3044,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Ändringar i {path} förkastade',
         'toast.discardNoUndo': 'Ändringar i {path} förkastade (för stora för att ångra)',
         'toast.restored': 'Återställd',
+        'toast.sentToChat': 'Skickat till inmatningsrutan',
+        'toast.sendCopied': 'Det gick inte att skicka – kopierade till urklipp istället',
         'undo.menu': 'Nyligen borttaget (ångra)',
         'undo.empty': 'Inget att ångra just nu',
         'undo.branch': 'Gren',
@@ -3019,6 +3160,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Buraya sıfırla (değişiklikleri at)',
         'action.copyHash': 'Revizyon numarasını kopyala',
         'action.details': 'Commit ayrıntıları',
+        'menu.sendToChat': 'Sohbete gönder',
+        'menu.sendFilePathToChat': 'Dosya yolunu sohbete gönder',
         'history.empty': 'Bu depoda henüz commit yok',
         'history.loadMore': 'Daha fazla yükle',
         'history.filter': 'Metin veya hash',
@@ -3030,6 +3173,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '{name} boyutunu sürükleyerek ayarlayın (çift tıklama sıfırlar, ok tuşları ince ayar yapar)',
         'diff.binary': 'İkili dosya',
         'diff.loading': 'Fark yükleniyor...',
+        'diff.codeLabel': 'Fark',
+        'diff.wrapLabel': 'Satırları kaydır',
+        'diff.unwrapLabel': 'Kaynak sütunlarını koru',
+        'diff.copy': 'Kopyala',
+        'diff.copied': 'Kopyalandı',
         'toolbar.refresh': 'Yenile',
         'toolbar.newBranch': 'Yeni dal',
         'toolbar.fetch': 'Fetch',
@@ -3096,6 +3244,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '{path} içindeki değişiklikler atıldı',
         'toast.discardNoUndo': '{path} içindeki değişiklikler atıldı (geri alma için fazla büyük)',
         'toast.restored': 'Geri yüklendi',
+        'toast.sentToChat': 'Giriş kutusuna gönderildi',
+        'toast.sendCopied': 'Gönderilemedi – bunun yerine panoya kopyalandı',
         'undo.menu': 'Son silinenler (geri al)',
         'undo.empty': 'Şu anda geri alınacak bir şey yok',
         'undo.branch': 'Dal',
@@ -3210,6 +3360,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Reset ke sini (buang perubahan)',
         'action.copyHash': 'Salin nomor revisi',
         'action.details': 'Detail commit',
+        'menu.sendToChat': 'Kirim ke obrolan',
+        'menu.sendFilePathToChat': 'Kirim jalur berkas ke obrolan',
         'history.empty': 'Repositori ini belum punya commit',
         'history.loadMore': 'Muat lebih banyak',
         'history.filter': 'Teks atau hash',
@@ -3221,6 +3373,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Seret untuk mengubah ukuran {name} (klik ganda mengatur ulang, tombol panah menyesuaikan)',
         'diff.binary': 'Berkas biner',
         'diff.loading': 'Memuat diff...',
+        'diff.codeLabel': 'Perbedaan',
+        'diff.wrapLabel': 'Lipat baris',
+        'diff.unwrapLabel': 'Pertahankan kolom sumber',
+        'diff.copy': 'Salin',
+        'diff.copied': 'Tersalin',
         'toolbar.refresh': 'Segarkan',
         'toolbar.newBranch': 'Branch baru',
         'toolbar.fetch': 'Fetch',
@@ -3287,6 +3444,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Perubahan di {path} dibuang',
         'toast.discardNoUndo': 'Perubahan di {path} dibuang (terlalu besar untuk diurungkan)',
         'toast.restored': 'Dipulihkan',
+        'toast.sentToChat': 'Terkirim ke kotak masukan',
+        'toast.sendCopied': 'Tidak dapat mengirim — disalin ke papan klip sebagai gantinya',
         'undo.menu': 'Baru dihapus (urungkan)',
         'undo.empty': 'Tidak ada yang bisa diurungkan sekarang',
         'undo.branch': 'Branch',
@@ -3401,6 +3560,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'Đặt lại về đây (bỏ thay đổi)',
         'action.copyHash': 'Sao chép số hiệu bản sửa',
         'action.details': 'Chi tiết commit',
+        'menu.sendToChat': 'Gửi vào hội thoại',
+        'menu.sendFilePathToChat': 'Gửi đường dẫn tệp vào hội thoại',
         'history.empty': 'Kho này chưa có commit nào',
         'history.loadMore': 'Tải thêm',
         'history.filter': 'Văn bản hoặc hash',
@@ -3412,6 +3573,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'Kéo để đổi kích thước {name} (nhấp đúp để đặt lại, phím mũi tên để tinh chỉnh)',
         'diff.binary': 'Tệp nhị phân',
         'diff.loading': 'Đang tải diff...',
+        'diff.codeLabel': 'Khác biệt',
+        'diff.wrapLabel': 'Ngắt dòng',
+        'diff.unwrapLabel': 'Giữ độ rộng cột gốc',
+        'diff.copy': 'Sao chép',
+        'diff.copied': 'Đã sao chép',
         'toolbar.refresh': 'Làm mới',
         'toolbar.newBranch': 'Nhánh mới',
         'toolbar.fetch': 'Fetch',
@@ -3478,6 +3644,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'Đã bỏ thay đổi trong {path}',
         'toast.discardNoUndo': 'Đã bỏ thay đổi trong {path} (quá lớn để giữ hoàn tác)',
         'toast.restored': 'Đã khôi phục',
+        'toast.sentToChat': 'Đã gửi vào ô nhập',
+        'toast.sendCopied': 'Không thể gửi — đã sao chép vào clipboard để thay thế',
         'undo.menu': 'Vừa xoá (hoàn tác)',
         'undo.empty': 'Hiện không có gì để hoàn tác',
         'undo.branch': 'Nhánh',
@@ -3592,6 +3760,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'إعادة التعيين هنا (مع تجاهل التغييرات)',
         'action.copyHash': 'نسخ رقم المراجعة',
         'action.details': 'تفاصيل الالتزام',
+        'menu.sendToChat': 'إرسال إلى المحادثة',
+        'menu.sendFilePathToChat': 'إرسال مسار الملف إلى المحادثة',
         'history.empty': 'لا توجد التزامات في هذا المستودع بعد',
         'history.loadMore': 'تحميل المزيد',
         'history.filter': 'نص أو تجزئة',
@@ -3603,6 +3773,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'اسحب لتغيير حجم {name} (النقر المزدوج يعيد الضبط، ومفاتيح الأسهم للضبط الدقيق)',
         'diff.binary': 'ملف ثنائي',
         'diff.loading': 'جارٍ تحميل الفروق...',
+        'diff.codeLabel': 'الفروق',
+        'diff.wrapLabel': 'التفاف الأسطر',
+        'diff.unwrapLabel': 'الحفاظ على أعمدة المصدر',
+        'diff.copy': 'نسخ',
+        'diff.copied': 'تم النسخ',
         'toolbar.refresh': 'تحديث',
         'toolbar.newBranch': 'فرع جديد',
         'toolbar.fetch': 'جلب',
@@ -3669,6 +3844,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'تم تجاهل التغييرات في {path}',
         'toast.discardNoUndo': 'تم تجاهل التغييرات في {path} (أكبر من أن يُحتفظ بالتراجع)',
         'toast.restored': 'تمت الاستعادة',
+        'toast.sentToChat': 'تم الإرسال إلى مربع الكتابة',
+        'toast.sendCopied': 'تعذّر الإرسال — تم النسخ إلى الحافظة بدلًا من ذلك',
         'undo.menu': 'المحذوف حديثًا (تراجع)',
         'undo.empty': 'لا شيء لتراجعه الآن',
         'undo.branch': 'فرع',
@@ -3783,6 +3960,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'यहाँ रीसेट करें (परिवर्तन छोड़ें)',
         'action.copyHash': 'रिवीज़न संख्या कॉपी करें',
         'action.details': 'कमिट विवरण',
+        'menu.sendToChat': 'बातचीत में भेजें',
+        'menu.sendFilePathToChat': 'फ़ाइल पथ बातचीत में भेजें',
         'history.empty': 'इस रिपॉज़िटरी में अभी कोई कमिट नहीं है',
         'history.loadMore': 'और लोड करें',
         'history.filter': 'टेक्स्ट या हैश',
@@ -3794,6 +3973,11 @@ window.__ModuleLoader__.load({
         'pane.resize': '{name} का आकार बदलने के लिए खींचें (डबल-क्लिक रीसेट, तीर कुंजियाँ सूक्ष्म समायोजन)',
         'diff.binary': 'बाइनरी फ़ाइल',
         'diff.loading': 'अंतर लोड हो रहा है...',
+        'diff.codeLabel': 'अंतर',
+        'diff.wrapLabel': 'पंक्तियाँ रैप करें',
+        'diff.unwrapLabel': 'स्रोत कॉलम बनाए रखें',
+        'diff.copy': 'कॉपी करें',
+        'diff.copied': 'कॉपी हो गया',
         'toolbar.refresh': 'ताज़ा करें',
         'toolbar.newBranch': 'नई शाखा',
         'toolbar.fetch': 'फ़ेच',
@@ -3860,6 +4044,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': '{path} में परिवर्तन छोड़े गए',
         'toast.discardNoUndo': '{path} में परिवर्तन छोड़े गए (पूर्ववत रखने के लिए बहुत बड़ा)',
         'toast.restored': 'बहाल किया गया',
+        'toast.sentToChat': 'इनपुट बॉक्स में भेज दिया गया',
+        'toast.sendCopied': 'भेजा नहीं जा सका — इसके बजाय क्लिपबोर्ड पर कॉपी कर दिया गया',
         'undo.menu': 'हाल में हटाए गए (पूर्ववत करें)',
         'undo.empty': 'अभी पूर्ववत करने के लिए कुछ नहीं',
         'undo.branch': 'शाखा',
@@ -3974,6 +4160,8 @@ window.__ModuleLoader__.load({
         'action.resetHard': 'รีเซ็ตมาที่นี่ (ทิ้งการเปลี่ยนแปลง)',
         'action.copyHash': 'คัดลอกเลขรีวิชัน',
         'action.details': 'รายละเอียดคอมมิต',
+        'menu.sendToChat': 'ส่งไปยังบทสนทนา',
+        'menu.sendFilePathToChat': 'ส่งพาธไฟล์ไปยังบทสนทนา',
         'history.empty': 'รีโพซิทอรีนี้ยังไม่มีคอมมิต',
         'history.loadMore': 'โหลดเพิ่ม',
         'history.filter': 'ข้อความหรือแฮช',
@@ -3985,6 +4173,11 @@ window.__ModuleLoader__.load({
         'pane.resize': 'ลากเพื่อปรับขนาด {name} (ดับเบิลคลิกเพื่อรีเซ็ต ปุ่มลูกศรปรับละเอียด)',
         'diff.binary': 'ไฟล์ไบนารี',
         'diff.loading': 'กำลังโหลดความต่าง...',
+        'diff.codeLabel': 'ความต่าง',
+        'diff.wrapLabel': 'ตัดบรรทัด',
+        'diff.unwrapLabel': 'คงความกว้างคอลัมน์เดิม',
+        'diff.copy': 'คัดลอก',
+        'diff.copied': 'คัดลอกแล้ว',
         'toolbar.refresh': 'รีเฟรช',
         'toolbar.newBranch': 'แบรนช์ใหม่',
         'toolbar.fetch': 'Fetch',
@@ -4051,6 +4244,8 @@ window.__ModuleLoader__.load({
         'toast.discarded': 'ทิ้งการเปลี่ยนแปลงใน {path} แล้ว',
         'toast.discardNoUndo': 'ทิ้งการเปลี่ยนแปลงใน {path} แล้ว (ใหญ่เกินกว่าจะเก็บไว้เลิกทำ)',
         'toast.restored': 'กู้คืนแล้ว',
+        'toast.sentToChat': 'ส่งไปที่กล่องป้อนข้อความแล้ว',
+        'toast.sendCopied': 'ส่งไม่สำเร็จ – คัดลอกไปยังคลิปบอร์ดแทนแล้ว',
         'undo.menu': 'ลบล่าสุด (เลิกทำ)',
         'undo.empty': 'ตอนนี้ไม่มีอะไรให้เลิกทำ',
         'undo.branch': 'แบรนช์',
@@ -5209,6 +5404,120 @@ window.__ModuleLoader__.load({
       return E('svg', { className: 'dig-graph', width: width, height: height, viewBox: '0 0 ' + width + ' ' + height }, children)
     }
 
+    /* ============================== composer send ============================== */
+    /* "Send to chat": drop a reference chip / short text into the CURRENT
+       session's composer, the way typing `@file` there would. The host channel
+       is ui-conversation's SessionInput facade (research brief 2026-10-07):
+       `ctx.get('conversation').input.for(ctx.get('sessions').scope(id))`. Every
+       hop is probed — the services may be absent (a trimmed host) and `for`
+       THROWS on a scope without a retained session generation — so a miss
+       degrades to a clipboard copy with a toast, never a dead click.
+
+       Two spellings:
+       - file/folder → insertReference(): a structured Lexical chip whose model
+         serialization is the plain `@path` text (the same thing the @ menu
+         inserts; source 'reference', appearance 'file'/'folder').
+       - text (short hash, branch name, raw path) → the scoped
+         `slash/input-insert-text` bail event, the machine entrance of the same
+         pipeline. NOT `inputTriggers...openReference` — that one opens a
+         preview and never touches the draft. */
+
+    /* `formatFileMention` (@deepseek-ai/dsh-file-reference/grammar) without the
+       require: that package is not on the seed table, so the plugin inlines the
+       grammar — trailing `/` for a directory, `@"path"` when whitespace is
+       present (a quoted directory keeps its quote open), and `null` for paths
+       the editor grammar cannot represent (control characters, quotes). */
+    function fileMentionOf(relPath) {
+      const isDir = relPath.slice(-1) === '/'
+      if (/[\u0000-\u001f\u007f-\u009f"]/u.test(relPath) === true) return null
+      if (/\s/u.test(relPath) === false) return '@' + relPath
+      return isDir === true ? '@"' + relPath : '@"' + relPath + '"'
+    }
+
+    /* Resolve { actx, input } for the current session, or null. `input.for`
+       requires a RETAINED Session scope and throws otherwise — that is part of
+       its contract (contract/input.ts), so the whole probe rides a try/catch. */
+    function composerTargetOf(ctx, sessionId) {
+      try {
+        if (ctx === undefined || ctx === null || ctx.get === undefined) return null
+        if (typeof sessionId !== 'string' || sessionId === '' || sessionId === 'default') return null
+        const sessions = ctx.get('sessions')
+        const conversation = ctx.get('conversation')
+        if (sessions === undefined || sessions === null || conversation === undefined || conversation === null) return null
+        if (typeof sessions.scope !== 'function' || conversation.input === undefined || conversation.input === null) return null
+        const actx = sessions.scope(sessionId)
+        if (actx === undefined || actx === null) return null
+        const input = conversation.input.for(actx)
+        if (input === undefined || input === null) return null
+        return { actx: actx, input: input }
+      } catch (error) { void error; return null }
+    }
+
+    /* apply(actx, input, span) → boolean. The span is an EMPTY span at the draft
+       tail in detect coordinates (state.draft is exactly the projection the CAS
+       compares). A false answer is the user typing between our read and write —
+       re-read once and retry (the brief's advice: one retry, no spinning). The
+       busy phases (adjudicating/submitting) also answer false; that lands on the
+       same clipboard fallback, which is the honest outcome. */
+    function insertIntoComposer(ctx, sessionId, apply) {
+      const target = composerTargetOf(ctx, sessionId)
+      if (target === null) return false
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        let state
+        try { state = target.input.state.getSnapshot() } catch (error) { void error; return false }
+        if (state === undefined || state === null || typeof state.draft !== 'string' || typeof state.draftRev !== 'number') return false
+        const span = { start: state.draft.length, end: state.draft.length, draftRev: state.draftRev }
+        let applied = false
+        try { applied = apply(target.actx, target.input, span) === true } catch (error) { void error; applied = false }
+        if (applied === true) {
+          try { target.input.focus() } catch (error) { void error }
+          return true
+        }
+      }
+      return false
+    }
+
+    /* One single-file unified diff (what the host `diff` method returns) → the
+       one DiffHunk DiffBlock renders, by replaying ` `/`-`/`+` lines back into
+       the two sides. No `@@` at all (binary patches, mode-only changes) or a
+       pathless header → null, and the caller keeps the hand-drawn rows. */
+    function patchToHunk(patch) {
+      const text = typeof patch === 'string' ? patch : ''
+      if (text === '' || text.indexOf('@@') < 0) return null
+      const lines = text.split('\n')
+      let path = null
+      const oldText = []
+      const newText = []
+      for (const line of lines) {
+        if (line.indexOf('+++ ') === 0) {
+          const name = line.slice(4).split('\t')[0]
+          if (name !== '/dev/null') path = name.replace(/^b\//, '')
+          continue
+        }
+        if (line.indexOf('--- ') === 0) {
+          if (path === null) {
+            const name = line.slice(4).split('\t')[0]
+            if (name !== '/dev/null') path = name.replace(/^a\//, '')
+          }
+          continue
+        }
+        if (line.indexOf('@@') === 0) continue
+        if (line.indexOf('+') === 0) { newText.push(line.slice(1)); continue }
+        if (line.indexOf('-') === 0) { oldText.push(line.slice(1)); continue }
+        if (line.indexOf('\\') === 0) continue
+        if (line.indexOf(' ') === 0) { oldText.push(line.slice(1)); newText.push(line.slice(1)); continue }
+        // diff --git / index / new file mode / rename from ...: metadata above
+        // the first hunk; anything else after it would be malformed.
+        continue
+      }
+      if (path === null || path === '') return null
+      // A patch without body lines (mode-only, bare metadata) replays into an
+      // empty hunk that DiffBlock draws as nothing at all — keep the hand-drawn
+      // rows for those, they at least show what happened.
+      if (oldText.length === 0 && newText.length === 0) return null
+      return { path: path, oldText: oldText.length === 0 ? null : oldText.join('\n'), newText: newText.join('\n') }
+    }
+
     /* ============================== diff ============================== */
 
     function diffLines(patch) {
@@ -5239,16 +5548,68 @@ window.__ModuleLoader__.load({
       return out
     }
 
+    /* DiffBlock's own 16-line cap would REPLACE scrolling with a fold button;
+       this panel keeps the old contract (render everything, scroll inside the
+       .dig-diff-pane max-height), so the cap is pushed out of reach and the
+       fold labels below are placeholders that never render at this size. */
+    const DIFF_BLOCK_MAX_LINES = 1000000
+
+    function diffLabelsOf(t) {
+      return {
+        codeLabel: t('diff.codeLabel'),
+        wrapLabel: t('diff.wrapLabel'),
+        unwrapLabel: t('diff.unwrapLabel'),
+        copy: t('diff.copy'),
+        copied: t('diff.copied'),
+        collapseAria: 'Collapse diff',
+        expandAria: (hidden) => 'Show ' + String(hidden) + ' more diff lines',
+        collapse: 'Show less',
+        expand: (hidden) => 'Show ' + String(hidden) + ' more',
+      }
+    }
+
     function DiffBody(props) {
       const rows = useMemo(() => diffLines(props.patch), [props.patch])
       if (props.loading === true) return E('div', { className: 'dig-empty' }, props.t('diff.loading'))
       if (props.binary === true) return E('div', { className: 'dig-empty' }, props.t('diff.binary'))
       if (rows.length === 0) return E('div', { className: 'dig-empty' }, props.t('diff.empty'))
+      /* Host-rendered first (v0.14): the ui-primitives diff card brings the
+         shared toolbar (copy / wrap / language) and the product's diff colors.
+         A patch we cannot replay into a hunk (binary, mode-only) or a host
+         without the seed module falls back to the hand-drawn rows below. */
+      if (UIPrimitives !== null && typeof UIPrimitives.DiffBlock === 'function') {
+        const hunk = patchToHunk(props.patch)
+        if (hunk !== null) {
+          return E('div', { className: 'dig-diff-host' },
+            E(UIPrimitives.DiffBlock, {
+              diffs: [hunk],
+              labels: diffLabelsOf(props.t),
+              maxLines: DIFF_BLOCK_MAX_LINES,
+              className: 'dig-diff-card',
+            }))
+        }
+      }
       return E('div', { className: 'dig-diff' }, rows.map((row, index) => E('div', { key: index, className: 'dig-diff-line dig-diff-' + row.kind },
         E('span', { className: 'dig-diff-gutter' }, row.oldLine === null ? '' : String(row.oldLine)),
         E('span', { className: 'dig-diff-gutter' }, row.newLine === null ? '' : String(row.newLine)),
         E('span', { className: 'dig-diff-text' }, row.text === '' ? ' ' : row.text),
       )))
+    }
+
+    /* The leading glyph of a change row (v0.14): the host's FileTypeIcon —
+       classifyFileType runs inside when given a path. Directories (the
+       trailing slash an `ls-files --directory` row carries) ask for the
+       folder kind explicitly, since their basename is empty. A host without
+       the seed module returns null and the row keeps its status letter as the
+       only leading mark. Sizing follows the status letter's box (14px, the
+       .dig-row line height). */
+    function FileTypeGlyph(props) {
+      if (UIPrimitives === null || typeof UIPrimitives.FileTypeIcon !== 'function') return null
+      const path = typeof props.path === 'string' ? props.path : ''
+      if (path === '') return null
+      return E(UIPrimitives.FileTypeIcon, path.slice(-1) === '/'
+        ? { kind: 'folder', size: 14, className: 'dig-file-icon' }
+        : { path: path, size: 14, className: 'dig-file-icon' })
     }
 
     /* ============================== ui kit ============================== */
@@ -5296,6 +5657,9 @@ window.__ModuleLoader__.load({
       split: ['M2.5 3h11v10h-11z', 'M8 3v10'],
       expand: ['M4.5 6.2 8 9.7l3.5-3.5', 'M3 12.4h10'],
       collapse: ['M4.5 9.8 8 6.3l3.5 3.5', 'M3 3.6h10'],
+      // "Send to chat": a paper plane — the shared glyph of the three context
+      // menus that drop a reference / hash / branch name into the composer.
+      send: ['M14.3 1.7 1.7 7.4l4.9 1.9 1.9 4.9L14.3 1.7Z', 'M6.6 9.3 14.3 1.7'],
     }
 
     function Icon(props) {
@@ -6257,6 +6621,7 @@ window.__ModuleLoader__.load({
         onClick: () => props.onDiff(item, props.group),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, item, props.group) },
       },
+        FileTypeGlyph({ path: item.path }),
         E('span', { className: 'dig-file-status dig-file-status-' + (status === '?' ? 'U' : status) }, status),
         // An ignored DIRECTORY comes back as "dist/" (ls-files --directory), whose
         // basename is empty — show the whole path instead of a blank label.
@@ -6700,7 +7065,9 @@ window.__ModuleLoader__.load({
             className: 'dig-row dig-row-file' + (props.selectedPath === file.path ? ' dig-row-selected' : ''),
             title: file.path,
             onClick: () => props.onSelectFile(file),
+            onContextMenu: props.onFileMenu === undefined ? undefined : (event) => { event.preventDefault(); props.onFileMenu(event, file) },
           },
+            FileTypeGlyph({ path: file.path }),
             E('span', { className: 'dig-row-label' }, baseName(file.path)),
             E('span', { className: 'dig-row-sub dig-row-dir' }, dirName(file.path)),
             file.additions > 0 ? E('span', { className: 'dig-stat-add' }, '+' + file.additions) : null,
@@ -7178,68 +7545,11 @@ window.__ModuleLoader__.load({
         })
       }, [])
 
-      const branchMenu = useCallback((event, entry) => {
-        const current = branches === null ? '' : branches.branch
-        const isLocal = entry.remote !== true && entry.tag !== true
-        const reason = t('action.unavailable')
-        const items = [
-          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
-          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
-          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
-          { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
-          null,
-          { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
-          { id: 'newBranch', icon: 'plus', tone: 'success', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
-          isLocal ? { id: 'rename', icon: 'file', tone: 'primary', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
-          isLocal ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, disabled: entry.head === true, reason: reason, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
-          null,
-          { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
-          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
-        ].filter((item) => item !== null)
-        openMenuAt(event, items)
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked])
-
-      const commitMenu = useCallback((event, commit) => {
-        const items = [
-          { id: 'details', icon: 'file', tone: 'primary', label: t('action.details'), run: () => { void selectCommit(commit) } },
-          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
-          null,
-          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), run: () => setDialog({ kind: 'checkoutCommit', hash: commit.hash }) },
-          { id: 'branch', icon: 'plus', tone: 'success', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
-          { id: 'tag', icon: 'tag', tone: 'warn', label: t('action.newTag'), run: () => setDialog({ kind: 'newTag', hash: commit.hash }) },
-          null,
-          { id: 'cherry', icon: 'commit', tone: 'accent', label: t('action.cherryPick'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
-          { id: 'revert', icon: 'undo', tone: 'danger', label: t('action.revert'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('revert', { hash: commit.hash }) } },
-          null,
-          { id: 'resetSoft', icon: 'undo', tone: 'warn', label: t('action.resetSoft'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
-          { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
-        ]
-        openMenuAt(event, items)
-      }, [run, selectCommit, t, openMenuAt, blocked])
-
-      const changeMenu = useCallback((event, item, group) => {
-        const items = [
-          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { void openDiff({ path: item.path, staged: group === 'staged' }) } },
-          null,
-          group === 'staged'
-            ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
-            : { id: 'stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
-          { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, disabled: group === 'untracked', reason: t('action.unavailable'), run: () => setDialog({ kind: 'discard', item: item, group: group }) },
-          null,
-          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
-        ]
-        openMenuAt(event, items)
-      }, [openDiff, run, t, openMenuAt])
-
-      const submitDialog = useCallback(async (state, value) => {
-        setDialog(null)
-        if (state.kind === 'newBranch') { await run('checkout', { branch: value, create: true, startPoint: state.from }); return }
-        if (state.kind === 'renameBranch') { await run('branchRename', { from: state.from, to: value }); return }
-        if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
-      }, [run])
-
-      /* ---------- toasts + undo ---------- */
-
+      /* ---------- toast plumbing ---------- */
+      /* Declared BEFORE the context menus on purpose: the send-to-chat bindings
+         and every menu builder close over pushToast, and a hooks dependency
+         array is evaluated during render (invariant 12) — the plumbing has to
+         exist by the time those arrays are evaluated. */
       const toastTimers = useRef([])
       const toastSeq = useRef(0)
 
@@ -7260,6 +7570,125 @@ window.__ModuleLoader__.load({
         if (ttl > 0) toastTimers.current.push(setTimeout(() => dropToast(id), ttl))
         return id
       }, [dropToast])
+
+      /* Send-to-chat (v0.14): one funnel for the three context menus. The
+         insertion target is the CURRENT session's composer (scope.sessionId);
+         a miss — service absent, no retained session, phase busy, CAS raced
+         twice — still gives feedback: the payload is copied to the clipboard
+         and a toast says so. */
+      const sendToComposer = useCallback((payload) => {
+        const applied = insertIntoComposer(props.ctx, sessionId, (actx, input, span) => {
+          if (payload.appearance !== undefined) {
+            return input.insertReference({
+              source: 'reference',
+              ref: payload.mention,
+              label: payload.label,
+              appearance: payload.appearance,
+              clipboardText: payload.mention,
+            }, span)
+          }
+          // Plain text rides the scoped insert-text event (bail value IS the
+          // answer); a trailing space keeps the next keystroke off the token.
+          return actx.bail(actx, 'slash/input-insert-text', { text: payload.text + ' ', span: span }) === true
+        })
+        if (applied === true) {
+          pushToast({ text: t('toast.sentToChat'), icon: 'send', tone: 'ok', ttl: 6000 })
+          return
+        }
+        copyText(payload.fallback)
+        pushToast({ text: t('toast.sendCopied'), icon: 'tag', tone: 'warn', ttl: 6000 })
+      }, [props.ctx, sessionId, pushToast, t])
+
+      const sendFileReferenceToChat = useCallback((path) => {
+        const mention = fileMentionOf(path)
+        if (mention === null) { sendToComposer({ text: path, fallback: path }); return }
+        sendToComposer({
+          mention: mention,
+          label: path.slice(-1) === '/' ? path.slice(0, -1) : baseName(path),
+          appearance: path.slice(-1) === '/' ? 'folder' : 'file',
+          fallback: path,
+        })
+      }, [sendToComposer])
+
+      const branchMenu = useCallback((event, entry) => {
+        const current = branches === null ? '' : branches.branch
+        const isLocal = entry.remote !== true && entry.tag !== true
+        const reason = t('action.unavailable')
+        const items = [
+          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
+          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
+          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
+          { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
+          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendToComposer({ text: entry.name, fallback: entry.name }) },
+          null,
+          { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
+          { id: 'newBranch', icon: 'plus', tone: 'success', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
+          isLocal ? { id: 'rename', icon: 'file', tone: 'primary', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
+          isLocal ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, disabled: entry.head === true, reason: reason, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
+          null,
+          { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
+          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
+        ].filter((item) => item !== null)
+        openMenuAt(event, items)
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendToComposer])
+
+      const commitMenu = useCallback((event, commit) => {
+        const shortHash = commit.hash.slice(0, 7)
+        const items = [
+          { id: 'details', icon: 'file', tone: 'primary', label: t('action.details'), run: () => { void selectCommit(commit) } },
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
+          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendToComposer({ text: shortHash, fallback: shortHash }) },
+          null,
+          { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), run: () => setDialog({ kind: 'checkoutCommit', hash: commit.hash }) },
+          { id: 'branch', icon: 'plus', tone: 'success', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
+          { id: 'tag', icon: 'tag', tone: 'warn', label: t('action.newTag'), run: () => setDialog({ kind: 'newTag', hash: commit.hash }) },
+          null,
+          { id: 'cherry', icon: 'commit', tone: 'accent', label: t('action.cherryPick'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('cherryPick', { hash: commit.hash }) } },
+          { id: 'revert', icon: 'undo', tone: 'danger', label: t('action.revert'), disabled: blocked, reason: t('operation.hint'), run: () => { void run('revert', { hash: commit.hash }) } },
+          null,
+          { id: 'resetSoft', icon: 'undo', tone: 'warn', label: t('action.resetSoft'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'mixed' }) },
+          { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
+        ]
+        openMenuAt(event, items)
+      }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer])
+
+      const changeMenu = useCallback((event, item, group) => {
+        const items = [
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { void openDiff({ path: item.path, staged: group === 'staged' }) } },
+          { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
+          { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: item.path, fallback: item.path }) },
+          null,
+          group === 'staged'
+            ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
+            : { id: 'stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
+          { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, disabled: group === 'untracked', reason: t('action.unavailable'), run: () => setDialog({ kind: 'discard', item: item, group: group }) },
+          null,
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
+        ]
+        openMenuAt(event, items)
+      }, [openDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer])
+
+      /* The commit-detail file list shares the working-tree row menu, minus the
+         staging verbs: a committed file's diff replays against its commit. */
+      const detailFileMenu = useCallback((event, file) => {
+        openMenuAt(event, [
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { setSelectedPath(file.path); void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path }) } },
+          null,
+          { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(file.path) },
+          { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: file.path, fallback: file.path }) },
+          null,
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(file.path) } },
+        ])
+      }, [detail, openDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t])
+
+      const submitDialog = useCallback(async (state, value) => {
+        setDialog(null)
+        if (state.kind === 'newBranch') { await run('checkout', { branch: value, create: true, startPoint: state.from }); return }
+        if (state.kind === 'renameBranch') { await run('branchRename', { from: state.from, to: value }); return }
+        if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
+      }, [run])
+
+      /* ---------- toasts + undo ---------- */
 
       // The delete really happened; the host kept an object id for a while, and this
       // asks it to recreate the branch / stash entry from that id.
@@ -7435,6 +7864,7 @@ window.__ModuleLoader__.load({
               setSelectedPath(file.path)
               void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path })
             },
+            onFileMenu: detailFileMenu,
           })
         : E(HistoryList, {
             t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
@@ -8138,6 +8568,14 @@ window.__ModuleLoader__.load({
       '.dig-diff-del{background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 16%, transparent)}',
       '.dig-diff-hunk{color:var(--dsw-alias-brand-primary);background:color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent)}',
       '.dig-diff-meta{color:var(--dsw-alias-label-tertiary)}',
+      /* Host-rendered diff (ui-primitives DiffBlock): the host box keeps the
+         pane's scroll contract (everything renders, the pane scrolls), and the
+         card's own 16px vertical margin is tightened to the panel rhythm. */
+      '.dig-diff-host{flex:1;overflow:auto;min-height:0}',
+      '.dig-diff-card{margin:4px 6px 8px;font-size:12px}',
+      /* File-type glyphs lead every change row (v0.14); a transparent-theme
+         host still tints them through the component's own category colors. */
+      '.dig-file-icon{flex:none;opacity:.95}',
       '.dig-overlay{position:absolute;inset:0;padding:8px;box-sizing:border-box;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));-webkit-backdrop-filter:var(--dsw-mask-blur,none);backdrop-filter:var(--dsw-mask-blur,none);display:flex;align-items:center;justify-content:center;z-index:60}',
       '.dig-dialog{box-sizing:border-box;min-width:min(240px,100%);max-width:min(420px,94%);max-height:100%;overflow:auto;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:0;border-radius:var(--dsw-radius-panel,28px);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--dsw-elevation-prominent,0 12px 32px rgba(0,0,0,.35))}',
       '.dig-dialog-wide{min-width:min(360px,92%)}',
@@ -8200,7 +8638,7 @@ window.__ModuleLoader__.load({
       const openSettings = navigation !== undefined && navigation !== null && typeof navigation.openBundle === 'function'
         ? () => { navigation.openBundle(SETTINGS_BUNDLE) }
         : null
-      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings })
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings, ctx: props.ctx })
     }
 
     /* The conversation-area seat (issue #8): the same panel as a view tab

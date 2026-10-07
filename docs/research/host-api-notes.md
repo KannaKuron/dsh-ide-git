@@ -52,6 +52,7 @@
 - 草稿持久化模型 `DraftSnapshot { text, references }`,reference 占 `[offset, offset+length)` 区间、文本等于 clipboardText:`contract/draft-editor.ts:26-38`;`Occurrence`(offset/length/clipboardText/appearance):`draft-editor.ts:101-121`。
 - 未成 chip 的裸 `@name` 文本有 lexicon 扫描**装饰**(纯外观、非状态):`input/decorations.ts:66` 附近;plain-text pick 路径的说明见 `facade.ts:505-517` 注释(「no chip node; the chip look is a scan-derived decoration, never state」)。
 - mention 语法(`@path`,含空格用 `@"path"`,目录尾随 `/`,含控制字符/引号的路径不可表示):`formatFileMention`,`@deepseek-ai/dsh-file-reference/grammar` `grammar.ts:45-57`。
+  - **勘误补充(2026-10-07,实现时核实)**:`@deepseek-ai/dsh-file-reference` **不在 seed 词表**(client/web `src/seed.ts` 仅 react/react-dom/cordis/store/ui-slots/ui-primitives/ui-dockkit),插件客户端半不能 require 它——`formatFileMention` 只能内联等价实现(实现见 src/client.js `fileMentionOf`,与 grammar.ts 语义逐条对齐:目录尾 `/`、含空白 `@"path"`、目录带引号不闭合、控制字符/引号返回不可表示)。上文代码片段同样采用的是内联写法,特此注明以免后人误 require。
 - 输入框的 @ 菜单 source 名为 **`reference`**(trigger `'@'`):ui-reference `src/client/index.ts:47,52-154`。
 
 ### 推荐用法片段(插件客户端半,v0.13 会话座位已知 `sessionId` 与 `cwd`)
