@@ -328,6 +328,48 @@ try {
       check(state.visible >= 1 && /main|master|branch|分支/i.test(state.text) === true,
         'a same-workspace session switch paints the panel from the first-paint cache')
       await page.screenshot({ path: join(outDir, 'conversation-git-tab-switched.png') })
+      /* 2c — the detail flip (v0.13.1 report): opening a commit's detail (and
+         from there a file diff) used to grow the panel with its content, and
+         the width-vs-height chrome test flipped the wide seat into the stacked
+         sidebar layout, shifting everything down. The seat is now pinned to
+         the scrollport's visible height, so the chrome must stay `columns` and
+         the panel must not grow past the viewport. */
+      const commitRow = page.locator('.dig-root:visible .dig-commit').first()
+      if (await commitRow.count() > 0) {
+        await commitRow.click({ timeout: 6000 })
+        await settle(4000)
+        /* The user's exact path: click a changed FILE inside the detail — the
+           diff is the tallest content that used to trigger the flip. */
+        const fileRow = page.locator('.dig-root:visible .dig-detail-files .dig-row-file').first()
+        if (await fileRow.count() > 0) {
+          try { await fileRow.click({ timeout: 5000 }) } catch (error) { void error }
+          await settle(3500)
+        }
+        const chrome = await page.evaluate(() => {
+          const root = [...document.querySelectorAll('.dig-root')].find((el) => el.getBoundingClientRect().height > 40)
+          if (root === undefined) return null
+          const body = root.querySelector('.dig-body')
+          const rect = root.getBoundingClientRect()
+          const scroll = root.closest('[data-conversation-scroll]')
+          return {
+            chrome: body === null ? 'none' : (body.className.match(/dig-body-(columns|stack|compact)/) || [])[1] || 'unknown',
+            rootHeight: Math.round(rect.height),
+            viewport: scroll === null ? window.innerHeight : Math.round(scroll.clientHeight),
+          }
+        })
+        if (chrome === null) check(false, 'the panel vanished while the detail was open')
+        else {
+          check(chrome.chrome === 'columns', 'opening a commit detail keeps the columns chrome (saw ' + chrome.chrome + ')')
+          check(chrome.rootHeight <= chrome.viewport + 40,
+            'the panel stays within the visible area (root ' + chrome.rootHeight + 'px vs viewport ' + chrome.viewport + 'px)')
+        }
+        await page.screenshot({ path: join(outDir, 'conversation-git-detail.png') })
+        /* Back to the history so the later steps start from a known surface. */
+        const back = page.locator('.dig-root:visible button', { hasText: '返回历史' }).first()
+        if (await back.count() > 0) { try { await back.click({ timeout: 4000 }) } catch (error) { void error } await settle(2000) }
+      } else {
+        log('commit rows not found — skipping the detail-flip check')
+      }
     } else {
       check(false, 'the Git tab is present on the fresh session')
     }

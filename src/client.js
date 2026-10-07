@@ -28,6 +28,12 @@ window.__ModuleLoader__.load({
     const useCallback = React.useCallback
     const useLayoutEffect = React.useLayoutEffect
     const memo = React.memo
+    /* Measure-and-derive effects run here for the layout timing (the chrome and
+       the rail capacity derive from these numbers — a paint-then-correct cycle
+       read as buttons lighting up one by one on every seat switch). Environments
+       without a frame loop (the SSR self-check's shims) get the plain effect —
+       there is no paint to sync with there, and no server warning either. */
+    const useMeasureLayoutEffect = typeof requestAnimationFrame === 'function' ? useLayoutEffect : useEffect
 
     /* API base is MOUNT-RELATIVE (no leading slash). dsh 0.1.7 serves the
        shell with <base href="./">, so document.baseURI is the mount the page
@@ -4282,6 +4288,38 @@ window.__ModuleLoader__.load({
 
     /* ============================== storage ============================== */
 
+    /* ---- tree UI state (v0.13.1): the session-scoped seats remount on every
+       session switch, and component state died with them — branch sections
+       snapped back to defaults and folders re-folded. One localStorage home,
+       GLOBAL by design: which sections you keep folded is a habit, not a
+       property of the repository. ---- */
+    const TREE_KEY = 'dsh-ide-git.tree.v1'
+
+    function readTreeState() {
+      try {
+        const raw = window.localStorage.getItem(TREE_KEY)
+        if (raw === null || raw === '') return null
+        const parsed = JSON.parse(raw)
+        return parsed !== null && typeof parsed === 'object' ? parsed : null
+      } catch (error) { void error }
+      return null
+    }
+
+    function writeTreeState(state) {
+      try { window.localStorage.setItem(TREE_KEY, JSON.stringify(state)) } catch (error) { void error }
+    }
+
+    function treeSectionDefaults() {
+      return { favorites: false, remote: false, tags: true }
+    }
+
+    function treeSectionsOf(stored) {
+      const sections = stored !== null && typeof stored === 'object' && stored.sections !== null && typeof stored.sections === 'object'
+        ? stored.sections
+        : {}
+      return Object.assign(treeSectionDefaults(), sections)
+    }
+
     /* ---- ai commit pickers (issue #7): the model catalog and per-model
        reasoning efforts, served by the host's commit-models / commit-efforts
        routes. Cached for a short window so the settings card can mount twice
@@ -6022,9 +6060,23 @@ window.__ModuleLoader__.load({
     function BranchTree(props) {
       const t = props.t
       const [filter, setFilter] = useState('')
-      const [collapsed, setCollapsed] = useState({ favorites: false, remote: false, tags: true })
+      const [collapsed, setCollapsed] = useState(() => treeSectionsOf(readTreeState()))
       const [picked, setPicked] = useState('')
-      const [foldedFolders, setFoldedFolders] = useState({})
+      const [foldedFolders, setFoldedFolders] = useState(() => {
+        const stored = readTreeState()
+        return stored !== null && typeof stored === 'object' && stored.folders !== null && typeof stored.folders === 'object'
+          ? stored.folders
+          : {}
+      })
+      /* Survive the remount a session switch performs (v0.13.1). */
+      useEffect(() => {
+        const stored = readTreeState()
+        writeTreeState(Object.assign({}, stored, { sections: collapsed }))
+      }, [collapsed])
+      useEffect(() => {
+        const stored = readTreeState()
+        writeTreeState(Object.assign({}, stored, { folders: foldedFolders }))
+      }, [foldedFolders])
       const branches = props.branches
       const needle = filter.trim().toLowerCase()
       const match = (name) => needle === '' || String(name).toLowerCase().indexOf(needle) >= 0
@@ -6140,7 +6192,15 @@ window.__ModuleLoader__.load({
       const summary = props.summary
       const [message, setMessage] = useState('')
       const [amend, setAmend] = useState(false)
-      const [collapsed, setCollapsed] = useState(false)
+      const [collapsed, setCollapsed] = useState(() => {
+        const stored = readTreeState()
+        return stored !== null && typeof stored === 'object' && stored.changesCollapsed === true
+      })
+      /* Same remount-survival as the branch sections (v0.13.1). */
+      useEffect(() => {
+        const stored = readTreeState()
+        writeTreeState(Object.assign({}, stored, { changesCollapsed: collapsed === true }))
+      }, [collapsed])
       /* AI-written message (issue #6). The draft is kept so the write can be
          undone, and an existing draft is never overwritten without a word. */
       const [aiBusy, setAiBusy] = useState(false)
@@ -6620,7 +6680,12 @@ window.__ModuleLoader__.load({
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
       const base = useMemo(() => ({ cwd: cwd, repoRoot: repoRoot === null ? undefined : repoRoot }), [cwd, repoRoot])
 
-      useEffect(() => {
+      /* Layout effect ON PURPOSE: the chrome (compact/columns/stack) and the
+         rail capacity derive from these numbers, and a paint-then-correct
+         cycle showed up on every seat switch as buttons lighting up one by
+         one (v0.13.1 report). Measuring in the commit phase keeps the first
+         paint on the final chrome. */
+      useMeasureLayoutEffect(() => {
         const element = hostRef.current
         if (element === null) return undefined
         const measure = () => {
@@ -6664,7 +6729,7 @@ window.__ModuleLoader__.load({
       // Like the rail, the panes measure the box that actually holds them instead
       // of trusting the root probe: the column chrome keeps a vertical rail
       // beside the body, and the header sits above it.
-      useEffect(() => {
+      useMeasureLayoutEffect(() => {
         const element = bodyRef.current
         if (element === null) { setBodyBox({ width: 0, height: 0 }); return undefined }
         const measure = () => {
@@ -6802,7 +6867,9 @@ window.__ModuleLoader__.load({
       // function of the strip that holds them (a 1200x300 workbench and a 300x900
       // sidebar disagree about that). railBox keeps the last measured span; until
       // the first measurement lands, every action is rendered.
-      useEffect(() => {
+      // Layout effect (see the host measure above): the button count derives
+      // from this box, and a late measure reads as the rail lighting up late.
+      useMeasureLayoutEffect(() => {
         const element = railHostRef.current
         if (element === null) { setRailBox({ width: 0, height: 0 }); return undefined }
         const measure = () => {
@@ -8079,6 +8146,47 @@ window.__ModuleLoader__.load({
       const ctx = props.ctx
       const sessionId = typeof props.sessionId === 'string' ? props.sessionId : ''
       const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
+      /* The active conversation's view area is `flex: 1 0 auto; min-height:
+         auto` — it GROWS with content and scrolls inside the shared
+         conversation scrollport. An auto-height panel there measured
+         content-tall (a 120-commit history, a long diff), so the width-vs-
+         height chrome test flipped the wide seat into the stacked sidebar
+         layout and everything shifted downward (v0.13.1 report). Pin the seat
+         to the scrollport's VISIBLE height instead: the panel fills exactly
+         the on-screen area and scrolls internally, the way the sidebar seats
+         behave. */
+      const seatRef = useRef(null)
+      const [seatHeight, setSeatHeight] = useState(null)
+      useEffect(() => {
+        const el = seatRef.current
+        if (el === null) return undefined
+        const measure = () => {
+          let scroll = null
+          try { scroll = el.closest('[data-conversation-scroll]') } catch (error) { void error }
+          if (scroll === null || scroll === undefined) return
+          const offset = Math.max(0, el.getBoundingClientRect().top - scroll.getBoundingClientRect().top)
+          const available = Math.round(scroll.clientHeight - offset - 8)
+          if (available >= 240) setSeatHeight(available)
+        }
+        measure()
+        const raf = requestAnimationFrame(() => { measure() })
+        const late = setTimeout(() => { measure() }, 400)
+        let observer
+        try {
+          const scroll = el.closest('[data-conversation-scroll]')
+          if (scroll !== null && scroll !== undefined && typeof ResizeObserver === 'function') {
+            observer = new ResizeObserver(() => { measure() })
+            observer.observe(scroll)
+          }
+        } catch (error) { void error }
+        window.addEventListener('resize', measure)
+        return () => {
+          cancelAnimationFrame(raf)
+          clearTimeout(late)
+          if (observer !== undefined) observer.disconnect()
+          window.removeEventListener('resize', measure)
+        }
+      }, [])
       useEffect(() => {
         let alive = true
         const sync = () => { if (alive === true) setCwd(sessionCwdOf(ctx, sessionId)) }
@@ -8102,7 +8210,11 @@ window.__ModuleLoader__.load({
         }
       }, [ctx, sessionId])
       const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
-      return E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true })
+      return E('div', {
+        ref: seatRef,
+        className: 'dig-conversation-seat',
+        style: seatHeight === null ? undefined : { height: seatHeight + 'px' },
+      }, E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true }))
     }, (prev, next) => prev.sessionId === next.sessionId && prev.t === next.t && prev.ctx === next.ctx)
 
     function NativePanel(props) {
