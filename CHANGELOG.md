@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.13.4 — 2026-10-07
+
+**类型**:fix(用户对 v0.13.3 两处真机反馈)
+
+- **fix(P0)Git 视图里滚轮仍可滚动整个窗口**。v0.13.1 的一次性反馈收敛不够稳:composer / hero / diff 往往在收敛**之后**才挂载,内容增高不再触发重测(ResizeObserver 只看滚动容器自身尺寸)。升级为**受控收敛器**:至多 4 轮 rAF、每轮按 `scrollHeight − clientHeight` 实测溢出全额修正(从当轮未修正基准重算,覆写记录不叠加,夹 ≥240);触发源加 **MutationObserver**(childList + subtree,debounce 120ms)——内容后挂载也能重新收敛。探针新增硬断言:详情打开后滚动容器 `scrollHeight − clientHeight ≤ 1px`,真机实测 **gap 0px**(探针增至 14 项)。
+- **fix 「发送到对话」载荷自描述**(用户:光一段哈希谁知道是什么)。提交现在插 `git 提交 47ad017「Preserve weapon animation state…」(仓库 doomfly)`(短哈希 + 提交 message + 仓库),分支插 `git 分支 main(仓库 doomfly)`;文件 @提及 chip 已自描述、保持不变。新词典键 `send.commitText` / `send.branchText` × 21 门;subject 为空的极端提交退化回裸哈希,不造假。
+- **验证**:`npm test` **100/100**(新增发送载荷与收敛守卫);`ssr-check` 零警告;隔离实例真机探针 **14/14 全绿**。
+
 ## v0.13.3 — 2026-10-07
 
 **类型**:feat(右键发送到对话 + 文件图标与 diff 复用 DSH 渲染)+ perf(多仓库发现提速)+ fix(残余滚轮滚动),用户与 [issue #8](https://github.com/KannaKuron/dsh-ide-git/issues/8#issuecomment-6035026378) 反馈batch。
