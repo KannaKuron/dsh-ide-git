@@ -5684,20 +5684,47 @@ window.__ModuleLoader__.load({
       } catch (error) { void error; return null }
     }
 
+    /* The composer carries TWO text projections (ui-conversation projection.ts):
+       detectText feeds TokenSpan coordinates — every chip counts as ONE U+FFFC
+       there — while the published InputState.draft is the clipboard projection,
+       where a chip expands to its full `@path`. The insert verbs take DETECT
+       spans, and selectSpan rejects `end > detectLength` outright (span-map.ts),
+       so a tail span built from draft.length is correct only while the draft has
+       NO chips. With one in the draft it points past the document end and the
+       edit silently fails — exactly the "chip landed, the line-range sentence
+       never did" real-machine report against v0.13.5 (and any plain-text send
+       into a draft that already holds a chip). Convert instead: subtract every
+       occurrence's (clipboard length - 1). */
+    function detectTailSpanOf(state) {
+      if (state === undefined || state === null || typeof state.draft !== 'string' || typeof state.draftRev !== 'number') return null
+      let at = state.draft.length
+      const occurrences = Array.isArray(state.occurrences) ? state.occurrences : []
+      for (const occ of occurrences) {
+        if (occ === null || typeof occ !== 'object') continue
+        const width = typeof occ.length === 'number' && occ.length >= 0
+          ? occ.length
+          : (typeof occ.clipboardText === 'string' ? occ.clipboardText.length : 1)
+        at -= Math.max(0, width - 1)
+      }
+      if (at < 0) return null
+      return { start: at, end: at, draftRev: state.draftRev }
+    }
+
     /* apply(actx, input, span) → boolean. The span is an EMPTY span at the draft
-       tail in detect coordinates (state.draft is exactly the projection the CAS
-       compares). A false answer is the user typing between our read and write —
-       re-read once and retry (the brief's advice: one retry, no spinning). The
-       busy phases (adjudicating/submitting) also answer false; that lands on the
-       same clipboard fallback, which is the honest outcome. */
+       tail in DETECT coordinates (the coordinates the CAS and selectSpan
+       compare — see detectTailSpanOf). A false answer is the user typing
+       between our read and write — re-read once and retry (the brief's advice:
+       one retry, no spinning). The busy phases (adjudicating/submitting) also
+       answer false; that lands on the same clipboard fallback, which is the
+       honest outcome. */
     function insertIntoComposer(ctx, sessionId, apply) {
       const target = composerTargetOf(ctx, sessionId)
       if (target === null) return false
       for (let attempt = 0; attempt < 2; attempt += 1) {
         let state
         try { state = target.input.state.getSnapshot() } catch (error) { void error; return false }
-        if (state === undefined || state === null || typeof state.draft !== 'string' || typeof state.draftRev !== 'number') return false
-        const span = { start: state.draft.length, end: state.draft.length, draftRev: state.draftRev }
+        const span = detectTailSpanOf(state)
+        if (span === null) return false
         let applied = false
         try { applied = apply(target.actx, target.input, span) === true } catch (error) { void error; applied = false }
         if (applied === true) {
@@ -8085,8 +8112,11 @@ window.__ModuleLoader__.load({
             try {
               let state = input.state.getSnapshot()
               for (let attempt = 0; attempt < 2; attempt += 1) {
-                if (state !== undefined && state !== null && typeof state.draft === 'string' && typeof state.draftRev === 'number') {
-                  const tail = { start: state.draft.length, end: state.draft.length, draftRev: state.draftRev }
+                // The chip changed BOTH projections; the tail must be rebuilt
+                // in detect coordinates (see detectTailSpanOf), or selectSpan
+                // rejects it and the sentence silently vanishes.
+                const tail = detectTailSpanOf(state)
+                if (tail !== null) {
                   let textApplied = false
                   try { textApplied = actx.bail(actx, 'slash/input-insert-text', { text: payload.text, span: tail }) === true } catch (error) { void error; textApplied = false }
                   if (textApplied === true) return true

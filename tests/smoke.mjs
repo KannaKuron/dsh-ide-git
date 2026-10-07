@@ -161,6 +161,14 @@ test('send-to-chat rides the composer facade with a guarded primitives require',
   assert.match(client, /slash\/input-insert-text/, 'plain text rides the scoped insert-text bail event')
   assert.match(client, /function fileMentionOf\(relPath\)/, 'the @-mention grammar must be inlined (the grammar package is not on the seed table)')
   assert.doesNotMatch(client, /\.openReference\(/, 'openReference opens a preview and must never be called for insertion')
+  // Spans are DETECT coordinates; the published draft is the CLIPBOARD one.
+  // Every span construction must go through the conversion — a bare
+  // draft.length tail points past detectLength once a chip exists and the
+  // edit silently fails (the v0.13.5 real-machine report).
+  assert.match(client, /function detectTailSpanOf\(state\)/, 'the detect-coordinate conversion must exist')
+  assert.match(client, /const span = detectTailSpanOf\(state\)/, 'the funnel must build its span through the conversion')
+  assert.match(client, /const tail = detectTailSpanOf\(state\)/, 'the chip+text second leg must rebuild its tail through the conversion')
+  assert.doesNotMatch(client, /start: state\.draft\.length/, 'a raw clipboard-length span would regress the probe failure')
   // A host without the seed module must degrade, not throw (invariant 1's spirit).
   assert.match(client, /let UIPrimitives = null/, 'the primitives module handle must default to null')
   assert.match(client, /try \{ UIPrimitives = require\('@deepseek-ai\/dsh-client-ui-primitives'\) \} catch/, 'the require must be guarded')
@@ -235,6 +243,48 @@ function diffSelectionCore() {
     + ' linesLabelOf: linesLabelOf, lineSpanLabelOf: lineSpanLabelOf, diffSpanTextOf: diffSpanTextOf,'
     + ' diffLines: diffLines, fill: fill }')()
 }
+
+function composerSendCore() {
+  const start = client.indexOf('function fileMentionOf(relPath)')
+  const end = client.indexOf('/* ============================== diff ============================== */')
+  assert.ok(start >= 0 && end > start, 'the composer send core must stay sliceable')
+  return new Function(client.slice(start, end)
+    + '\nreturn { fileMentionOf: fileMentionOf, detectTailSpanOf: detectTailSpanOf }')()
+}
+
+test('composer tail spans are built in DETECT coordinates, not clipboard ones (v0.13.5 real-machine fix)', () => {
+  // projection.ts: detectText counts every chip as ONE U+FFFC, while the
+  // published InputState.draft is the clipboard projection where a chip
+  // expands to its full @path. selectSpan rejects end > detectLength, so a
+  // tail from draft.length silently kills the text leg once a chip exists —
+  // the conversion subtracts every occurrence's (length - 1).
+  const core = composerSendCore()
+  // No chips: the two projections agree, the tail is the plain draft length.
+  assert.deepEqual(core.detectTailSpanOf({ draft: 'abc', draftRev: 2, occurrences: [] }),
+    { start: 3, end: 3, draftRev: 2 })
+  // One chip (the exact failing shape): '@deploy/x/f.md' is 14 clipboard
+  // chars but ONE detect char — the tail moves back by 13 (draft 18 → 5,
+  // exactly detectText = '\uFFFC 第3行').
+  assert.deepEqual(core.detectTailSpanOf({ draft: '@deploy/x/f.md 第3行', draftRev: 5, occurrences: [
+    { offset: 0, length: 14, clipboardText: '@deploy/x/f.md' },
+  ] }), { start: 5, end: 5, draftRev: 5 }, 'the text leg span must land inside detectLength even right after the chip leg')
+  // A draft the USER already seeded with a chip affects the plain-text sends too.
+  assert.deepEqual(core.detectTailSpanOf({ draft: 'todo @src/a.ts then', draftRev: 9, occurrences: [
+    { offset: 5, length: 9, clipboardText: '@src/a.ts' },
+  ] }), { start: 11, end: 11, draftRev: 9 })
+  // Two chips subtract twice.
+  assert.deepEqual(core.detectTailSpanOf({ draft: '@a/x @b/y!', draftRev: 4, occurrences: [
+    { offset: 0, length: 4, clipboardText: '@a/x' },
+    { offset: 5, length: 4, clipboardText: '@b/y' },
+  ] }), { start: 4, end: 4, draftRev: 4 })
+  // Degenerate states refuse instead of inventing a span.
+  assert.equal(core.detectTailSpanOf(null), null)
+  assert.equal(core.detectTailSpanOf({ draft: 5, draftRev: 1, occurrences: [] }), null)
+  assert.equal(core.detectTailSpanOf({ draft: 'abc', occurrences: [] }), null)
+  assert.equal(core.detectTailSpanOf({ draft: '', draftRev: 1, occurrences: [
+    { offset: 0, length: 99, clipboardText: '@ghost' },
+  ] }), null, 'a negative tail must never be handed to the editor')
+})
 
 test('the diff selection core maps hunk headers to file line numbers (v0.13.5)', () => {
   const core = diffSelectionCore()
