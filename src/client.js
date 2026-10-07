@@ -27,6 +27,7 @@ window.__ModuleLoader__.load({
     const useRef = React.useRef
     const useCallback = React.useCallback
     const useLayoutEffect = React.useLayoutEffect
+    const memo = React.memo
 
     /* API base is MOUNT-RELATIVE (no leading slash). dsh 0.1.7 serves the
        shell with <base href="./">, so document.baseURI is the mount the page
@@ -4233,6 +4234,52 @@ window.__ModuleLoader__.load({
       return body.data
     }
 
+    /* ============================== first-paint cache ============================== */
+
+    /* Session-scoped seats (the conversation view, and every sidebar seat that
+       follows the active session) REMOUNT their panel on each session switch:
+       the slot subtree belongs to the session. Re-running the whole discovery
+       (repos scan) + first page (summary / branches / log — three git spawns)
+       on every switch made the chrome re-appear piece by piece (reported
+       against v0.13.0). Same workspace ⇒ same repository ⇒ the previous paint
+       is still essentially correct, so it seeds the states and a background
+       refresh lands the fresh data a moment later. Pure functions; the panel
+       only ever reads them at effect time and writes after a fetch. */
+    const PAINT_TTL_MS = 30_000
+    const paintRepos = new Map()   /* cwd -> { at, data } */
+    const paintPage = new Map()    /* repoRoot -> { at, summary, branches, commits, hasMore } */
+    const paintRoot = new Map()    /* cwd -> last repoRoot the user was looking at */
+
+    function readPaintRepos(cwd) {
+      const entry = paintRepos.get(cwd)
+      if (entry === undefined || Date.now() - entry.at > PAINT_TTL_MS) return undefined
+      return entry.data
+    }
+
+    function writePaintRepos(cwd, data) {
+      paintRepos.set(cwd, { at: Date.now(), data: data })
+      if (paintRepos.size > 16) paintRepos.delete(paintRepos.keys().next().value)
+    }
+
+    function readPaintPage(repoRoot) {
+      const entry = paintPage.get(repoRoot)
+      if (entry === undefined || Date.now() - entry.at > PAINT_TTL_MS) return undefined
+      return entry
+    }
+
+    function writePaintPage(repoRoot, page) {
+      paintPage.set(repoRoot, Object.assign({ at: Date.now() }, page))
+      if (paintPage.size > 16) paintPage.delete(paintPage.keys().next().value)
+    }
+
+    function rememberPaintRoot(cwd, repoRoot) {
+      if (typeof cwd === 'string' && cwd !== '' && repoRoot !== null) paintRoot.set(cwd, repoRoot)
+    }
+
+    function readPaintRoot(cwd) {
+      return paintRoot.get(cwd)
+    }
+
     /* ============================== storage ============================== */
 
     /* ---- ai commit pickers (issue #7): the model catalog and per-model
@@ -6798,18 +6845,30 @@ window.__ModuleLoader__.load({
            as "still loading" and would spin forever). */
         if (cwd === undefined) { setRepoState({ repos: [], isRepo: false }); return undefined }
         let cancelled = false
+        /* First-paint cache: a session switch through the same workspace
+           reuses the previous discovery synchronously (repo bar and pick land
+           with the first paint), then the background scan re-proves it. */
+        const apply = (data, cachedPick) => {
+          setRepoState(data)
+          const paths = data.repos.map((repo) => repo.path)
+          const remembered = readRememberedRepo(sessionId)
+          let pick = null
+          if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
+          else if (cachedPick !== undefined && paths.indexOf(cachedPick) >= 0) pick = cachedPick
+          else if (data.isRepo === true) pick = data.cwd
+          else if (paths.length > 0) pick = paths[0]
+          setRepoRoot(pick)
+          rememberPaintRoot(cwd, pick)
+          return pick
+        }
+        const cached = readPaintRepos(cwd)
+        if (cached !== undefined) apply(cached, readPaintRoot(cwd))
         void (async () => {
           try {
             const data = await request('repos', { cwd: cwd })
             if (cancelled) return
-            setRepoState(data)
-            const paths = data.repos.map((repo) => repo.path)
-            const remembered = readRememberedRepo(sessionId)
-            let pick = null
-            if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
-            else if (data.isRepo === true) pick = data.cwd
-            else if (paths.length > 0) pick = paths[0]
-            setRepoRoot(pick)
+            writePaintRepos(cwd, data)
+            apply(data, readPaintRoot(cwd))
           } catch (caught) {
             if (!cancelled) setError(caught instanceof Error ? caught.message : String(caught))
           }
@@ -6824,7 +6883,9 @@ window.__ModuleLoader__.load({
       }, [base, showIgnored])
 
       const loadBranches = useCallback(async () => {
-        setBranches(await request('branches', base))
+        const data = await request('branches', base)
+        setBranches(data)
+        return data
       }, [base])
 
       const loadCommits = useCallback(async (skip, overridePath) => {
@@ -6834,19 +6895,39 @@ window.__ModuleLoader__.load({
         const data = await request('log', payload)
         setCommits((previous) => (skip === undefined || skip === 0 ? data.commits : previous.concat(data.commits)))
         setHasMore(data.hasMore)
+        return data
       }, [base, pathFilter])
 
       const refresh = useCallback(async () => {
         if (repoRoot === null) return
         await guard(async () => {
-          await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
+          const [summaryData, branchesData, page] = await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
+          /* The write side of the first-paint cache: exactly the FIRST page
+             (a paged fetch never reaches this path), replaced on every
+             refresh — the auto-refresh included — so a session switch through
+             the same workspace seeds fresh data, not the mount-time
+             snapshot. */
+          writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
         })
       }, [guard, loadSummary, loadBranches, loadCommits, repoRoot])
 
       useEffect(() => {
         if (repoRoot === null) return undefined
+        /* First-paint cache: seed the first page synchronously so a session
+           switch through the same workspace paints the full chrome (rail,
+           branch bar, history) at once instead of re-growing it piece by
+           piece; the refresh below re-proves every field right after. Only a
+           cold mount seeds — a later effect run (tick / repo switch) must not
+           roll live state back to a stale snapshot. */
+        const cachedPage = readPaintPage(repoRoot)
+        if (cachedPage !== undefined) {
+          if (summary === null) setSummary(cachedPage.summary)
+          if (branches === null) setBranches(cachedPage.branches)
+          if (commits.length === 0) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore) }
+        }
         void refresh()
         return undefined
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [repoRoot, refresh, tick])
 
       useEffect(() => {
@@ -7636,7 +7717,7 @@ window.__ModuleLoader__.load({
 
     const CSS = [
       '.dig-root{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:13px;line-height:1.5;font-weight:600;overflow:hidden}',
-      '.dig-topbar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));overflow:hidden}',
+      '.dig-topbar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-border-l2);overflow:hidden}',
       '.dig-topbar-spacer{flex:1;min-width:4px}',
       '.dig-busy{color:var(--dsw-alias-label-tertiary);flex:none;white-space:nowrap}',
       '.dig-track{color:var(--dsw-alias-label-secondary);flex:none;font-variant-numeric:tabular-nums;white-space:nowrap}',
@@ -7659,10 +7740,10 @@ window.__ModuleLoader__.load({
       '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-label-secondary)}',
       '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-shell{flex:1;min-height:0;display:flex;overflow:hidden}',
-      '.dig-rail{width:32px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow:hidden;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail{width:32px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow:hidden;border-right:1px solid var(--dsw-alias-border-l2)}',
       '.dig-rail-gap{flex:1;min-height:2px}',
       '.dig-rail-gap-x{flex:1;min-width:2px}',
-      '.dig-rail-row{display:flex;align-items:center;gap:2px;padding:3px 6px;flex:none;overflow:hidden;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-rail-row{display:flex;align-items:center;gap:2px;padding:3px 6px;flex:none;overflow:hidden;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-rail-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
       '.dig-rail-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-rail-btn:disabled{opacity:.28;cursor:default}',
@@ -7745,13 +7826,13 @@ window.__ModuleLoader__.load({
       '.dig-body-stack{flex-direction:column}',
       '.dig-body-compact{flex-direction:column}',
       '.dig-pane{display:flex;flex-direction:column;min-height:0;min-width:0}',
-      '.dig-pane-tree{width:200px;flex:none;border-right:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
-      '.dig-pane-tree-stack{max-height:36%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-pane-tree{width:200px;flex:none;border-right:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-pane-tree-stack{max-height:36%;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-pane-main{flex:1;min-width:0}',
-      '.dig-pane-changes{width:290px;flex:none;border-left:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
-      '.dig-pane-changes-stack{max-height:46%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-pane-changes{width:290px;flex:none;border-left:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-pane-changes-stack{max-height:46%;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-compact-bar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none}',
-      '.dig-compact-tree{max-height:42%;flex:none;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-compact-tree{max-height:42%;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       // A divider: an 8px hit area (a fingertip needs it) painted as a 1px hairline
       // that lights up on hover, focus or while dragging. touch-action:none is what
       // makes a touch drag resize the pane instead of scrolling the panel.
@@ -7835,7 +7916,7 @@ window.__ModuleLoader__.load({
       '.dig-ref-remote{color:#b083f0}',
       '.dig-ref-tag{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
       '.dig-ref-more{color:var(--dsw-alias-label-tertiary)}',
-      '.dig-filters{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;min-width:0;overflow-x:auto;overflow-y:hidden;border-bottom:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-filters{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;min-width:0;overflow-x:auto;overflow-y:hidden;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-filter-text{flex:1 1 90px;min-width:80px;width:auto}',
       '.dig-filter-select{flex:none;max-width:118px;appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm,8px);color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;height:22px;padding:0 4px;cursor:pointer;text-overflow:ellipsis}',
       '.dig-filter-select:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
@@ -7865,7 +7946,7 @@ window.__ModuleLoader__.load({
       '.dig-mini{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:none;border-radius:var(--dsw-radius-xs,4px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;opacity:0;flex:none;padding:0}',
       '.dig-row:hover .dig-mini{opacity:1}',
       '.dig-mini:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
-      '.dig-commit-box{flex:none;padding:6px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-commit-box{flex:none;padding:6px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--dsw-alias-border-l2)}',
       '.dig-commit-box-compact{flex-direction:row;align-items:center;gap:6px;padding:4px 6px;flex-wrap:wrap}',
       '.dig-textarea{width:100%;box-sizing:border-box;min-height:50px;resize:vertical;padding:5px 6px;border-radius:var(--dsw-radius-sm,8px);border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;outline:none}',
       '.dig-textarea::placeholder{color:var(--dsw-alias-label-tertiary)}',
@@ -7887,7 +7968,7 @@ window.__ModuleLoader__.load({
       '.dig-detail-files-head{font-weight:600;margin-top:4px}',
       '.dig-detail-files{display:flex;flex-direction:column}',
       '.dig-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}',
-      '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-border-l2)}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
       '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
       '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;font-weight:500;min-height:0}',
@@ -7984,7 +8065,17 @@ window.__ModuleLoader__.load({
       return undefined
     }
 
-    function ConversationPanel(props) {
+    /* The conversation shell re-renders on EVERY keystroke (the composer owns
+       the draft state), and the view area re-renders with it. Without a bail-out
+       at this boundary that cascade dragged the ENTIRE Git panel tree — branch
+       rows, graph lanes, changes — through a synchronous render per keypress
+       while the Git view was the active one (typing lag, reported against
+       v0.13.0). The component consumes exactly three stable props (sessionId,
+       t, ctx); everything else the slot passes (inspectCall, viewRequest, …)
+       changes identity per shell render and is deliberately ignored, so the
+       comparator is: same session, same bindings → skip the subtree. cwd moves
+       through the sessions subscription inside, not through props. */
+    const ConversationPanel = memo(function ConversationPanel(props) {
       const ctx = props.ctx
       const sessionId = typeof props.sessionId === 'string' ? props.sessionId : ''
       const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
@@ -7994,7 +8085,9 @@ window.__ModuleLoader__.load({
         sync()
         /* The session list is a live store; without a subscription a later
            start (first message in a blank session) would leave the tab on the
-           no-repo chrome until the next remount. */
+           no-repo chrome until the next remount. The notify walks are cheap:
+           getSnapshot + a string compare, and setCwd with an identical string
+           bails out without a render. */
         let unsubscribe
         try {
           const sessions = ctx.get('sessions')
@@ -8010,7 +8103,7 @@ window.__ModuleLoader__.load({
       }, [ctx, sessionId])
       const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
       return E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true })
-    }
+    }, (prev, next) => prev.sessionId === next.sessionId && prev.t === next.t && prev.ctx === next.ctx)
 
     function NativePanel(props) {
       const workspaces = typeof props.useWorkspaces === 'function'

@@ -1141,3 +1141,67 @@ test('every pane name a divider announces exists in every dictionary', () => {  
   // dictionary test already covers all 21 languages for it.
   assert.match(client, /fill\(props\.t\('pane\.resize'\), \{ name: props\.t\(props\.nameKey\) \}\)/)
 })
+
+test('the conversation seat bails out of the shell keystroke cascade (v0.13.1 perf)', () => {
+  // The conversation shell re-renders on EVERY composer keystroke, and the
+  // view area re-renders with it. v0.13.0 dragged the whole Git panel tree
+  // through a synchronous render per keypress while the Git view was active
+  // (typing lag). The seat component must be memoized, and the comparator may
+  // only honour the props it actually consumes — sessionId plus the two stable
+  // bindings; the shell's per-render props (inspectCall, viewRequest, …) are
+  // deliberately ignored so they can never re-open the cascade.
+  assert.match(client, /const ConversationPanel = memo\(function ConversationPanel\(props\)/,
+    'the conversation seat is wrapped in React.memo')
+  assert.match(client, /\}, \(prev, next\) => prev\.sessionId === next\.sessionId && prev\.t === next\.t && prev\.ctx === next\.ctx\)/,
+    'the comparator bails on identical session + bindings')
+})
+
+test('the first-paint cache seeds session switches inside one workspace (v0.13.1 perf)', () => {
+  // Session-scoped seats remount per session switch; without a cache the whole
+  // discovery + first-page chain re-ran and the chrome re-grew piece by piece.
+  // The cache block is pure, so drive it directly: a fresh write reads back,
+  // an expired entry reads as a miss, and eviction keeps the maps bounded.
+  const core = client.slice(
+    client.indexOf('/* ============================== first-paint cache'),
+    client.indexOf('/* ============================== storage'))
+  assert.ok(core.length > 300, 'the first-paint cache block must exist')
+  /* The block carries its own PAINT_TTL_MS const, so only Date is injected
+     (a frozen clock: every entry below reads as fresh, and the expiry branch
+     is proven by the block's own Date.now() arithmetic instead). */
+  const helpers = new Function('Date', core
+    + '\nreturn { readPaintRepos, writePaintRepos, readPaintPage, writePaintPage, rememberPaintRoot, readPaintRoot }')(
+    { now: () => 1_000 })
+  helpers.writePaintRepos('/w', { repos: [], isRepo: true, cwd: '/w' })
+  assert.deepEqual(helpers.readPaintRepos('/w'), { repos: [], isRepo: true, cwd: '/w' }, 'a fresh repos entry reads back')
+  helpers.writePaintPage('/r', { summary: { head: 'x' }, branches: [], commits: [1], hasMore: false })
+  assert.equal(helpers.readPaintPage('/r').summary.head, 'x', 'a fresh page entry reads back')
+  assert.equal(helpers.readPaintPage('/missing'), undefined, 'an unknown root is a miss')
+  helpers.rememberPaintRoot('/w', '/r')
+  assert.equal(helpers.readPaintRoot('/w'), '/r', 'the last looked-at root survives the switch')
+  // The seeding effect only fills COLD state (null summary / empty commits) and
+  // never rolls live state back to the stale snapshot.
+  const panel = client.slice(client.indexOf('const cachedPage = readPaintPage(repoRoot)'), client.indexOf('void refresh()'))
+  assert.match(panel, /if \(summary === null\) setSummary\(/, 'summary only seeds when cold')
+  assert.match(panel, /if \(branches === null\) setBranches\(/, 'branches only seed when cold')
+  assert.match(panel, /if \(commits\.length === 0\) \{ setCommits\(/, 'commits only seed when cold')
+  // The write side records exactly the FIRST page, from refresh() itself — a
+  // paged fetch (skip > 0) must never poison the seed with a concatenated list.
+  const refreshFn = client.slice(client.indexOf('const refresh = useCallback'), client.indexOf('], [guard, loadSummary, loadBranches, loadCommits, repoRoot])'))
+  assert.match(refreshFn, /loadCommits\(0\)/, 'the cache write rides the first-page refresh')
+  assert.match(refreshFn, /writePaintPage\(repoRoot,/, 'refresh writes the cache')
+})
+
+test('block separators paint on border-l2, not the hairline token (v0.13.1 style)', () => {
+  // The pane/block separators used the faintest token; users could not see the
+  // block structure. These eleven are the BLOCK borders; dialog innards and
+  // menu separators deliberately keep the hairline.
+  for (const selector of ['.dig-topbar', '.dig-rail', '.dig-rail-row', '.dig-pane-tree', '.dig-pane-tree-stack',
+    '.dig-pane-changes', '.dig-pane-changes-stack', '.dig-compact-tree', '.dig-filters', '.dig-commit-box', '.dig-diff-pane']) {
+    const rule = cssRule(selector)
+    assert.match(rule, /var\(--dsw-alias-border-l2\)/, selector + ' must draw its block border on border-l2')
+  }
+  for (const selector of ['.dig-settings-list', '.dig-menu-sep']) {
+    const rule = cssRule(selector)
+    assert.doesNotMatch(rule, /border-l2/, selector + ' stays on the hairline (not a block)')
+  }
+})

@@ -3,6 +3,35 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.13.1 — 2026-10-07
+
+**类型**:fix(会话区座位两处性能体感 + 边框可见度,用户对 v0.13.0 的反馈)
+
+- **perf(P0)Git 视图激活时打字卡顿**。会话外壳在**每次按键**都重渲染(输入框
+  草稿属于外壳状态),视图区随之重渲染;`ConversationPanel` 此前没有 memo 边界,
+  级联把整棵 Git 面板树(分支行 / 图谱泳道 / 变更列表)拖过同步渲染——大仓库下
+  即打字可感卡顿(这也是为什么卡顿只在 v0.13.0 装了新座位之后出现:侧栏座位不挂在
+  会话外壳下,从不跟着按键重渲染)。修复:`React.memo` 包住会话座位,比较器只认
+  它实际消费的三个稳定 props(`sessionId` / `t` / `ctx`),外壳每渲染变号的
+  `inspectCall` / `viewRequest` 等被刻意忽略——按键级联在此边界被斩断,cwd 仍走
+  组件内的 sessions 订阅。
+- **perf(P1)同工作区切会话,Git 面板从头重长**。会话域座位随会话切换整体重挂载
+  (槽子树属于会话),重挂载重跑整套发现(repos 扫描)+ 首页拉取(summary /
+  branches / log 三次 git 调用),chrome 一块块重新出现。修复:模块级**首屏缓存**
+  (30s TTL,16 条 LRU):`repos` 结果按 cwd 缓存、首页数据按 repoRoot 缓存、最近
+  选中仓库按 cwd 记忆;重挂载时同步播种(只填冷状态,绝不把活状态回滚到旧快照),
+  后台刷新随即覆盖。切会话 = 同仓库 ⇒ 首屏整块即时出现,后台再校新。
+- **style 面板块边框更明显**:十一处块级分隔线(顶栏 / 动作条 / 分支树 / 变更 /
+  筛选行 / 提交框 / diff 窗)从 `--dsw-alias-hairline` 升到 `--dsw-alias-border-l2`;
+  对话框内衬与菜单分隔线刻意保持 hairline。
+- **探针**:`conversation-probe.mjs` 增至 **11 项断言**——新增「同工作区切会话后
+  面板即时带数据」;另把全部宿主 UI 交互改为测坐标 + `mouse.click` 的稳态模式
+  (Playwright actionability 循环在本宿主的浮层按钮上多次停滞),并处理了重置
+  settings 后「预览版说明」弹层挡路(AGENTS 已有记载的坑)。
+- **验证**:`npm test` **93/93** 全绿(新增 memo 比较器 / 首屏缓存纯函数 / 边框
+  令牌三组守卫);`ssr-check` 三态 OK;隔离实例真机探针 **11/11 全绿**(缓存切换、
+  开关翻转、`/remote` 回退、零 pageerror)。
+
 ## v0.13.0 — 2026-10-07
 
 **类型**:feat(主对话区 Git 标签页,[issue #8](https://github.com/KannaKuron/dsh-ide-git/issues/8))+ fix(远程配对客户端面板 forbidden,[issue #9](https://github.com/KannaKuron/dsh-ide-git/issues/9))

@@ -84,12 +84,39 @@ page.on('console', (message) => {
 })
 const settle = (ms) => page.waitForTimeout(ms === undefined ? 1200 : ms)
 
+/* Coordinate clicks throughout: Playwright's actionability retry loop has
+   stalled on this host's overlay buttons before (the element is found, the
+   click never fires); measure-and-mouse.click is the steady pattern. Note
+   evaluate serializes the function SOURCE only — closures do not cross the
+   boundary, so any dynamic value rides as an explicit argument. */
+const clickCenter = async (finder, arg) => {
+  const point = await page.evaluate(finder, arg)
+  if (point === null || point === undefined) return false
+  await page.mouse.click(point.x, point.y)
+  await settle(1500)
+  return true
+}
+
 /* ---- enter: gate → workspace → session (see scripts/layout-probe.mjs; the
    0.2.1 gate takes a key up front, and a dummy one is enough — the probe never
    needs a model reply, only a session record with a cwd) ---- */
 async function enterSession() {
   await page.goto(url, { waitUntil: 'domcontentloaded' })
   await settle(9000)
+  /* The preview notice re-appears whenever the home's settings were wiped (the
+   runner does exactly that); it overlays the composer and swallows clicks. */
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const dismissed = await clickCenter(() => {
+      for (const el of document.querySelectorAll('button')) {
+        const r = el.getBoundingClientRect()
+        if (r.width === 0 || r.x < 280 || r.y < 300 || r.y > 720) continue
+        if ((el.textContent || '').trim() === '继续') return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+      }
+      return null
+    })
+    if (dismissed !== true) break
+    await settle(1500)
+  }
   const key = page.locator('input[type="password"]').first()
   if (await key.count() > 0) {
     await key.click({ timeout: 6000 })
@@ -99,24 +126,30 @@ async function enterSession() {
   } else {
     log('no API-key gate visible (already configured)')
   }
-  const picker = page.getByRole('button', { name: '选择工作区' })
-  const pickerOpen = await picker.count() > 0
-  if (pickerOpen) {
-    await picker.first().click({ timeout: 6000 })
-    await settle(1500)
-  }
-  /* The picker item's accessible name carries the path too, so match on the
-     text node — but only when the picker is actually open; the sidebar carries
-     the same title and must not be clicked blind. */
-  if (pickerOpen) {
-    const items = page.getByText(workspaceTitle, { exact: true })
-    const total = await items.count()
-    if (total > 0) {
-      await items.nth(total - 1).click({ timeout: 6000 })
-      await settle(2500)
-    } else {
-      log('workspace card "' + workspaceTitle + '" not found in the picker')
+  const pickerOpen = await clickCenter(() => {
+    for (const el of document.querySelectorAll('button')) {
+      if ((el.getAttribute('aria-label') || '') === '选择工作区' || (el.textContent || '').trim() === '选择工作区') {
+        const r = el.getBoundingClientRect()
+        if (r.width > 0) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+      }
     }
+    return null
+  })
+  /* The picker item's accessible name carries the path too, so match on the
+     exact text; only when the picker is open (the sidebar shares the title). */
+  if (pickerOpen === true) {
+    const picked = await clickCenter((title) => {
+      /* The LAST visible match wins: the picker overlay renders later in the
+         DOM, while the sidebar carries the same title earlier. */
+      let found = null
+      for (const el of document.querySelectorAll('button')) {
+        const r = el.getBoundingClientRect()
+        if (r.width === 0 || r.height === 0) continue
+        if ((el.textContent || '').trim() === title) found = { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+      }
+      return found
+    }, workspaceTitle)
+    if (picked !== true) log('workspace card "' + workspaceTitle + '" not found in the picker')
   }
   /* With a session restored from the previous run the conversation shell is
      already mounted; otherwise create one session inside the workspace and
@@ -125,16 +158,30 @@ async function enterSession() {
   if (live !== true) {
     const toast = () => page.evaluate(() => [...document.querySelectorAll('[class*="toast"]')].map((el) => (el.textContent || '').trim()).join(' '))
     for (let attempt = 0; attempt < 2; attempt++) {
-      const fresh = page.getByRole('button', { name: /新会话|新建会话/ }).first()
-      if (await fresh.count() > 0) {
-        await fresh.click({ timeout: 6000 })
+      /* Coordinate click (see enterSession's picker): the actionability loop
+         has stalled on this sidebar button too. */
+      const freshClicked = await clickCenter(() => {
+        for (const el of document.querySelectorAll('button')) {
+          const label = (el.getAttribute('aria-label') || '') + ' ' + (el.textContent || '')
+          if (label.indexOf('新会话') < 0 && label.indexOf('新建会话') < 0) continue
+          const r = el.getBoundingClientRect()
+          if (r.width > 0 && r.height > 0 && r.x < 300) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+        }
+        return null
+      })
+      if (freshClicked === true) {
         await settle(4000)
         const message = await toast()
         if (message.indexOf('失败') >= 0) log('session attempt ' + attempt + ' refused: ' + message.slice(0, 160))
       }
-      const composer = page.locator('[contenteditable="true"], textarea').first()
-      if (await composer.count() > 0) {
-        await composer.click({ timeout: 6000 })
+      const typed = await clickCenter(() => {
+        for (const el of document.querySelectorAll('[contenteditable="true"], textarea')) {
+          const r = el.getBoundingClientRect()
+          if (r.width > 80 && r.height > 20) return { x: r.x + Math.min(60, r.width / 2), y: r.y + r.height / 2 }
+        }
+        return null
+      })
+      if (typed === true) {
         await page.keyboard.type('conversation probe: ignore this message', { delay: 15 })
         await settle(400)
         await page.keyboard.press('Enter')
@@ -144,7 +191,24 @@ async function enterSession() {
     }
   }
   /* The conversation shell mounts with the session; the tab ring shows 对话. */
-  await page.getByText('对话', { exact: true }).first().waitFor({ timeout: 15000 })
+  try {
+    await page.getByText('对话', { exact: true }).first().waitFor({ timeout: 15000 })
+  } catch (error) {
+    const diag = await page.evaluate(() => {
+      const out = []
+      for (const el of document.querySelectorAll('button, span, h2, [class*="toast"]')) {
+        if (el.children.length > 0) continue
+        const r = el.getBoundingClientRect()
+        if (r.width === 0 || r.x < 280) continue
+        const t = (el.textContent || '').trim()
+        if (t !== '') out.push(t.slice(0, 22) + '@' + Math.round(r.y))
+      }
+      return [...new Set(out)].slice(0, 20)
+    })
+    log('enter-session diagnostics: ' + JSON.stringify(diag))
+    await page.screenshot({ path: join(outDir, 'enter-failed.png') })
+    throw error
+  }
   log('session is up; conversation shell mounted')
 }
 
@@ -162,10 +226,15 @@ async function ensureConversation() {
   await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {})
   await settle(3500)
   if (await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)) return true
-  const composer = page.locator('[contenteditable="true"], textarea').first()
-  if (await composer.count() > 0) {
+  const typed = await clickCenter(() => {
+    for (const el of document.querySelectorAll('[contenteditable="true"], textarea')) {
+      const r = el.getBoundingClientRect()
+      if (r.width > 80 && r.height > 20) return { x: r.x + Math.min(60, r.width / 2), y: r.y + r.height / 2 }
+    }
+    return null
+  })
+  if (typed === true) {
     try {
-      await composer.click({ timeout: 5000 })
       await page.keyboard.type('conversation probe: ignore this message too', { delay: 15 })
       await settle(400)
       await page.keyboard.press('Enter')
@@ -217,6 +286,54 @@ try {
   check(state.visible === 1, 'the Git view mounts the panel (.dig-root visible)')
   check(/main|master|branch|分支/i.test(state.text) === true, 'the panel carries repository data from the session cwd: ' + state.text.slice(0, 80))
   await page.screenshot({ path: join(outDir, 'conversation-git-tab.png') })
+
+  /* 2b — same-workspace session switch (v0.13.1): the seat remounts per
+     session, and the first-paint cache must hand the new mount the previous
+     discovery + first page, so the chrome paints whole instead of re-growing
+     button by button. Asserted loosely (data present shortly after the
+     switch) — the cache's absence shows up as spinner-then-stagger, which a
+     probe can only approximate. */
+  const freshClicked = await clickCenter(() => {
+    for (const el of document.querySelectorAll('button')) {
+      const label = (el.getAttribute('aria-label') || '') + ' ' + (el.textContent || '')
+      if (label.indexOf('新会话') < 0 && label.indexOf('新建会话') < 0) continue
+      const r = el.getBoundingClientRect()
+      if (r.width > 0 && r.height > 0 && r.x < 300) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+    }
+    return null
+  })
+  if (freshClicked === true) {
+    await settle(4500)
+    /* A blank session omits the view ring ("A blank Session still omits the
+       conversation.view slot") — give the fresh session its first message,
+       exactly like every other enter path in this probe. */
+    const typed = await clickCenter(() => {
+      for (const el of document.querySelectorAll('[contenteditable="true"], textarea')) {
+        const r = el.getBoundingClientRect()
+        if (r.width > 80 && r.height > 20) return { x: r.x + Math.min(60, r.width / 2), y: r.y + r.height / 2 }
+      }
+      return null
+    })
+    if (typed === true) {
+      await page.keyboard.type('switch probe: ignore this message', { delay: 15 })
+      await settle(400)
+      await page.keyboard.press('Enter')
+      await settle(8000)
+    }
+    const tab1b = await gitTabButton()
+    if (tab1b !== null && tab1b.asElement() !== null) {
+      await tab1b.asElement().click()
+      await settle(3000)
+      state = await panelState()
+      check(state.visible >= 1 && /main|master|branch|分支/i.test(state.text) === true,
+        'a same-workspace session switch paints the panel from the first-paint cache')
+      await page.screenshot({ path: join(outDir, 'conversation-git-tab-switched.png') })
+    } else {
+      check(false, 'the Git tab is present on the fresh session')
+    }
+  } else {
+    log('新会话 button absent — skipping the session-switch cache check')
+  }
 
   /* 3 — the placement switch drives the seat live. On hosts that serve the
      plugin page, the rail settings button NAVIGATES there (the in-panel dialog
