@@ -4251,31 +4251,92 @@ window.__ModuleLoader__.load({
        is still essentially correct, so it seeds the states and a background
        refresh lands the fresh data a moment later. Pure functions; the panel
        only ever reads them at effect time and writes after a fetch. */
-    const PAINT_TTL_MS = 30_000
+    /* Two TTLs, because the two seeds age very differently. The repos scan is
+       the SLOW part (a multi-repo workspace walks directories) and its result
+       barely changes, so its seed stays usable for 10 minutes: freshness is
+       the background refresh's job — every mount refreshes anyway — the TTL
+       only decides how old a seed may be to still paint the first screen
+       (user report: coming back to the Git tab after a while re-ran the whole
+       discovery). The first page (summary / branches / log) changes with every
+       commit, so its seed keeps the short 30s window it always had. */
+    const PAINT_REPOS_TTL_MS = 600_000
+    const PAINT_PAGE_TTL_MS = 30_000
     const paintRepos = new Map()   /* cwd -> { at, data } */
     const paintPage = new Map()    /* repoRoot -> { at, summary, branches, commits, hasMore } */
     const paintRoot = new Map()    /* cwd -> last repoRoot the user was looking at */
 
+    /* The seed also survives a FULL PAGE RELOAD: sessionStorage holds the same
+       maps for the lifetime of the tab, so reloading the page (the other way
+       users "come back") paints from the seed instead of re-running the slow
+       discovery. Hydrate runs once, lazily before the first read; every write
+       mirrors the in-memory state back. All of it is best-effort: private
+       mode, quota errors and corrupted payloads degrade to "no seed", never to
+       an error — and never to a rollback of live state (seeding still only
+       fills cold state, see the panel side below). */
+    const PAINT_KEY = 'dsh-ide-git.paint.v1'
+    let paintHydrated = false
+
+    function hydratePaint() {
+      if (paintHydrated === true) return
+      paintHydrated = true
+      let parsed = null
+      try {
+        const raw = window.sessionStorage.getItem(PAINT_KEY)
+        if (typeof raw === 'string' && raw !== '') parsed = JSON.parse(raw)
+      } catch (error) { void error; return }
+      if (parsed === null || typeof parsed !== 'object') return
+      /* Entries already in memory stay untouched: a write that happened before
+         the first read is always fresher than what the storage holds. */
+      const feed = (map, stored) => {
+        if (stored === null || typeof stored !== 'object') return
+        let count = 0
+        for (const key of Object.keys(stored)) {
+          const entry = stored[key]
+          if (map.has(key) || entry === null || typeof entry !== 'object' || typeof entry.at !== 'number') continue
+          if (count >= 16) break
+          map.set(key, entry)
+          count += 1
+        }
+      }
+      feed(paintRepos, parsed.repos)
+      feed(paintPage, parsed.page)
+    }
+
+    function persistPaint() {
+      try {
+        const pack = (map) => {
+          const out = {}
+          for (const [key, entry] of map) out[key] = entry
+          return out
+        }
+        window.sessionStorage.setItem(PAINT_KEY, JSON.stringify({ repos: pack(paintRepos), page: pack(paintPage) }))
+      } catch (error) { void error }
+    }
+
     function readPaintRepos(cwd) {
+      hydratePaint()
       const entry = paintRepos.get(cwd)
-      if (entry === undefined || Date.now() - entry.at > PAINT_TTL_MS) return undefined
+      if (entry === undefined || Date.now() - entry.at > PAINT_REPOS_TTL_MS) return undefined
       return entry.data
     }
 
     function writePaintRepos(cwd, data) {
       paintRepos.set(cwd, { at: Date.now(), data: data })
       if (paintRepos.size > 16) paintRepos.delete(paintRepos.keys().next().value)
+      persistPaint()
     }
 
     function readPaintPage(repoRoot) {
+      hydratePaint()
       const entry = paintPage.get(repoRoot)
-      if (entry === undefined || Date.now() - entry.at > PAINT_TTL_MS) return undefined
+      if (entry === undefined || Date.now() - entry.at > PAINT_PAGE_TTL_MS) return undefined
       return entry
     }
 
     function writePaintPage(repoRoot, page) {
       paintPage.set(repoRoot, Object.assign({ at: Date.now() }, page))
       if (paintPage.size > 16) paintPage.delete(paintPage.keys().next().value)
+      persistPaint()
     }
 
     function rememberPaintRoot(cwd, repoRoot) {
@@ -4701,12 +4762,19 @@ window.__ModuleLoader__.load({
        is stored is a RATIO of the measured container: resizing the dock or the
        window rescales the panes instead of breaking the layout. */
     const PANES_KEY = 'dsh-ide-git.panes.v1'
+    /* Every chrome can now move all three panes (the detail diff window used to
+       be a fixed max-height:55% in the columns chrome — user report: it could
+       not be resized). The DIFF pane is special: it is carved out of the middle
+       pane, so it is sized by HEIGHT in every chrome, even where the other
+       panes measure width (columns). */
     const PANE_CHROME_KEYS = {
-      columns: ['tree', 'changes'],
+      columns: ['tree', 'changes', 'diff'],
       stack: ['tree', 'changes', 'diff'],
       compact: ['tree', 'diff'],
     }
-    /* Whether a key measures a height (stacked chromes) or a width (columns). */
+    /* Whether a key measures a height (stacked chromes) or a width (columns).
+       This is the chrome's DEFAULT for the tree/changes panes; the diff pane
+       overrides it to height unconditionally (see paneGeometry). */
     const PANE_HEIGHT_CHROME = { columns: false, stack: true, compact: true }
     /* The pane a separator resizes, and the key its label is translated from. */
     const PANE_NAME_KEYS = { tree: 'toolbar.tree', changes: 'changes.title', diff: 'pane.diff' }
@@ -4715,6 +4783,7 @@ window.__ModuleLoader__.load({
     const PANE_LIMITS = {
       'columns:tree': { min: 140, max: 560 },
       'columns:changes': { min: 200, max: 640 },
+      'columns:diff': { min: 120, max: 900 },
       'stack:tree': { min: 100, max: 420 },
       'stack:changes': { min: 120, max: 460 },
       'stack:diff': { min: 120, max: 900 },
@@ -4723,10 +4792,12 @@ window.__ModuleLoader__.load({
     }
     /* Today's fixed sizes stay the default — and stay in the stylesheet: a pane
        the user never dragged keeps exactly the look it had before, while a
-       dragged one is remembered as a ratio. */
+       dragged one is remembered as a ratio. The diff's 0.55 IS the stylesheet's
+       max-height:55%, so an undragged window renders identically to before. */
     const PANE_DEFAULTS = {
       'columns:tree': { px: 200 },
       'columns:changes': { px: 290 },
+      'columns:diff': { ratio: 0.55 },
       'stack:tree': { ratio: 0.36 },
       'stack:changes': { ratio: 0.46 },
       'compact:tree': { ratio: 0.42 },
@@ -4829,9 +4900,14 @@ window.__ModuleLoader__.load({
       const effective = {}
       const limits = {}
       const sizeOf = (key) => (effective[key] === undefined ? 0 : effective[key])
+      /* The diff is carved out of the middle pane, so it measures HEIGHT in
+         every chrome — even in columns, where tree/changes run sideways and
+         the chrome's own dimension is width. Its ratios therefore divide the
+         body HEIGHT, whatever `reference` says. */
+      const referenceOf = (key) => (key === 'diff' ? box.height : reference)
       for (const key of keys) {
         const spec = PANE_DEFAULTS[chrome + ':' + key]
-        const fallback = spec === undefined ? 0 : (spec.px === undefined ? spec.ratio * reference : spec.px)
+        const fallback = spec === undefined ? 0 : (spec.px === undefined ? spec.ratio * referenceOf(key) : spec.px)
         const live = measured[key]
         effective[key] = typeof live === 'number' && Number.isFinite(live) && live > 0 ? live : fallback
       }
@@ -4846,7 +4922,14 @@ window.__ModuleLoader__.load({
         const current = sizeOf(key)
         let ceiling = spec.max
         if (key === 'diff') {
-          const main = space - sizeOf('changes') - sizeOf('tree') - PANE_GUTTER_PX
+          /* The diff lives INSIDE the main pane, so its height budget is the
+             main pane's height: the full body height in the columns chrome
+             (the other panes run sideways there and share none of it), the
+             body height minus the stacked siblings otherwise. Either way the
+             history list keeps its own minimum. */
+          const main = height
+            ? space - sizeOf('changes') - sizeOf('tree') - PANE_GUTTER_PX
+            : box.height
           ceiling = Math.min(ceiling, main - PANE_HISTORY_MIN_H)
         } else {
           let taken = 0
@@ -4868,7 +4951,7 @@ window.__ModuleLoader__.load({
         limits[key] = { min: spec.min, max: high }
         const ratio = ratios[key]
         if (typeof ratio === 'number' && Number.isFinite(ratio)) {
-          const px = Math.round(Math.min(Math.max(ratio * reference, spec.min), high))
+          const px = Math.round(Math.min(Math.max(ratio * referenceOf(key), spec.min), high))
           overrides[key] = px
           effective[key] = px
         }
@@ -6767,7 +6850,10 @@ window.__ModuleLoader__.load({
         if (element === null) return found
         for (const node of element.querySelectorAll('[data-pane]')) {
           const rect = node.getBoundingClientRect()
-          found[node.getAttribute('data-pane')] = Math.round(paneByWidth ? rect.width : rect.height)
+          // The diff pane is measured in HEIGHT under every chrome — it is
+          // carved out of the middle pane, whose siblings may run sideways.
+          const key = node.getAttribute('data-pane')
+          found[key] = Math.round(key === 'diff' || paneByWidth === false ? rect.height : rect.width)
         }
         return found
       }
@@ -6804,7 +6890,8 @@ window.__ModuleLoader__.load({
         setPaneSizes((current) => (samePaneSizes(current, live) ? current : live))
         const layout = paneGeometry(chrome, paneBox, panesRef.current, live)
         const limit = layout.limits[key]
-        const reference = paneByWidth ? paneBox.width : paneBox.height
+        // The diff divides the body HEIGHT in every chrome (see paneGeometry).
+        const reference = key === 'diff' ? paneBox.height : (paneByWidth ? paneBox.width : paneBox.height)
         if (limit === undefined || !(reference > 0)) return
         const px = Math.round(Math.min(Math.max(rawPx, limit.min), limit.max))
         commitPanes(withPaneRatio(panesRef.current, layout.bucket, key, px / reference))
@@ -6834,7 +6921,9 @@ window.__ModuleLoader__.load({
       const paneStyle = (key) => {
         const px = paneLayout.overrides[key]
         if (px === undefined) return null
-        return paneByWidth ? { width: px + 'px', maxWidth: px + 'px' } : { height: px + 'px', maxHeight: px + 'px' }
+        // The diff always takes its size as a height, in every chrome.
+        const vertical = key === 'diff' ? true : paneByWidth === false
+        return vertical ? { height: px + 'px', maxHeight: px + 'px' } : { width: px + 'px', maxWidth: px + 'px' }
       }
 
       /* A divider is a control, so it only exists when it can actually move
@@ -6848,7 +6937,10 @@ window.__ModuleLoader__.load({
         key: 'gutter-' + key,
         t: t,
         nameKey: PANE_NAME_KEYS[key],
-        vertical: paneByWidth,
+        // The diff divider is a horizontal bar in every chrome: it moves a
+        // window that lives BELOW it, even where tree/changes are dragged
+        // sideways (columns).
+        vertical: key === 'diff' ? false : paneByWidth,
         side: side,
         active: paneDragging === key,
         // Now is clamped into [min, max]: an aria window the panel contradicts is
@@ -8160,13 +8252,35 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         const el = seatRef.current
         if (el === null) return undefined
+        /* Leftover wheel scroll, root cause: the composer seat is sticky, but a
+           sticky box still occupies FLOW space inside the scrollport, so even
+           with the panel seat pinned to the visible height the scrollHeight
+           stays clientHeight + that flow space — the wheel could still scroll
+           the whole window by exactly that leftover (user report: the layout
+           fits, yet the page keeps scrolling). The overflow only exists AFTER
+           the new height has been applied, so measure() sets the visible-height
+           target and then, one frame later, CONVERGES: it reads the real
+           overflow and shrinks the seat by that amount. Guard rails keep it
+           stable: shrink only while overflow > 0 (measure() itself recomputes
+           the base on every pass, so the correction never compounds), clamp at
+           the same 240 floor, and the correction is remembered so the next
+           measure() starts from the already-corrected target. */
+        const leftover = { current: 0 }
         const measure = () => {
           let scroll = null
           try { scroll = el.closest('[data-conversation-scroll]') } catch (error) { void error }
           if (scroll === null || scroll === undefined) return
           const offset = Math.max(0, el.getBoundingClientRect().top - scroll.getBoundingClientRect().top)
-          const available = Math.round(scroll.clientHeight - offset - 8)
+          const available = Math.round(scroll.clientHeight - offset - 8) - leftover.current
           if (available >= 240) setSeatHeight(available)
+          requestAnimationFrame(() => {
+            if (el.isConnected !== true) return
+            const overflow = scroll.scrollHeight - scroll.clientHeight
+            if (overflow > 0) {
+              leftover.current = overflow
+              setSeatHeight(Math.max(240, available - overflow))
+            }
+          })
         }
         measure()
         const raf = requestAnimationFrame(() => { measure() })

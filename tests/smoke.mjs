@@ -751,22 +751,32 @@ test('the pane dividers are draggable, touch-safe and keyboard reachable', () =>
 test('a divider only exists when it can move something', () => {
   // v0.8.0 shipped the history↔diff divider as a dead control: it wrote storage
   // and moved its own aria while the diff pane never got the inline size (the
-  // render ignored it), and the columns chrome — whose key set has no diff pane —
-  // rendered an extra 0x0, all-zero, focusable separator.
+  // render ignored it). That part stays locked below. The second half used to
+  // lock the OPPOSITE of today's behaviour: the columns chrome's key set had no
+  // diff pane, so its diff window (fixed max-height:55%) could not be resized
+  // at all — user report. Every chrome now hands out a real diff window; the
+  // diff keeps measuring HEIGHT even where the chrome runs sideways.
   assert.match(client, /className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle\('diff'\)/,
     'the diff pane must actually consume the stored size')
   assert.match(client, /if \(limit === undefined \|\| limit\.max <= limit\.min\) return null/,
     'no pane in this chrome, or no travel in either direction, means no divider element')
   assert.match(client, /value: Math\.min\(Math\.max\(Math\.round\(paneLayout\.effective\[key\]/, 'aria-valuenow is clamped into the window it announces')
-  // The columns chrome has no diff key, so its diff divider is never built.
   const core = paneCore()
-  assert.deepEqual(core.PANE_CHROME_KEYS.columns, ['tree', 'changes'])
-  assert.equal(core.PANE_LIMITS['columns:diff'], undefined, 'and there is no window to hand out for it')
+  assert.deepEqual(core.PANE_CHROME_KEYS.columns, ['tree', 'changes', 'diff'])
+  assert.ok(core.PANE_LIMITS['columns:diff'] !== undefined, 'the columns chrome has a diff window to hand out')
   const columns = core.paneGeometry('columns', { width: 700, height: 400 }, core.normalizePanes(null), { diff: 150 })
-  assert.equal(columns.limits.diff, undefined, 'paneGeometry reports no diff window in the columns chrome')
+  assert.ok(columns.limits.diff !== undefined && columns.limits.diff.max > columns.limits.diff.min,
+    'the columns chrome hands out a real diff window')
   const stacked = core.paneGeometry('stack', { width: 700, height: 800 }, core.normalizePanes(null), { diff: 150 })
   assert.ok(stacked.limits.diff !== undefined && stacked.limits.diff.max > stacked.limits.diff.min,
     'while the stacked chrome hands out a real diff window')
+
+  // The columns diff divides the body HEIGHT, not the chrome's own width
+  // dimension: 0.5 of a 400px-tall body lands at 200px even in a 1000px-wide
+  // panel (and the history list keeps its 120px floor: ceiling 280).
+  const wide = core.paneGeometry('columns', { width: 1000, height: 400 },
+    core.normalizePanes({ panes: { 'columns:wide': { diff: 0.5 } } }), { diff: 150 })
+  assert.equal(wide.overrides.diff, 200, 'a columns diff ratio converts against the body height')
 })
 
 test('a rail switch writes exactly its own field, and a refused write rolls back', () => {
