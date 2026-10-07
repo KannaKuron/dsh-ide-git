@@ -178,6 +178,75 @@ test('every send-to-chat surface is wired to the shared funnel', () => {
   assert.match(client, /onFileMenu: detailFileMenu/, 'the commit-detail file list must carry the context menu')
 })
 
+test('send payloads are self-describing (git commit / branch + repo, v0.13.3 feedback)', () => {
+  // A bare short hash or branch name reads as noise out of context (v0.13.3
+  // user feedback): the commit and branch sends must say WHAT they are and
+  // WHERE from. The wording rides the fill() templates send.commitText /
+  // send.branchText; the channel itself is unchanged. The file @-chip is
+  // already self-describing and keeps its insertReference channel untouched.
+  assert.match(client, /sendGitSummaryToChat\('send\.commitText', \{ hash: shortHash, subject: subject, repo: repoLabel \}\)/,
+    'the commit payload carries hash + subject + repo')
+  assert.match(client, /sendGitSummaryToChat\('send\.branchText', \{ name: entry\.name, repo: repoLabel \}\)/,
+    'the branch payload carries the branch name + repo')
+  assert.match(client, /const text = fill\(t\(key\), Object\.assign\(\{\}, values, \{ repo: repo \}\)\)/,
+    'the payload text is a fill() template lookup, not a hand-built string')
+  assert.match(client, /const repoLabel = repoRoot === null \? '' : baseName\(repoRoot\)/,
+    'the repo label is the repo root basename')
+  // fill() leaves unknown keys verbatim, so an unknown repo must become a
+  // neutral placeholder INSIDE the helper — a literal {repo} must never reach
+  // the chat.
+  assert.match(client, /values\.repo === undefined \|\| values\.repo === '' \? '—' : values\.repo/,
+    'an unknown repo degrades to a placeholder, never a literal {repo}')
+  // A commit without a subject (git tolerates empty messages) must not fake
+  // one: it degrades to the old bare-hash payload.
+  assert.match(client, /if \(subject === ''\) \{ sendToComposer\(\{ text: shortHash, fallback: shortHash \}\); return \}/,
+    'a commit without a subject degrades to the bare hash')
+  // Both templates ship in ZH + EN + every LOCALES entry (21; the key-set test
+  // would also catch a missing one, a named guard says WHY they must stay).
+  for (const key of ['send.commitText', 'send.branchText']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 21, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
+  // Both git-summary menus (branch + commit) close over the funnel and the
+  // label; a stale closure would send the PREVIOUS repo's name (invariant 12:
+  // dependency arrays are evaluated during render).
+  const menuDeps = (client.match(/sendGitSummaryToChat, repoLabel\]\)/g) || []).length
+  assert.ok(menuDeps >= 2, 'branch and commit menus must both list the funnel + repoLabel (saw ' + menuDeps + ')')
+})
+
+test('the conversation seat convergence is a controlled loop with a content trigger (v0.13.3 fix)', () => {
+  // One feedback pass was not enough on the real host: content mounts AFTER
+  // the first pass (composer, hero, diff) and re-opens the overflow, and the
+  // ResizeObserver only sees the scrollport's own size. The seat must own a
+  // bounded convergence LOOP (4 rAF rounds, overwrite-style so rounds cannot
+  // compound, 240 floor) re-run by every trigger — and a host without the
+  // conversation scrollport must skip the whole thing silently.
+  const start = client.indexOf('Leftover wheel scroll, root cause')
+  const end = client.indexOf('const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])')
+  assert.ok(start >= 0 && end > start, 'the seat sizing effect block must exist')
+  const effect = client.slice(start, end)
+  assert.match(effect, /base\.current = Math\.round\(scroll\.clientHeight - offset - 8\)/,
+    'measure() recomputes the UNCORRECTED base on every pass')
+  assert.match(effect, /const overflow = scroll\.scrollHeight - scroll\.clientHeight\n            if \(overflow <= 1\) return/,
+    'a convergence round stops once no meaningful overflow (>1px) is left')
+  assert.match(effect, /leftover\.current = overflow\n            setSeatHeight\(Math\.max\(240, base\.current - overflow\)\)/,
+    'the correction is recorded overwrite-style and clamps at 240')
+  assert.match(effect, /if \(rounds < 4\) requestAnimationFrame\(step\)/,
+    'the convergence loop is bounded (at most 4 rAF rounds)')
+  assert.match(effect, /typeof MutationObserver === 'function'/,
+    'the content watcher is feature-probed like the resize one')
+  assert.match(effect, /mutationObserver\.observe\(scroll, \{ childList: true, subtree: true \}\)/,
+    'the watcher covers content mounting later (childList + subtree)')
+  assert.match(effect, /setTimeout\(\(\) => \{ mutationTimer = null; measure\(\) \}, 120\)/,
+    'the mutation burst is debounced (~120ms)')
+  assert.match(effect, /if \(mutationTimer !== null\) clearTimeout\(mutationTimer\)/,
+    'a new burst replaces the pending debounce')
+  assert.match(effect, /if \(mutationObserver !== undefined\) mutationObserver\.disconnect\(\)/,
+    'unmount disconnects the watcher together with the resize one')
+  assert.match(effect, /try \{ scroll = el\.closest\('\[data-conversation-scroll\]'\) \} catch/,
+    'probing the host structure rides a try/catch: a missing scrollport skips silently')
+})
+
 test('client API base is mount-relative (sub-path support, issue #4)', () => {
   // dsh 0.1.7 serves the shell with <base href="./">: document.baseURI is the
   // mount the page loaded from, and fetch() resolves relative URLs against it.

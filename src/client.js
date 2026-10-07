@@ -154,6 +154,8 @@ window.__ModuleLoader__.load({
       'action.details': '提交详情',
       'menu.sendToChat': '发送到对话',
       'menu.sendFilePathToChat': '发送文件路径到对话',
+      'send.commitText': 'git 提交 {hash}「{subject}」(仓库 {repo})',
+      'send.branchText': 'git 分支 {name}(仓库 {repo})',
       'history.empty': '这个仓库还没有提交',
       'history.loadMore': '加载更多',
       'history.filter': '文本或哈希',
@@ -354,6 +356,8 @@ window.__ModuleLoader__.load({
       'action.details': 'Commit details',
       'menu.sendToChat': 'Send to chat',
       'menu.sendFilePathToChat': 'Send file path to chat',
+      'send.commitText': 'git commit {hash} "{subject}" (repo {repo})',
+      'send.branchText': 'git branch {name} (repo {repo})',
       'history.empty': 'This repository has no commits yet',
       'history.loadMore': 'Load more',
       'history.filter': 'Text or hash',
@@ -562,6 +566,8 @@ window.__ModuleLoader__.load({
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送到對話',
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
+        'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
+        'send.branchText': 'git 分支 {name}(存放庫 {repo})',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -762,6 +768,8 @@ window.__ModuleLoader__.load({
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送至對話',
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
+        'send.commitText': 'git 提交 {hash}「{subject}」(版本庫 {repo})',
+        'send.branchText': 'git 分支 {name}(版本庫 {repo})',
         'history.empty': '這個版本庫還沒有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -962,6 +970,8 @@ window.__ModuleLoader__.load({
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送至對話',
         'menu.sendFilePathToChat': '傳送檔案路徑至對話',
+        'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
+        'send.branchText': 'git 分支 {name}(存放庫 {repo})',
         'history.empty': '呢個存放庫仲未有提交',
         'history.loadMore': '載入更多',
         'history.filter': '文字或雜湊',
@@ -1162,6 +1172,8 @@ window.__ModuleLoader__.load({
         'action.details': 'コミットの詳細',
         'menu.sendToChat': 'チャットへ送る',
         'menu.sendFilePathToChat': 'ファイルパスをチャットへ送る',
+        'send.commitText': 'git コミット {hash}「{subject}」(リポジトリ {repo})',
+        'send.branchText': 'git ブランチ {name}(リポジトリ {repo})',
         'history.empty': 'このリポジトリにはまだコミットがありません',
         'history.loadMore': 'さらに読み込む',
         'history.filter': 'テキストまたはハッシュ',
@@ -1362,6 +1374,8 @@ window.__ModuleLoader__.load({
         'action.details': '커밋 상세',
         'menu.sendToChat': '대화로 보내기',
         'menu.sendFilePathToChat': '파일 경로를 대화로 보내기',
+        'send.commitText': 'git 커밋 {hash} "{subject}" (저장소 {repo})',
+        'send.branchText': 'git 브랜치 {name} (저장소 {repo})',
         'history.empty': '이 저장소에는 아직 커밋이 없습니다',
         'history.loadMore': '더 불러오기',
         'history.filter': '텍스트 또는 해시',
@@ -1562,6 +1576,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Commit-Details',
         'menu.sendToChat': 'Im Chat senden',
         'menu.sendFilePathToChat': 'Dateipfad im Chat senden',
+        'send.commitText': 'git-Commit {hash} "{subject}" (Repository {repo})',
+        'send.branchText': 'git-Branch {name} (Repository {repo})',
         'history.empty': 'Dieses Repository hat noch keine Commits',
         'history.loadMore': 'Mehr laden',
         'history.filter': 'Text oder Hash',
@@ -1762,6 +1778,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Détails du commit',
         'menu.sendToChat': 'Envoyer dans la conversation',
         'menu.sendFilePathToChat': 'Envoyer le chemin du fichier dans la conversation',
+        'send.commitText': 'commit git {hash} « {subject} » (dépôt {repo})',
+        'send.branchText': 'branche git {name} (dépôt {repo})',
         'history.empty': 'Ce dépôt n\'a pas encore de commit',
         'history.loadMore': 'Charger plus',
         'history.filter': 'Texte ou empreinte',
@@ -1962,6 +1980,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Сведения о коммите',
         'menu.sendToChat': 'Отправить в чат',
         'menu.sendFilePathToChat': 'Отправить путь к файлу в чат',
+        'send.commitText': 'git-коммит {hash} «{subject}» (репозиторий {repo})',
+        'send.branchText': 'git-ветка {name} (репозиторий {repo})',
         'history.empty': 'В этом репозитории ещё нет коммитов',
         'history.loadMore': 'Загрузить ещё',
         'history.filter': 'Текст или хеш',
@@ -2162,6 +2182,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Detalhes do commit',
         'menu.sendToChat': 'Enviar para a conversa',
         'menu.sendFilePathToChat': 'Enviar caminho do arquivo para a conversa',
+        'send.commitText': 'commit git {hash} "{subject}" (repositório {repo})',
+        'send.branchText': 'branch git {name} (repositório {repo})',
         'history.empty': 'Este repositório ainda não tem commits',
         'history.loadMore': 'Carregar mais',
         'history.filter': 'Texto ou hash',
@@ -2362,6 +2384,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Dettagli del commit',
         'menu.sendToChat': 'Invia alla conversazione',
         'menu.sendFilePathToChat': 'Invia il percorso del file alla conversazione',
+        'send.commitText': 'commit git {hash} "{subject}" (repository {repo})',
+        'send.branchText': 'branch git {name} (repository {repo})',
         'history.empty': 'Questo repository non ha ancora commit',
         'history.loadMore': 'Carica altro',
         'history.filter': 'Testo o hash',
@@ -2562,6 +2586,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Commit-details',
         'menu.sendToChat': 'Naar het gesprek verzenden',
         'menu.sendFilePathToChat': 'Bestandspad naar het gesprek verzenden',
+        'send.commitText': 'git-commit {hash} "{subject}" (repository {repo})',
+        'send.branchText': 'git-branch {name} (repository {repo})',
         'history.empty': 'Deze repository heeft nog geen commits',
         'history.loadMore': 'Meer laden',
         'history.filter': 'Tekst of hash',
@@ -2762,6 +2788,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Szczegóły commita',
         'menu.sendToChat': 'Wyślij do rozmowy',
         'menu.sendFilePathToChat': 'Wyślij ścieżkę pliku do rozmowy',
+        'send.commitText': 'commit git {hash} „{subject}" (repozytorium {repo})',
+        'send.branchText': 'gałąź git {name} (repozytorium {repo})',
         'history.empty': 'To repozytorium nie ma jeszcze commitów',
         'history.loadMore': 'Wczytaj więcej',
         'history.filter': 'Tekst lub hash',
@@ -2962,6 +2990,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Commit-detaljer',
         'menu.sendToChat': 'Skicka till samtalet',
         'menu.sendFilePathToChat': 'Skicka filsökvägen till samtalet',
+        'send.commitText': 'git-commit {hash} ”{subject}” (arkiv {repo})',
+        'send.branchText': 'git-gren {name} (arkiv {repo})',
         'history.empty': 'Det här arkivet har inga commits ännu',
         'history.loadMore': 'Ladda mer',
         'history.filter': 'Text eller hash',
@@ -3162,6 +3192,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Commit ayrıntıları',
         'menu.sendToChat': 'Sohbete gönder',
         'menu.sendFilePathToChat': 'Dosya yolunu sohbete gönder',
+        'send.commitText': 'git commit {hash} "{subject}" (depo {repo})',
+        'send.branchText': 'git dalı {name} (depo {repo})',
         'history.empty': 'Bu depoda henüz commit yok',
         'history.loadMore': 'Daha fazla yükle',
         'history.filter': 'Metin veya hash',
@@ -3362,6 +3394,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Detail commit',
         'menu.sendToChat': 'Kirim ke obrolan',
         'menu.sendFilePathToChat': 'Kirim jalur berkas ke obrolan',
+        'send.commitText': 'commit git {hash} "{subject}" (repositori {repo})',
+        'send.branchText': 'cabang git {name} (repositori {repo})',
         'history.empty': 'Repositori ini belum punya commit',
         'history.loadMore': 'Muat lebih banyak',
         'history.filter': 'Teks atau hash',
@@ -3562,6 +3596,8 @@ window.__ModuleLoader__.load({
         'action.details': 'Chi tiết commit',
         'menu.sendToChat': 'Gửi vào hội thoại',
         'menu.sendFilePathToChat': 'Gửi đường dẫn tệp vào hội thoại',
+        'send.commitText': 'git commit {hash} "{subject}" (kho {repo})',
+        'send.branchText': 'nhánh git {name} (kho {repo})',
         'history.empty': 'Kho này chưa có commit nào',
         'history.loadMore': 'Tải thêm',
         'history.filter': 'Văn bản hoặc hash',
@@ -3762,6 +3798,8 @@ window.__ModuleLoader__.load({
         'action.details': 'تفاصيل الالتزام',
         'menu.sendToChat': 'إرسال إلى المحادثة',
         'menu.sendFilePathToChat': 'إرسال مسار الملف إلى المحادثة',
+        'send.commitText': 'التزام git {hash} "{subject}" (المستودع {repo})',
+        'send.branchText': 'فرع git {name} (المستودع {repo})',
         'history.empty': 'لا توجد التزامات في هذا المستودع بعد',
         'history.loadMore': 'تحميل المزيد',
         'history.filter': 'نص أو تجزئة',
@@ -3962,6 +4000,8 @@ window.__ModuleLoader__.load({
         'action.details': 'कमिट विवरण',
         'menu.sendToChat': 'बातचीत में भेजें',
         'menu.sendFilePathToChat': 'फ़ाइल पथ बातचीत में भेजें',
+        'send.commitText': 'git कमिट {hash} "{subject}" (रिपॉज़िटरी {repo})',
+        'send.branchText': 'git ब्रांच {name} (रिपॉज़िटरी {repo})',
         'history.empty': 'इस रिपॉज़िटरी में अभी कोई कमिट नहीं है',
         'history.loadMore': 'और लोड करें',
         'history.filter': 'टेक्स्ट या हैश',
@@ -4162,6 +4202,8 @@ window.__ModuleLoader__.load({
         'action.details': 'รายละเอียดคอมมิต',
         'menu.sendToChat': 'ส่งไปยังบทสนทนา',
         'menu.sendFilePathToChat': 'ส่งพาธไฟล์ไปยังบทสนทนา',
+        'send.commitText': 'git คอมมิต {hash} "{subject}" (รีโพซิทอรี {repo})',
+        'send.branchText': 'git บรานช์ {name} (รีโพซิทอรี {repo})',
         'history.empty': 'รีโพซิทอรีนี้ยังไม่มีคอมมิต',
         'history.loadMore': 'โหลดเพิ่ม',
         'history.filter': 'ข้อความหรือแฮช',
@@ -7610,6 +7652,21 @@ window.__ModuleLoader__.load({
         })
       }, [sendToComposer])
 
+      /* Self-describing text payloads for the commit/branch sends (v0.13.3 user
+         feedback): a bare short hash or branch name is noise out of context —
+         the text must say WHAT it is and WHERE from. The wording rides the
+         fill() templates send.commitText / send.branchText; `repo` is the repo
+         root's basename. An unknown root degrades to a neutral dash — fill()
+         leaves unknown keys verbatim, so the callers must never let an
+         undefined repo reach the template. The file @-chip is already
+         self-describing and stays untouched. */
+      const repoLabel = repoRoot === null ? '' : baseName(repoRoot)
+      const sendGitSummaryToChat = useCallback((key, values) => {
+        const repo = values.repo === undefined || values.repo === '' ? '—' : values.repo
+        const text = fill(t(key), Object.assign({}, values, { repo: repo }))
+        sendToComposer({ text: text, fallback: text })
+      }, [t, sendToComposer])
+
       const branchMenu = useCallback((event, entry) => {
         const current = branches === null ? '' : branches.branch
         const isLocal = entry.remote !== true && entry.tag !== true
@@ -7619,7 +7676,7 @@ window.__ModuleLoader__.load({
           isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
           isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
-          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendToComposer({ text: entry.name, fallback: entry.name }) },
+          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendGitSummaryToChat('send.branchText', { name: entry.name, repo: repoLabel }) },
           null,
           { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
           { id: 'newBranch', icon: 'plus', tone: 'success', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
@@ -7630,14 +7687,20 @@ window.__ModuleLoader__.load({
           { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
         openMenuAt(event, items)
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendToComposer])
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel])
 
       const commitMenu = useCallback((event, commit) => {
         const shortHash = commit.hash.slice(0, 7)
         const items = [
           { id: 'details', icon: 'file', tone: 'primary', label: t('action.details'), run: () => { void selectCommit(commit) } },
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
-          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendToComposer({ text: shortHash, fallback: shortHash }) },
+          { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => {
+            // A commit whose subject is empty (git tolerates empty messages)
+            // degrades to the old bare-hash payload instead of faking one.
+            const subject = typeof commit.subject === 'string' ? commit.subject.trim() : ''
+            if (subject === '') { sendToComposer({ text: shortHash, fallback: shortHash }); return }
+            sendGitSummaryToChat('send.commitText', { hash: shortHash, subject: subject, repo: repoLabel })
+          } },
           null,
           { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), run: () => setDialog({ kind: 'checkoutCommit', hash: commit.hash }) },
           { id: 'branch', icon: 'plus', tone: 'success', label: t('action.newBranchHere'), run: () => setDialog({ kind: 'newBranch', from: commit.hash }) },
@@ -7650,7 +7713,7 @@ window.__ModuleLoader__.load({
           { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
         ]
         openMenuAt(event, items)
-      }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer])
+      }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer, sendGitSummaryToChat, repoLabel])
 
       const changeMenu = useCallback((event, item, group) => {
         const items = [
@@ -8695,30 +8758,48 @@ window.__ModuleLoader__.load({
            with the panel seat pinned to the visible height the scrollHeight
            stays clientHeight + that flow space — the wheel could still scroll
            the whole window by exactly that leftover (user report: the layout
-           fits, yet the page keeps scrolling). The overflow only exists AFTER
-           the new height has been applied, so measure() sets the visible-height
-           target and then, one frame later, CONVERGES: it reads the real
-           overflow and shrinks the seat by that amount. Guard rails keep it
-           stable: shrink only while overflow > 0 (measure() itself recomputes
-           the base on every pass, so the correction never compounds), clamp at
-           the same 240 floor, and the correction is remembered so the next
-           measure() starts from the already-corrected target. */
+           fits, yet the page keeps scrolling). v0.13.3 report: content mounts
+           or changes AFTER the first pass (the composer, the hero, a diff), and
+           a single feedback convergence is not enough. measure() therefore
+           recomputes the UNCORRECTED base (base.current) and hands off to the
+           CONTROLLED CONVERGER below, which is re-run by every trigger: the
+           initial mount, rAF/timeout follow-ups, the scrollport's own resize
+           (ResizeObserver) and window resizes, and — new — the scrollport's
+           content mutations (MutationObserver, debounced), because content
+           growing later re-opens the overflow without resizing the scrollport
+           itself. */
         const leftover = { current: 0 }
+        const base = { current: 0 }
+        /* The converger: up to FOUR rAF-spaced rounds. Each round reads
+           scroll.scrollHeight - scroll.clientHeight; anything over 1px shrinks
+           the seat by exactly that amount and OVERWRITES the leftover record
+           (never adds — every corrected height derives from the fresh base, so
+           repeated rounds cannot compound), clamped at the same 240 floor.
+           Shrink-only: nothing here grows the seat back. A host without the
+           conversation scrollport never reaches this code — measure() skips it
+           all, silently, and never throws. */
+        const converge = (scroll) => {
+          let rounds = 0
+          const step = () => {
+            rounds += 1
+            if (el.isConnected !== true) return
+            const overflow = scroll.scrollHeight - scroll.clientHeight
+            if (overflow <= 1) return
+            leftover.current = overflow
+            setSeatHeight(Math.max(240, base.current - overflow))
+            if (rounds < 4) requestAnimationFrame(step)
+          }
+          requestAnimationFrame(step)
+        }
         const measure = () => {
           let scroll = null
           try { scroll = el.closest('[data-conversation-scroll]') } catch (error) { void error }
           if (scroll === null || scroll === undefined) return
           const offset = Math.max(0, el.getBoundingClientRect().top - scroll.getBoundingClientRect().top)
-          const available = Math.round(scroll.clientHeight - offset - 8) - leftover.current
-          if (available >= 240) setSeatHeight(available)
-          requestAnimationFrame(() => {
-            if (el.isConnected !== true) return
-            const overflow = scroll.scrollHeight - scroll.clientHeight
-            if (overflow > 0) {
-              leftover.current = overflow
-              setSeatHeight(Math.max(240, available - overflow))
-            }
-          })
+          base.current = Math.round(scroll.clientHeight - offset - 8)
+          const corrected = base.current - leftover.current
+          if (corrected >= 240) setSeatHeight(corrected)
+          converge(scroll)
         }
         measure()
         const raf = requestAnimationFrame(() => { measure() })
@@ -8731,10 +8812,28 @@ window.__ModuleLoader__.load({
             observer.observe(scroll)
           }
         } catch (error) { void error }
+        /* Content that mounts or changes later does not resize the scrollport,
+           so the ResizeObserver stays silent while the overflow re-opens; the
+           mutation watcher re-measures for it. Debounced ~120ms so a mount
+           burst converges once instead of once per node. */
+        let mutationObserver
+        let mutationTimer = null
+        try {
+          const scroll = el.closest('[data-conversation-scroll]')
+          if (scroll !== null && scroll !== undefined && typeof MutationObserver === 'function') {
+            mutationObserver = new MutationObserver(() => {
+              if (mutationTimer !== null) clearTimeout(mutationTimer)
+              mutationTimer = setTimeout(() => { mutationTimer = null; measure() }, 120)
+            })
+            mutationObserver.observe(scroll, { childList: true, subtree: true })
+          }
+        } catch (error) { void error }
         window.addEventListener('resize', measure)
         return () => {
           cancelAnimationFrame(raf)
           clearTimeout(late)
+          if (mutationTimer !== null) clearTimeout(mutationTimer)
+          if (mutationObserver !== undefined) mutationObserver.disconnect()
           if (observer !== undefined) observer.disconnect()
           window.removeEventListener('resize', measure)
         }

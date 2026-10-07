@@ -13,7 +13,10 @@
  *   4. with the direct plugin route fenced off (403, the remote pairing
  *      client's reality), the panel still loads: the transport retries through
  *      the /remote proxy path (issue #9);
- *   5. zero uncaught page errors throughout.
+ *   5. after opening a commit detail, the conversation scrollport keeps NO
+ *      residual wheel scroll (scrollHeight - clientHeight <= 1px — the seat's
+ *      convergence invariant, v0.13.3 follow-up);
+ *   6. zero uncaught page errors throughout.
  *
  *   node scripts/conversation-probe.mjs "http://127.0.0.1:3099/?token=…" [out-dir]
  *
@@ -363,6 +366,19 @@ try {
           check(chrome.rootHeight <= chrome.viewport + 40,
             'the panel stays within the visible area (root ' + chrome.rootHeight + 'px vs viewport ' + chrome.viewport + 'px)')
         }
+        /* v0.13.3 follow-up: pinning the seat still left a residual WHEEL
+           scroll on the real host — the sticky composer's flow space, plus
+           content that mounts after the first convergence pass. The seat's
+           controlled convergence must leave the shared scrollport with NO
+           scrollable margin at all: scrollHeight - clientHeight <= 1px, with
+           the detail (the tallest content) wide open. */
+        const scrollGap = await page.evaluate(() => {
+          const scroll = document.querySelector('[data-conversation-scroll]')
+          if (scroll === null) return null
+          return Math.round(scroll.scrollHeight - scroll.clientHeight)
+        })
+        check(scrollGap !== null && scrollGap <= 1,
+          'the scrollport has no residual wheel scroll after convergence (gap ' + String(scrollGap) + 'px)')
         await page.screenshot({ path: join(outDir, 'conversation-git-detail.png') })
         /* Back to the history so the later steps start from a known surface. */
         const back = page.locator('.dig-root:visible button', { hasText: '返回历史' }).first()
