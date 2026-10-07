@@ -1101,10 +1101,10 @@ async function compare(payload) {
 /** Directories never descended into while looking for repositories. */
 const REPO_SCAN_SKIP = new Set(['node_modules', 'dist', 'build', 'out', 'target', 'vendor', 'venv', '.venv', '__pycache__', 'coverage', 'tmp', 'temp'])
 
-/* The submodule walk spawns one short `git submodule status` per level, so the
-   depth is capped the same way the directory scan caps its own, and every list
-   stays bounded so a pathological tree cannot flood the picker. */
-const SUBMODULE_MAX_DEPTH = 2
+/* `git submodule status --recursive` already reports every nesting level of a
+   repository in ONE call (paths arrive fully qualified), so the submodule walk
+   costs exactly one `status` per checkout; the lists stay bounded so a
+   pathological tree cannot flood the picker. */
 const SUBMODULE_LIST_LIMIT = 400
 const REPO_LIST_LIMIT = 60
 
@@ -1146,18 +1146,21 @@ function repoRow(root, submodulePath, kind) {
  *
  * Git itself is the source of truth: `git submodule status --recursive` lists
  * the registered paths (relative to the parent repository) even for submodules
- * that were never initialised, and nested ones are reached by recursing into
- * each listed path. A path that is present on disk and passes
+ * that were never initialised, and `--recursive` walks EVERY nesting level in
+ * that one call — deeper entries arrive as fully qualified paths
+ * ("outer/inner"), so one `status` per checkout is the whole discovery. (An
+ * earlier revision also re-ran `status` inside every confirmed submodule; those
+ * calls could only re-list checkouts the recursive pass had already reported,
+ * which multiplied the process count on a workspace full of checkouts without
+ * producing a single new row.) A path that is present on disk and passes
  * `rev-parse --show-toplevel` is a real, independent working tree — the parent
  * only ever sees it as one gitlink line, so this is what makes it selectable
  * as a repository of its own (the SourceTree behavior).
  *
- * The per-level `submodule status` calls are serial (a level's paths are only
- * known once its parent answered), but the working-tree checks are not: they
- * all run at once, because a repository with a dozen submodules otherwise
- * costs a dozen sequential processes on every scan.
+ * The working-tree checks all run at once, because a repository with a dozen
+ * submodules otherwise costs a dozen sequential processes on every scan.
  */
-async function collectSubmoduleRepos(root, depth = 1, prefix = '') {
+async function collectSubmoduleRepos(root) {
   const found = []
   const listing = await runGit(root, ['submodule', 'status', '--recursive'])
   if (listing.code !== 0) return found
@@ -1174,42 +1177,42 @@ async function collectSubmoduleRepos(root, depth = 1, prefix = '') {
     /* An uninitialised submodule has no `.git` yet: git still registers it, but
        there is no working tree to bind the panel to. */
     if (!existsSync(path.join(absolute, '.git'))) continue
-    candidates.push({ absolute, rel: `${prefix}${rel}` })
+    candidates.push({ absolute, rel })
   }
   const tops = await Promise.all(candidates.map((entry) => runGit(entry.absolute, ['rev-parse', '--show-toplevel'])))
-  const next = []
   for (let index = 0; index < candidates.length; index += 1) {
     const top = tops[index]
     if (top.code !== 0) continue
     const reported = top.stdout.trim().replace(/\\/g, '/').replace(/\/+$/, '')
     found.push({ root: reported === '' ? candidates[index].absolute : reported, rel: candidates[index].rel })
-    if (depth < SUBMODULE_MAX_DEPTH) next.push(candidates[index])
-  }
-  if (depth < SUBMODULE_MAX_DEPTH) {
-    const deeper = await Promise.all(next.map((entry) => collectSubmoduleRepos(entry.absolute, depth + 1, `${entry.rel}/`)))
-    for (const list of deeper) {
-      for (const entry of list) {
-        if (found.length >= SUBMODULE_LIST_LIMIT) break
-        found.push({ root: entry.root, rel: entry.rel })
-      }
-    }
   }
   return found
 }
 
-/** The whole discovery pass, cached briefly per cwd: it walks the tree and
- *  spawns a process per checkout, while the panel polls several times a minute.
- *  A submodule appearing or disappearing is a deliberate reconfiguration, so a
- *  one-minute staleness is the right trade. */
-const repoScanCache = new Map()
-const REPO_SCAN_TTL_MS = 60_000
+/* The whole discovery pass is cached in-process per cwd: one scan walks the
+   tree and spawns a git process per checkout, while the client re-POSTs `repos`
+   on every panel mount — a warm answer is what keeps switching back to the Git
+   page instant on a workspace full of checkouts. Entries are { at, rows };
+   REPOS_CACHE_TTL_MS is a module-level `let` so tests can pin it to 0 and
+   observe the always-rescan path.
+
+   The cache is deliberately NOT invalidated when a write method succeeds:
+   `repos` is a read-only discovery of which checkouts EXIST, and no write
+   method changes that set — a commit or a new branch does not conjure a
+   repository. A clone landing inside the 15s window simply stays invisible
+   until the next scan; that is an accepted trade, the client's background
+   refresh is the safety net. */
+export const repoScanCache = new Map()
+export let REPOS_CACHE_TTL_MS = 15000
 
 async function scanRepos(cwd) {
   const cached = repoScanCache.get(cwd)
   /* Hand back fresh row objects: the cache is shared by every caller, and a
      consumer that decorates or reorders what it received must not write
      through into the next request's answer. */
-  if (cached !== undefined && cached.expires > Date.now()) return cached.rows.map((row) => ({ ...row }))
+  if (cached !== undefined && Date.now() - cached.at < REPOS_CACHE_TTL_MS) {
+    return { cached: true, rows: cached.rows.map((row) => ({ ...row })) }
+  }
   const list = []
   const self = await runGit(cwd, ['rev-parse', '--show-toplevel'])
   const isRepo = self.code === 0
@@ -1239,8 +1242,8 @@ async function scanRepos(cwd) {
   const capped = rows.slice(0, REPO_LIST_LIMIT).map((row) => ({ ...row }))
   const branches = await Promise.all(capped.map((row) => branchOrNull(row.path)))
   for (let index = 0; index < capped.length; index += 1) capped[index].branch = branches[index]
-  repoScanCache.set(cwd, { rows: capped, expires: Date.now() + REPO_SCAN_TTL_MS })
-  return capped.map((row) => ({ ...row }))
+  repoScanCache.set(cwd, { at: Date.now(), rows: capped })
+  return { cached: false, rows: capped.map((row) => ({ ...row })) }
 }
 
 /** Depth-capped search for repositories nested in a workspace. */
@@ -1280,8 +1283,10 @@ async function branchOrNull(root) {
  */
 async function repos(payload) {
   const cwd = cwdOf(payload)
-  const rows = await scanRepos(cwd)
-  return { cwd, isRepo: rows.some((row) => row.kind === 'workspace'), repos: rows }
+  const { cached, rows } = await scanRepos(cwd)
+  /* `cached: true` rides a cache hit only; the client ignores it today, it just
+     makes the answer say where it came from. */
+  return { cwd, isRepo: rows.some((row) => row.kind === 'workspace'), repos: rows, ...(cached ? { cached: true } : {}) }
 }
 
 async function version() {

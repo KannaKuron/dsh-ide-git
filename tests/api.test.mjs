@@ -13,7 +13,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { EventEmitter } from 'node:events'
-import { apply } from '../src/index.js'
+import { apply, repoScanCache, REPOS_CACHE_TTL_MS } from '../src/index.js'
 
 let repo = ''
 let route = null
@@ -730,4 +730,52 @@ test('commit-message: a lock file is not a describable change, and says so', asy
   assert.equal(result.body.error.code, 'only-ignored-changes')
   assert.match(result.body.error.message, /lock files or binary/)
   rmSync(lockRepo, { recursive: true, force: true })
+})
+
+/* ============================== repos discovery cache ==============================
+ * The host caches one discovery pass per cwd (the client re-POSTs `repos` on
+ * every panel mount, and a scan spawns a git process per checkout). The tests
+ * drive the real route and seed `repoScanCache` directly: a row no scan could
+ * ever produce (`/ghost/...`) is the hard evidence of WHERE an answer came
+ * from. Pinning TTL to 0 is not expressible against an ESM binding, but the
+ * freshness test is `Date.now() - at < REPOS_CACHE_TTL_MS` — an entry whose
+ * `at` already lies past the window behaves exactly like a TTL of 0, where
+ * every write expires immediately and every call rescans. */
+
+test('repos serves a warm cache entry as-is and marks the answer cached', async () => {
+  const ghost = { path: '/ghost/from-cache', name: 'from-cache', label: 'from-cache', branch: null, kind: 'workspace' }
+  repoScanCache.set(repo, { at: Date.now(), rows: [{ ...ghost }] })
+  try {
+    const { body } = await call('repos', { cwd: repo })
+    assert.equal(body.ok, true)
+    assert.equal(body.data.cached, true, 'a fresh entry must be answered from the cache')
+    assert.deepEqual(body.data.repos, [ghost], 'the cached rows come back without any scan')
+    assert.equal(body.data.isRepo, true, 'isRepo is derived from the cached rows like from a scan')
+  } finally {
+    repoScanCache.delete(repo)
+  }
+})
+
+test('an expired entry forces a real scan, and the scan repopulates the cache', async () => {
+  const stale = { path: '/ghost/stale', name: 'stale', label: 'stale', branch: null, kind: 'nested' }
+  repoScanCache.set(repo, { at: Date.now() - REPOS_CACHE_TTL_MS - 1, rows: [stale] })
+  try {
+    const first = await call('repos', { cwd: repo })
+    assert.equal(first.body.ok, true)
+    assert.equal(first.body.data.cached, undefined, 'an expired entry must not be answered as cached')
+    assert.ok(first.body.data.repos.every((row) => row.path !== '/ghost/stale'), 'the stale rows are gone')
+    const self = first.body.data.repos.find((row) => row.kind === 'workspace')
+    assert.ok(self !== undefined, 'the fixture repository itself is discovered')
+    assert.equal(first.body.data.isRepo, true)
+    // The fresh scan was written back: the immediate next call hits the cache.
+    const second = await call('repos', { cwd: repo })
+    assert.equal(second.body.data.cached, true, 'the repopulated entry serves the next call')
+    assert.deepEqual(second.body.data.repos.map((row) => row.path), first.body.data.repos.map((row) => row.path))
+  } finally {
+    repoScanCache.delete(repo)
+  }
+})
+
+test('REPOS_CACHE_TTL_MS stays the documented 15-second window', () => {
+  assert.equal(REPOS_CACHE_TTL_MS, 15000)
 })
