@@ -153,7 +153,6 @@ window.__ModuleLoader__.load({
       'action.copyHash': '复制修订号',
       'action.details': '提交详情',
       'menu.sendToChat': '发送到对话',
-      'menu.sendFilePathToChat': '发送文件路径到对话',
       'send.commitText': 'git 提交 {hash}「{subject}」(仓库 {repo})',
       'send.branchText': 'git 分支 {name}(仓库 {repo})',
       'menu.sendDiffLinesToChat': '发送选中行到对话',
@@ -197,6 +196,7 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
       'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
       'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
+      'preview.openFile': '打开文件预览',
       'preview.title': 'Git 预览',
       'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
       'settings.rail.title': '动作条按钮',
@@ -368,7 +368,6 @@ window.__ModuleLoader__.load({
       'action.copyHash': 'Copy revision number',
       'action.details': 'Commit details',
       'menu.sendToChat': 'Send to chat',
-      'menu.sendFilePathToChat': 'Send file path to chat',
       'send.commitText': 'git commit {hash} "{subject}" (repo {repo})',
       'send.branchText': 'git branch {name} (repo {repo})',
       'menu.sendDiffLinesToChat': 'Send selected lines to chat',
@@ -412,6 +411,7 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
       'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
       'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
+      'preview.openFile': 'Open in the file preview',
       'preview.title': 'Git Preview',
       'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
       'settings.rail.title': 'Action rail buttons',
@@ -591,7 +591,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': '複製修訂號',
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送到對話',
-        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
         'send.branchText': 'git 分支 {name}(存放庫 {repo})',
         'menu.sendDiffLinesToChat': '傳送選中行到對話',
@@ -635,6 +634,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'preview.openFile': '開啟檔案預覽',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -806,7 +806,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': '複製修訂編號',
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送至對話',
-        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(版本庫 {repo})',
         'send.branchText': 'git 分支 {name}(版本庫 {repo})',
         'menu.sendDiffLinesToChat': '傳送選取行至對話',
@@ -850,6 +849,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
+        'preview.openFile': '開啟檔案預覽',
         'preview.title': 'Git 預覽',
         'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -1021,7 +1021,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': '複製修訂號',
         'action.details': '提交詳情',
         'menu.sendToChat': '傳送至對話',
-        'menu.sendFilePathToChat': '傳送檔案路徑至對話',
         'send.commitText': 'git 提交 {hash}「{subject}」(存放庫 {repo})',
         'send.branchText': 'git 分支 {name}(存放庫 {repo})',
         'menu.sendDiffLinesToChat': '傳送選中行至對話',
@@ -1065,6 +1064,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'preview.openFile': '開啟檔案預覽',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -1236,7 +1236,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'リビジョン番号をコピー',
         'action.details': 'コミットの詳細',
         'menu.sendToChat': 'チャットへ送る',
-        'menu.sendFilePathToChat': 'ファイルパスをチャットへ送る',
         'send.commitText': 'git コミット {hash}「{subject}」(リポジトリ {repo})',
         'send.branchText': 'git ブランチ {name}(リポジトリ {repo})',
         'menu.sendDiffLinesToChat': '選択した行をチャットへ送る',
@@ -1280,6 +1279,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
         'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
         'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
+        'preview.openFile': 'ファイルプレビューを開く',
         'preview.title': 'Git プレビュー',
         'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
         'settings.rail.title': 'アクションレールのボタン',
@@ -1451,7 +1451,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': '리비전 번호 복사',
         'action.details': '커밋 상세',
         'menu.sendToChat': '대화로 보내기',
-        'menu.sendFilePathToChat': '파일 경로를 대화로 보내기',
         'send.commitText': 'git 커밋 {hash} "{subject}" (저장소 {repo})',
         'send.branchText': 'git 브랜치 {name} (저장소 {repo})',
         'menu.sendDiffLinesToChat': '선택한 줄 대화로 보내기',
@@ -1495,6 +1494,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
         'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
         'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
+        'preview.openFile': '파일 미리보기로 열기',
         'preview.title': 'Git 미리보기',
         'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
         'settings.rail.title': '액션 레일 버튼',
@@ -1666,7 +1666,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Revisionsnummer kopieren',
         'action.details': 'Commit-Details',
         'menu.sendToChat': 'Im Chat senden',
-        'menu.sendFilePathToChat': 'Dateipfad im Chat senden',
         'send.commitText': 'git-Commit {hash} "{subject}" (Repository {repo})',
         'send.branchText': 'git-Branch {name} (Repository {repo})',
         'menu.sendDiffLinesToChat': 'Ausgewählte Zeilen in den Chat senden',
@@ -1710,6 +1709,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
         'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
         'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
+        'preview.openFile': 'In der Dateivorschau öffnen',
         'preview.title': 'Git-Vorschau',
         'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
@@ -1881,7 +1881,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Copier le numéro de révision',
         'action.details': 'Détails du commit',
         'menu.sendToChat': 'Envoyer dans la conversation',
-        'menu.sendFilePathToChat': 'Envoyer le chemin du fichier dans la conversation',
         'send.commitText': 'commit git {hash} « {subject} » (dépôt {repo})',
         'send.branchText': 'branche git {name} (dépôt {repo})',
         'menu.sendDiffLinesToChat': 'Envoyer les lignes sélectionnées dans la conversation',
@@ -1925,6 +1924,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
         'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
         'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
+        'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
         'preview.title': 'Aperçu Git',
         'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
         'settings.rail.title': 'Boutons de la barre d’actions',
@@ -2096,7 +2096,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Скопировать номер ревизии',
         'action.details': 'Сведения о коммите',
         'menu.sendToChat': 'Отправить в чат',
-        'menu.sendFilePathToChat': 'Отправить путь к файлу в чат',
         'send.commitText': 'git-коммит {hash} «{subject}» (репозиторий {repo})',
         'send.branchText': 'git-ветка {name} (репозиторий {repo})',
         'menu.sendDiffLinesToChat': 'Отправить выбранные строки в чат',
@@ -2140,6 +2139,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
         'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
         'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
+        'preview.openFile': 'Открыть в предпросмотре файла',
         'preview.title': 'Git-предпросмотр',
         'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
         'settings.rail.title': 'Кнопки панели действий',
@@ -2311,7 +2311,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Copiar número da revisão',
         'action.details': 'Detalhes do commit',
         'menu.sendToChat': 'Enviar para a conversa',
-        'menu.sendFilePathToChat': 'Enviar caminho do arquivo para a conversa',
         'send.commitText': 'commit git {hash} "{subject}" (repositório {repo})',
         'send.branchText': 'branch git {name} (repositório {repo})',
         'menu.sendDiffLinesToChat': 'Enviar linhas selecionadas para a conversa',
@@ -2355,6 +2354,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
         'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
         'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
+        'preview.openFile': 'Abrir na pré-visualização do arquivo',
         'preview.title': 'Pré-visualização do Git',
         'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
         'settings.rail.title': 'Botões da barra de ações',
@@ -2526,7 +2526,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Copia il numero di revisione',
         'action.details': 'Dettagli del commit',
         'menu.sendToChat': 'Invia alla conversazione',
-        'menu.sendFilePathToChat': 'Invia il percorso del file alla conversazione',
         'send.commitText': 'commit git {hash} "{subject}" (repository {repo})',
         'send.branchText': 'branch git {name} (repository {repo})',
         'menu.sendDiffLinesToChat': 'Invia le righe selezionate alla conversazione',
@@ -2570,6 +2569,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
         'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
         'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
+        'preview.openFile': 'Apri nell’anteprima del file',
         'preview.title': 'Anteprima Git',
         'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
         'settings.rail.title': 'Pulsanti della barra azioni',
@@ -2741,7 +2741,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Revisienummer kopiëren',
         'action.details': 'Commit-details',
         'menu.sendToChat': 'Naar het gesprek verzenden',
-        'menu.sendFilePathToChat': 'Bestandspad naar het gesprek verzenden',
         'send.commitText': 'git-commit {hash} "{subject}" (repository {repo})',
         'send.branchText': 'git-branch {name} (repository {repo})',
         'menu.sendDiffLinesToChat': 'Geselecteerde regels naar het gesprek verzenden',
@@ -2785,6 +2784,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
         'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
         'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
+        'preview.openFile': 'Openen in de bestandsvoorbeeld',
         'preview.title': 'Git-voorbeeld',
         'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
         'settings.rail.title': 'Knoppen van de actiebalk',
@@ -2956,7 +2956,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Kopiuj numer wersji',
         'action.details': 'Szczegóły commita',
         'menu.sendToChat': 'Wyślij do rozmowy',
-        'menu.sendFilePathToChat': 'Wyślij ścieżkę pliku do rozmowy',
         'send.commitText': 'commit git {hash} „{subject}" (repozytorium {repo})',
         'send.branchText': 'gałąź git {name} (repozytorium {repo})',
         'menu.sendDiffLinesToChat': 'Wyślij zaznaczone wiersze do rozmowy',
@@ -3000,6 +2999,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
         'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
         'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
+        'preview.openFile': 'Otwórz w podglądzie pliku',
         'preview.title': 'Podgląd Git',
         'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
         'settings.rail.title': 'Przyciski paska akcji',
@@ -3171,7 +3171,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Kopiera revisionsnummer',
         'action.details': 'Commit-detaljer',
         'menu.sendToChat': 'Skicka till samtalet',
-        'menu.sendFilePathToChat': 'Skicka filsökvägen till samtalet',
         'send.commitText': 'git-commit {hash} ”{subject}” (arkiv {repo})',
         'send.branchText': 'git-gren {name} (arkiv {repo})',
         'menu.sendDiffLinesToChat': 'Skicka markerade rader till samtalet',
@@ -3215,6 +3214,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
         'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
         'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
+        'preview.openFile': 'Öppna i filförhandsvisningen',
         'preview.title': 'Git-förhandsvisning',
         'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
         'settings.rail.title': 'Knappar i åtgärdsfältet',
@@ -3386,7 +3386,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Revizyon numarasını kopyala',
         'action.details': 'Commit ayrıntıları',
         'menu.sendToChat': 'Sohbete gönder',
-        'menu.sendFilePathToChat': 'Dosya yolunu sohbete gönder',
         'send.commitText': 'git commit {hash} "{subject}" (depo {repo})',
         'send.branchText': 'git dalı {name} (depo {repo})',
         'menu.sendDiffLinesToChat': 'Seçili satırları sohbete gönder',
@@ -3430,6 +3429,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
         'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
         'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
+        'preview.openFile': 'Dosya önizlemesinde aç',
         'preview.title': 'Git Önizlemesi',
         'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
@@ -3601,7 +3601,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Salin nomor revisi',
         'action.details': 'Detail commit',
         'menu.sendToChat': 'Kirim ke obrolan',
-        'menu.sendFilePathToChat': 'Kirim jalur berkas ke obrolan',
         'send.commitText': 'commit git {hash} "{subject}" (repositori {repo})',
         'send.branchText': 'cabang git {name} (repositori {repo})',
         'menu.sendDiffLinesToChat': 'Kirim baris terpilih ke obrolan',
@@ -3645,6 +3644,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
         'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
         'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
+        'preview.openFile': 'Buka di pratinjau berkas',
         'preview.title': 'Pratinjau Git',
         'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
         'settings.rail.title': 'Tombol bilah aksi',
@@ -3816,7 +3816,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'Sao chép số hiệu bản sửa',
         'action.details': 'Chi tiết commit',
         'menu.sendToChat': 'Gửi vào hội thoại',
-        'menu.sendFilePathToChat': 'Gửi đường dẫn tệp vào hội thoại',
         'send.commitText': 'git commit {hash} "{subject}" (kho {repo})',
         'send.branchText': 'nhánh git {name} (kho {repo})',
         'menu.sendDiffLinesToChat': 'Gửi các dòng đã chọn vào hội thoại',
@@ -3860,6 +3859,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
         'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
         'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
+        'preview.openFile': 'Mở trong xem trước tệp',
         'preview.title': 'Xem trước Git',
         'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
         'settings.rail.title': 'Nút thanh tác vụ',
@@ -4031,7 +4031,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'نسخ رقم المراجعة',
         'action.details': 'تفاصيل الالتزام',
         'menu.sendToChat': 'إرسال إلى المحادثة',
-        'menu.sendFilePathToChat': 'إرسال مسار الملف إلى المحادثة',
         'send.commitText': 'التزام git {hash} "{subject}" (المستودع {repo})',
         'send.branchText': 'فرع git {name} (المستودع {repo})',
         'menu.sendDiffLinesToChat': 'إرسال الأسطر المحددة إلى المحادثة',
@@ -4075,6 +4074,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
         'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
         'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
+        'preview.openFile': 'افتح في معاينة الملف',
         'preview.title': 'معاينة Git',
         'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
         'settings.rail.title': 'أزرار شريط الإجراءات',
@@ -4246,7 +4246,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'रिवीज़न संख्या कॉपी करें',
         'action.details': 'कमिट विवरण',
         'menu.sendToChat': 'बातचीत में भेजें',
-        'menu.sendFilePathToChat': 'फ़ाइल पथ बातचीत में भेजें',
         'send.commitText': 'git कमिट {hash} "{subject}" (रिपॉज़िटरी {repo})',
         'send.branchText': 'git ब्रांच {name} (रिपॉज़िटरी {repo})',
         'menu.sendDiffLinesToChat': 'चयनित पंक्तियाँ बातचीत में भेजें',
@@ -4290,6 +4289,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
         'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
         'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
+        'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
         'preview.title': 'Git पूर्वावलोकन',
         'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
         'settings.rail.title': 'एक्शन रेल बटन',
@@ -4461,7 +4461,6 @@ window.__ModuleLoader__.load({
         'action.copyHash': 'คัดลอกเลขรีวิชัน',
         'action.details': 'รายละเอียดคอมมิต',
         'menu.sendToChat': 'ส่งไปยังบทสนทนา',
-        'menu.sendFilePathToChat': 'ส่งพาธไฟล์ไปยังบทสนทนา',
         'send.commitText': 'git คอมมิต {hash} "{subject}" (รีโพซิทอรี {repo})',
         'send.branchText': 'git บรานช์ {name} (รีโพซิทอรี {repo})',
         'menu.sendDiffLinesToChat': 'ส่งบรรทัดที่เลือกไปยังบทสนทนา',
@@ -4505,6 +4504,7 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
         'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
         'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
+        'preview.openFile': 'เปิดในตัวอย่างไฟล์',
         'preview.title': 'ดูตัวอย่าง Git',
         'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
@@ -6200,7 +6200,10 @@ window.__ModuleLoader__.load({
       /* Host-rendered first (v0.14): the ui-primitives diff card brings the
          shared toolbar (copy / wrap / language) and the product's diff colors.
          A patch we cannot replay into a hunk (binary, mode-only) or a host
-         without the seed module falls back to the hand-drawn rows below. */
+         without the seed module falls back to the hand-drawn rows below. This
+         IS the official diff renderer (the platform seed table ships it, the
+         host's own surfaces render diffs through it) — the external preview
+         tab uses the same one, so every diff in the product reads alike. */
       if (UIPrimitives !== null && typeof UIPrimitives.DiffBlock === 'function') {
         const hunk = patchToHunk(props.patch)
         if (hunk !== null) {
@@ -6274,6 +6277,7 @@ window.__ModuleLoader__.load({
       grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
       filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
       check: ['M3.2 8.4 6.4 11.6 12.8 4.6'],
+      copy: ['M5.5 5.5h8v8h-8z', 'M10.5 5.5v-3h-8v8h3'],
       // dock actions (official right sidebar): lift a panel out, drop it back into
       // the dock, split the pane, and the full-screen pair reuses expand/collapse.
       float: ['M2.5 6.5v7h7v-3', 'M6 10 13.2 2.8', 'M9.4 2.8h3.8v3.8'],
@@ -8246,8 +8250,8 @@ window.__ModuleLoader__.load({
           try {
             const scopeObject = scope || {}
             previewStore.set(commitHash !== null
-              ? { hash: commitHash, subject: seed.subject || '', cwd: scopeObject.cwd, repoRoot: repoRoot }
-              : { path: seed.path, staged: seed.staged === true, cwd: scopeObject.cwd, repoRoot: repoRoot })
+              ? { hash: commitHash, subject: seed.subject || '', cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId }
+              : { path: seed.path, staged: seed.staged === true, cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId })
             sidebarRight.openTab(NATIVE_PREVIEW_KIND)
             return true
           } catch (error) { void error }
@@ -8483,7 +8487,6 @@ window.__ModuleLoader__.load({
         const items = [
           { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) } },
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
-          { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: item.path, fallback: item.path }) },
           null,
           group === 'staged'
             ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
@@ -8509,7 +8512,6 @@ window.__ModuleLoader__.load({
           } },
           null,
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(file.path) },
-          { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: file.path, fallback: file.path }) },
           null,
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(file.path) } },
         ])
@@ -9523,6 +9525,9 @@ window.__ModuleLoader__.load({
       '.dig-preview-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
       '.dig-preview-body{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column}',
       '.dig-preview-body .dig-diff-host,.dig-preview-body .dig-diff{flex:1;min-height:0}',
+      '.dig-preview-actions{display:flex;align-items:center;gap:4px;flex:none}',
+      '.dig-preview-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer}',
+      '.dig-preview-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
     ].join('\n')
 
     /* ============================== plugin ============================== */
@@ -9829,6 +9834,10 @@ window.__ModuleLoader__.load({
         ? ''
         : (seed.hash !== undefined && seed.hash !== null ? 'c:' + String(seed.hash) : 'w:' + String(seed.staged === true) + ':' + String(seed.path))
       const [state, setState] = useState({ loading: false, patch: '', error: null })
+      const [refreshTick, setRefreshTick] = useState(0)
+      const [copied, setCopied] = useState(false)
+      const copyTimer = useRef(null)
+      useEffect(() => () => { if (copyTimer.current !== null) clearTimeout(copyTimer.current) }, [])
       useEffect(() => {
         if (seed === null) return undefined
         let alive = true
@@ -9847,15 +9856,54 @@ window.__ModuleLoader__.load({
         })()
         return () => { alive = false }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [seedKey])
+      }, [seedKey, refreshTick])
       const title = seed === null
         ? ''
         : (seed.hash !== undefined && seed.hash !== null
           ? String(seed.hash).slice(0, 7) + (seed.subject ? ' ' + seed.subject : '')
           : String(seed.path))
+      /* Header controls mirror the base's own diff tab: a refresh button
+         (worktree diffs change under staging/discard), plus a copy button —
+         the official card's toolbar already covers wrap/copy inside the body;
+         these two act on the WHOLE preview. */
+      const copyPatch = () => {
+        try {
+          void navigator.clipboard.writeText(state.patch).then(() => {
+            setCopied(true)
+            if (copyTimer.current !== null) clearTimeout(copyTimer.current)
+            copyTimer.current = setTimeout(() => { setCopied(false); copyTimer.current = null }, 1600)
+          })
+        } catch (error) { void error }
+      }
+      /* Hand the file to the HOST'S own file preview (ReadBlock chrome: path
+         banner, line numbers, syntax colors) — the official openResource
+         channel, the same one every @-mention file click rides. The diff stays
+         the place to read the CHANGE; this jumps to the whole file with the
+         product's line-numbered reader. Address grammar (workspace-path):
+         `dsh-resource://file/session/<sessionId>/<per-segment encoded rel>`. */
+      const openInFilePreview = () => {
+        if (seed === null || seed.path === undefined || seed.path === null || seed.path === '') return
+        let sidebarRight = undefined
+        try { sidebarRight = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('sidebarRight') } catch (error) { void error }
+        if (sidebarRight === undefined || sidebarRight === null || typeof sidebarRight.openResource !== 'function') return
+        try {
+          const relative = String(seed.path)
+          const address = 'dsh-resource://file/session/' + encodeURIComponent(String(seed.sessionId || '')) + '/' + relative.split('/').map((segment) => encodeURIComponent(segment)).join('/')
+          sidebarRight.openResource(address)
+        } catch (error) { void error }
+      }
       return E('div', { className: 'dig-preview-root' },
         E('div', { className: 'dig-preview-head' },
-          E('span', { className: 'dig-preview-title', title: title }, title === '' ? t('preview.title') : title)),
+          E('span', { className: 'dig-preview-title', title: title }, title === '' ? t('preview.title') : title),
+          seed === null ? null : E('div', { className: 'dig-preview-actions' },
+            seed.path !== undefined && seed.path !== null && seed.path !== ''
+              ? E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('preview.openFile'), title: t('preview.openFile'), onClick: openInFilePreview },
+                E(Icon, { name: 'file', size: 13 }))
+              : null,
+            E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('diff.copy'), title: t('diff.copy'), onClick: copyPatch },
+              E(Icon, { name: copied === true ? 'check' : 'copy', size: 13 })),
+            E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('toolbar.refresh'), title: t('toolbar.refresh'), onClick: () => { setRefreshTick((n) => n + 1) } },
+              E(Icon, { name: 'refresh', size: 13 })))),
         seed === null
           ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, t('preview.hint')))
           : state.error !== null

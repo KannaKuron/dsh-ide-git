@@ -178,10 +178,14 @@ test('send-to-chat rides the composer facade with a guarded primitives require',
 
 test('every send-to-chat surface is wired to the shared funnel', () => {
   // Branch rows and commit rows send plain text; change rows AND the
-  // commit-detail file list get both the reference and the raw path item.
+  // commit-detail file list send the reference. v0.14.1 removed the raw
+  // PATH send on purpose (user feedback: two "send" items read as a
+  // duplicate — the chip covers the file case, and 复制路径 + paste covers
+  // the rare raw-string need), so the path key must be GONE everywhere.
   const hits = (key) => (client.match(new RegExp("t\\('" + key.replace(/\./g, '\\.') + "'\\)", 'g')) || []).length
   assert.ok(hits('menu.sendToChat') >= 4, 'menu.sendToChat must appear in branch, commit, change and detail-file menus (saw ' + hits('menu.sendToChat') + ')')
-  assert.ok(hits('menu.sendFilePathToChat') >= 2, 'menu.sendFilePathToChat must appear in the change and detail-file menus (saw ' + hits('menu.sendFilePathToChat') + ')')
+  assert.equal(hits('menu.sendFilePathToChat'), 0, 'the raw-path send item was removed (the @-chip covers it; 复制路径 remains)')
+  assert.doesNotMatch(client, /'menu\.sendFilePathToChat'/, 'the path-send dictionary key is gone from every locale')
   assert.match(client, /commit\.hash\.slice\(0, 7\)/, 'commit rows send the short hash')
   assert.match(client, /onFileMenu: detailFileMenu/, 'the commit-detail file list must carry the context menu')
 })

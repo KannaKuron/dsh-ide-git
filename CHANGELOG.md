@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.1 — 2026-10-08
+
+**类型**:fix(用户对 v0.14.0 的两处反馈)
+
+- **fix 右键菜单去掉「发送文件路径到对话」**(用户:两个「发送」读起来像重复)。「发送到对话」(@文件 chip)覆盖文件场景;真要纯文本路径,「复制路径」+ 粘贴完全等价。词典键 `menu.sendFilePathToChat` 从 21 门全部移除,smoke 断言反转为「该键必须不存在」。
+- **fix Git 预览头部补按钮 + 一键跳官方文件预览**(用户:预览和 dsh 自带预览不一样,没行号没按钮)。澄清事实:行号视图是 DSH 官方**文件预览**(ui-sidebar-documentpreview / ReadBlock 渲染),而 diff 的官方渲染器就是 ui-primitives **DiffBlock**(无行号)——预览 tab 用的正是它,不是自造轮子;带行号的 diff 渲染是 dsh-better-sidebar 的私有增强(非官方基线)。本版给预览头部补三个按钮:**文件预览跳转**(官方 `sidebarRight.openResource` 通道打开带行号的整文件视图,地址按 workspace-path 语法分段编码;worktree seed 专属)、**复制 patch**、**刷新**;新增 `copy` 图标与 `preview.openFile` 词典键(21 门)。
+- **验证**:`npm test` **104/104**(路径键断言反转);`ssr-check` 4 项。
+
 ## v0.14.0 — 2026-10-08
 
 **类型**:feat(沉浸模式 + diff 预览外置 + 工作区保活队列),issue #8 第三轮反馈 batch
