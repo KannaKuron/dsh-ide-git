@@ -40,6 +40,11 @@ window.__ModuleLoader__.load({
        of throwing at load time. Every consumer checks for null first. */
     let UIPrimitives = null
     try { UIPrimitives = require('@deepseek-ai/dsh-client-ui-primitives') } catch (error) { void error }
+    /* The shared lazy Shiki highlighter, bound once (v0.14.1): FileDiff in
+       ui-deliverables rides this same hook for its line highlighting. A stable
+       module-level reference keeps the LineDiff hook call unconditional. */
+    const useCodeHighlighterSeed = UIPrimitives !== null && typeof UIPrimitives.useCodeHighlighter === 'function' ? UIPrimitives.useCodeHighlighter : null
+    const languageForPathSeed = UIPrimitives !== null && typeof UIPrimitives.languageForPath === 'function' ? UIPrimitives.languageForPath : null
 
     /* API base is MOUNT-RELATIVE (no leading slash). dsh 0.1.7 serves the
        shell with <base href="./">, so document.baseURI is the mount the page
@@ -6223,6 +6228,72 @@ window.__ModuleLoader__.load({
       )))
     }
 
+    /* The external preview tab's diff (v0.14.1): the FileDiff pattern the
+       host's own workspace-changes review draws — dual old/new line-number
+       gutters, @@ hunk headers, per-side Shiki highlighting — rebuilt on the
+       SAME official seed blocks that component uses (useCodeHighlighter +
+       languageForPath + the file-diff alias tokens). ui-deliverables' FileDiff
+       itself is not requirable across the bundle boundary, but every block it
+       composes is, so this reads like it and themes like it without any
+       hand-rolled colors. */
+    function LineDiff(props) {
+      const rows = useMemo(() => {
+        const parsed = diffLines(props.patch)
+        /* The patch's trailing newline parses as one empty context row with a
+           line number — the base's review drops it, and so does this. */
+        while (parsed.length > 0) {
+          const last = parsed[parsed.length - 1]
+          if (last.kind === 'ctx' && last.text === '') parsed.pop()
+          else break
+        }
+        return parsed
+      }, [props.patch])
+      const language = useMemo(() => {
+        if (languageForPathSeed === null) return undefined
+        for (const row of rows) {
+          if (row.kind === 'meta' && row.text.indexOf('+++ ') === 0) {
+            const filePath = row.text.slice(4).trim().replace(/^b\//, '')
+            return filePath === '' ? undefined : languageForPathSeed(filePath)
+          }
+        }
+        return undefined
+      }, [rows])
+      const highlighter = useCodeHighlighterSeed === null ? undefined : useCodeHighlighterSeed(language)
+      /* Per-side alignment (the FileDiff rule): the NEW side (+ and context)
+         is joined into one fragment, highlighted once, and the per-line spans
+         map back onto their rows; the deleted side keeps its plain removal
+         styling, which is what the unified view needs. */
+      const spansByRow = useMemo(() => {
+        if (highlighter === undefined || rows.length === 0) return null
+        const seq = []
+        for (const row of rows) {
+          if (row.kind === 'add' || row.kind === 'ctx') seq.push([row, row.text === '' ? '' : row.text.slice(1)])
+        }
+        if (seq.length === 0) return null
+        const highlighted = highlighter(seq.map((entry) => entry[1]).join('\n'))
+        if (highlighted === undefined) return null
+        const map = new Map()
+        seq.forEach((entry, index) => map.set(entry[0], highlighted[index] || []))
+        return map
+      }, [rows, highlighter])
+      if (props.loading === true) return E('div', { className: 'dig-empty' }, props.t('diff.loading'))
+      if (rows.length === 0) return E('div', { className: 'dig-empty' }, props.t('diff.empty'))
+      return E('div', { className: 'dig-linediff' }, rows.map((row, index) => {
+        if (row.kind === 'hunk') return E('div', { key: index, className: 'dig-linediff-hunk' }, row.text)
+        if (row.kind === 'meta') return E('div', { key: index, className: 'dig-linediff-meta' }, row.text)
+        const sign = row.kind === 'add' ? '+' : row.kind === 'del' ? '\u2212' : ' '
+        const body = (row.kind === 'ctx' ? row.text : row.text.slice(1)) || ' '
+        const spans = row.kind === 'del' ? null : (spansByRow === null ? undefined : spansByRow.get(row))
+        return E('div', { key: index, className: 'dig-linediff-row dig-linediff-' + row.kind },
+          E('span', { className: 'dig-linediff-no' }, row.oldLine === null ? '' : String(row.oldLine)),
+          E('span', { className: 'dig-linediff-no' }, row.newLine === null ? '' : String(row.newLine)),
+          E('span', { className: 'dig-linediff-sign' }, sign),
+          spans === undefined || spans === null || spans.length === 0
+            ? E('span', { className: 'dig-linediff-text' }, body)
+            : E('span', { className: 'dig-linediff-text' }, spans.map((span, sIndex) => E('span', { key: sIndex, style: span.style }, span.text))))
+      }))
+    }
+
     /* The leading glyph of a change row (v0.14): the host's FileTypeIcon —
        classifyFileType runs inside when given a path. Directories (the
        trailing slash an `ls-files --directory` row carries) ask for the
@@ -9528,6 +9599,23 @@ window.__ModuleLoader__.load({
       '.dig-preview-actions{display:flex;align-items:center;gap:4px;flex:none}',
       '.dig-preview-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer}',
       '.dig-preview-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      /* LineDiff: the workspace-changes review's row anatomy on the same alias
+         tokens that view uses (FileDiff.module.css), so themes and reading
+         habits carry over untouched. */
+      '.dig-linediff{display:flex;flex-direction:column;min-height:0;font:var(--dsw-font-markdown-code-block);color:var(--dsw-alias-label-primary)}',
+      '.dig-linediff-hunk{padding:4px 16px;color:var(--dsw-alias-label-tertiary);white-space:pre}',
+      '.dig-linediff-meta{padding:2px 16px;color:var(--dsw-alias-label-secondary);font-weight:600;white-space:pre;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-linediff-row{display:flex;padding-right:16px;white-space:pre}',
+      '.dig-linediff-no{flex:none;min-width:2.5em;padding:0 6px;color:var(--dsw-alias-label-tertiary);text-align:right;user-select:none}',
+      '.dig-linediff-sign{flex:none;width:1.4em;user-select:none}',
+      '.dig-linediff-text{padding-right:16px}',
+      '.dig-linediff-add{background:var(--dsw-alias-file-diff-added-bg)}',
+      '.dig-linediff-add .dig-linediff-no{background:var(--dsw-alias-file-diff-added-gutter);color:var(--dsw-alias-file-diff-added-marker)}',
+      '.dig-linediff-add .dig-linediff-sign{color:var(--dsw-alias-file-diff-added-marker)}',
+      '.dig-linediff-del{background:var(--dsw-alias-file-diff-deleted-bg)}',
+      '.dig-linediff-del .dig-linediff-no{background:var(--dsw-alias-file-diff-deleted-gutter);color:var(--dsw-alias-file-diff-deleted-marker)}',
+      '.dig-linediff-del .dig-linediff-sign{color:var(--dsw-alias-file-diff-deleted-marker)}',
+      '.dig-linediff-ctx .dig-linediff-text{color:var(--dsw-alias-label-secondary)}',
     ].join('\n')
 
     /* ============================== plugin ============================== */
@@ -9908,7 +9996,7 @@ window.__ModuleLoader__.load({
           ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, t('preview.hint')))
           : state.error !== null
             ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, state.error))
-            : E('div', { className: 'dig-preview-body' }, E(DiffBody, { patch: state.patch, loading: state.loading, binary: false, t: t })))
+            : E('div', { className: 'dig-preview-body' }, E(LineDiff, { patch: state.patch, loading: state.loading, t: t })))
     }
 
     function apply(ctx) {

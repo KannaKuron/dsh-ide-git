@@ -3,6 +3,13 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.2 — 2026-10-08
+
+**类型**:feat(Git 预览对齐官方 review 视图,用户对 v0.14.1 的第三次反馈)
+
+- **feat Git 预览的 diff 渲染对齐 deliverables 审视图**(用户连续三轮对比截图:预览与 dsh 自家的 diff 预览「完全不一样」)。此前预览用 DiffBlock(裸官方 diff 卡,无行号);现在改为 **LineDiff**——按宿主 ui-deliverables 的 FileDiff 组件同款解剖:**双列旧/新行号 gutter、± 标记列、@@ hunk 头、meta 文件头行、Shiki 逐行语法高亮、官方 file-diff alias 配色**(`--dsw-alias-file-diff-added/deleted-gutter/marker/bg`,主题自动跟随)。复用方式遵守 bundle purity:FileDiff 本体不可跨包 require,但它组合的积木全部在平台 seed 表——`useCodeHighlighter`(共享懒加载 Shiki)、`languageForPath`、alias token,插件侧只写行号布局;配色/结构逐条对照 `FileDiff.module.css`。补丁尾换行产生的空行按官方审阅同样丢弃。
+- **验证**:`npm test` **104/104**;`ssr-check` 4 项;隔离实例真机渲染核验(行号/着色/hunk 头截图比对 FileDiff 版式)。
+
 ## v0.14.1 — 2026-10-08
 
 **类型**:fix(用户对 v0.14.0 的两处反馈)
