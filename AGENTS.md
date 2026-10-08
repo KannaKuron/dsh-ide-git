@@ -84,6 +84,15 @@
 - **收录徽章可以挂**(2026-09-23 起 awesome-dsh-plugin 已收录本插件,收录 PR 已合并):两份 README 标题下挂官方 badge,与 `dsh-better-workspace` 同款:`[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)`。历史教训仍然有效:**未收录时挂徽章 = 虚假宣称**(v0.3.2 加过、v0.3.4 撤掉,用户明确纠正过),所以收录状态变化时同步更新本条。写法备注:`badge.svg` 内部用 `<text>` 定位、依赖 Verdana 字宽,若真机渲染挤压可换 shields.io 写法(服务端按固定字体算宽度;v0.3.3 曾因此换过一次)。
 - 效果图走 `docs/screenshots/`,中文页与英文页引用同一批文件,配图段落用「左图右说明」的两列表格(见 `## 效果` / `## Screenshots`)。
 
+## 宿主演进跟随(dsh 升级时必查)
+
+- **Git 预览的 LineDiff(v0.14.2)是 ui-deliverables `FileDiff` 的 seed 积木复刻**:布局层(双列行号 gutter、± 标记列、@@ 头、meta 行)写在 `src/client.js`,而高亮(`useCodeHighlighter`)、语言推断(`languageForPath`)、配色(`--dsw-alias-file-diff-added/deleted-gutter/marker/bg`)全部来自平台 seed 表/官方 alias token——这是 bundle purity 下能拿到的最大复用,配色会自动跟随主题,**功能与结构不会**。
+- **dsh 升级版本时,按序检查三件事**:
+  1. `packages/client/ui-deliverables/src/client/FileDiff.tsx` 是否演进(新增 split 视图、hunk 折叠、词级 intra-line 高亮等)→ 有需要的就把能力同步进 LineDiff;
+  2. `FileDiff.module.css` 与 file-diff alias token 是否更名/增删 → 同步 CSS 里的 token 名;
+  3. `ui-primitives` 是否已把行号 diff 渲染提升为可复用 seed 组件(已在官方讨论区提案:deepseek-ai/deepseek-harness#9148,https://github.com/deepseek-ai/deepseek-harness/discussions/9148 )→ **一旦提升,整体删除 LineDiff 切换官方组件**,本节随之作废。
+- 原则:不要往 LineDiff 里堆功能(split、折叠这类先等官方);它是通往官方组件的桥接,不是自研方向。
+
 ## 与 dsh-better-sidebar 生态的关系
 
 - 插件要进 better-sidebar 设置页的「侧边卡片」分区/推荐目录,靠的是:注册 Tab 时提供 `title` / `description` / `icon`(卡片自动生成),以及仓库打好 `dsh-better-sidebar` topic。推荐目录本身维护在 better-sidebar 仓库的 `src/client/plugins-tabs.ts`,收录需要向该仓库提 PR。
