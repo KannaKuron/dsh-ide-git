@@ -202,6 +202,16 @@ window.__ModuleLoader__.load({
       'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
       'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
       'preview.openFile': '打开文件预览',
+      'lf.added': '+{count}',
+      'lf.deleted': '-{count}',
+      'lf.selectFile': '选择要查看的文件',
+      'lf.split': '切换为左右对比',
+      'lf.unified': '切换为单栏对比',
+      'lf.wrap': '开启自动换行',
+      'lf.nowrap': '关闭自动换行',
+      'lf.created': '新建的文件',
+      'lf.removedFile': '删除的文件',
+      'lf.truncated': '只显示前 {count} 行',
       'preview.title': 'Git 预览',
       'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
       'settings.rail.title': '动作条按钮',
@@ -417,6 +427,16 @@ window.__ModuleLoader__.load({
       'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
       'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
       'preview.openFile': 'Open in the file preview',
+      'lf.added': '+{count}',
+      'lf.deleted': '-{count}',
+      'lf.selectFile': 'Choose the file to review',
+      'lf.split': 'Switch to split view',
+      'lf.unified': 'Switch to unified view',
+      'lf.wrap': 'Enable line wrap',
+      'lf.nowrap': 'Disable line wrap',
+      'lf.created': 'Created file',
+      'lf.removedFile': 'Deleted file',
+      'lf.truncated': 'Showing the first {count} lines',
       'preview.title': 'Git Preview',
       'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
       'settings.rail.title': 'Action rail buttons',
@@ -640,6 +660,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
         'preview.openFile': '開啟檔案預覽',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': '選擇要查看嘅檔案',
+        'lf.split': '切換為左右對比',
+        'lf.unified': '切換為單欄對比',
+        'lf.wrap': '開啟自動換行',
+        'lf.nowrap': '關閉自動換行',
+        'lf.created': '新建嘅檔案',
+        'lf.removedFile': '刪除嘅檔案',
+        'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -855,6 +885,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
         'preview.openFile': '開啟檔案預覽',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': '選擇要查看的檔案',
+        'lf.split': '切換為左右對比',
+        'lf.unified': '切換為單欄對比',
+        'lf.wrap': '開啟自動換行',
+        'lf.nowrap': '關閉自動換行',
+        'lf.created': '新建的檔案',
+        'lf.removedFile': '刪除的檔案',
+        'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -1070,6 +1110,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
         'preview.openFile': '開啟檔案預覽',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': '選擇要查看嘅檔案',
+        'lf.split': '切換為左右對比',
+        'lf.unified': '切換為單欄對比',
+        'lf.wrap': '開啟自動換行',
+        'lf.nowrap': '關閉自動換行',
+        'lf.created': '新建嘅檔案',
+        'lf.removedFile': '刪除嘅檔案',
+        'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
@@ -1285,6 +1335,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
         'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
         'preview.openFile': 'ファイルプレビューを開く',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'レビューするファイルを選択',
+        'lf.split': '左右分割に切り替える',
+        'lf.unified': '単欄に切り替える',
+        'lf.wrap': '自動折り返しをオンにする',
+        'lf.nowrap': '自動折り返しをオフにする',
+        'lf.created': '新規作成されたファイル',
+        'lf.removedFile': '削除されたファイル',
+        'lf.truncated': '先頭 {count} 行のみ表示',
         'preview.title': 'Git プレビュー',
         'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
         'settings.rail.title': 'アクションレールのボタン',
@@ -1500,6 +1560,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
         'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
         'preview.openFile': '파일 미리보기로 열기',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': '검토할 파일 선택',
+        'lf.split': '좌우 분할 보기로 전환',
+        'lf.unified': '단일 보기로 전환',
+        'lf.wrap': '자동 줄바꿈 켜기',
+        'lf.nowrap': '자동 줄바꿈 끄기',
+        'lf.created': '새로 만든 파일',
+        'lf.removedFile': '삭제된 파일',
+        'lf.truncated': '처음 {count}줄만 표시',
         'preview.title': 'Git 미리보기',
         'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
         'settings.rail.title': '액션 레일 버튼',
@@ -1715,6 +1785,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
         'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
         'preview.openFile': 'In der Dateivorschau öffnen',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Zu prüfende Datei wählen',
+        'lf.split': 'Zur geteilten Ansicht wechseln',
+        'lf.unified': 'Zur gemeinsamen Ansicht wechseln',
+        'lf.wrap': 'Zeilenumbruch aktivieren',
+        'lf.nowrap': 'Zeilenumbruch deaktivieren',
+        'lf.created': 'Neue Datei',
+        'lf.removedFile': 'Gelöschte Datei',
+        'lf.truncated': 'Nur die ersten {count} Zeilen',
         'preview.title': 'Git-Vorschau',
         'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
@@ -1930,6 +2010,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
         'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
         'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Choisir le fichier à examiner',
+        'lf.split': 'Passer à la vue scindée',
+        'lf.unified': 'Passer à la vue unifiée',
+        'lf.wrap': 'Activer le retour à la ligne',
+        'lf.nowrap': 'Désactiver le retour à la ligne',
+        'lf.created': 'Fichier créé',
+        'lf.removedFile': 'Fichier supprimé',
+        'lf.truncated': 'Affichage des {count} premières lignes',
         'preview.title': 'Aperçu Git',
         'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
         'settings.rail.title': 'Boutons de la barre d’actions',
@@ -2145,6 +2235,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
         'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
         'preview.openFile': 'Открыть в предпросмотре файла',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Выберите файл для просмотра',
+        'lf.split': 'Переключить на двухпанельный вид',
+        'lf.unified': 'Переключить на однопанельный вид',
+        'lf.wrap': 'Включить перенос строк',
+        'lf.nowrap': 'Отключить перенос строк',
+        'lf.created': 'Новый файл',
+        'lf.removedFile': 'Удалённый файл',
+        'lf.truncated': 'Показаны первые {count} строк',
         'preview.title': 'Git-предпросмотр',
         'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
         'settings.rail.title': 'Кнопки панели действий',
@@ -2360,6 +2460,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
         'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
         'preview.openFile': 'Abrir na pré-visualização do arquivo',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Escolher o arquivo para revisar',
+        'lf.split': 'Alternar para a vista dividida',
+        'lf.unified': 'Alternar para a vista unificada',
+        'lf.wrap': 'Ativar quebra de linha',
+        'lf.nowrap': 'Desativar quebra de linha',
+        'lf.created': 'Arquivo criado',
+        'lf.removedFile': 'Arquivo excluído',
+        'lf.truncated': 'Mostrando as primeiras {count} linhas',
         'preview.title': 'Pré-visualização do Git',
         'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
         'settings.rail.title': 'Botões da barra de ações',
@@ -2575,6 +2685,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
         'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
         'preview.openFile': 'Apri nell’anteprima del file',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Scegli il file da esaminare',
+        'lf.split': 'Passa alla vista affiancata',
+        'lf.unified': 'Passa alla vista unificata',
+        'lf.wrap': 'Attiva il ritorno a capo',
+        'lf.nowrap': 'Disattiva il ritorno a capo',
+        'lf.created': 'File creato',
+        'lf.removedFile': 'File eliminato',
+        'lf.truncated': 'Mostrate le prime {count} righe',
         'preview.title': 'Anteprima Git',
         'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
         'settings.rail.title': 'Pulsanti della barra azioni',
@@ -2790,6 +2910,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
         'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
         'preview.openFile': 'Openen in de bestandsvoorbeeld',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Kies het te bekijken bestand',
+        'lf.split': 'Overschakelen naar gesplitste weergave',
+        'lf.unified': 'Overschakelen naar gecombineerde weergave',
+        'lf.wrap': 'Regelterugloop inschakelen',
+        'lf.nowrap': 'Regelterugloop uitschakelen',
+        'lf.created': 'Nieuw bestand',
+        'lf.removedFile': 'Verwijderd bestand',
+        'lf.truncated': 'Eerste {count} regels worden weergegeven',
         'preview.title': 'Git-voorbeeld',
         'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
         'settings.rail.title': 'Knoppen van de actiebalk',
@@ -3005,6 +3135,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
         'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
         'preview.openFile': 'Otwórz w podglądzie pliku',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Wybierz plik do przeglądu',
+        'lf.split': 'Przełącz na widok dzielony',
+        'lf.unified': 'Przełącz na widok połączony',
+        'lf.wrap': 'Włącz zawijanie wierszy',
+        'lf.nowrap': 'Wyłącz zawijanie wierszy',
+        'lf.created': 'Nowy plik',
+        'lf.removedFile': 'Usunięty plik',
+        'lf.truncated': 'Pokazano pierwsze {count} wierszy',
         'preview.title': 'Podgląd Git',
         'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
         'settings.rail.title': 'Przyciski paska akcji',
@@ -3220,6 +3360,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
         'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
         'preview.openFile': 'Öppna i filförhandsvisningen',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Välj filen att granska',
+        'lf.split': 'Byt till delad vy',
+        'lf.unified': 'Byt till samlad vy',
+        'lf.wrap': 'Aktivera radbrytning',
+        'lf.nowrap': 'Inaktivera radbrytning',
+        'lf.created': 'Ny fil',
+        'lf.removedFile': 'Borttagen fil',
+        'lf.truncated': 'Visar de första {count} raderna',
         'preview.title': 'Git-förhandsvisning',
         'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
         'settings.rail.title': 'Knappar i åtgärdsfältet',
@@ -3435,6 +3585,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
         'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
         'preview.openFile': 'Dosya önizlemesinde aç',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'İncelenecek dosyayı seçin',
+        'lf.split': 'Bölünmüş görünüme geç',
+        'lf.unified': 'Birleşik görünüme geç',
+        'lf.wrap': 'Satır kaydırmayı aç',
+        'lf.nowrap': 'Satır kaydırmayı kapat',
+        'lf.created': 'Yeni dosya',
+        'lf.removedFile': 'Silinen dosya',
+        'lf.truncated': 'Yalnızca ilk {count} satır gösteriliyor',
         'preview.title': 'Git Önizlemesi',
         'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
@@ -3650,6 +3810,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
         'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
         'preview.openFile': 'Buka di pratinjau berkas',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Pilih berkas untuk ditinjau',
+        'lf.split': 'Ganti ke tampilan terbagi',
+        'lf.unified': 'Ganti ke tampilan tunggal',
+        'lf.wrap': 'Aktifkan pelipatan baris',
+        'lf.nowrap': 'Nonaktifkan pelipatan baris',
+        'lf.created': 'Berkas baru',
+        'lf.removedFile': 'Berkas dihapus',
+        'lf.truncated': 'Menampilkan {count} baris pertama',
         'preview.title': 'Pratinjau Git',
         'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
         'settings.rail.title': 'Tombol bilah aksi',
@@ -3865,6 +4035,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
         'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
         'preview.openFile': 'Mở trong xem trước tệp',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'Chọn tệp để xem',
+        'lf.split': 'Chuyển sang xem đôi',
+        'lf.unified': 'Chuyển sang xem đơn',
+        'lf.wrap': 'Bật tự động xuống dòng',
+        'lf.nowrap': 'Tắt tự động xuống dòng',
+        'lf.created': 'Tệp mới tạo',
+        'lf.removedFile': 'Tệp bị xóa',
+        'lf.truncated': 'Chỉ hiện {count} dòng đầu',
         'preview.title': 'Xem trước Git',
         'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
         'settings.rail.title': 'Nút thanh tác vụ',
@@ -4080,6 +4260,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
         'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
         'preview.openFile': 'افتح في معاينة الملف',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'اختر الملف للمراجعة',
+        'lf.split': 'التبديل إلى العرض المنقسم',
+        'lf.unified': 'التبديل إلى العرض الموحد',
+        'lf.wrap': 'تمكين التفاف الأسطر',
+        'lf.nowrap': 'تعطيل التفاف الأسطر',
+        'lf.created': 'ملف جديد',
+        'lf.removedFile': 'ملف محذوف',
+        'lf.truncated': 'عرض أول {count} سطرًا فقط',
         'preview.title': 'معاينة Git',
         'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
         'settings.rail.title': 'أزرار شريط الإجراءات',
@@ -4295,6 +4485,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
         'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
         'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'समीक्षा की फ़ाइल चुनें',
+        'lf.split': 'स्प्लिट व्यू पर स्विच करें',
+        'lf.unified': 'यूनिफाइड व्यू पर स्विच करें',
+        'lf.wrap': 'लाइन रैप चालू करें',
+        'lf.nowrap': 'लाइन रैप बंद करें',
+        'lf.created': 'नई फ़ाइल',
+        'lf.removedFile': 'हटाई गई फ़ाइल',
+        'lf.truncated': 'केवल पहली {count} पंक्तियाँ दिखाई जा रही हैं',
         'preview.title': 'Git पूर्वावलोकन',
         'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
         'settings.rail.title': 'एक्शन रेल बटन',
@@ -4510,6 +4710,16 @@ window.__ModuleLoader__.load({
         'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
         'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
         'preview.openFile': 'เปิดในตัวอย่างไฟล์',
+        'lf.added': '+{count}',
+        'lf.deleted': '-{count}',
+        'lf.selectFile': 'เลือกไฟล์ที่จะตรวจสอบ',
+        'lf.split': 'สลับเป็นมุมมองคู่',
+        'lf.unified': 'สลับเป็นมุมมองเดียว',
+        'lf.wrap': 'เปิดการตัดบรรทัด',
+        'lf.nowrap': 'ปิดการตัดบรรทัด',
+        'lf.created': 'ไฟล์ที่สร้างใหม่',
+        'lf.removedFile': 'ไฟล์ที่ถูกลบ',
+        'lf.truncated': 'แสดงเฉพาะ {count} บรรทัดแรก',
         'preview.title': 'ดูตัวอย่าง Git',
         'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
@@ -6228,70 +6438,415 @@ window.__ModuleLoader__.load({
       )))
     }
 
-    /* The external preview tab's diff (v0.14.1): the FileDiff pattern the
-       host's own workspace-changes review draws — dual old/new line-number
-       gutters, @@ hunk headers, per-side Shiki highlighting — rebuilt on the
-       SAME official seed blocks that component uses (useCodeHighlighter +
-       languageForPath + the file-diff alias tokens). ui-deliverables' FileDiff
-       itself is not requirable across the bundle boundary, but every block it
-       composes is, so this reads like it and themes like it without any
-       hand-rolled colors. */
-    function LineDiff(props) {
-      const rows = useMemo(() => {
-        const parsed = diffLines(props.patch)
-        /* The patch's trailing newline parses as one empty context row with a
-           line number — the base's review drops it, and so does this. */
-        while (parsed.length > 0) {
-          const last = parsed[parsed.length - 1]
-          if (last.kind === 'ctx' && last.text === '') parsed.pop()
-          else break
-        }
-        return parsed
-      }, [props.patch])
-      const language = useMemo(() => {
-        if (languageForPathSeed === null) return undefined
-        for (const row of rows) {
-          if (row.kind === 'meta' && row.text.indexOf('+++ ') === 0) {
-            const filePath = row.text.slice(4).trim().replace(/^b\//, '')
-            return filePath === '' ? undefined : languageForPathSeed(filePath)
+    /* ---- external preview diff (v0.14.3): a faithful port of the review view ----
+       ReviewTab + FileDiff (ui-deliverables) are the reference; every building
+       block that package imports from the platform seed is reused here
+       verbatim: Menu / PathLabel / Tooltip / the split, wrap, inspect and
+       chevron icons, useCodeHighlighter, languageForPath, and the file-diff
+       alias tokens. Only the layer the official bundle boundary hides — the
+       row layout, the hunk parser, the review-store-free state — lives in
+       this file, and it follows the source file by file: header anatomy and
+       CSS from ReviewTab.tsx + ReviewTab.module.css, rows/hunks/highlights
+       from FileDiff.tsx + FileDiff.module.css. When ui-deliverables
+       re-exports FileDiff (see the host-follow note in AGENTS.md), this whole
+       block retires in favor of a plain import of the deliverables
+       package's re-exported FileDiff. */
+
+    /* One hunk in the shape FileDiff consumes: {oldStart, oldLines, newStart,
+       newLines, lines[]} where lines keep their +/-/space prefix. oldLines and
+       newLines are COUNTED from content (git omits the count when it is 1),
+       exactly what the reconstructed @@ header needs. */
+    function parseHunks(body) {
+      const text = typeof body === 'string' ? body : ''
+      const out = []
+      let current = null
+      for (const line of text.split('\n')) {
+        if (line.indexOf('@@') === 0) {
+          const match = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/.exec(line)
+          if (match !== null) {
+            if (current !== null && current.lines.length > 0) out.push(current)
+            current = { oldStart: Number.parseInt(match[1], 10), newStart: Number.parseInt(match[3], 10), oldLines: 0, newLines: 0, lines: [] }
+            continue
           }
         }
-        return undefined
-      }, [rows])
-      const highlighter = useCodeHighlighterSeed === null ? undefined : useCodeHighlighterSeed(language)
-      /* Per-side alignment (the FileDiff rule): the NEW side (+ and context)
-         is joined into one fragment, highlighted once, and the per-line spans
-         map back onto their rows; the deleted side keeps its plain removal
-         styling, which is what the unified view needs. */
-      const spansByRow = useMemo(() => {
-        if (highlighter === undefined || rows.length === 0) return null
-        const seq = []
-        for (const row of rows) {
-          if (row.kind === 'add' || row.kind === 'ctx') seq.push([row, row.text === '' ? '' : row.text.slice(1)])
+        if (current === null) continue
+        const marker = line.charAt(0)
+        if (marker === '+' || marker === '-' || marker === ' ' || line === '') {
+          current.lines.push(line)
+          if (marker === '+') current.newLines += 1
+          else if (marker === '-') current.oldLines += 1
+          else { current.oldLines += 1; current.newLines += 1 }
+        } else if (line.indexOf('\\') === 0) {
+          current.lines.push(line)
         }
-        if (seq.length === 0) return null
-        const highlighted = highlighter(seq.map((entry) => entry[1]).join('\n'))
-        if (highlighted === undefined) return null
-        const map = new Map()
-        seq.forEach((entry, index) => map.set(entry[0], highlighted[index] || []))
-        return map
-      }, [rows, highlighter])
-      if (props.loading === true) return E('div', { className: 'dig-empty' }, props.t('diff.loading'))
-      if (rows.length === 0) return E('div', { className: 'dig-empty' }, props.t('diff.empty'))
-      return E('div', { className: 'dig-linediff' }, rows.map((row, index) => {
-        if (row.kind === 'hunk') return E('div', { key: index, className: 'dig-linediff-hunk' }, row.text)
-        if (row.kind === 'meta') return E('div', { key: index, className: 'dig-linediff-meta' }, row.text)
-        const sign = row.kind === 'add' ? '+' : row.kind === 'del' ? '\u2212' : ' '
-        const body = (row.kind === 'ctx' ? row.text : row.text.slice(1)) || ' '
-        const spans = row.kind === 'del' ? null : (spansByRow === null ? undefined : spansByRow.get(row))
-        return E('div', { key: index, className: 'dig-linediff-row dig-linediff-' + row.kind },
-          E('span', { className: 'dig-linediff-no' }, row.oldLine === null ? '' : String(row.oldLine)),
-          E('span', { className: 'dig-linediff-no' }, row.newLine === null ? '' : String(row.newLine)),
-          E('span', { className: 'dig-linediff-sign' }, sign),
-          spans === undefined || spans === null || spans.length === 0
-            ? E('span', { className: 'dig-linediff-text' }, body)
-            : E('span', { className: 'dig-linediff-text' }, spans.map((span, sIndex) => E('span', { key: sIndex, style: span.style }, span.text))))
-      }))
+      }
+      if (current !== null && current.lines.length > 0) out.push(current)
+      /* The patch's trailing newline parses as one empty context line; the
+         review drops it, and so does this. */
+      for (const hunk of out) {
+        const last = hunk.lines[hunk.lines.length - 1]
+        if (last === '' && hunk.lines.length > 1) {
+          hunk.lines.pop()
+          hunk.oldLines -= 1
+          hunk.newLines -= 1
+        }
+      }
+      return out
+    }
+
+    /* One file segment of a (possibly multi-file) patch: path, hunks, ±
+       counts, and the file-level facts FileDiff's notes need. */
+    function splitPatchFiles(patch) {
+      const text = typeof patch === 'string' ? patch : ''
+      if (text.trim() === '') return []
+      const segments = []
+      let current = null
+      for (const line of text.split('\n')) {
+        if (line.indexOf('diff --git ') === 0) {
+          if (current !== null) segments.push(current)
+          current = { path: '', meta: [], body: [], binary: false, created: false, removed: false }
+          continue
+        }
+        if (current === null) continue
+        if (line.indexOf('+++ ') === 0) current.path = line.slice(4) === '/dev/null' ? current.path : line.slice(4).replace(/^b\//, '')
+        else if (current.path === '' && line.indexOf('--- a/') === 0) current.path = line.slice(6)
+        if (line.indexOf('Binary files') === 0 || line.indexOf('Binary file') === 0) current.binary = true
+        if (line.indexOf('new file mode') === 0) current.created = true
+        if (line.indexOf('deleted file mode') === 0) current.removed = true
+        if (line.indexOf('diff --git ') === 0 || line.indexOf('index ') === 0 || line.indexOf('--- ') === 0 || line.indexOf('+++ ') === 0 || line.indexOf('new file') === 0 || line.indexOf('deleted file') === 0 || line.indexOf('similarity index') === 0 || line.indexOf('rename ') === 0 || line.indexOf('old mode') === 0 || line.indexOf('new mode') === 0) current.meta.push(line)
+        else current.body.push(line)
+      }
+      if (current !== null) segments.push(current)
+      const out = []
+      for (const segment of segments) {
+        const hunks = parseHunks(segment.body.join('\n'))
+        let adds = 0
+        let dels = 0
+        for (const hunk of hunks) {
+          for (const line of hunk.lines) {
+            if (line.indexOf('+') === 0) adds += 1
+            else if (line.indexOf('-') === 0) dels += 1
+          }
+        }
+        if (segment.path === '' && hunks.length === 0 && segment.binary === false) continue
+        out.push({ path: segment.path, binary: segment.binary, created: segment.created, removed: segment.removed, hunks: hunks, adds: adds, dels: dels })
+      }
+      return out
+    }
+
+    /* ---- pure ports of FileDiff.tsx's exported row functions ---- */
+
+    /* Number a hunk's lines: context lines count on both sides, deletions on
+       the old side, additions on the new side. */
+    function hunkRows(hunk) {
+      let oldNo = hunk.oldStart
+      let newNo = hunk.newStart
+      return hunk.lines.map((line) => {
+        const body = line.slice(1)
+        if (line.indexOf('+') === 0) return { kind: 'add', old: undefined, new: newNo++, text: body }
+        if (line.indexOf('-') === 0) return { kind: 'del', old: oldNo++, new: undefined, text: body }
+        return { kind: 'context', old: oldNo++, new: newNo++, text: body }
+      })
+    }
+
+    /* Pair a hunk's lines for the side-by-side view: each run of deletions is
+       aligned with the run of additions that follows it, row by row, and
+       context lines sit on both sides. */
+    function splitRows(hunk) {
+      const rows = []
+      let dels = []
+      let adds = []
+      const flush = () => {
+        for (let at = 0; at < Math.max(dels.length, adds.length); at += 1) {
+          const left = dels[at]
+          const right = adds[at]
+          rows.push(Object.assign(left === undefined ? {} : { left: left }, right === undefined ? {} : { right: right }))
+        }
+        dels = []
+        adds = []
+      }
+      for (const row of hunkRows(hunk)) {
+        if (row.kind === 'del') dels.push({ no: row.old, text: row.text, kind: 'del' })
+        else if (row.kind === 'add') adds.push({ no: row.new, text: row.text, kind: 'add' })
+        else {
+          flush()
+          rows.push({ left: { no: row.old, text: row.text, kind: 'context' }, right: { no: row.new, text: row.text, kind: 'context' } })
+        }
+      }
+      flush()
+      return rows
+    }
+
+    /* The hunks to draw, cut at LINEDIFF_MAX_LINES lines in total. */
+    const LINEDIFF_MAX_LINES = 5000
+    function renderedHunks(hunks) {
+      let budget = LINEDIFF_MAX_LINES
+      const kept = []
+      for (const hunk of hunks) {
+        if (budget === 0) return { hunks: kept, truncated: true }
+        kept.push(hunk.lines.length <= budget ? hunk : Object.assign({}, hunk, { lines: hunk.lines.slice(0, budget) }))
+        budget -= Math.min(budget, hunk.lines.length)
+      }
+      return { hunks: kept, truncated: hunks.some((hunk, at) => kept[at] !== hunk) }
+    }
+
+    function hunkHeader(hunk) {
+      return '@@ -' + String(hunk.oldStart) + ',' + String(hunk.oldLines) + ' +' + String(hunk.newStart) + ',' + String(hunk.newLines) + ' @@'
+    }
+
+    /* Per-hunk, per-side Shiki alignment (the FileDiff rule): each side's
+       lines join into ONE fragment so multi-line grammars hold, and the
+       per-line spans map back by line number. */
+    function hunkSideSpans(rows, side, highlighter) {
+      if (highlighter === undefined) return undefined
+      const source = []
+      for (const row of rows) {
+        const no = row[side]
+        if (no === undefined) continue
+        source.push({ no: no, text: row.text })
+      }
+      if (source.length === 0) return new Map()
+      const highlighted = highlighter(source.map((line) => line.text).join('\n'))
+      if (highlighted === undefined) return undefined
+      const map = new Map()
+      source.forEach((line, index) => { map.set(line.no, highlighted[index] || []) })
+      return map
+    }
+
+    function hunkHighlights(hunk, highlighter) {
+      const rows = hunkRows(hunk)
+      return { old: hunkSideSpans(rows, 'old', highlighter), new: hunkSideSpans(rows, 'new', highlighter) }
+    }
+
+    /* split/wrap preferences are habits, not tab state — one localStorage
+       home, the same policy as the tree folds. */
+    const LINEDIFF_KEY = 'dsh-ide-git.linediff.v1'
+    function readLineDiffPrefs() {
+      try {
+        const raw = window.localStorage.getItem(LINEDIFF_KEY)
+        const parsed = raw === null ? null : JSON.parse(raw)
+        return parsed !== null && typeof parsed === 'object'
+          ? { split: parsed.split === true, wrap: parsed.wrap === true }
+          : { split: false, wrap: false }
+      } catch (error) { void error }
+      return { split: false, wrap: false }
+    }
+    function writeLineDiffPrefs(prefs) {
+      try { window.localStorage.setItem(LINEDIFF_KEY, JSON.stringify(prefs)) } catch (error) { void error }
+    }
+
+    /* The seed blocks the official review uses, resolved once. Every consumer
+       null-checks: a host whose primitives predate an export keeps working
+       through the hand-drawn fallbacks (labels instead of icons, a plain
+       select instead of Menu). */
+    const SeedMenu = UIPrimitives !== null && typeof UIPrimitives.Menu === 'function' ? UIPrimitives.Menu : null
+    const SeedPathLabel = UIPrimitives !== null && typeof UIPrimitives.PathLabel === 'function' ? UIPrimitives.PathLabel : null
+    const SeedTooltip = UIPrimitives !== null && typeof UIPrimitives.Tooltip === 'function' ? UIPrimitives.Tooltip : null
+    const SeedIcons = UIPrimitives !== null ? UIPrimitives : {}
+
+    function DiffText(props) {
+      return E('span', { className: 'dig-lf-text', 'data-diff-code': props.spans === undefined ? undefined : '' },
+        props.spans === undefined || props.spans === null || props.spans.length === 0
+          ? (props.text === '' ? ' ' : props.text)
+          : props.spans.map((span, at) => E('span', { key: at, style: span.style }, span.text)))
+    }
+
+    /* The unified row: old number, new number, sign, text (FileDiff's .line). */
+    function UnifiedLine(props) {
+      const row = props.row
+      const spans = props.spans
+      return E('div', { className: 'dig-lf-line dig-lf-' + row.kind, 'data-diff-line': row.kind },
+        E('span', { className: 'dig-lf-number' }, row.old === undefined ? '' : String(row.old)),
+        E('span', { className: 'dig-lf-number' }, row.new === undefined ? '' : String(row.new)),
+        E('span', { className: 'dig-lf-sign' }, row.kind === 'add' ? '+' : row.kind === 'del' ? '\u2212' : ' '),
+        E(DiffText, { text: row.text, spans: row.kind === 'add' ? spans.new.get(row.new) : spans.old.get(row.old) }))
+    }
+
+    /* The wrapped split row: two cells, each its own number + text. */
+    function SplitLine(props) {
+      const row = props.row
+      const spans = props.spans
+      const kind = row.left !== undefined && row.left.kind === 'del' ? 'del' : row.right !== undefined && row.right.kind === 'add' ? 'add' : 'context'
+      return E('div', { className: 'dig-lf-splitLine', 'data-diff-line': kind },
+        E('span', { className: 'dig-lf-cell ' + (row.left === undefined ? 'dig-lf-empty' : 'dig-lf-' + row.left.kind) },
+          E('span', { className: 'dig-lf-number' }, row.left === undefined ? '' : String(row.left.no)),
+          E(DiffText, { text: row.left === undefined ? '' : row.left.text, spans: row.left === undefined || spans.old === undefined ? undefined : spans.old.get(row.left.no) })),
+        E('span', { className: 'dig-lf-cell ' + (row.right === undefined ? 'dig-lf-empty' : 'dig-lf-' + row.right.kind) },
+          E('span', { className: 'dig-lf-number' }, row.right === undefined ? '' : String(row.right.no)),
+          E(DiffText, { text: row.right === undefined ? '' : row.right.text, spans: row.right === undefined || spans.new === undefined ? undefined : spans.new.get(row.right.no) })))
+    }
+
+    /* The no-wrap split: two columns that scroll together (FileDiff's
+       SplitColumns). The sync mirrors the source's offset-record loop. */
+    function SplitColumns(props) {
+      const hunks = props.hunks
+      const highlights = props.highlights
+      const paired = useMemo(() => hunks.map((hunk) => ({ header: hunkHeader(hunk), rows: splitRows(hunk) })), [hunks])
+      const leftRef = useRef(null)
+      const rightRef = useRef(null)
+      const offsets = useRef({ left: { x: 0, y: 0 }, right: { x: 0, y: 0 } })
+      const follow = (side) => (event) => {
+        const peer = side === 'left' ? rightRef : leftRef
+        const other = peer.current
+        if (other === null) return
+        for (const axis of ['scrollLeft', 'scrollTop']) {
+          const value = event.currentTarget[axis]
+          const key = axis === 'scrollLeft' ? 'x' : 'y'
+          if (offsets.current[side][key] === value) continue
+          offsets.current[side][key] = value
+          other[axis] = value
+          offsets.current[side === 'left' ? 'right' : 'left'][key] = other[axis]
+        }
+      }
+      return E('div', { className: 'dig-lf-columns' },
+        ['left', 'right'].map((side) => E('div', {
+          key: side,
+          className: 'dig-lf-column',
+          'data-diff-side': side,
+          ref: side === 'left' ? leftRef : rightRef,
+          onScroll: follow(side),
+        }, paired.map((hunk, position) => E('section', { key: position, className: 'dig-lf-hunk' },
+          E('div', { className: 'dig-lf-hunkHeader', 'data-diff-hunk-header': '' }, hunk.header),
+          hunk.rows.map((row, at) => {
+            const cell = row[side]
+            const spans = cell === undefined ? undefined : highlights[position][side === 'left' ? 'old' : 'new']
+            return E('div', {
+              key: at,
+              className: 'dig-lf-sideLine ' + (cell === undefined ? 'dig-lf-empty' : 'dig-lf-' + cell.kind),
+            },
+              E('span', { className: 'dig-lf-number' }, cell === undefined ? '' : String(cell.no)),
+              E(DiffText, { text: cell === undefined ? '' : cell.text, spans: cell === undefined || spans === undefined ? undefined : spans.get(cell.no) }))
+          }))))))
+    }
+
+    /* One toolbar button in the review's tool style; Tooltip-wrapped when the
+       seed provides it, a title attribute otherwise. */
+    function LineDiffTool(props) {
+      const inner = E('button', {
+        type: 'button',
+        className: 'dig-lf-tool',
+        'aria-pressed': props.pressed,
+        'aria-label': props.label,
+        'data-review-tool': props.tool,
+        onClick: props.onClick,
+      }, props.children)
+      if (SeedTooltip === null) {
+        return E('span', { title: props.label }, inner)
+      }
+      return E(SeedTooltip, { label: props.label, side: 'bottom', delayMs: 500 }, inner)
+    }
+
+    /* The external preview's diff view: the official review's header (file
+       selector + counts + split/wrap/open tools) over the official row
+       anatomy, fed by the plugin's own patch text instead of the host's
+       workspace-changes events. */
+    function LineDiff(props) {
+      const t = props.t
+      const files = useMemo(() => splitPatchFiles(props.patch), [props.patch])
+      const [active, setActive] = useState(0)
+      const [prefs, setPrefs] = useState(readLineDiffPrefs)
+      useEffect(() => { writeLineDiffPrefs(prefs) }, [prefs])
+      const [menuOpen, setMenuOpen] = useState(false)
+      const index = active < files.length ? active : 0
+      const file = files[index]
+      const language = useMemo(() => (languageForPathSeed === null || file === undefined || file.path === '') ? undefined : languageForPathSeed(file.path), [file])
+      const highlighter = useCodeHighlighterSeed === null ? undefined : useCodeHighlighterSeed(language)
+      const cut = useMemo(() => {
+        if (file === undefined) return { hunks: [], truncated: false, maps: [] }
+        const result = renderedHunks(file.hunks)
+        return { hunks: result.hunks, truncated: result.truncated, maps: result.hunks.map((hunk) => hunkHighlights(hunk, highlighter)) }
+      }, [file, highlighter])
+      const hasAdditions = file !== undefined && file.hunks.some((hunk) => hunk.lines.some((line) => line.indexOf('+') === 0))
+      const hasDeletions = file !== undefined && file.hunks.some((hunk) => hunk.lines.some((line) => line.indexOf('-') === 0))
+      const oneSided = hasAdditions !== hasDeletions
+      const split = prefs.split === true && oneSided !== true
+      const wrap = prefs.wrap === true
+      if (props.loading === true) return E('div', { className: 'dig-lf-root' }, E('p', { className: 'dig-lf-status', role: 'status' }, t('diff.loading')))
+      if (file === undefined) return E('div', { className: 'dig-lf-root' }, E('p', { className: 'dig-lf-status' }, t('diff.empty')))
+      /* header: selector + counts + tools (ReviewTab anatomy) */
+      const counts = file.binary === true
+        ? E('span', { className: 'dig-lf-label' }, t('diff.binary'))
+        : E('span', { className: 'dig-lf-counts' },
+            E('span', { className: 'dig-lf-added' }, fill(t('lf.added'), { count: String(file.adds) })),
+            E('span', { className: 'dig-lf-deleted' }, fill(t('lf.deleted'), { count: String(file.dels) })))
+      const selectorButton = E('button', {
+        type: 'button',
+        className: 'dig-lf-selectorButton',
+        'aria-haspopup': 'menu',
+        'aria-expanded': menuOpen,
+        'aria-label': t('lf.selectFile'),
+        title: file.path,
+        'data-review-file': file.path,
+        onClick: () => { setMenuOpen((value) => !value) },
+      },
+        SeedPathLabel === null ? file.path : E(SeedPathLabel, { path: file.path }),
+        SeedIcons.IconChevronDownOutlineRegular === undefined ? '\u25be' : E(SeedIcons.IconChevronDownOutlineRegular, { size: 12 }))
+      const selector = files.length > 1
+        ? (SeedMenu === null
+            ? E('select', {
+                className: 'dig-lf-selectorFallback',
+                value: String(index),
+                'aria-label': t('lf.selectFile'),
+                onChange: (event) => { setActive(Number(event.target.value)) },
+              }, files.map((entry, at) => E('option', { key: at, value: String(at) }, entry.path + '  +' + String(entry.adds) + ' -' + String(entry.dels))))
+            : E(SeedMenu, {
+                className: 'dig-lf-selector',
+                open: menuOpen,
+                autoFocus: true,
+                portal: true,
+                align: 'start',
+                dense: true,
+                onClose: () => { setMenuOpen(false) },
+                anchor: selectorButton,
+                items: files.map((entry, at) => ({
+                  id: String(at),
+                  label: E('span', { className: 'dig-lf-item' },
+                    E('span', { className: 'dig-lf-itemPath' }, entry.path),
+                    E('span', { className: 'dig-lf-itemCounts' },
+                      E('span', { className: 'dig-lf-added' }, fill(t('lf.added'), { count: String(entry.adds) })),
+                      E('span', { className: 'dig-lf-deleted' }, fill(t('lf.deleted'), { count: String(entry.dels) })))),
+                })),
+                selectedId: String(index),
+                onSelect: (id) => { setActive(Number(id)); setMenuOpen(false) },
+              }))
+        : E('span', { className: 'dig-lf-selectorStatic', title: file.path },
+            SeedPathLabel === null ? file.path : E(SeedPathLabel, { path: file.path }))
+      return E('div', { className: 'dig-lf-root' },
+        E('div', { className: 'dig-lf-header' },
+          selector,
+          counts,
+          E('span', { className: 'dig-lf-tools' },
+            E(LineDiffTool, {
+              tool: 'split', pressed: split, label: t(split === true ? 'lf.unified' : 'lf.split'),
+              onClick: () => { setPrefs((now) => Object.assign({}, now, { split: now.split !== true })) },
+            }, SeedIcons.IconCompareSplitOutlineRegular === undefined ? E(Icon, { name: 'split', size: 13 }) : E(SeedIcons.IconCompareSplitOutlineRegular, { className: 'dig-lf-compareIcon' })),
+            E(LineDiffTool, {
+              tool: 'wrap', pressed: wrap, label: t(wrap === true ? 'lf.nowrap' : 'lf.wrap'),
+              onClick: () => { setPrefs((now) => Object.assign({}, now, { wrap: now.wrap !== true })) },
+            }, SeedIcons.IconWrapFillRegular === undefined || SeedIcons.IconNowrapFillRegular === undefined
+              ? E(Icon, { name: 'wrap', size: 13 })
+              : (wrap === true ? E(SeedIcons.IconNowrapFillRegular) : E(SeedIcons.IconWrapFillRegular))),
+            props.onOpenFile === undefined ? null : E(LineDiffTool, {
+              tool: 'open-file', label: t('preview.openFile'),
+              onClick: props.onOpenFile,
+            }, SeedIcons.IconInspectOutlineRegular === undefined ? E(Icon, { name: 'file', size: 13 }) : E(SeedIcons.IconInspectOutlineRegular)),
+          )),
+        file.binary === true
+          ? E('p', { className: 'dig-lf-status' }, t('diff.binary'))
+          : E('div', { className: 'dig-lf-body', 'data-review-view': split === true ? 'split' : 'unified', 'data-review-wrap': wrap === true ? '' : undefined },
+              file.created === true ? E('p', { className: 'dig-lf-note' }, t('lf.created')) : null,
+              file.removed === true ? E('p', { className: 'dig-lf-note' }, t('lf.removedFile')) : null,
+              cut.truncated === true ? E('p', { className: 'dig-lf-note' }, fill(t('lf.truncated'), { count: String(LINEDIFF_MAX_LINES) })) : null,
+              split === true && wrap !== true
+                ? E(SplitColumns, { hunks: cut.hunks, highlights: cut.maps })
+                : cut.hunks.map((hunk, position) => {
+                    const paired = split === true ? splitRows(hunk) : null
+                    return E('section', { key: position, className: 'dig-lf-hunk' },
+                      E('div', { className: 'dig-lf-hunkHeader', 'data-diff-hunk-header': '' }, hunkHeader(hunk)),
+                      hunkRows(hunk).map((row, at) => split === true
+                        ? E(SplitLine, { key: at, row: paired[at], spans: cut.maps[position] })
+                        : E(UnifiedLine, { key: at, row: row, spans: cut.maps[position] })))
+                  })))
     }
 
     /* The leading glyph of a change row (v0.14): the host's FileTypeIcon —
@@ -9599,23 +10154,57 @@ window.__ModuleLoader__.load({
       '.dig-preview-actions{display:flex;align-items:center;gap:4px;flex:none}',
       '.dig-preview-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer}',
       '.dig-preview-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
-      /* LineDiff: the workspace-changes review's row anatomy on the same alias
-         tokens that view uses (FileDiff.module.css), so themes and reading
-         habits carry over untouched. */
-      '.dig-linediff{display:flex;flex-direction:column;min-height:0;font:var(--dsw-font-markdown-code-block);color:var(--dsw-alias-label-primary)}',
-      '.dig-linediff-hunk{padding:4px 16px;color:var(--dsw-alias-label-tertiary);white-space:pre}',
-      '.dig-linediff-meta{padding:2px 16px;color:var(--dsw-alias-label-secondary);font-weight:600;white-space:pre;overflow:hidden;text-overflow:ellipsis}',
-      '.dig-linediff-row{display:flex;padding-right:16px;white-space:pre}',
-      '.dig-linediff-no{flex:none;min-width:2.5em;padding:0 6px;color:var(--dsw-alias-label-tertiary);text-align:right;user-select:none}',
-      '.dig-linediff-sign{flex:none;width:1.4em;user-select:none}',
-      '.dig-linediff-text{padding-right:16px}',
-      '.dig-linediff-add{background:var(--dsw-alias-file-diff-added-bg)}',
-      '.dig-linediff-add .dig-linediff-no{background:var(--dsw-alias-file-diff-added-gutter);color:var(--dsw-alias-file-diff-added-marker)}',
-      '.dig-linediff-add .dig-linediff-sign{color:var(--dsw-alias-file-diff-added-marker)}',
-      '.dig-linediff-del{background:var(--dsw-alias-file-diff-deleted-bg)}',
-      '.dig-linediff-del .dig-linediff-no{background:var(--dsw-alias-file-diff-deleted-gutter);color:var(--dsw-alias-file-diff-deleted-marker)}',
-      '.dig-linediff-del .dig-linediff-sign{color:var(--dsw-alias-file-diff-deleted-marker)}',
-      '.dig-linediff-ctx .dig-linediff-text{color:var(--dsw-alias-label-secondary)}',
+      /* LineDiff (v0.14.3): the review view's anatomy on its own tokens —
+         every rule below mirrors FileDiff.module.css / ReviewTab.module.css
+         line for line (class dig-lf- stands in for their css modules), so the
+         official theme and reading habits carry over. */
+      '.dig-lf-root{--diff-empty-fill:color-mix(in srgb,var(--dsw-alias-interactive-bg-hover) 50%,transparent);display:flex;flex-direction:column;box-sizing:border-box;width:100%;min-height:0;color:var(--dsw-alias-label-primary)}',
+      '.dig-lf-header{display:flex;flex:0 0 auto;gap:6px;align-items:center;box-sizing:border-box;min-height:38px;padding:0 6px 0 8px;border-bottom:0.5px solid var(--dsw-alias-border-l3)}',
+      '.dig-lf-status{display:flex;gap:12px;align-items:center;margin:0;padding:16px;font-size:13px;color:var(--dsw-alias-label-secondary)}',
+      '.dig-lf-body{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:auto;padding:8px 0 16px;font:var(--dsw-font-markdown-code-block)}',
+      '.dig-lf-columns{display:grid;flex:1 1 auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:0}',
+      '.dig-lf-column,.dig-lf-body[data-review-view=unified]:not([data-review-wrap]){display:grid;grid-template-columns:minmax(max-content,100%);align-content:start}',
+      '.dig-lf-column{min-width:0;overflow-x:scroll;overscroll-behavior:none}',
+      '.dig-lf-column + .dig-lf-column{border-left:0.5px solid var(--dsw-alias-border-l3)}',
+      '.dig-lf-sideLine{display:grid;grid-template-columns:3.5em max-content;box-sizing:border-box;min-width:100%;width:max-content;min-height:22px;line-height:22px;white-space:pre}',
+      '.dig-lf-note{margin:0;padding:4px 16px 8px;font:var(--dsw-font-xs-13,var(--dsw-font-markdown-code-block));color:var(--dsw-alias-label-tertiary)}',
+      '.dig-lf-hunk{margin-bottom:8px}',
+      '.dig-lf-hunkHeader{padding:4px 16px;color:var(--dsw-alias-label-tertiary);white-space:pre}',
+      '.dig-lf-line{display:grid;grid-template-columns:3.5em 3.5em 1.2em minmax(0,1fr);box-sizing:border-box;min-height:22px;line-height:22px;white-space:pre}',
+      '.dig-lf-splitLine{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:22px;line-height:22px;white-space:pre}',
+      '.dig-lf-cell{display:grid;grid-template-columns:3.5em minmax(0,1fr);box-sizing:border-box;min-width:0}',
+      '.dig-lf-cell + .dig-lf-cell{border-left:0.5px solid var(--dsw-alias-border-l3)}',
+      '.dig-lf-number{padding-right:8px;color:var(--dsw-alias-label-tertiary);text-align:right;user-select:none}',
+      '.dig-lf-sign{text-align:center;user-select:none}',
+      '.dig-lf-text{padding-right:16px}',
+      '.dig-lf-body[data-review-wrap] .dig-lf-line,.dig-lf-body[data-review-wrap] .dig-lf-splitLine{white-space:pre-wrap}',
+      '.dig-lf-body[data-review-wrap] .dig-lf-text{overflow-wrap:anywhere}',
+      '.dig-lf-add{--diff-gutter-fill:var(--dsw-alias-file-diff-added-gutter);--diff-marker:var(--dsw-alias-file-diff-added-marker);background:var(--dsw-alias-file-diff-added-bg)}',
+      '.dig-lf-del{--diff-gutter-fill:var(--dsw-alias-file-diff-deleted-gutter);--diff-marker:var(--dsw-alias-file-diff-deleted-marker);background:var(--dsw-alias-file-diff-deleted-bg)}',
+      '.dig-lf-add .dig-lf-number,.dig-lf-del .dig-lf-number{background:var(--diff-gutter-fill);color:var(--diff-marker)}',
+      '.dig-lf-add .dig-lf-number:first-child,.dig-lf-del .dig-lf-number:first-child{box-shadow:inset 3px 0 0 var(--diff-marker)}',
+      '.dig-lf-add .dig-lf-sign,.dig-lf-del .dig-lf-sign{color:var(--diff-marker)}',
+      '.dig-lf-context .dig-lf-text{color:var(--dsw-alias-label-secondary)}',
+      '.dig-lf-empty{background:var(--diff-empty-fill)}',
+      /* header pieces from ReviewTab.module.css */
+      '.dig-lf-selector{flex:0 1 auto;min-width:0}',
+      '.dig-lf-selectorStatic{flex:0 1 auto;min-width:0;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap;font-weight:600}',
+      '.dig-lf-selectorFallback{max-width:60%;padding:2px 6px;border:none;border-radius:var(--dsw-radius-sm,8px);background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));color:inherit;font:inherit;font-size:12px}',
+      '.dig-lf-selectorButton{display:inline-flex;gap:4px;align-items:center;box-sizing:border-box;max-width:100%;height:28px;padding:0 6px 0 8px;border:0;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-primary);cursor:pointer;font:inherit;font-size:12px;line-height:20px}',
+      '.dig-lf-selectorButton:hover,.dig-lf-selectorButton[aria-expanded=true]{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-lf-selectorButton svg{display:block;flex:none}',
+      '.dig-lf-item{display:flex;gap:12px;align-items:center;justify-content:space-between;min-width:0}',
+      '.dig-lf-itemPath{min-width:0;overflow:hidden;line-height:20px;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-lf-itemCounts,.dig-lf-counts{display:inline-flex;flex:none;gap:6px;align-items:center;font-family:var(--ds-font-family-code);font-size:12px;line-height:20px;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-lf-counts{min-width:0;margin-right:auto}',
+      '.dig-lf-added{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-lf-deleted{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-lf-label{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-lf-tools{display:inline-flex;flex:none;gap:2px;align-items:center;margin-left:auto}',
+      '.dig-lf-tool{display:inline-flex;flex:none;align-items:center;justify-content:center;width:28px;height:28px;padding:6px;border:0;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer}',
+      '.dig-lf-tool svg{width:15px;height:15px}',
+      '.dig-lf-tool:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-lf-tool[aria-pressed=true] .dig-lf-compareIcon{transform:rotate(90deg)}',
     ].join('\n')
 
     /* ============================== plugin ============================== */
@@ -9984,10 +10573,6 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-preview-head' },
           E('span', { className: 'dig-preview-title', title: title }, title === '' ? t('preview.title') : title),
           seed === null ? null : E('div', { className: 'dig-preview-actions' },
-            seed.path !== undefined && seed.path !== null && seed.path !== ''
-              ? E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('preview.openFile'), title: t('preview.openFile'), onClick: openInFilePreview },
-                E(Icon, { name: 'file', size: 13 }))
-              : null,
             E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('diff.copy'), title: t('diff.copy'), onClick: copyPatch },
               E(Icon, { name: copied === true ? 'check' : 'copy', size: 13 })),
             E('button', { type: 'button', className: 'dig-preview-btn', 'aria-label': t('toolbar.refresh'), title: t('toolbar.refresh'), onClick: () => { setRefreshTick((n) => n + 1) } },
@@ -9996,7 +10581,14 @@ window.__ModuleLoader__.load({
           ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, t('preview.hint')))
           : state.error !== null
             ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, state.error))
-            : E('div', { className: 'dig-preview-body' }, E(LineDiff, { patch: state.patch, loading: state.loading, t: t })))
+            : E('div', { className: 'dig-preview-body' }, E(LineDiff, {
+                patch: state.patch,
+                loading: state.loading,
+                t: t,
+                /* worktree seeds carry the file path: the review's open-file
+                   tool jumps to the host's whole-file preview. */
+                onOpenFile: seed.path !== undefined && seed.path !== null && seed.path !== '' ? openInFilePreview : undefined,
+              })))
     }
 
     function apply(ctx) {

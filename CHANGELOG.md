@@ -3,6 +3,18 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.3 — 2026-10-08
+
+**类型**:feat(Git 预览完整移植官方审视图),用户对 v0.14.2 的第四轮反馈(「按钮不一样、展示不一样」)
+
+- **feat Git 预览整体重写为 ui-deliverables 审视图的忠实移植**。此前逐项拼凑(自绘 wrap 图标、原生 select、单侧高亮)与官方差距大;本版按源码逐文件对照移植:
+  - **头部**(ReviewTab.tsx + ReviewTab.module.css):文件选择器 = 官方 **Menu 组件**(seed)+ PathLabel + IconChevronDownOutlineRegular,下拉每项带路径与 ± 统计;**+N −M 统计徽章**(success/error 色,code 字体);工具组 = **split 切换**(IconCompareSplitOutlineRegular,按下时旋转 90°)、**wrap 切换**(IconWrapFillRegular/IconNowrapFillRegular)、**open-file**(IconInspectOutlineRegular,openResource 跳官方文件预览)——图标/组件全部来自官方 seed,Tooltip 包裹。
+  - **行体**(FileDiff.tsx + FileDiff.module.css):**unified 双列行号(旧/新)+ ± 标记列**(新文件旧列空,与官方一致);**@@ hunk 头由 hunk 数据重构**;**每 hunk 双侧 Shiki 高亮**(旧侧 = 删+上下文,新侧 = 增+上下文——多行语法结构两侧各自完整);**split 左右分栏**(删块与增块逐行配对;不换行时双列**同步滚动**、换行时单元格式);**单边 diff(纯增/纯删)强制单列**;binary/created/deleted/truncated(5000 行上限)状态行;CSS 逐条对照官方(含 gutter 填充、首列 inset 标记条、wrap 时的 overflow-wrap)。
+  - **split/wrap 偏好落 localStorage**(习惯而非 tab 状态,与树折叠同策略)。
+  - **词典**:新增 lf.* 10 键(官方文案模板,如「切换为左右对比」)+{count}/−{count})× 21 门。
+- **调查结论修正(重要)**:此前记录「FileDiff 不可跨包 require」**有误**——manifest.ts 的解析契约(boot 图行可解析)+ 真机实证(require 成功返回 `{apply, inject}`)证明机制是通的,卡点仅在 ui-deliverables 入口未导出组件。已把实证与「入口 re-export 即可」的收窄请求补充到官方讨论 #9148;官方落地后本块整体退役换官方组件(AGENTS.md 宿主跟随纪律同步更新)。
+- **验证**:`npm test` **104/104**(含 rc.2 表面契约的 radius fallback 修正);`ssr-check` 4 项;隔离实例真机核验:探针 all checks passed;预览手动核验——unified 行号新列 1-3/旧列空、hunk 头 `@@ -0,0 +1,3 @@` 重构正确、+3−0 徽章、15 处语法高亮;修改文件 `+5−1` 的 split 双列(左 D 右 A 配对)与 wrap 切换均生效;纯增文件 split 按官方 oneSided 规则正确保持单列。
+
 ## v0.14.2 — 2026-10-08
 
 **类型**:feat(Git 预览对齐官方 review 视图,用户对 v0.14.1 的第三次反馈)

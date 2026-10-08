@@ -86,7 +86,8 @@
 
 ## 宿主演进跟随(dsh 升级时必查)
 
-- **Git 预览的 LineDiff(v0.14.2)是 ui-deliverables `FileDiff` 的 seed 积木复刻**:布局层(双列行号 gutter、± 标记列、@@ 头、meta 行)写在 `src/client.js`,而高亮(`useCodeHighlighter`)、语言推断(`languageForPath`)、配色(`--dsw-alias-file-diff-added/deleted-gutter/marker/bg`)全部来自平台 seed 表/官方 alias token——这是 bundle purity 下能拿到的最大复用,配色会自动跟随主题,**功能与结构不会**。
+- **Git 预览的 LineDiff(v0.14.3)是 ui-deliverables 审视图(ReviewTab + FileDiff)的逐文件移植**:头部(官方 Menu/PathLabel/Tooltip/图标,均来自 seed)、unified 双列行号、split 双列同步滚动、双侧 Shiki 高亮、± 统计、单边强制单列、5000 行截断——布局与状态层写在 `src/client.js`,其余积木(`useCodeHighlighter`、`languageForPath`、file-diff alias token、Menu/Tooltip/图标)全部来自平台 seed 表。配色自动跟随主题,**布局与功能不会**。
+- **机制事实(2026-10-08 实证,修正早前结论)**:boot 图行的包**可以**被插件 client bundle require(modules/manifest.ts 解析契约;真机实测 `require('@deepseek-ai/dsh-client-ui-deliverables')` 返回 `{apply, inject}` 不抛错);拿不到 FileDiff 仅因其入口未导出组件——官方一旦 re-export(讨论 #9148),LineDiff 整块删除换官方组件。
 - **dsh 升级版本时,按序检查三件事**:
   1. `packages/client/ui-deliverables/src/client/FileDiff.tsx` 是否演进(新增 split 视图、hunk 折叠、词级 intra-line 高亮等)→ 有需要的就把能力同步进 LineDiff;
   2. `FileDiff.module.css` 与 file-diff alias token 是否更名/增删 → 同步 CSS 里的 token 名;
