@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.4 — 2026-10-08
+
+**类型**:fix(用户真机报告:「点击 commit 里的文件,Git 预览完全空白」)
+
+- **fix LineDiff 渲染崩溃 → 预览整面板空白(P0)**。根因:`UnifiedLine` 里 `spans.new.get(...)` / `spans.old.get(...)` 移植时丢了官方源码的可选链(FileDiff.tsx 原文 `highlighted?.new?.get(...)`)。平台 `highlightLines` 对**未知语法或尚未加载完的语法返回 undefined**,于是首帧(以及所有纯文本文件,如 `.txt`)以 `spans === undefined` 渲染 → TypeError → 0.2.x 的 slot 系统("slot entry crashed in 'sidebar.right.pane.tab'")把预览面板整个卸载,表现即「Git 预览开了但一片空白」。修复 = 补齐全部 5 处 `.get` 前的 undefined 防护(与官方逐字对齐);语法随后加载完成时 `useCodeHighlighter` 的 grammar store 会自动触发重渲染补上高亮,行为与官方组件一致。
+- **fix commit 内点第二个文件预览不跟随**。commit 分支的 seed 只带 hash 不带 path,seedKey 不变 → 面板永远停在 commit 的第一个文件。修复:seed 携带所点文件 path、seedKey 计入 path、预览请求 hash+path 并传(宿主半 `diff` 自 v0.14.0 起即支持 `git show <hash> -- <path>`,无需宿主半改动、不用重启 web)。
+- **首例 dsh 0.2.0-rc.2 全链路验证**(用户桌面端已升级 0.2.0-rc.2,此前所有验证均在 0.1.7-rc.2):搭 npm `@deepseek-ai/dsh@0.2.0-rc.2` 隔离实例 + CDP 错误捕获复现上述崩溃(堆栈直指 UnifiedLine),修复后核验——`.txt`(无语法)不崩、`.js` 出 3 处着色 span、新建文件 `@@ -0,0 +1,2 @@` / 删除文件 `@@ -1,1 +0,0 @@` 的 oneSided 单列、commit 内三文件点击切换、全程零 console error;conversation-probe 10 项断言在 0.2.0 上 **all checks passed**(沉浸开关、conversation tab 注册/注销同样兼容)。0.2.0 与 0.1.7 的 seed 契约(highlightLines / Menu / Tooltip / PathLabel / sidebarRightTabs / `sidebar.right.pane.tab`)逐项 diff 同构,本次改动两端通用。
+- **验证**:`npm test` **104/104**;`ssr-check` 4 项;0.2.0 隔离实例真机如上。
+
 ## v0.14.3 — 2026-10-08
 
 **类型**:feat(Git 预览完整移植官方审视图),用户对 v0.14.2 的第四轮反馈(「按钮不一样、展示不一样」)

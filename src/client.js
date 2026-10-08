@@ -6659,7 +6659,15 @@ window.__ModuleLoader__.load({
         E('span', { className: 'dig-lf-number' }, row.old === undefined ? '' : String(row.old)),
         E('span', { className: 'dig-lf-number' }, row.new === undefined ? '' : String(row.new)),
         E('span', { className: 'dig-lf-sign' }, row.kind === 'add' ? '+' : row.kind === 'del' ? '\u2212' : ' '),
-        E(DiffText, { text: row.text, spans: row.kind === 'add' ? spans.new.get(row.new) : spans.old.get(row.old) }))
+        /* The guards are load-bearing (FileDiff.tsx uses `highlighted?.new?.get`):
+           highlightLines returns undefined for unknown or not-yet-loaded
+           grammars, so the first frame (and every plain-text file) renders
+           with spans === undefined until the grammar store bumps a re-render.
+           Without the guard the slot entry crashes and 0.2.x unmounts the
+           whole preview pane (blank "Git 预览"). */
+        E(DiffText, { text: row.text, spans: row.kind === 'add'
+          ? (spans.new === undefined ? undefined : spans.new.get(row.new))
+          : (spans.old === undefined ? undefined : spans.old.get(row.old)) }))
     }
 
     /* The wrapped split row: two cells, each its own number + text. */
@@ -8876,7 +8884,7 @@ window.__ModuleLoader__.load({
           try {
             const scopeObject = scope || {}
             previewStore.set(commitHash !== null
-              ? { hash: commitHash, subject: seed.subject || '', cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId }
+              ? { hash: commitHash, subject: seed.subject || '', path: seed.path !== undefined && seed.path !== null ? seed.path : '', cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId }
               : { path: seed.path, staged: seed.staged === true, cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId })
             sidebarRight.openTab(NATIVE_PREVIEW_KIND)
             return true
@@ -10509,7 +10517,9 @@ window.__ModuleLoader__.load({
       useEffect(() => previewStore.subscribe(() => { setSeed(previewStore.seed) }), [])
       const seedKey = seed === null
         ? ''
-        : (seed.hash !== undefined && seed.hash !== null ? 'c:' + String(seed.hash) : 'w:' + String(seed.staged === true) + ':' + String(seed.path))
+        : (seed.hash !== undefined && seed.hash !== null
+          ? 'c:' + String(seed.hash) + ':' + String(seed.path !== undefined && seed.path !== null ? seed.path : '')
+          : 'w:' + String(seed.staged === true) + ':' + String(seed.path))
       const [state, setState] = useState({ loading: false, patch: '', error: null })
       const [refreshTick, setRefreshTick] = useState(0)
       const [copied, setCopied] = useState(false)
@@ -10523,8 +10533,13 @@ window.__ModuleLoader__.load({
           try {
             const payload = { cwd: seed.cwd }
             if (seed.repoRoot !== undefined && seed.repoRoot !== null && seed.repoRoot !== '') payload.repoRoot = seed.repoRoot
-            if (seed.hash !== undefined && seed.hash !== null && seed.hash !== '') payload.hash = seed.hash
-            else { payload.path = seed.path; payload.staged = seed.staged === true }
+            if (seed.hash !== undefined && seed.hash !== null && seed.hash !== '') {
+              payload.hash = seed.hash
+              /* hash+path rides `git show <hash> -- <path>` (host-supported
+                 since the route exists): the preview follows the exact file
+                 the user clicked instead of the commit's first file. */
+              if (seed.path !== undefined && seed.path !== null && seed.path !== '') payload.path = seed.path
+            } else { payload.path = seed.path; payload.staged = seed.staged === true }
             const data = await request('diff', payload)
             if (alive === true) setState({ loading: false, patch: data === undefined || data === null || typeof data.patch !== 'string' ? '' : data.patch, error: null })
           } catch (error) {
