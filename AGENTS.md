@@ -88,11 +88,15 @@
 
 - **Git 预览的 LineDiff(v0.14.3)是 ui-deliverables 审视图(ReviewTab + FileDiff)的逐文件移植**:头部(官方 Menu/PathLabel/Tooltip/图标,均来自 seed)、unified 双列行号、split 双列同步滚动、双侧 Shiki 高亮、± 统计、单边强制单列、5000 行截断——布局与状态层写在 `src/client.js`,其余积木(`useCodeHighlighter`、`languageForPath`、file-diff alias token、Menu/Tooltip/图标)全部来自平台 seed 表。配色自动跟随主题,**布局与功能不会**。
 - **机制事实(2026-10-08 实证,修正早前结论)**:boot 图行的包**可以**被插件 client bundle require(modules/manifest.ts 解析契约;真机实测 `require('@deepseek-ai/dsh-client-ui-deliverables')` 返回 `{apply, inject}` 不抛错);拿不到 FileDiff 仅因其入口未导出组件——官方一旦 re-export(讨论 #9148),LineDiff 整块删除换官方组件。
+- **每次更新插件版本、以及 dsh 升级时,都主动查一遍「官方是否开放了整个预览模块」**(讨论 #9148:https://github.com/deepseek-ai/deepseek-harness/discussions/9148 )。两个落地形态,任一出现即整体切换:
+  1. `ui-primitives` 把行号 diff 渲染提升为 seed 组件(查 `packages/client/ui-primitives/src/index.ts` 导出);
+  2. `ui-deliverables` 的 client 入口 re-export `FileDiff` / `hunkRows` / `splitRows`(查 `packages/client/ui-deliverables/src/client/index.ts` 的导出——机制已实证可行,boot 图行可 require,只差这一行导出)。
+  一旦落地:**整体删除 LineDiff 换官方组件**,本节随之作废。
 - **dsh 升级版本时,按序检查三件事**:
-  1. `packages/client/ui-deliverables/src/client/FileDiff.tsx` 是否演进(新增 split 视图、hunk 折叠、词级 intra-line 高亮等)→ 有需要的就把能力同步进 LineDiff;
-  2. `FileDiff.module.css` 与 file-diff alias token 是否更名/增删 → 同步 CSS 里的 token 名;
-  3. `ui-primitives` 是否已把行号 diff 渲染提升为可复用 seed 组件(已在官方讨论区提案:deepseek-ai/deepseek-harness#9148,https://github.com/deepseek-ai/deepseek-harness/discussions/9148 )→ **一旦提升,整体删除 LineDiff 切换官方组件**,本节随之作废。
-- 原则:不要往 LineDiff 里堆功能(split、折叠这类先等官方);它是通往官方组件的桥接,不是自研方向。
+  1. `packages/client/ui-deliverables/src/client/FileDiff.tsx` 是否演进(新增 hunk 折叠、词级 intra-line 高亮等)→ 有需要的就把能力同步进 LineDiff;
+  2. `FileDiff.module.css` / `ReviewTab.module.css` 与 file-diff alias token 是否更名/增删 → 同步 CSS 里的 token 名与结构;
+  3. 上面的「官方开放预览模块」检查。
+- 原则:不要往 LineDiff 里堆功能(折叠、词级高亮这类先等官方);它是通往官方组件的桥接,不是自研方向。
 
 ## 与 dsh-better-sidebar 生态的关系
 
