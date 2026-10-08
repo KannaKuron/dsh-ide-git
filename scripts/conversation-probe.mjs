@@ -70,6 +70,7 @@ const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, de
 
 const failures = []
 const pageErrors = []
+browser.on('page', (p) => { p.on('console', (m) => { if (m.type() === 'warning' && m.text().indexOf('dsh-ide-git') >= 0) log('[panel] ' + m.text().slice(0, 220)) }) })
 const check = (ok, message) => {
   if (ok === true) { log('ok   ' + message); return true }
   log('FAIL ' + message)
@@ -102,12 +103,21 @@ const clickCenter = async (finder, arg) => {
 
 /* ---- enter: gate → workspace → session (see scripts/layout-probe.mjs; the
    0.2.1 gate takes a key up front, and a dummy one is enough — the probe never
-   needs a model reply, only a session record with a cwd) ---- */
+   needs a model reply, only a session record with a cwd) ----
+
+   The workspace bind rides the「新会话」menu (its items ARE the workspaces;
+   clicking one fires /api/session/create with the workspace attached — the
+   response must answer ok). The conversation view mounts after a RELOAD
+   restores the created session (the shell stays on the hero meanwhile), and
+   the probe's first message makes the view ring appear. NOTE: the workspace
+   path in the instance's storages/workspace.json must be the REALPATH form
+   (/private/tmp/… on macOS, not /tmp/…) — attach rejects the symlinked
+   spelling with session/workspace-attach-failed. */
 async function enterSession() {
   await page.goto(url, { waitUntil: 'domcontentloaded' })
   await settle(9000)
   /* The preview notice re-appears whenever the home's settings were wiped (the
-   runner does exactly that); it overlays the composer and swallows clicks. */
+     runner does exactly that); it overlays the composer and swallows clicks. */
   for (let attempt = 0; attempt < 2; attempt++) {
     const dismissed = await clickCenter(() => {
       for (const el of document.querySelectorAll('button')) {
@@ -129,69 +139,80 @@ async function enterSession() {
   } else {
     log('no API-key gate visible (already configured)')
   }
-  const pickerOpen = await clickCenter(() => {
-    for (const el of document.querySelectorAll('button')) {
-      if ((el.getAttribute('aria-label') || '') === '选择工作区' || (el.textContent || '').trim() === '选择工作区') {
+  /* Already inside a restored conversation — nothing to create. */
+  const onHero = () => page.evaluate(() => [...document.querySelectorAll('*')].some((el) => (el.textContent || '').trim() === '选择一个工作区开始'))
+  if (await onHero() !== true) {
+    log('conversation restored from the previous run')
+  } else {
+    /* The「新会话」button opens the workspace menu; an item click creates AND
+       attaches (ok:true). Fallback: the hero's own 选择工作区 picker. */
+    let bound = false
+    try {
+      await page.locator('button', { hasText: '新会话' }).first().click({ timeout: 6000 })
+      await settle(1000)
+      await page.getByText(workspaceTitle, { exact: true }).last().click({ timeout: 6000 })
+      await settle(3000)
+      bound = true
+    } catch (error) {
+      log('new-session menu bind failed: ' + String(error && error.message ? error.message : error).slice(0, 140))
+    }
+    if (bound === false) {
+      log('falling back to the hero picker')
+      await clickCenter(() => {
+        for (const el of document.querySelectorAll('button')) {
+          const label = (el.getAttribute('aria-label') || '') + ' ' + (el.textContent || '')
+          if (label.indexOf('选择工作区') < 0) continue
+          const r = el.getBoundingClientRect()
+          if (r.width > 0) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+        }
+        return null
+      })
+      await settle(1200)
+      await clickCenter((title) => {
+        let found = null
+        for (const el of document.querySelectorAll('button')) {
+          const r = el.getBoundingClientRect()
+          if (r.width === 0 || r.height === 0) continue
+          if ((el.textContent || '').trim() === title) found = { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+        }
+        return found
+      }, workspaceTitle)
+      await settle(2500)
+    }
+    /* The shell stays on the hero through the create; the conversation mounts
+       when the reload restores the now-attached session. */
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await settle(9000)
+  }
+  const live = await page.evaluate(() => [...document.querySelectorAll('[contenteditable="true"]')].length > 0)
+  if (live !== true) {
+    const diag = await page.evaluate(() => {
+      const out = []
+      for (const el of document.querySelectorAll('button, span, h2, [class*="toast"]')) {
+        if (el.children.length > 0) continue
         const r = el.getBoundingClientRect()
-        if (r.width > 0) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+        if (r.width === 0 || r.x < 280) continue
+        const t = (el.textContent || '').trim()
+        if (t !== '') out.push(t.slice(0, 22) + '@' + Math.round(r.y))
       }
+      return [...new Set(out)].slice(0, 20)
+    })
+    log('enter-session diagnostics: ' + JSON.stringify(diag))
+    await page.screenshot({ path: join(outDir, 'enter-failed.png') })
+    throw new Error('the conversation did not mount after the workspace bind')
+  }
+  const typed = await clickCenter(() => {
+    for (const el of document.querySelectorAll('[contenteditable="true"], textarea')) {
+      const r = el.getBoundingClientRect()
+      if (r.width > 80 && r.height > 20) return { x: r.x + Math.min(60, r.width / 2), y: r.y + r.height / 2 }
     }
     return null
   })
-  /* The picker item's accessible name carries the path too, so match on the
-     exact text; only when the picker is open (the sidebar shares the title). */
-  if (pickerOpen === true) {
-    const picked = await clickCenter((title) => {
-      /* The LAST visible match wins: the picker overlay renders later in the
-         DOM, while the sidebar carries the same title earlier. */
-      let found = null
-      for (const el of document.querySelectorAll('button')) {
-        const r = el.getBoundingClientRect()
-        if (r.width === 0 || r.height === 0) continue
-        if ((el.textContent || '').trim() === title) found = { x: r.x + r.width / 2, y: r.y + r.height / 2 }
-      }
-      return found
-    }, workspaceTitle)
-    if (picked !== true) log('workspace card "' + workspaceTitle + '" not found in the picker')
-  }
-  /* With a session restored from the previous run the conversation shell is
-     already mounted; otherwise create one session inside the workspace and
-     give it its first message — the view ring follows the first turn. */
-  const live = await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)
-  if (live !== true) {
-    const toast = () => page.evaluate(() => [...document.querySelectorAll('[class*="toast"]')].map((el) => (el.textContent || '').trim()).join(' '))
-    for (let attempt = 0; attempt < 2; attempt++) {
-      /* Coordinate click (see enterSession's picker): the actionability loop
-         has stalled on this sidebar button too. */
-      const freshClicked = await clickCenter(() => {
-        for (const el of document.querySelectorAll('button')) {
-          const label = (el.getAttribute('aria-label') || '') + ' ' + (el.textContent || '')
-          if (label.indexOf('新会话') < 0 && label.indexOf('新建会话') < 0) continue
-          const r = el.getBoundingClientRect()
-          if (r.width > 0 && r.height > 0 && r.x < 300) return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
-        }
-        return null
-      })
-      if (freshClicked === true) {
-        await settle(4000)
-        const message = await toast()
-        if (message.indexOf('失败') >= 0) log('session attempt ' + attempt + ' refused: ' + message.slice(0, 160))
-      }
-      const typed = await clickCenter(() => {
-        for (const el of document.querySelectorAll('[contenteditable="true"], textarea')) {
-          const r = el.getBoundingClientRect()
-          if (r.width > 80 && r.height > 20) return { x: r.x + Math.min(60, r.width / 2), y: r.y + r.height / 2 }
-        }
-        return null
-      })
-      if (typed === true) {
-        await page.keyboard.type('conversation probe: ignore this message', { delay: 15 })
-        await settle(400)
-        await page.keyboard.press('Enter')
-        await settle(8000)
-      }
-      if (await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)) break
-    }
+  if (typed === true) {
+    await page.keyboard.type('conversation probe: ignore this message', { delay: 15 })
+    await settle(400)
+    await page.keyboard.press('Enter')
+    await settle(8000)
   }
   /* The conversation shell mounts with the session; the tab ring shows 对话. */
   try {
@@ -289,6 +310,28 @@ try {
   check(state.visible === 1, 'the Git view mounts the panel (.dig-root visible)')
   check(/main|master|branch|分支/i.test(state.text) === true, 'the panel carries repository data from the session cwd: ' + state.text.slice(0, 80))
   await page.screenshot({ path: join(outDir, 'conversation-git-tab.png') })
+
+  /* 2a — the immersive seat (issue #8 round 3, default ON): the seat declares
+     the host's composer-overlay contract, fills the whole conversation height,
+     and the composer seat is hidden while the Git view owns the ring (the CSS
+     :not() chain keeps approvals reachable — nothing else may block that). */
+  const immersiveOn = await page.evaluate(() => {
+    const seat = document.querySelector('.dig-conversation-seat[data-immersive="1"]')
+    const composer = document.querySelector('[data-composer-seat]')
+    const scroll = document.querySelector('[data-conversation-scroll]')
+    return {
+      present: seat !== null,
+      overlay: seat !== null && seat.hasAttribute('data-conversation-composer-overlay'),
+      composerHidden: composer === null || getComputedStyle(composer).display === 'none',
+      seatHeight: seat === null ? 0 : Math.round(seat.getBoundingClientRect().height),
+      gap: scroll === null ? -1 : scroll.scrollHeight - scroll.clientHeight,
+    }
+  })
+  check(immersiveOn.present === true && immersiveOn.overlay === true,
+    'the immersive seat declares the composer-overlay contract (saw ' + JSON.stringify(immersiveOn) + ')')
+  check(immersiveOn.composerHidden === true, 'the composer seat is hidden while the Git view owns the ring')
+  check(immersiveOn.seatHeight >= 400, 'the seat fills the conversation height (saw ' + immersiveOn.seatHeight + 'px)')
+  check(immersiveOn.gap <= 1, 'the scrollport has no residual overflow under the overlay layout (saw ' + immersiveOn.gap + 'px)')
 
   /* 2b — same-workspace session switch (v0.13.1): the seat remounts per
      session, and the first-paint cache must hand the new mount the previous
@@ -458,69 +501,6 @@ try {
     log('新会话 button absent — skipping the session-switch cache check')
   }
 
-  /* 3 — the placement switch drives the seat live. On hosts that serve the
-     plugin page, the rail settings button NAVIGATES there (the in-panel dialog
-     never opens), so every toggle is verified back ON the conversation page:
-     open the dock's Git panel → settings → flip → go back → inspect the ring. */
-  const dockGit = async () => {
-    /* Open the panel through the sidebar's start page — the canonical entry
-     (see layout-probe.mjs): expand the right sidebar, then its Git guide
-     card. The bottom dock's tab set is persisted state and NOT guaranteed
-     after a reload, so it is only a fallback. */
-    const expand = page.getByRole('button', { name: '打开右侧边栏' }).first()
-    if (await expand.count() > 0) {
-      try { await expand.click({ timeout: 4000 }) } catch (error) { void error }
-      await settle(3000)
-    }
-    const card = page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"], [data-sidebar-right-guide-entry="ide-git"]').first()
-    if (await card.count() > 0) {
-      try { await card.click({ timeout: 6000 }) } catch (error) { void error }
-      await settle(4000)
-      if (await page.locator('.dig-root:visible').count() > 0) return true
-    }
-    const candidates = await page.evaluate(() => {
-      const points = []
-      for (const el of document.querySelectorAll('button')) {
-        const r = el.getBoundingClientRect()
-        if (r.width === 0 || r.height === 0) continue
-        if ((el.textContent || '').trim() !== 'Git') continue
-        points.push({ x: r.x + r.width / 2, y: r.y + r.height / 2 })
-      }
-      return points
-    })
-    for (const point of candidates) {
-      await page.mouse.click(point.x, point.y)
-      await settle(4000)
-      const open = await page.locator('.dig-root:visible').count()
-      if (open > 0) return true
-    }
-    return false
-  }
-  /* Strict: "removed" only counts when the ring itself is visible (an absent
-     ring must never read as a pass). */
-  const ringState = async () => {
-    const anchor = await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)
-    if (anchor !== true) return 'no-ring'
-    const git = await gitTabButton()
-    return git !== null && git.asElement() !== null ? 'git-present' : 'git-absent'
-  }
-  const flipPlacement = async () => {
-    if (await dockGit() !== true) { log('dock Git tab not found'); return false }
-    /* The dock panel opens asynchronously (repo resolve + chrome render);
-       wait for the button instead of sampling once. */
-    const rail = page.locator('.dig-root:visible .dig-rail-settings').first()
-    try { await rail.waitFor({ timeout: 10000 }) } catch (error) {
-      log('rail settings button not found (panel did not open in time)')
-      return false
-    }
-    await rail.click({ timeout: 6000 })
-    await settle(3000)
-    const placement = page.locator('input#dig-placement-conversationTab').first()
-    if (await placement.count() === 0) { log('placement switch not found on the settings surface'); return false }
-    await placement.click({ timeout: 6000 })
-    await settle(2500)
-    return true
-  }
   /* The plugin page is an in-app view switch no history undo reliably
      reverses, so after each flip the probe re-enters through a fresh load —
      deterministic, and it doubles as a persistence check (the setting must
@@ -533,29 +513,8 @@ try {
     }
     return await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)
   }
-  if (await flipPlacement() === true) {
-    check(await reenterConversation() === true, 'back on the conversation after the off flip')
-    const goneState = await ringState()
-    check(goneState === 'git-absent', 'turning the switch off removes the tab (ring visible, Git absent; saw ' + goneState + ')')
-    if (await flipPlacement() === true) {
-      check(await reenterConversation() === true, 'back on the conversation after the on flip')
-      const againState = await ringState()
-      if (againState !== 'git-present') {
-        const diag = await page.evaluate(() => ({
-          box: (() => { const el = document.querySelector('input#dig-placement-conversationTab'); return el === null ? 'gone' : String(el.checked) })(),
-          note: (document.querySelector('[data-settings-error]') || {}).textContent || '',
-        }))
-        log('restore diagnostics: ' + JSON.stringify(diag) + ' pageErrors=' + pageErrors.length)
-      }
-      check(againState === 'git-present', 'turning the switch back on restores the tab (saw ' + againState + ')')
-    } else {
-      check(false, 'the on flip completed')
-    }
-  } else {
-    log('skipping the live-switch check (settings surface not reachable)')
-  }
 
-  /* 4 — the remote pairing reality: the direct plugin route answers 403 (the
+  /* 3 — the remote pairing reality: the direct plugin route answers 403 (the
      harness browser-auth gate), the panel must still load through /remote.
      Simulated with route interception: direct → 403, /remote/… → the real
      route. The retry is sticky, so ONE fenced call is enough to prove it. */
@@ -589,6 +548,181 @@ try {
   } else {
     check(false, 'the Git tab survived the reload (sticky view + fencing active)')
   }
+
+
+  const dockGit = async () => {
+    /* Open the panel through the sidebar's start page — the canonical entry
+     (see layout-probe.mjs): expand the right sidebar, then its Git guide
+     card. The bottom dock's tab set is persisted state and NOT guaranteed
+     after a reload, so it is only a fallback. A flip step may have left the
+     app on the PLUGIN page (the rail settings button navigates there), so
+     first make sure we are back on a conversation surface. */
+    if (await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false) !== true) {
+      await reenterConversation()
+    }
+    /* PRIMARY entry: the conversation-area ring's own Git button — the ring is
+       unaffected by sidebar state, and the guide cards only render while the
+       sidebar shows its start page (a prior step may have left a content tab
+       open, hiding them). The sidebar path stays as the fallback for the
+       conversationTab-off world, where the ring button is gone. */
+    const ringTab = await gitTabButton()
+    if (ringTab !== null && ringTab.asElement() !== null) {
+      try { await ringTab.asElement().click({ timeout: 4000 }) } catch (error) { void error }
+      await settle(4000)
+      if (await page.locator('.dig-root:visible').count() > 0) return true
+    }
+    const collapse = page.getByRole('button', { name: '关闭右侧边栏' }).first()
+    if (await collapse.count() > 0) {
+      try { await collapse.click({ timeout: 4000 }) } catch (error) { void error }
+      await settle(2500)
+    }
+    const expand = page.getByRole('button', { name: '打开右侧边栏' }).first()
+    if (await expand.count() > 0) {
+      try { await expand.click({ timeout: 4000 }) } catch (error) { void error }
+      await settle(3000)
+    }
+    const card = page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"], [data-sidebar-right-guide-entry="ide-git"]').first()
+    if (await card.count() > 0) {
+      try { await card.click({ timeout: 6000 }) } catch (error) { void error }
+      await settle(4000)
+      if (await page.locator('.dig-root:visible').count() > 0) return true
+    } else {
+      const diag = await page.evaluate(() => ({
+        guide: [...document.querySelectorAll('[data-sidebar-right-guide-entry]')].map((el) => el.getAttribute('data-sidebar-right-guide-entry')),
+        expand: [...document.querySelectorAll('button')].some((el) => (el.getAttribute('aria-label') || '') === '打开右侧边栏'),
+        dialog: [...document.querySelectorAll('button, span')].some((el) => (el.textContent || '').trim() === '对话'),
+      }))
+      log('dock Git diagnostics: ' + JSON.stringify(diag))
+      await page.screenshot({ path: join(outDir, 'dock-git-failed.png') })
+    }
+    const candidates = await page.evaluate(() => {
+      const points = []
+      for (const el of document.querySelectorAll('button')) {
+        const r = el.getBoundingClientRect()
+        if (r.width === 0 || r.height === 0) continue
+        if ((el.textContent || '').trim() !== 'Git') continue
+        points.push({ x: r.x + r.width / 2, y: r.y + r.height / 2 })
+      }
+      return points
+    })
+    for (const point of candidates) {
+      await page.mouse.click(point.x, point.y)
+      await settle(4000)
+      const open = await page.locator('.dig-root:visible').count()
+      if (open > 0) return true
+    }
+    return false
+  }
+  /* Strict: "removed" only counts when the ring itself is visible (an absent
+     ring must never read as a pass). */
+  const ringState = async () => {
+    const anchor = await page.getByText('对话', { exact: true }).first().isVisible().catch(() => false)
+    if (anchor !== true) return 'no-ring'
+    const git = await gitTabButton()
+    return git !== null && git.asElement() !== null ? 'git-present' : 'git-absent'
+  }
+
+  /* 4b — the immersive switch (default ON): off → the seat drops the overlay
+     marker and the pin-to-scrollport fallback takes over (the composer seat
+     is visible again); on → back to the full-height overlay layout. Same
+     dock-settings surface as the placement switch, same re-entry pattern. */
+  const flipImmersive = async () => {
+    if (await dockGit() !== true) { log('dock Git tab not found (immersive flip)'); return false }
+    const rail = page.locator('.dig-root:visible .dig-rail-settings').first()
+    try { await rail.waitFor({ timeout: 10000 }) } catch (error) {
+      log('rail settings button not found (immersive flip)')
+      return false
+    }
+    await rail.click({ timeout: 6000 })
+    await settle(3000)
+    const placement = page.locator('input#dig-placement-immersive').first()
+    if (await placement.count() === 0) { log('immersive switch not found on the settings surface'); return false }
+    await placement.click({ timeout: 6000 })
+    await settle(2500)
+    return true
+  }
+  if (await flipImmersive() === true) {
+    check(await reenterConversation() === true, 'back on the conversation after the immersive-off flip')
+    const tabIm = await gitTabButton()
+    if (tabIm !== null && tabIm.asElement() !== null) {
+      await tabIm.asElement().click()
+      await settle(4000)
+      const immersiveOff = await page.evaluate(() => {
+        const seat = document.querySelector('.dig-conversation-seat')
+        const composer = document.querySelector('[data-composer-seat]')
+        return {
+          marker: seat === null ? 'no-seat' : (seat.hasAttribute('data-immersive') ? 'on' : 'off'),
+          composerHidden: composer === null || getComputedStyle(composer).display === 'none',
+          pinned: seat !== null && seat.style.height !== '' && seat.style.height !== '100%',
+        }
+      })
+      check(immersiveOff.marker === 'off', 'immersive off drops the overlay marker (saw ' + JSON.stringify(immersiveOff) + ')')
+      check(immersiveOff.composerHidden === false, 'the composer seat is visible again with immersive off')
+      await page.screenshot({ path: join(outDir, 'conversation-git-tab-immersive-off.png') })
+    } else {
+      check(false, 'the Git tab is present for the immersive-off check')
+    }
+    if (await flipImmersive() === true) {
+      check(await reenterConversation() === true, 'back on the conversation after the immersive-on flip')
+      const tabIm2 = await gitTabButton()
+      if (tabIm2 !== null && tabIm2.asElement() !== null) {
+        await tabIm2.asElement().click()
+        await settle(4000)
+        const immersiveBack = await page.evaluate(() => {
+          const seat = document.querySelector('.dig-conversation-seat[data-immersive="1"]')
+          const composer = document.querySelector('[data-composer-seat]')
+          return {
+            on: seat !== null && seat.hasAttribute('data-conversation-composer-overlay'),
+            composerHidden: composer === null || getComputedStyle(composer).display === 'none',
+          }
+        })
+        check(immersiveBack.on === true && immersiveBack.composerHidden === true,
+          'immersive back on restores the overlay layout (saw ' + JSON.stringify(immersiveBack) + ')')
+      } else {
+        check(false, 'the Git tab is present for the immersive-on restore check')
+      }
+    } else {
+      check(false, 'the immersive-on flip completed')
+    }
+  } else {
+    log('skipping the immersive-switch check (settings surface not reachable)')
+  }
+
+  /* 5 — the placement switch drives the seat live. On hosts that serve the
+     plugin page, the rail settings button NAVIGATES there (the in-panel dialog
+     never opens), so every toggle is verified back ON the conversation page:
+     open the dock's Git panel → settings → flip → go back → inspect the ring. */
+  const flipPlacement = async () => {
+    if (await dockGit() !== true) { log('dock Git tab not found'); return false }
+    /* The dock panel opens asynchronously (repo resolve + chrome render);
+       wait for the button instead of sampling once. */
+    const rail = page.locator('.dig-root:visible .dig-rail-settings').first()
+    try { await rail.waitFor({ timeout: 10000 }) } catch (error) {
+      log('rail settings button not found (panel did not open in time)')
+      return false
+    }
+    await rail.click({ timeout: 6000 })
+    await settle(3000)
+    const placement = page.locator('input#dig-placement-conversationTab').first()
+    if (await placement.count() === 0) { log('placement switch not found on the settings surface'); return false }
+    await placement.click({ timeout: 6000 })
+    await settle(2500)
+    return true
+  }
+  if (await flipPlacement() === true) {
+    check(await reenterConversation() === true, 'back on the conversation after the off flip')
+    const goneState = await ringState()
+    check(goneState === 'git-absent', 'turning the switch off removes the tab (ring visible, Git absent; saw ' + goneState + ')')
+    /* The ON flip is verified by the RUNNER: after this probe the switch stays
+       off (the settings entry lives inside the panel, which the absent ring
+       button no longer opens), so the runner resets the row Config in the
+       profile's cordis.patch.yml and restarts — the next run's assertion 1
+       (Git tab present) IS the restore proof. */
+    log('the switch stays OFF; the runner must reset the row Config + restart')
+  } else {
+    log('skipping the live-switch check (settings surface not reachable)')
+  }
+
 
   check(pageErrors.length === 0, 'zero uncaught page errors (saw ' + pageErrors.length + ')')
 } catch (error) {

@@ -195,6 +195,10 @@ window.__ModuleLoader__.load({
       'settings.placement.title': '面板放置',
       'settings.placement.tab': '在主对话区显示 Git 标签页',
       'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
+      'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
+      'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
+      'preview.title': 'Git 预览',
+      'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
       'settings.rail.title': '动作条按钮',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
@@ -406,6 +410,10 @@ window.__ModuleLoader__.load({
       'settings.placement.title': 'Placement',
       'settings.placement.tab': 'Show the Git tab in the conversation area',
       'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
+      'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
+      'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
+      'preview.title': 'Git Preview',
+      'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
       'settings.rail.title': 'Action rail buttons',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
@@ -625,6 +633,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '喺主對話區顯示 Git 分頁',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
+        'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
+        'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'preview.title': 'Git 預覽',
+        'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -836,6 +848,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '在主對話區顯示 Git 分頁',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
+        'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
+        'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
+        'preview.title': 'Git 預覽',
+        'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1047,6 +1063,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '喺主對話區顯示 Git 分頁',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
+        'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
+        'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'preview.title': 'Git 預覽',
+        'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'settings.rail.title': '動作列按鈕',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1258,6 +1278,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'パネル配置',
         'settings.placement.tab': '会話エリアに Git タブを表示',
         'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
+        'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
+        'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
+        'preview.title': 'Git プレビュー',
+        'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
         'settings.rail.title': 'アクションレールのボタン',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
@@ -1469,6 +1493,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': '패널 배치',
         'settings.placement.tab': '대화 영역에 Git 탭 표시',
         'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
+        'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
+        'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
+        'preview.title': 'Git 미리보기',
+        'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
         'settings.rail.title': '액션 레일 버튼',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
@@ -1680,6 +1708,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Panel-Platzierung',
         'settings.placement.tab': 'Git-Tab im Gesprächsbereich anzeigen',
         'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
+        'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
+        'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
+        'preview.title': 'Git-Vorschau',
+        'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
         'settings.rail.title': 'Schaltflächen der Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
@@ -1891,6 +1923,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Placement du panneau',
         'settings.placement.tab': 'Afficher l’onglet Git dans la zone de conversation',
         'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
+        'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
+        'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
+        'preview.title': 'Aperçu Git',
+        'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
         'settings.rail.title': 'Boutons de la barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
@@ -2102,6 +2138,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Размещение панели',
         'settings.placement.tab': 'Показывать вкладку Git в области диалога',
         'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
+        'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
+        'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
+        'preview.title': 'Git-предпросмотр',
+        'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
         'settings.rail.title': 'Кнопки панели действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
@@ -2313,6 +2353,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Posição do painel',
         'settings.placement.tab': 'Mostrar a aba Git na área de conversa',
         'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
+        'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
+        'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
+        'preview.title': 'Pré-visualização do Git',
+        'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
         'settings.rail.title': 'Botões da barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
@@ -2524,6 +2568,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Posizione del pannello',
         'settings.placement.tab': 'Mostra la scheda Git nell’area conversazione',
         'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
+        'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
+        'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
+        'preview.title': 'Anteprima Git',
+        'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
         'settings.rail.title': 'Pulsanti della barra azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
@@ -2735,6 +2783,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Paneelplaatsing',
         'settings.placement.tab': 'Git-tabblad in het gespreksgebied tonen',
         'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
+        'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
+        'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
+        'preview.title': 'Git-voorbeeld',
+        'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
         'settings.rail.title': 'Knoppen van de actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
@@ -2946,6 +2998,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Rozmieszczenie panelu',
         'settings.placement.tab': 'Pokazuj kartę Git w obszarze rozmowy',
         'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
+        'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
+        'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
+        'preview.title': 'Podgląd Git',
+        'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
         'settings.rail.title': 'Przyciski paska akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
@@ -3157,6 +3213,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Panelplacering',
         'settings.placement.tab': 'Visa Git-fliken i konversationsytan',
         'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
+        'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
+        'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
+        'preview.title': 'Git-förhandsvisning',
+        'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
         'settings.rail.title': 'Knappar i åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
@@ -3368,6 +3428,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Panel yerleşimi',
         'settings.placement.tab': 'Konuşma alanında Git sekmesini göster',
         'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
+        'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
+        'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
+        'preview.title': 'Git Önizlemesi',
+        'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
         'settings.rail.title': 'Eylem çubuğu düğmeleri',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
@@ -3579,6 +3643,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Penempatan panel',
         'settings.placement.tab': 'Tampilkan tab Git di area percakapan',
         'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
+        'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
+        'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
+        'preview.title': 'Pratinjau Git',
+        'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
         'settings.rail.title': 'Tombol bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
@@ -3790,6 +3858,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'Vị trí bảng',
         'settings.placement.tab': 'Hiện thẻ Git trong vùng hội thoại',
         'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
+        'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
+        'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
+        'preview.title': 'Xem trước Git',
+        'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
         'settings.rail.title': 'Nút thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
@@ -4001,6 +4073,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'موضع اللوحة',
         'settings.placement.tab': 'إظهار تبويب Git في منطقة المحادثة',
         'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
+        'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
+        'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
+        'preview.title': 'معاينة Git',
+        'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
         'settings.rail.title': 'أزرار شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
@@ -4212,6 +4288,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'पैनल प्लेसमेंट',
         'settings.placement.tab': 'संवाद क्षेत्र में Git टैब दिखाएँ',
         'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
+        'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
+        'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
+        'preview.title': 'Git पूर्वावलोकन',
+        'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
         'settings.rail.title': 'एक्शन रेल बटन',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
@@ -4423,6 +4503,10 @@ window.__ModuleLoader__.load({
         'settings.placement.title': 'ตำแหน่งแผง',
         'settings.placement.tab': 'แสดงแท็บ Git ในพื้นที่บทสนทนา',
         'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
+        'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
+        'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
+        'preview.title': 'ดูตัวอย่าง Git',
+        'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
         'settings.rail.title': 'ปุ่มแถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
@@ -4677,16 +4761,19 @@ window.__ModuleLoader__.load({
        is still essentially correct, so it seeds the states and a background
        refresh lands the fresh data a moment later. Pure functions; the panel
        only ever reads them at effect time and writes after a fetch. */
-    /* Two TTLs, because the two seeds age very differently. The repos scan is
-       the SLOW part (a multi-repo workspace walks directories) and its result
-       barely changes, so its seed stays usable for 10 minutes: freshness is
-       the background refresh's job — every mount refreshes anyway — the TTL
-       only decides how old a seed may be to still paint the first screen
-       (user report: coming back to the Git tab after a while re-ran the whole
-       discovery). The first page (summary / branches / log) changes with every
-       commit, so its seed keeps the short 30s window it always had. */
+    /* Two seeds age very differently. The repos scan is the SLOW part (a
+       multi-repo workspace walks directories) and its result barely changes,
+       so its seed keeps a 10-minute TTL: freshness is the background refresh's
+       job — every mount refreshes anyway — the TTL only decides how old a seed
+       may be to still paint the first screen. The page seed (summary /
+       branches / log) used to expire after 30s, which is exactly the user
+       complaint this queue answers ("come back to the panel after a while and
+       everything re-loads"): it is a KEEP-WARM QUEUE now — no expiry at all,
+       an LRU of three workspaces. Every page in the queue paints instantly no
+       matter how long the panel stayed closed; the mount refresh re-proves
+       every field silently right after, so freshness never regresses. */
     const PAINT_REPOS_TTL_MS = 600_000
-    const PAINT_PAGE_TTL_MS = 30_000
+    const PAINT_PAGE_KEEP_WARM = 3
     const paintRepos = new Map()   /* cwd -> { at, data } */
     const paintPage = new Map()    /* repoRoot -> { at, summary, branches, commits, hasMore } */
     const paintRoot = new Map()    /* cwd -> last repoRoot the user was looking at */
@@ -4726,6 +4813,13 @@ window.__ModuleLoader__.load({
       }
       feed(paintRepos, parsed.repos)
       feed(paintPage, parsed.page)
+      /* The queue cap applies to restored pages too: storage may hold more
+         than the live queue does (an older build wrote 16), trim to the same
+         three — restored insertion order mirrors the order that was in
+         memory, so the survivors are the most recent pages. */
+      while (paintPage.size > PAINT_PAGE_KEEP_WARM) {
+        paintPage.delete(paintPage.keys().next().value)
+      }
     }
 
     function persistPaint() {
@@ -4755,13 +4849,24 @@ window.__ModuleLoader__.load({
     function readPaintPage(repoRoot) {
       hydratePaint()
       const entry = paintPage.get(repoRoot)
-      if (entry === undefined || Date.now() - entry.at > PAINT_PAGE_TTL_MS) return undefined
+      if (entry === undefined) return undefined
+      /* A read is a USE: re-insert at the tail so eviction tracks what the
+         user actually visits, not which page happened to be written last. */
+      paintPage.delete(repoRoot)
+      paintPage.set(repoRoot, entry)
       return entry
     }
 
     function writePaintPage(repoRoot, page) {
       paintPage.set(repoRoot, Object.assign({ at: Date.now() }, page))
-      if (paintPage.size > 16) paintPage.delete(paintPage.keys().next().value)
+      /* The keep-warm queue cap: three workspaces stay painted, the fourth
+         evicts the least-recently-used one. Pure LRU over insertion order —
+         reads re-tail themselves (readPaintPage), so the survivor set is the
+         three repo pages the user actually keeps coming back to. */
+      while (paintPage.size > PAINT_PAGE_KEEP_WARM) {
+        const oldest = paintPage.keys().next().value
+        paintPage.delete(oldest)
+      }
       persistPaint()
     }
 
@@ -5016,6 +5121,19 @@ window.__ModuleLoader__.load({
       const snapshot = railForm.getSnapshot()
       if (snapshot === null || snapshot === undefined || snapshot.status !== 'ready' || snapshot.value === undefined) return null
       return snapshot
+    }
+
+    /* The conversation seat's immersive mode (issue #8 round 3, placement
+       group): the view rides the host's composer-overlay contract so it fills
+       the WHOLE conversation height, and the composer seat hides while the Git
+       view owns the ring. Default ON — that full-height space is why the tab
+       placement exists at all; the settings card flips it live. A host without
+       the row Config keeps the immersive seat (same policy as the tab switch). */
+    function conversationImmersiveEnabled() {
+      const ready = railFormReady()
+      if (ready === null) return true
+      const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.immersive : undefined
+      return value !== false
     }
 
     function readRailConfig() {
@@ -6655,6 +6773,50 @@ window.__ModuleLoader__.load({
               E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.placement.tab'))),
             E('div', { className: 'dig-settings-subnote' }, t('settings.placement.tabHint')))
         })(),
+        (() => {
+          /* Immersive mode (issue #8 round 3): the conversation seat's
+             full-height overlay layout + hidden composer. Default ON — the
+             full-height space is what the tab placement is for; flipping it
+             re-renders the seat live (the ConversationPanel subscribes to the
+             same config). */
+          const field = 'immersive'
+          const inputId = 'dig-placement-' + field
+          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
+            ? intent.current[field] === true
+            : values[field] !== false
+          const toggle = (event) => {
+            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+            const fromControl = event !== undefined && event !== null && event.target !== null
+              && event.target !== undefined && typeof event.target.checked === 'boolean'
+              ? event.target.checked
+              : null
+            const wanted = fromControl !== null
+              ? fromControl
+              : (Object.prototype.hasOwnProperty.call(intent.current, field)
+                ? intent.current[field] !== true
+                : values[field] !== false) !== true
+            intent.current[field] = wanted
+            dirty.current.set(field, wanted)
+            setPending((now) => Object.assign({}, now, { [field]: wanted }))
+            setNote('')
+            bump()
+            scheduleFlush()
+          }
+          return E('div', { key: field },
+            E('div', { className: 'dig-settings-row', 'data-placement-row': field },
+              E('input', {
+                id: inputId,
+                type: 'checkbox',
+                className: 'dig-settings-check',
+                'aria-labelledby': inputId + '-label',
+                checked: shown,
+                disabled: readOnly === true,
+                onChange: toggle,
+              }),
+              E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'commit', size: 13 })),
+              E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.placement.immersive'))),
+            E('div', { className: 'dig-settings-subnote' }, t('settings.placement.immersiveHint')))
+        })(),
         E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
         (() => {
           /* The model row is a picker over the host's provider catalog; while
@@ -7682,8 +7844,23 @@ window.__ModuleLoader__.load({
         props.openSettings()
       }
 
+      /* The immersive conversation seat (v0.14) hands the panel a SQUARE-ish
+         box by construction: the conversation column clamps content width
+         (~920px) while the seat fills the view's whole height, so the
+         bottom-workbench-vs-sidebar ratio (`width >= height * 1.15`) can never
+         hold there and the panel would flip to the stacked layout. The seat is
+         a tool window — neither a horizontal dock nor a narrow rail — so it
+         always takes the columns chrome (compact still wins: a truly narrow
+         viewport keeps the single-row layout). */
+      const [immersiveSeat, setImmersiveSeat] = useState(false)
+      useMeasureLayoutEffect(() => {
+        const node = hostRef.current
+        const holder = node === null || typeof node.closest !== 'function' ? null : node.closest('.dig-conversation-seat[data-immersive="1"]')
+        setImmersiveSeat(holder !== null)
+      })
       const compact = size.width > 0 && size.width < COMPACT_MAX_WIDTH
-      const columns = !compact && size.width >= 600 && size.width >= size.height * 1.15
+      const columns = (immersiveSeat === true && compact === false)
+        || (!compact && size.width >= 600 && size.width >= size.height * 1.15)
 
       /* ---------- draggable panes (issue #5) ---------- */
 
@@ -8010,6 +8187,87 @@ window.__ModuleLoader__.load({
         }
       }, [base])
 
+      /* ---------- external diff preview (user request, 2026-10-08) ---------- */
+      /* 「点击文件预览」不再内嵌:预览交给 better-sidebar 内置的 diff tab
+         (type 'diff',Hidden 内置页,DiffTab 自己经它自家 git 通道拉 patch,
+         我们只递引用)。placement 跟随点击发生的容器——底部工作台里点开在
+         底部、右栏里点开在右栏,走底座的官方 onOpenDiff 交接(props 注入,
+         placement 由底座 store 决定);主对话区座位与原生座位没有该通道,
+         直接 betterSidebar.openTab 定向右栏(target: 'right')。两通道皆
+         不可用(无底座 / 老底座)→ 返回 false,调用方落回内嵌 diff 窗。
+         ref 的 worktree + repoRoot 都填本面板的仓库根:DiffTab 的加载器把
+         repoRoot 并进它自己的 git 调用,多仓库工作区不会落错仓库。 */
+      const previewDiff = useCallback((seed) => {
+        if (repoRoot === null) return false
+        const commitHash = seed.hash !== undefined && seed.hash !== null ? String(seed.hash) : null
+        const ref = commitHash !== null
+          ? { kind: 'commit', hash: commitHash.slice(0, 7), hashFull: commitHash, subject: seed.subject || '', worktree: repoRoot, repoRoot: repoRoot }
+          : { kind: 'worktree', path: seed.path, staged: seed.staged === true, untracked: seed.untracked === true ? true : undefined, worktree: repoRoot, repoRoot: repoRoot }
+        const title = commitHash !== null
+          ? commitHash.slice(0, 7) + (seed.subject ? ' ' + seed.subject : '')
+          : baseName(String(seed.path))
+        const id = commitHash !== null
+          ? 'diff:c:' + encodeURIComponent(repoRoot) + ':' + commitHash
+          : 'diff:w:' + encodeURIComponent(repoRoot) + ':' + (seed.staged === true ? 's' : 'u') + ':' + seed.path
+        const tab = { id: id, type: 'diff', title: title, diff: ref }
+        /* Seat channel first — the bottom workbench opens its own diff tab,
+           the right column opens it there; placement is the base's call. */
+        if (typeof props.openDiffExternal === 'function') {
+          try {
+            props.openDiffExternal(tab)
+            return true
+          } catch (error) { void error }
+        }
+        /* Conversation seat / native seat: aim at the right sidebar. The
+           capability gate keeps an older base (pre-targetedOpen) from
+           receiving a field it cannot place; any refusal falls through to
+           the inline pane below. */
+        let betterSidebar = undefined
+        try { betterSidebar = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('betterSidebar') } catch (error) { void error }
+        if (betterSidebar !== undefined && betterSidebar !== null && typeof betterSidebar.openTab === 'function') {
+          const capabilities = betterSidebar.capabilities
+          const targeted = capabilities === undefined || capabilities === null || (Array.isArray(capabilities) && capabilities.indexOf('targetedOpen') >= 0)
+          if (targeted === true) {
+            try {
+              const scopeObject = scope || {}
+              betterSidebar.openTab({ type: 'diff', title: title, id: id, diff: ref, target: 'right' }, { sessionId: scopeObject.sessionId, cwd: scopeObject.cwd })
+              return true
+            } catch (error) { void error }
+          }
+        }
+        /* Native preview tab: the base is absent (or too old), so the plugin's
+           OWN second native right-sidebar type takes the preview. The seed
+           carries cwd (the route requires it) + repoRoot (skips the rev-parse);
+           the tab is a singleton per pane — a second click re-seeds it in
+           place instead of stacking tabs. */
+        let sidebarRight = undefined
+        try { sidebarRight = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('sidebarRight') } catch (error) { void error }
+        if (sidebarRight !== undefined && sidebarRight !== null && typeof sidebarRight.openTab === 'function') {
+          try {
+            const scopeObject = scope || {}
+            previewStore.set(commitHash !== null
+              ? { hash: commitHash, subject: seed.subject || '', cwd: scopeObject.cwd, repoRoot: repoRoot }
+              : { path: seed.path, staged: seed.staged === true, cwd: scopeObject.cwd, repoRoot: repoRoot })
+            sidebarRight.openTab(NATIVE_PREVIEW_KIND)
+            return true
+          } catch (error) { void error }
+        }
+        return false
+      }, [repoRoot, scope, props.openDiffExternal, props.ctx])
+
+      /* The one diff verb every surface calls (row click, row menu, detail
+         file menu, working-diff shortcut): external first, inline fallback. */
+      const showDiff = useCallback((seed) => {
+        if (previewDiff(seed) === true) return
+        if (seed.hash !== undefined && seed.hash !== null) {
+          setDiffContext({ kind: 'commit', hash: seed.hash, subject: seed.subject || '' })
+          void openDiff({ hash: seed.hash, path: seed.path })
+          return
+        }
+        setDiffContext({ kind: 'worktree', staged: seed.staged === true })
+        void openDiff({ path: seed.path, staged: seed.staged === true })
+      }, [previewDiff, openDiff])
+
       const selectCommit = useCallback(async (commit) => {
         setSelectedHash(commit.hash)
         setSelectedPath(null)
@@ -8223,7 +8481,7 @@ window.__ModuleLoader__.load({
 
       const changeMenu = useCallback((event, item, group) => {
         const items = [
-          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { setDiffContext({ kind: 'worktree', staged: group === 'staged' }); void openDiff({ path: item.path, staged: group === 'staged' }) } },
+          { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) } },
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
           { id: 'sendPath', icon: 'file', tone: 'secondary', label: t('menu.sendFilePathToChat'), run: () => sendToComposer({ text: item.path, fallback: item.path }) },
           null,
@@ -8235,7 +8493,7 @@ window.__ModuleLoader__.load({
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
         openMenuAt(event, items)
-      }, [openDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer])
+      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer])
 
       /* The commit-detail file list shares the working-tree row menu, minus the
          staging verbs: a committed file's diff replays against its commit. */
@@ -8243,8 +8501,11 @@ window.__ModuleLoader__.load({
         openMenuAt(event, [
           { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => {
             setSelectedPath(file.path)
-            setDiffContext({ kind: 'commit', hash: detail === null || detail === undefined ? undefined : detail.hash, subject: detail === null || detail === undefined ? '' : detail.subject })
-            void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path })
+            showDiff({
+              hash: detail === null || detail === undefined ? undefined : detail.hash,
+              subject: detail === null || detail === undefined ? '' : detail.subject,
+              path: file.path,
+            })
           } },
           null,
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(file.path) },
@@ -8252,7 +8513,7 @@ window.__ModuleLoader__.load({
           null,
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(file.path) } },
         ])
-      }, [detail, openDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t])
+      }, [detail, showDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t])
 
       /* The diff pane's own context menu (v0.13.5): select text in the diff,
          right-click, send a self-describing line reference to the composer.
@@ -8485,7 +8746,7 @@ window.__ModuleLoader__.load({
         onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
         onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
         onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
-        onDiff: (item, group) => { setDiffContext({ kind: 'worktree', staged: group === 'staged' }); void openDiff({ path: item.path, staged: group === 'staged' }) },
+        onDiff: (item, group) => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) },
         onChangeMenu: changeMenu,
       })
 
@@ -8495,8 +8756,11 @@ window.__ModuleLoader__.load({
             onBack: () => { setView('history'); setSelectedPath(null); setPatch(''); setDiffContext(null) },
             onSelectFile: (file) => {
               setSelectedPath(file.path)
-              setDiffContext({ kind: 'commit', hash: detail === null || detail === undefined ? undefined : detail.hash, subject: detail === null || detail === undefined ? '' : detail.subject })
-              void openDiff({ hash: detail === null ? undefined : detail.hash, path: file.path })
+              showDiff({
+                hash: detail === null || detail === undefined ? undefined : detail.hash,
+                subject: detail === null || detail === undefined ? '' : detail.subject,
+                path: file.path,
+              })
             },
             onFileMenu: detailFileMenu,
           })
@@ -8547,7 +8811,7 @@ window.__ModuleLoader__.load({
           ['untracked', changes.untracked, false],
         ]
         for (const entry of order) {
-          if (entry[1].length > 0) { void openDiff({ path: entry[1][0].path, staged: entry[2] }); return }
+          if (entry[1].length > 0) { showDiff({ path: entry[1][0].path, staged: entry[2] }); return }
         }
         setNote(t('note.noChanges'))
       }
@@ -9228,6 +9492,37 @@ window.__ModuleLoader__.load({
       '.dig-menu-danger,.dig-menu-danger .dig-menu-label{color:var(--dsw-alias-state-error-primary)}',
       '.dig-menu-disabled{opacity:.38;cursor:default}',
       '.dig-menu-sep{height:1px;margin:3px 6px;background:var(--dsw-alias-hairline,var(--dsw-alias-border-l1))}',
+      /* ---- immersive conversation seat (issue #8 round 3) ---- */
+      /* The seat itself carries `data-conversation-composer-overlay` (the
+         host's own opt-in, what TrajectoryView rides): the host CSS flips the
+         view area to `flex: 1 1 0; min-height: 0; overflow: hidden` and the
+         composer seat to an overlay. What the host does NOT do is hide the
+         composer — that is ours, and it is a single structural rule patterned
+         after dsh-context's `.lc-root` rule: while a Git view owns the
+         conversation ring, the composer seat displays none. The :not() chain
+         is the SAFETY VALVE and its attribute names are verified against the
+         host sources (ui-approval ApprovalPanel `data-approval-key`,
+         ui-user-questions QuestionComposer `data-question-key`, PlanReviewPanel
+         `data-plan-review-key`): a blocking interaction riding the seat must
+         stay reachable even though the plain input card is hidden, or a user
+         sitting in the Git view could never approve anything. */
+      '[data-conversation-scroll]:has(.dig-conversation-seat[data-immersive="1"]) > [data-composer-seat]:not(:has([data-approval-key],[data-question-key],[data-plan-review-key])){display:none}',
+      /* The transcript-width drag strips are FOLLOWING SIBLINGS of the shared
+         scroller (children of the conversation body), full-height and
+         z-index 8: over a full-bleed Git pane they glow and drag straight
+         through it. Same sibling combinator lesson dsh-context recorded in
+         its own issue #50 — a descendant combinator here matches nothing. */
+      '[data-conversation-scroll]:has(.dig-conversation-seat[data-immersive="1"]) ~ [data-width-handle]{display:none}',
+      /* ---- native preview tab (external diff preview) ---- */
+      /* The body mounts straight into the right-sidebar pane: full height,
+         internal scrolling in the body region, a one-line header for the
+         subject/path. Same tokens as the rest of the panel — no hard-coded
+         surfaces. */
+      '.dig-preview-root{position:relative;height:100%;display:flex;flex-direction:column;min-height:0;background:var(--dsw-alias-bg-base)}',
+      '.dig-preview-head{flex:none;padding:8px 12px;border-bottom:1px solid var(--dsw-alias-border-l2,var(--dsw-alias-border-l1));font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-preview-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-preview-body{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column}',
+      '.dig-preview-body .dig-diff-host,.dig-preview-body .dig-diff{flex:1;min-height:0}',
     ].join('\n')
 
     /* ============================== plugin ============================== */
@@ -9243,6 +9538,34 @@ window.__ModuleLoader__.load({
        Chat (0) and Trajectory (10), and after dsh-context's tab (20) when both
        are installed. */
     const CONVERSATION_VIEW_ID = 'ide-git'
+    /* The native preview tab (external diff preview, 2026-10-08): a SECOND
+       native right-sidebar type that exists only to show one diff. It carries
+       no guide entry on purpose — nothing on the start page opens it; it opens
+       itself when a diff verb fires with no better-sidebar to hand off to.
+       Content follows the module-level store below, so every seat (the
+       conversation tab, the native panel) feeds the same single preview. */
+    const NATIVE_PREVIEW_ID = 'dsh-ide-git-preview'
+    const NATIVE_PREVIEW_KIND = 'ide-git-preview'
+
+    /* The one diff seed the native preview tab shows. set() bumps a monotonous
+       counter so a re-click of the SAME file still re-fetches; subscribers get
+       the barest notify and re-read .seed themselves. Memory-only: after a
+       reload the tab (if the layout restored it) shows the empty hint again —
+       the next click re-seeds it. */
+    const previewStore = {
+      seed: null,
+      listeners: new Set(),
+      set(seed) {
+        this.seed = seed
+        for (const listener of [...this.listeners]) {
+          try { listener() } catch (error) { void error }
+        }
+      },
+      subscribe(listener) {
+        this.listeners.add(listener)
+        return () => { this.listeners.delete(listener) }
+      },
+    }
 
     /* The native seat hands a tab the standard props; the panel wants
        `{ scope, t }`. A session's working directory is the path of the
@@ -9272,7 +9595,7 @@ window.__ModuleLoader__.load({
       const openSettings = navigation !== undefined && navigation !== null && typeof navigation.openBundle === 'function'
         ? () => { navigation.openBundle(SETTINGS_BUNDLE) }
         : null
-      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings, ctx: props.ctx })
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings, ctx: props.ctx, openDiffExternal: props.openDiffExternal })
     }
 
     /* The conversation-area seat (issue #8): the same panel as a view tab
@@ -9310,6 +9633,21 @@ window.__ModuleLoader__.load({
       const ctx = props.ctx
       const sessionId = typeof props.sessionId === 'string' ? props.sessionId : ''
       const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
+      /* Immersive mode (issue #8 round 3): when on, the seat declares the
+         host's composer-overlay contract (`data-conversation-composer-overlay`)
+         and the conversation view area goes `flex: 1 1 0; min-height: 0;
+         overflow: hidden` — the panel fills the WHOLE conversation height and
+         scrolls inside itself, with the composer seat hidden away (CSS keeps
+         the blocking approvals visible). The v0.13.2 pin-to-scrollport
+         machinery below is the FALLBACK for immersive-off: it exists because
+         the active view area is `flex: 1 0 auto` (content height) in the
+         normal layout, which is exactly what the overlay contract replaces. */
+      const [immersive, setImmersive] = useState(() => conversationImmersiveEnabled())
+      useEffect(() => {
+        const sync = () => { setImmersive(conversationImmersiveEnabled()) }
+        sync()
+        return subscribeRailConfig(sync)
+      }, [])
       /* The active conversation's view area is `flex: 1 0 auto; min-height:
          auto` — it GROWS with content and scrolls inside the shared
          conversation scrollport. An auto-height panel there measured
@@ -9324,6 +9662,12 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         const el = seatRef.current
         if (el === null) return undefined
+        /* Immersive ON: the host's overlay layout owns this seat's height
+           (the view area is the flex child now) — no pinning, no convergence,
+           none of the scrollport arithmetic below applies. Toggling the
+           setting re-runs this effect through the dependency below, so the
+           fallback machinery spins back up on the way off. */
+        if (immersive === true) return undefined
         /* Leftover wheel scroll, root cause: the composer seat is sticky, but a
            sticky box still occupies FLOW space inside the scrollport, so even
            with the panel seat pinned to the visible height the scrollHeight
@@ -9408,7 +9752,7 @@ window.__ModuleLoader__.load({
           if (observer !== undefined) observer.disconnect()
           window.removeEventListener('resize', measure)
         }
-      }, [])
+      }, [immersive])
       useEffect(() => {
         let alive = true
         const sync = () => { if (alive === true) setCwd(sessionCwdOf(ctx, sessionId)) }
@@ -9432,11 +9776,20 @@ window.__ModuleLoader__.load({
         }
       }, [ctx, sessionId])
       const scope = useMemo(() => ({ cwd: cwd, sessionId: sessionId }), [cwd, sessionId])
-      return E('div', {
+      /* The overlay marker rides the SEAT element (a viewArea descendant): the
+         host's `.scrollBody:has([data-conversation-composer-overlay])` rules
+         pick it up from anywhere inside, flipping the view area to
+         `flex: 1 1 0; min-height: 0; overflow: hidden` (full-height, internal
+         scrolling) and the composer seat to an overlay. `data-immersive`
+         drives the plugin's own CSS (composer hide + width-handle hide). */
+      const immersiveAttrs = immersive === true
+        ? { 'data-conversation-composer-overlay': '', 'data-immersive': '1' }
+        : {}
+      return E('div', Object.assign({
         ref: seatRef,
         className: 'dig-conversation-seat',
-        style: seatHeight === null ? undefined : { height: seatHeight + 'px' },
-      }, E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true }))
+        style: immersive === true ? { height: '100%' } : (seatHeight === null ? undefined : { height: seatHeight + 'px' }),
+      }, immersiveAttrs), E(LocaleLive, { ctx: ctx, scope: scope, t: props.t, visible: true }))
     }, (prev, next) => prev.sessionId === next.sessionId && prev.t === next.t && prev.ctx === next.ctx)
 
     function NativePanel(props) {
@@ -9459,6 +9812,55 @@ window.__ModuleLoader__.load({
          wires nothing (a panel hosted elsewhere must not float a foreign tab). */
       const dock = readDockInfo(props.useTabInfo, props.ctx)
       return E(LocaleLive, { ctx: props.ctx, scope: scope, t: props.t, visible: true, dock: dock })
+    }
+
+    /* The native preview tab's body (external diff preview): shows exactly one
+       diff — whatever the store holds — fetched fresh from the host route on
+       every seed. The seed carries cwd + repoRoot so a multi-root workspace
+       lands on the right repository (the route requires cwd; repoRoot skips
+       the rev-parse). Rendered through the SAME DiffBody the inline pane uses,
+       so host DiffBlock reuse, the hand-drawn fallback and the binary/empty
+       states are all identical. */
+    function NativePreviewPanel(props) {
+      const t = props.t
+      const [seed, setSeed] = useState(() => previewStore.seed)
+      useEffect(() => previewStore.subscribe(() => { setSeed(previewStore.seed) }), [])
+      const seedKey = seed === null
+        ? ''
+        : (seed.hash !== undefined && seed.hash !== null ? 'c:' + String(seed.hash) : 'w:' + String(seed.staged === true) + ':' + String(seed.path))
+      const [state, setState] = useState({ loading: false, patch: '', error: null })
+      useEffect(() => {
+        if (seed === null) return undefined
+        let alive = true
+        setState({ loading: true, patch: '', error: null })
+        void (async () => {
+          try {
+            const payload = { cwd: seed.cwd }
+            if (seed.repoRoot !== undefined && seed.repoRoot !== null && seed.repoRoot !== '') payload.repoRoot = seed.repoRoot
+            if (seed.hash !== undefined && seed.hash !== null && seed.hash !== '') payload.hash = seed.hash
+            else { payload.path = seed.path; payload.staged = seed.staged === true }
+            const data = await request('diff', payload)
+            if (alive === true) setState({ loading: false, patch: data === undefined || data === null || typeof data.patch !== 'string' ? '' : data.patch, error: null })
+          } catch (error) {
+            if (alive === true) setState({ loading: false, patch: '', error: error instanceof Error ? error.message : String(error) })
+          }
+        })()
+        return () => { alive = false }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [seedKey])
+      const title = seed === null
+        ? ''
+        : (seed.hash !== undefined && seed.hash !== null
+          ? String(seed.hash).slice(0, 7) + (seed.subject ? ' ' + seed.subject : '')
+          : String(seed.path))
+      return E('div', { className: 'dig-preview-root' },
+        E('div', { className: 'dig-preview-head' },
+          E('span', { className: 'dig-preview-title', title: title }, title === '' ? t('preview.title') : title)),
+        seed === null
+          ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, t('preview.hint')))
+          : state.error !== null
+            ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, state.error))
+            : E('div', { className: 'dig-preview-body' }, E(DiffBody, { patch: state.patch, loading: state.loading, binary: false, t: t })))
     }
 
     function apply(ctx) {
@@ -9524,7 +9926,24 @@ window.__ModuleLoader__.load({
               { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
               (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
             ))
+            /* The preview type has NO guide entry on purpose (start-page
+               destinations are the main panel's job): it exists to receive the
+               openTab this plugin fires when a diff verb runs without a
+               better-sidebar to hand off to. Omitting `guide` is the registry's
+               documented way to stay off the guide page. */
+            const offPreviewType = tabs.register({
+              id: NATIVE_PREVIEW_ID,
+              kind: NATIVE_PREVIEW_KIND,
+              title: () => t('preview.title'),
+              keepMounted: true,
+            })
+            const offPreviewBody = slots.inject('sidebar.right.pane.tab', () => slots.register(
+              { name: 'sidebar.right.pane.tab', key: NATIVE_PREVIEW_ID },
+              (tabProps) => E(NativePreviewPanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
+            ))
             return () => {
+              try { offPreviewBody() } catch (error) { void error }
+              try { offPreviewType() } catch (error) { void error }
               try { offBody() } catch (error) { void error }
               try { offType() } catch (error) { void error }
             }
@@ -9557,6 +9976,13 @@ window.__ModuleLoader__.load({
               scope: tabProps.scope,
               t: t,
               visible: tabProps.visible,
+              /* The base's own diff-tab hand-off (OpenTabSeed type 'diff').
+                 Where the diff tab lands — bottom workbench vs right column —
+                 is the base's store decision, made where the click happened:
+                 exactly the "preview beside this panel" behavior the seat
+                 should have. Absent on an older base; previewDiff falls back
+                 to the service openTab, then to the inline pane. */
+              openDiffExternal: typeof tabProps.onOpenDiff === 'function' ? tabProps.onOpenDiff : undefined,
             }),
           })
           /* The base can go away at RUNTIME (disabled in the plugin panel, or

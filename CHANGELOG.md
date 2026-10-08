@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.0 — 2026-10-08
+
+**类型**:feat(沉浸模式 + diff 预览外置 + 工作区保活队列),issue #8 第三轮反馈 batch
+
+- **feat 沉浸模式(默认开,设置可关)**:主对话区 Git 标签页的座位改走宿主自己的 composer-overlay 契约(`data-conversation-composer-overlay`,TrajectoryView 同款)——视图区被宿主 CSS 翻成 `flex: 1 1 0; min-height: 0` 全高内部滚动,**面板占满整个会话区高度**(真机 924px/视口 924px);插件 CSS 再把 composer 座位隐藏(`:not(:has([data-approval-key],[data-question-key],[data-plan-review-key]))` 放行三类阻塞交互,属性名逐一对照过宿主源码),transcript 宽度拖拽条同步隐藏(兄弟组合器,`~`)。v0.13.2 的钉高收敛器保留为关闭时的回退;沉浸下 chrome 恒为 columns(会话列内容宽被宿主 clamp 在 ~920px,宽高比判据天然不适用,宿主源码层面注释)。设置卡新增「沉浸模式」行,词典 21 门补齐。
+- **feat diff 预览外置**:「显示差异」不再内嵌——统一走 `showDiff` 漏斗:①better-sidebar 座位用官方 `onOpenDiff` 交接(placement 由底座决定:底部点击开底部 diff tab,右栏开右栏);②主对话区/原生座位调 `betterSidebar.openTab({ type: \'diff\', target: \'right\' })`(capabilities 门控 targetedOpen);③**无底座时用插件自注册的原生「Git 预览」右栏 tab**(`sidebarRightTabs` 第二类型,无 guide、keepMounted、`sidebarRight.openTab(kind)` 程序打开,`NativePreviewPanel` 复用 DiffBody 渲染、宿主路由自拉 diff);全不可用才回退内嵌 diff 窗。外置 ref 同时携带 `worktree` + `repoRoot`,多仓库工作区不会落错仓库。conversation-probe 增至 **26 项断言**(沉浸 4 项、开关双向、外置 tab 挂载)。
+- **feat 工作区保活队列(用户需求:隔段时间点开面板要重新加载)**:首绘缓存从「30s TTL」改为 **LRU 容量 3 的工作区保活队列**——队列内的仓库页永不过期,无论隔多久、从哪个座位打开都直接秒开(命中即读 + 读时 re-tail 驱逐序);挂载后的静默刷新保数据新鲜。sessionStorage 恢复同样裁剪到 3。
+- **fix(P0)设置开关静默回弹(真机探针抓到)**:沉浸开关在设置卡点击后即被宿主回滚——row Config 的写入按插件 **Config schema** 校验 volatility,客户端加了字段而 `src/index.js` 的 `railConfigSchema()` 没声明时,mutate 被拒("Config field … is not volatile")且**零 console 噪音**。schema 补 `shape.immersive`,smoke 新增双向守卫(卡片 field 与宿主 shape 必须成对声明)。
+- **探针**:conversation-probe 入口改走「新会话」菜单绑定工作区(0.1.7-rc.2 的 hero picker 不落选中;工作区路径必须是 realpath 形,`/tmp` 符号链接会被 attach 拒绝);段落重排为「面板断言全部前置,conversationTab off 收尾」,off 后的恢复由 runner 重置 patch.yml + 重启完成(下一轮的断言 1 即恢复证明)。
+- **验证**:`npm test` **106/106**;`ssr-check` 4 项(新增预览 tab 渲染);隔离实例真机探针 26 项全绿(沉浸 4 项断言:overlay 契约、composer 隐藏、全高 924px、零溢出)。
+
 ## v0.13.5 — 2026-10-07
 
 **类型**:feat(diff 选区右键发送行级引用)+ fix(右键向前兼容 / 行号偏移 / composer 双投影坐标)

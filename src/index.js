@@ -70,6 +70,13 @@ function railConfigSchema(schema) {
      conversation.view seat at all" — the sidebar and dock seats are not
      affected; a missing field means the default (shown). */
   shape.conversationTab = live(schema.boolean().default(true))
+  /* Immersive conversation seat (issue #8 round 3): on by default. false means
+     the seat falls back to the pin-to-scrollport layout with a visible
+     composer; a missing field means the default (on). NOTE: the field MUST be
+     declared here — the Host rejects row-Config writes for paths the schema
+     does not mark volatile ("Config field … is not volatile"), and the settings
+     switch then rolls back silently. */
+  shape.immersive = live(schema.boolean().default(true))
   return schema.object(shape)
 }
 

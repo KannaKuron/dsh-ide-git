@@ -95,14 +95,23 @@ console.log('ssr-check: workspace-less render ' + empty.length + ' chars - OK')
 
 /* Door 2 — no better-sidebar: the plugin must fall back to DSH's own
    right-sidebar seats, and must register a guide entry so the tab is actually
-   reachable (the guide is the only door into a page type). */
+   reachable (the guide is the only door into a page type). v0.14 registers a
+   SECOND type — the guide-less preview tab (it opens itself from a diff verb,
+   never from the start page). */
 let nativeDefinition = null
-let nativeBody = null
-const sidebarRightTabs = { register: (definition) => { nativeDefinition = definition; return () => {} } }
+let previewDefinition = null
+const nativeBodies = {}
+const sidebarRightTabs = {
+  register: (definition) => {
+    if (definition.id === 'dsh-ide-git-preview') previewDefinition = definition
+    else nativeDefinition = definition
+    return () => {}
+  },
+}
 const slots = {
   inject: (name, callback) => callback(),
   register: (options, component) => {
-    if (options.name === 'sidebar.right.pane.tab') nativeBody = component
+    if (options.name === 'sidebar.right.pane.tab') nativeBodies[options.key] = component
     return () => {}
   },
 }
@@ -121,11 +130,18 @@ const nativeCtx = {
 }
 plugin.apply(nativeCtx)
 if (nativeDefinition === null) throw new Error('the native fallback registered no tab type')
+if (previewDefinition === null) throw new Error('the native fallback registered no preview tab type')
+const nativeBody = nativeBodies['dsh-ide-git']
+const previewBody = nativeBodies['dsh-ide-git-preview']
 if (nativeBody === null) throw new Error('the native fallback registered no tab body')
+if (previewBody === null) throw new Error('the native fallback registered no preview tab body')
 const guide = nativeDefinition.guide
 if (typeof nativeDefinition.kind !== 'string' || nativeDefinition.kind === ''
   || !Array.isArray(guide) || guide.length === 0) {
   throw new Error('the native tab type needs a kind and at least one guide entry, or nothing opens it')
+}
+if (Array.isArray(previewDefinition.guide) && previewDefinition.guide.length > 0) {
+  throw new Error('the preview tab must stay OFF the guide page (it opens itself from a diff verb)')
 }
 const nativeHtml = renderToStaticMarkup(React.createElement(nativeBody, {
   sessionId: 'ssr-native',
@@ -133,3 +149,6 @@ const nativeHtml = renderToStaticMarkup(React.createElement(nativeBody, {
 }))
 if (nativeHtml.indexOf('dig-root') < 0) throw new Error('the native seat rendered no panel')
 console.log('ssr-check: native right-sidebar seat rendered ' + nativeHtml.length + ' chars - OK')
+const previewHtml = renderToStaticMarkup(React.createElement(previewBody, { sessionId: 'ssr-native' }))
+if (previewHtml.indexOf('dig-preview-root') < 0) throw new Error('the preview seat rendered no body')
+console.log('ssr-check: native preview tab rendered ' + previewHtml.length + ' chars - OK')

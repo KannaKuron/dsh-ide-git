@@ -447,10 +447,21 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   assert.match(client, /const \[diffContext, setDiffContext\] = useState\(null\)/)
   const clears = (client.match(/setDiffContext\(null\)/g) || []).length
   assert.ok(clears >= 5, 'the diff context must clear wherever the patch clears (saw ' + clears + ')')
-  assert.match(client, /setDiffContext\(\{ kind: 'worktree', staged: group === 'staged' \}\)/,
-    'the worktree pane remembers whether it shows staged or unstaged')
-  assert.match(client, /setDiffContext\(\{ kind: 'commit', hash: detail === null \|\| detail === undefined \? undefined : detail\.hash, subject: detail === null \|\| detail === undefined \? '' : detail\.subject \}\)/,
-    'the commit-detail pane carries hash + subject at open time')
+  // v0.14: the open verbs moved into ONE funnel, showDiff (external preview
+  // first, inline pane as the fallback). The context contract survives
+  // verbatim inside the funnel's inline legs.
+  assert.match(client, /setDiffContext\(\{ kind: 'worktree', staged: seed\.staged === true \}\)/,
+    'the worktree pane remembers whether it shows staged or unstaged (showDiff inline leg)')
+  assert.match(client, /setDiffContext\(\{ kind: 'commit', hash: seed\.hash, subject: seed\.subject \|\| '' \}\)/,
+    'the commit-detail pane carries hash + subject at open time (showDiff inline leg)')
+  // The funnel itself: external channel first (seat onOpenDiff, then the
+  // base's openTab toward the right sidebar), inline only as a fallback —
+  // and the external ref carries the repo root both ways (worktree + repoRoot)
+  // so a multi-root workspace cannot land the diff in the wrong repository.
+  assert.match(client, /if \(previewDiff\(seed\) === true\) return/,
+    'every diff verb goes through the external-first funnel')
+  assert.match(client, /worktree: repoRoot, repoRoot: repoRoot/,
+    'the external diff ref pins the repository root')
 
   // Nine new keys × 21 gates (the key-set test checks exact equality; this
   // says WHY they exist).
@@ -715,10 +726,17 @@ test('client half has three doors: better-sidebar, native right sidebar, convers
   assert.match(client, /const unsubscribe = subscribeRailConfig\(sync\)/)
   const registrations = client.match(/registerTab\(/g) || []
   assert.equal(registrations.length, 1)
+  // v0.14: TWO native tab types — the main panel (with its guide entry) and
+  // the preview tab (guide-less by design: it opens itself from a diff verb,
+  // it is not a start-page destination).
   const nativeTypes = client.match(/tabs\.register\(\{/g) || []
-  assert.equal(nativeTypes.length, 1, 'exactly one native tab type registration')
+  assert.equal(nativeTypes.length, 2, 'two native tab types: the main panel and the preview tab')
+  assert.match(client, /const NATIVE_PREVIEW_ID = 'dsh-ide-git-preview'/)
+  assert.match(client, /keepMounted: true/, 'the preview tab keeps its body across tab switches')
+  assert.doesNotMatch(client, /NATIVE_PREVIEW_ID,\n\s*kind: NATIVE_PREVIEW_KIND,\n\s*title: \(\) => t\('preview\.title'\),\n\s*keepMounted: true,\n\s*guide:/,
+    'the preview tab carries no guide entry (it is not a start-page destination)')
   const slotSeats = client.match(/slots\.register\(/g) || []
-  assert.equal(slotSeats.length, 3, 'three keyed-slot seats: native pane, settings card, conversation view')
+  assert.equal(slotSeats.length, 4, 'four keyed-slot seats: native pane, preview pane, settings card, conversation view')
 })
 
 test('host half is an ESM cordis plugin with argv-only git calls', () => {
@@ -1200,7 +1218,16 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   assert.match(card, /values\[field\] !== false/, 'an absent value means the default: shown')
   assert.match(host, /shape\.conversationTab = live\(schema\.boolean\(\)\.default\(true\)\)/,
     'the host schema declares the field with default true')
-  for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint']) {
+  // The immersive switch (issue #8 round 3): the SAME contract, and the SAME
+  // trap — a client-side field the host schema does not declare is rejected by
+  // the Host's volatility check ("Config field … is not volatile"), the mutate
+  // fails without any console noise, and the switch silently rolls back. Both
+  // halves must declare the field; both defaults must be true.
+  assert.match(card, /const field = 'immersive'/, 'the immersive switch is backed by its own row-Config field')
+  assert.match(host, /shape\.immersive = live\(schema\.boolean\(\)\.default\(true\)\)/,
+    'the host schema declares the immersive field with default true')
+  for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint',
+    'settings.placement.immersive', 'settings.placement.immersiveHint']) {
     const occurrences = client.split("'" + key + "'").length - 1
     assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
   }
