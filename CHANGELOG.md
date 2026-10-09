@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.14.5 — 2026-10-09
+
+**类型**:fix(用户真机报告:「变更面板点未提交的文件,预览空白什么都看不见」;+ 社区 PR)
+
+- **fix 未跟踪(新建)文件的 Git 预览空白**。两层叠加:① `git diff` 对未跟踪文件天然无输出(无 index 记录);② v0.14.4 的外部预览把变更行携带的 `untracked` 标志在 `previewStore.set()` 处丢失,预览页无从自救。修复:宿主半 `diff()` 新增 `untracked` 分支——`git diff --no-index /dev/null <file>` 产出诚实的新文件补丁(退出码 1 视为数据而非失败),`diff --git` / `+++` 头部行重写为仓库相对路径;客户端半补齐 `untracked` 传递四处(seed / payload / seedKey / working-diff 快捷入口)。安全面:`--no-index` 会真读文件,新增绝对路径不得越出仓库的围栏(带 api 测试)。([2c3f4b2](https://github.com/KannaKuron/dsh-ide-git/commit/2c3f4b2))
+- **fix 多仓库工作区下「AI 生成提交信息」必失败 not-a-repo**(@pardSun,PR [#10](https://github.com/KannaKuron/dsh-ide-git/pull/10)):工作区根不是仓库、其下并列多个仓库时,`repoRoot`(仓库选择器的选中项)在宿主 `commitMessage()` 与客户端 `aiRun()` 两处漏传,宿主拿工作区根跑 `rev-parse` → 409 `not-a-repo`。修复与其余 30 处调用点同构(`repoRootOf` + `Object.assign({}, base, …)`),守卫不放宽;新增 2 测试(不消耗模型额度)。
+- **验证**:`npm test` **107/107**(基线 104 + PR #10 的 2 + untracked 的 1);隔离实例真机(dsh 0.1.7-rc.2 web,原生右栏座位)变更面板三态点击——已修改 `+1−1`、已暂存 `+1−1`、未跟踪「新建的文件 +1」全部正确渲染、路径头干净、零 pageerror;PR #10 部分 review 记录见 PR 页(宿主/客户端两处漏传逐项核实 + 测试有效性独立复现)。
+
 ## v0.14.4 — 2026-10-08
 
 **类型**:fix(用户真机报告:「点击 commit 里的文件,Git 预览完全空白」)
