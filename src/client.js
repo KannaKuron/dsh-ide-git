@@ -7980,13 +7980,19 @@ window.__ModuleLoader__.load({
         setAiNote(null)
         try {
           const settings = props.commitSettings === undefined ? { model: '', reasoning: '', prompt: '' } : props.commitSettings
-          const data = await props.request('commit-message', {
-            cwd: props.cwd,
-            sessionId: props.sessionId,
-            model: settings.model,
-            reasoningEffort: settings.reasoning,
-            prompt: settings.prompt,
-          })
+          /* `base` carries the picked repository ({ cwd, repoRoot }) exactly like
+             every other request: without it the host resolves the repository from
+             the session cwd, which need not be one (several sibling repos). */
+          const data = await props.request('commit-message', Object.assign(
+            {},
+            props.base === undefined ? { cwd: props.cwd } : props.base,
+            {
+              sessionId: props.sessionId,
+              model: settings.model,
+              reasoningEffort: settings.reasoning,
+              prompt: settings.prompt,
+            },
+          ))
           setAiUndo(message === '' ? null : message)
           setMessage(typeof data.message === 'string' ? data.message : '')
           /* Say what the model did NOT see, instead of quietly sending less. */
@@ -9368,7 +9374,7 @@ window.__ModuleLoader__.load({
       const commitSettings = readCommitSettings()
       const changesPane = E(ChangesPanel, {
         t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
-        request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings,
+        request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings, base: base,
         showIgnored: showIgnored,
         onToggleIgnored: () => setShowIgnored((value) => !value),
         // Commit-and-push carries the confirm flag with it: the button already

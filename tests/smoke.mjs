@@ -1592,3 +1592,18 @@ test('block separators paint on border-l2, not the hairline token (v0.13.1 style
     assert.doesNotMatch(rule, /border-l2/, selector + ' stays on the hairline (not a block)')
   }
 })
+
+test('the AI commit message carries the picked repository (multi-repo workspace)', () => {
+  // A workspace may hold several sibling repositories, so the session cwd need
+  // not be one. Every other request carries `base` ({ cwd, repoRoot }); the AI
+  // message built its payload from `cwd` alone, and the host — which resolves the
+  // root from `cwd` whenever `repoRoot` is missing — answered not-a-repo.
+  const aiRun = client.slice(client.indexOf('const aiRun = async () =>'), client.indexOf('setAiUndo('))
+  assert.ok(aiRun.length > 200, 'the AI run block must exist')
+  assert.match(aiRun, /request\('commit-message', Object\.assign\(/, 'one payload builder, like every other call')
+  assert.match(aiRun, /props\.base/, 'the picked repository (base) is part of that payload')
+  // A prop that is never handed down reads as undefined, so the component that
+  // sends the request must actually receive the repo identity.
+  const pane = client.slice(client.indexOf('E(ChangesPanel, {'), client.indexOf('onCommit:'))
+  assert.match(pane, /base: base,/, 'Panel hands the repo identity down to ChangesPanel')
+})
