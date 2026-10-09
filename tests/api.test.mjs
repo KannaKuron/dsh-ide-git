@@ -143,6 +143,27 @@ test('diff returns a unified patch and rejects escaping paths', async () => {
   assert.equal(escaped.body.error.code, 'bad-request')
 })
 
+test('diff renders untracked files as a new-file patch and fences --no-index escapes', async () => {
+  // The pre-fix behavior stays byte-identical for callers that do not opt in.
+  const legacy = await call('diff', { cwd: repo, path: 'untracked.txt' })
+  assert.equal(legacy.body.ok, true)
+  assert.equal(legacy.body.data.patch, '')
+  // untracked: true rides a --no-index /dev/null patch so the preview is not blank.
+  const ok = await call('diff', { cwd: repo, path: 'untracked.txt', untracked: true })
+  assert.equal(ok.body.ok, true)
+  assert.match(ok.body.data.patch, /new file mode/)
+  assert.match(ok.body.data.patch, /^\+new$/m)
+  // the header lines are rewritten repository-relative, not the absolute path
+  assert.match(ok.body.data.patch, /^\+\+\+ b\/untracked\.txt$/m)
+  assert.equal(ok.body.data.patch.includes(repo), false)
+  // --no-index reads the file for real, so an absolute path must not escape.
+  const absEscape = await call('diff', { cwd: repo, path: '/etc/hosts', untracked: true })
+  assert.equal(absEscape.body.ok, false)
+  assert.equal(absEscape.body.error.code, 'bad-request')
+  const relEscape = await call('diff', { cwd: repo, path: '../../../etc/passwd', untracked: true })
+  assert.equal(relEscape.body.ok, false)
+})
+
 test('stage, unstage and commit move files through the index', async () => {
   const staged = await call('stage', { cwd: repo, paths: ['a.txt'] })
   assert.equal(staged.body.ok, true)

@@ -726,6 +726,38 @@ async function commitDetail(payload) {
 async function diff(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
+  /* Untracked files have no index entry, so plain `git diff [--cached] -- path`
+     is legitimately empty for them — the panel's change list still shows the
+     file and the preview must not go blank. `--no-index /dev/null <file>`
+     produces the honest "new file" patch; its exit code is 1 when differences
+     exist, which is data, not failure (only >1 rejects). */
+  if (payload.untracked === true) {
+    const rel = requireRelativePath(payload.path)
+    const absolute = path.isAbsolute(rel) ? rel : path.join(root, rel)
+    /* --no-index reads the file for real, so unlike the plain `git diff --`
+       form an absolute path must NOT be allowed to escape the repository. */
+    if (absolute !== root && !absolute.startsWith(root + path.sep)) throw badRequest('path must stay inside the repository')
+    const result = await runGit(root, ['diff', '--no-color', '--no-ext-diff', '-U3', '--no-index', '--', '/dev/null', absolute])
+    if (result.code !== 0 && result.code !== 1) {
+      const detail = result.stderr.trim() === '' ? result.stdout.trim() : result.stderr.trim()
+      throw new PanelError('git-failed', 'git diff --no-index failed: ' + (detail === '' ? 'exit ' + result.code : detail), 409)
+    }
+    /* --no-index spells the b/ side with the absolute path we passed; rewrite
+       the header lines back to the repository-relative spelling so the preview
+       reads like every other patch (body lines are left untouched). */
+    let out = result.stdout
+    if (out.indexOf(absolute) >= 0 && out.indexOf('\n') !== -1) {
+      out = out.split('\n').map((line) => {
+        if (line.startsWith('diff --git ') && line.indexOf(absolute) >= 0) return 'diff --git a/' + rel + ' b/' + rel
+        /* the b/ side of --no-index carries the absolute path verbatim (its
+           leading slash merged into the separator): match '+++ b' + absolute. */
+        if (line.startsWith('+++ b' + absolute)) return '+++ b/' + rel
+        return line
+      }).join('\n')
+    }
+    const truncated = out.length > MAX_DIFF_CHARS
+    return { patch: truncated ? out.slice(0, MAX_DIFF_CHARS) : out, truncated }
+  }
   const args = ['diff', '--no-color', '--no-ext-diff', '-U3']
   if (payload.staged === true) args.push('--cached')
   if (typeof payload.hash === 'string' && payload.hash.trim() !== '') {

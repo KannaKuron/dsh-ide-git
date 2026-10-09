@@ -8891,7 +8891,7 @@ window.__ModuleLoader__.load({
             const scopeObject = scope || {}
             previewStore.set(commitHash !== null
               ? { hash: commitHash, subject: seed.subject || '', path: seed.path !== undefined && seed.path !== null ? seed.path : '', cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId }
-              : { path: seed.path, staged: seed.staged === true, cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId })
+              : { path: seed.path, staged: seed.staged === true, untracked: seed.untracked === true ? true : undefined, cwd: scopeObject.cwd, repoRoot: repoRoot, sessionId: scopeObject.sessionId })
             sidebarRight.openTab(NATIVE_PREVIEW_KIND)
             return true
           } catch (error) { void error }
@@ -9453,7 +9453,7 @@ window.__ModuleLoader__.load({
           ['untracked', changes.untracked, false],
         ]
         for (const entry of order) {
-          if (entry[1].length > 0) { showDiff({ path: entry[1][0].path, staged: entry[2] }); return }
+          if (entry[1].length > 0) { showDiff({ path: entry[1][0].path, staged: entry[2], untracked: entry[0] === 'untracked' }); return }
         }
         setNote(t('note.noChanges'))
       }
@@ -10525,7 +10525,7 @@ window.__ModuleLoader__.load({
         ? ''
         : (seed.hash !== undefined && seed.hash !== null
           ? 'c:' + String(seed.hash) + ':' + String(seed.path !== undefined && seed.path !== null ? seed.path : '')
-          : 'w:' + String(seed.staged === true) + ':' + String(seed.path))
+          : 'w:' + String(seed.staged === true) + ':' + String(seed.untracked === true) + ':' + String(seed.path))
       const [state, setState] = useState({ loading: false, patch: '', error: null })
       const [refreshTick, setRefreshTick] = useState(0)
       const [copied, setCopied] = useState(false)
@@ -10545,7 +10545,12 @@ window.__ModuleLoader__.load({
                  since the route exists): the preview follows the exact file
                  the user clicked instead of the commit's first file. */
               if (seed.path !== undefined && seed.path !== null && seed.path !== '') payload.path = seed.path
-            } else { payload.path = seed.path; payload.staged = seed.staged === true }
+            } else {
+              payload.path = seed.path; payload.staged = seed.staged === true
+              /* untracked files never ride `git diff -- path` (no index entry):
+                 the host switches to a --no-index /dev/null new-file patch. */
+              if (seed.untracked === true) payload.untracked = true
+            }
             const data = await request('diff', payload)
             if (alive === true) setState({ loading: false, patch: data === undefined || data === null || typeof data.patch !== 'string' ? '' : data.patch, error: null })
           } catch (error) {
