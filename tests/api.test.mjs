@@ -501,6 +501,46 @@ test('commit-message: the user prompt is appended as data and capped', async () 
   assert.match(seen[0].system, /commit messages/, 'the built-in rules stay in the system prompt')
 })
 
+/* A workspace can hold several sibling repositories, so the session cwd is not
+   necessarily a repository itself. Every other git call carries the picked one
+   as `repoRoot`; commit-message resolved its root from `cwd` alone and answered
+   not-a-repo, which made the AI message the one action that could not work in a
+   multi-repo workspace while the rest of the panel did. */
+test('commit-message: the picked repository travels as repoRoot in a multi-repo workspace', async () => {
+  const workspace = mkdtempSync(join(tmpdir(), 'dsh-ide-git-ws-'))
+  const picked = mkdtempSync(join(tmpdir(), 'dsh-ide-git-picked-'))
+  try {
+    execFileSync('git', ['init', '-q', '-b', 'main'], { cwd: picked })
+    execFileSync('git', ['config', 'core.autocrlf', 'false'], { cwd: picked })
+    execFileSync('git', ['config', 'user.name', 'Check'], { cwd: picked })
+    execFileSync('git', ['config', 'user.email', 'check@example.com'], { cwd: picked })
+    writeFileSync(join(picked, 'a.txt'), 'one\n')
+    execFileSync('git', ['add', '-A'], { cwd: picked })
+    execFileSync('git', ['commit', '-q', '-m', 'first'], { cwd: picked })
+
+    const seen = []
+    const llm = fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }], seen)
+    await withServices(llm, fakeSessions({ provider: 'deepseek-official', model: 'deepseek-flash' }), async (call) => {
+      /* The picked repository wins over the cwd. A clean repository stops at
+         "nothing to describe" — before the model is reached, so the fake stream
+         stays unused and what the assertion measures is the resolved root. */
+      const withRoot = await call('commit-message', { cwd: workspace, repoRoot: picked, sessionId: 'sess-1' })
+      assert.equal(withRoot.status, 400, JSON.stringify(withRoot.body))
+      assert.match(withRoot.body.error.message, /nothing to describe/)
+
+      /* Without a picked repository the guard stays honest: a cwd outside every
+         repository is still reported as not-a-repo, never silently guessed. */
+      const withoutRoot = await call('commit-message', { cwd: workspace, sessionId: 'sess-1' })
+      assert.equal(withoutRoot.status, 409, JSON.stringify(withoutRoot.body))
+      assert.equal(withoutRoot.body.error.code, 'not-a-repo')
+    })
+    assert.equal(seen.length, 0, 'a clean repository never reaches the model')
+  } finally {
+    rmSync(workspace, { recursive: true, force: true })
+    rmSync(picked, { recursive: true, force: true })
+  }
+})
+
 test('commit-message: an error finish is a failure with the provider text, not an empty message', async () => {
   const failure = { code: 'NO_CREDENTIAL', message: 'no API key for provider route "deepseek-official"; store DEEPSEEK_API_KEY' }
   const llm = fakeLlm([{ type: 'finish', reason: { kind: 'error', failure } }])

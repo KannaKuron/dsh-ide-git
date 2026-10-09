@@ -1547,10 +1547,17 @@ async function commitMessage(payload) {
   commitBusy = true
   try {
     const cwd = cwdOf(payload)
+    /* The picked repository travels as `repoRoot`, and every other git call
+       threads it through `repoRootOf`. Resolving the root from `cwd` alone made
+       this the one route that answered not-a-repo in a workspace whose own root
+       is not a repository — a workspace holding several sibling repos, which is
+       exactly what the repo picker exists for. */
+    const repoRoot = await repoRootOf(cwd, payload)
+    const scope = { cwd: cwd, repoRoot: repoRoot }
     const route = await commitRouteOf(payload)
-    const sums = await summary({ cwd: cwd })
-    const stagedPatch = sums.changes.staged.length > 0 ? (await diff({ cwd: cwd, staged: true })).patch : ''
-    const input = commitInputOf(stagedPatch, (await diff({ cwd: cwd })).patch)
+    const sums = await summary(scope)
+    const stagedPatch = sums.changes.staged.length > 0 ? (await diff(Object.assign({}, scope, { staged: true }))).patch : ''
+    const input = commitInputOf(stagedPatch, (await diff(scope)).patch)
     if (input.files.length === 0) {
       if (input.dropped > 0) {
         throw new PanelError('only-ignored-changes', 'the only changes are lock files or binary files, which are not sent to the model; stage a source change first')
