@@ -8243,7 +8243,7 @@ window.__ModuleLoader__.load({
            fetch — a BROKEN stem: the references come down, nothing is merged;
            pull  — a solid stem pointing down: the remote lands here;
            push  — a solid stem pointing up: the local goes out. */
-      fetch: ['M8 2v1.6', 'M8 4.8v1.6', 'M8 7.7v1.6', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
+      fetch: [{ d: 'M8 1.5v8.3', dash: '2.4 2.6' }, { d: 'M4.6 6.4 8 9.8l3.4-3.4' }, { d: 'M3 13h10', w: 2 }],
       pull: ['M8 2v7.8', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
       push: ['M8 9.8V2.2', 'M4.6 5.6 8 2.2l3.4 3.4', 'M3 13h10'],
       plus: ['M8 3v10', 'M3 8h10'],
@@ -8295,11 +8295,22 @@ window.__ModuleLoader__.load({
       const size = props.size === undefined ? 14 : props.size
       const shape = ICONS[props.name] === undefined ? ICONS.commit : ICONS[props.name]
       const weight = props.name === 'more' ? 2.6 : props.name === 'grip' ? 1.6 : 1.4
+      /* A shape entry is either a plain `d` string or { d, w, dash } for
+         per-path overrides — fetch's broken stem needs a real stroke-dasharray
+         (hand-drawn gaps were being re-filled by the round line caps at 15px),
+         and its ground rail carries a heavier stroke like the VS Code original. */
       return E('svg', {
         className: 'dig-icon', width: size, height: size, viewBox: '0 0 16 16',
         fill: 'none', stroke: 'currentColor', strokeWidth: weight,
         strokeLinecap: 'round', strokeLinejoin: 'round',
-      }, shape.map((d, index) => E('path', { key: index, d: d })))
+      }, shape.map((entry, index) => {
+        const path = typeof entry === 'string' ? { d: entry } : entry
+        return E('path', {
+          key: index, d: path.d,
+          strokeWidth: path.w === undefined ? undefined : path.w,
+          strokeDasharray: path.dash === undefined ? undefined : path.dash,
+        })
+      }))
     }
 
     /* Menus are laid out INSIDE the panel on purpose: dsh-better-sidebar's bottom
@@ -9662,7 +9673,7 @@ window.__ModuleLoader__.load({
           title: t('toolbar.more'),
           'data-action': 'more',
           onClick: (event) => props.onMoreMenu(event),
-        }, E(Icon, { name: 'more', size: 15 })))
+        }, E(Icon, { name: 'more', size: 16 })))
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
@@ -11568,7 +11579,7 @@ window.__ModuleLoader__.load({
           title: action.disabled === true ? action.label + ' · ' + reason : action.label,
           disabled: action.disabled === true,
           onClick: action.run,
-        }, E(Icon, { name: action.icon, size: 15 })))
+        }, E(Icon, { name: action.icon, size: 16 })))
         if (overflow === true) {
           children.push(E('button', {
             key: 'more',
@@ -11602,7 +11613,7 @@ window.__ModuleLoader__.load({
             if (target === 'page') { openSettingsPage(); return }
             setRailSettings(true)
           },
-        }, E(Icon, { name: 'settings', size: 15 })))
+        }, E(Icon, { name: 'settings', size: 16 })))
         return E('div', { className: vertical ? 'dig-rail' : 'dig-rail-row', ref: railHostRef }, children)
       }
 
