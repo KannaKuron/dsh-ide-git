@@ -1441,7 +1441,7 @@ test('the settings entry draws a gear, not a sunburst', () => {
   for (const ray of ['M8 1.8v1.5', 'M8 12.7v1.5', 'M1.8 8h1.5', 'M12.7 8h1.5']) {
     assert.ok(line.indexOf(ray) < 0, 'no sun ray survives in the gear: ' + ray)
   }
-  assert.match(client, /E\(Icon, \{ name: 'settings', size: 16 \}\)/, 'the rail settings button still uses it')
+  assert.match(client, /E\(Icon, \{ name: 'settings', size: 18 \}\)/, 'the rail settings button still uses it')
 })
 
 test('the rail settings live in the row Config, with localStorage only as the legacy home', () => {

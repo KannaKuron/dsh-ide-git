@@ -9673,7 +9673,7 @@ window.__ModuleLoader__.load({
           title: t('toolbar.more'),
           'data-action': 'more',
           onClick: (event) => props.onMoreMenu(event),
-        }, E(Icon, { name: 'more', size: 16 })))
+        }, E(Icon, { name: 'more', size: 18 })))
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
@@ -11579,7 +11579,7 @@ window.__ModuleLoader__.load({
           title: action.disabled === true ? action.label + ' · ' + reason : action.label,
           disabled: action.disabled === true,
           onClick: action.run,
-        }, E(Icon, { name: action.icon, size: 16 })))
+        }, E(Icon, { name: action.icon, size: 18 })))
         if (overflow === true) {
           children.push(E('button', {
             key: 'more',
@@ -11596,7 +11596,7 @@ window.__ModuleLoader__.load({
               reason: reason,
               run: (inner) => action.run(inner === undefined ? event : inner),
             }))),
-          }, E(Icon, { name: 'more', size: 16 })))
+          }, E(Icon, { name: 'more', size: 18 })))
         }
         children.push(E('span', { key: 'gap', className: vertical ? 'dig-rail-gap' : 'dig-rail-gap-x' }))
         children.push(E('button', {
@@ -11613,7 +11613,7 @@ window.__ModuleLoader__.load({
             if (target === 'page') { openSettingsPage(); return }
             setRailSettings(true)
           },
-        }, E(Icon, { name: 'settings', size: 16 })))
+        }, E(Icon, { name: 'settings', size: 18 })))
         return E('div', { className: vertical ? 'dig-rail' : 'dig-rail-row', ref: railHostRef }, children)
       }
 
