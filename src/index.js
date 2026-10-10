@@ -46,7 +46,7 @@ try {
 /** Rail action ids, in rail order. MUST mirror RAIL_SPECS in src/client.js. */
 const RAIL_CONFIG_IDS = [
   'refresh', 'tree', 'float', 'split', 'fullscreen', 'newBranch', 'checkout', 'delete',
-  'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push', 'more',
+  'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push',
 ]
 
 /** Volatile refs (dsh >= 0.1.7 settings contract) or plain values on older hosts. */
@@ -461,7 +461,7 @@ function withRepoLock(key, work) {
 const WRITE_METHODS = new Set([
   'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename',
   'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
-  'push', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'undoApply', 'clone',
+  'push', 'stashPush', 'stashApply', 'stashDrop', 'stashClear', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'undoApply',
 ])
 
 function lockKeyOf(payload) {
@@ -979,6 +979,85 @@ async function rebase(payload) {
   return { onto, conflicted, output: combined }
 }
 
+/* VS Code's "Abort Rebase" (SCM ▸ Commit ▸ Abort Rebase). Only meaningful
+   while a rebase is in progress — `operationOf` already surfaces that state,
+   so the menu greys the entry out; the route still refuses honestly when
+   there is nothing to abort. */
+async function rebaseAbort(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const result = await runGit(root, ['rebase', '--abort'])
+  if (result.code !== 0) {
+    const detail = (result.stdout + '\n' + result.stderr).trim()
+    throw new PanelError('git-failed', detail === '' ? 'no rebase to abort' : detail, 409)
+  }
+  return { output: (result.stdout + '\n' + result.stderr).trim() }
+}
+
+/* VS Code's SCM ▸ Remote ▸ Add Remote.... The name is a ref, the URL the same
+   grammar `clone` already accepts. */
+async function remoteAdd(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const name = requireRef(payload.name, 'name')
+  const url = requireUrl(payload.url, 'url')
+  await git(root, ['remote', 'add', name, url])
+  return { name, url }
+}
+
+async function remoteRemove(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const name = requireRef(payload.name, 'name')
+  if (typeof payload.confirm !== 'boolean' || payload.confirm !== true) throw badRequest('removing a remote requires confirm: true')
+  await git(root, ['remote', 'remove', name])
+  return { name }
+}
+
+/* SCM ▸ Branch ▸ Delete Remote Branch...: `git push <remote> --delete <branch>`.
+   Genuinely destructive on the OTHER side, so it keeps the typed-confirm
+   posture of a local protected-branch delete: confirm is mandatory. */
+async function branchDeleteRemote(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const remote = requireRef(payload.remote, 'remote')
+  const branch = requireRef(payload.branch, 'branch')
+  if (payload.confirm !== true) throw badRequest('deleting a remote branch requires confirm: true')
+  const out = await git(root, ['push', remote, '--delete', branch], { timeoutMs: NETWORK_TIMEOUT_MS })
+  return { remote, branch, output: out.trim() }
+}
+
+/* SCM ▸ Tags ▸ Delete Remote Tag... / Push Tags. */
+async function tagDeleteRemote(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const remote = requireRef(payload.remote, 'remote')
+  const tag = requireRef(payload.name, 'name')
+  if (payload.confirm !== true) throw badRequest('deleting a remote tag requires confirm: true')
+  const out = await git(root, ['push', remote, '--delete', tag], { timeoutMs: NETWORK_TIMEOUT_MS })
+  return { remote, tag, output: out.trim() }
+}
+
+async function pushTags(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  if (payload.confirm !== true) throw badRequest('pushing tags requires confirm: true')
+  const remote = typeof payload.remote === 'string' && payload.remote.trim() !== '' ? requireRef(payload.remote, 'remote') : 'origin'
+  const out = await git(root, ['push', remote, '--tags'], { timeoutMs: NETWORK_TIMEOUT_MS })
+  return { output: out.trim() }
+}
+
+/* SCM ▸ Stash ▸ Drop All Stashes...: one `git stash clear`. No undo handle is
+   possible (the stash reflog is gone with the clear), hence the mandatory
+   confirm on top of the dialog. */
+async function stashClear(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  if (payload.confirm !== true) throw badRequest('dropping all stashes requires confirm: true')
+  await git(root, ['stash', 'clear'])
+  return { cleared: true }
+}
+
 async function cherryPick(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
@@ -1016,6 +1095,7 @@ async function fetch(payload) {
   const root = await repoRootOf(cwd, payload)
   const args = ['fetch']
   if (typeof payload.remote === 'string' && payload.remote.trim() !== '') args.push(requireRef(payload.remote, 'remote'))
+  if (payload.all === true) args.push('--all')
   if (payload.prune !== false) args.push('--prune')
   args.push('--tags')
   const out = await git(root, args, { timeoutMs: NETWORK_TIMEOUT_MS })
@@ -1042,6 +1122,7 @@ async function push(payload) {
   if (payload.confirm !== true) throw badRequest('push requires confirm: true')
   const args = ['push']
   if (payload.setUpstream === true) args.push('--set-upstream')
+  if (payload.force === true) args.push('--force-with-lease')
   if (typeof payload.remote === 'string' && payload.remote.trim() !== '') args.push(requireRef(payload.remote, 'remote'))
   if (typeof payload.branch === 'string' && payload.branch.trim() !== '') args.push(requireRef(payload.branch, 'branch'))
   const out = await git(root, args, { timeoutMs: NETWORK_TIMEOUT_MS })
@@ -1067,6 +1148,7 @@ async function stashPush(payload) {
   const root = await repoRootOf(cwd, payload)
   const args = ['stash', 'push']
   if (payload.includeUntracked === true) args.push('--include-untracked')
+  if (payload.staged === true) args.push('--staged')
   if (typeof payload.message === 'string' && payload.message.trim() !== '') args.push('-m', payload.message)
   const out = await git(root, args)
   return { output: out.trim() }
@@ -1783,8 +1865,15 @@ const METHODS = {
   stashDrop,
   tagCreate,
   tagDelete,
+  tagDeleteRemote,
+  pushTags,
   clone,
   gitLogs,
+  remoteAdd,
+  remoteRemove,
+  branchDeleteRemote,
+  rebaseAbort,
+  stashClear,
   undoList,
   undoApply,
 }

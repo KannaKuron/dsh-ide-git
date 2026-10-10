@@ -617,10 +617,13 @@ test('the rc.2 surface contract: theme-owned menu material on its own layer', ()
   assert.match(material, /background:var\(--dsw-specific-menu,/)
   assert.match(material, /backdrop-filter:var\(--dsw-menu-backdrop-filter,/)
   assert.match(material, /pointer-events:none/)
-  // Invariant 13 (panel-internal overlays) survives the restructure: the card is
-  // still absolute inside `.dig-root`, the scroller is a separate box, and the
-  // theme's dark-menu stroke hook rides the card exactly as MenuSurface sets it.
-  assert.match(menu, /position:absolute/)
+  // Invariant 13 (panel-internal overlays) survives the restructure: the PANEL
+  // anchor moved to the new `.dig-menu-wrap` (the submenu needs a shared
+  // positioning parent), the card itself no longer carries position — but the
+  // wrapper is still absolute inside `.dig-root`, the scroller is a separate
+  // box, and the theme's dark-menu stroke hook rides the card exactly as
+  // MenuSurface sets it.
+  assert.match(cssRule('.dig-menu-wrap'), /position:absolute/)
   assert.match(menu, /isolation:isolate/)
   // border-box so `max-height: calc(100% - 8px)` caps the WHOLE card: content-box
   // sizing let the 8px of padding escape the cap, and a tall context menu in a
@@ -767,7 +770,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'clone', 'gitLogs', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     assert.match(host, new RegExp('^  ' + method + ',$', 'm'), 'host method missing: ' + method)
   }

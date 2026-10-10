@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.16.0 — 2026-10-10
+
+**类型**:feat(SCM ▸ 完整二级菜单树 + 移位到变更组头)+ feat(刷新融入 fetch + 转圈反馈)+ feat(同步三图标按 VS Code codicon 语义重绘)
+
+- **feat 「⋯」菜单重构为 VS Code SCM 的完整二级树,并从 rail 移到变更组头**。位置修正(用户指正:菜单应在变更所在处,顶部动作条是放错了):rail 删除 `more` 动作,「⋯」按钮落在变更分节头的小按钮排(分组切换/展开/折叠/忽略 旁),`ContextMenu` 重构支持真正的 **hover 展开二级子菜单**——wrapper 双卡片结构(共享 outside-click 与 Escape),子菜单贴父项右缘、面板右侧放不下时向左翻。树结构逐段对齐 microsoft/vscode extensions/git 的 scm/title 贡献(本地 clone 仓库逐项核对,MIT):**提交 ▸**(提交已暂存文件/全部提交/撤销上次提交/中止变基/(修改)×2/(已签收)×2——amend 与 signoff 走既有 commit 参数,撤销上次提交=`reset --soft HEAD~1`,中止变基=新 `rebaseAbort`,全部带 PromptDialog 输入提交信息)、**更改 ▸**(全部暂存/取消暂存/放弃所有更改——tracked `checkout --`+untracked `clean -fd` 双段执行,冲突文件刻意不动)、**拉取，推送 ▸**(同步×2/拉取(变基)/从远程拉取/推送(强制)/推送到远程/抓取/从所有远程抓取)、**分支 ▸**(合并/变基/新建/重命名/删除/删除远程分支/发布分支)、**远程 ▸**(添加/删除)、**存储 ▸**(贮藏三变体含 `--staged`/应用/弹出×最近与选择/删除/删除全部)、**标记 ▸**(创建/删除/删除远程标签/推送标签)、底部**显示 Git 输出**。对应新增宿主方法 7 个:`rebaseAbort`/`remoteAdd`/`remoteRemove`/`branchDeleteRemote`/`tagDeleteRemote`/`pushTags`/`stashClear`(全部按既有围栏:argv 数组、requireRef/requireUrl、WRITE_METHODS、confirm 强制),`push` 增 `--force-with-lease` 参数、`fetch` 增 `--all`、`stashPush` 增 `--staged`。破坏性动作全部 ConfirmDialog 明示目标。
+- **feat 手动刷新融入 fetch + 转圈反馈(用户需求:点刷新就想看远程有没有新的)**。刷新按钮现在先 `git fetch --prune` 再拉 summary/branches/log,ahead/behind 一次到位;**只对手动点击生效**——12s 轮询、操作后刷新、mount 都不走网络;fetch 失败静默降级(刷新不变成错误横幅);等待期间 rail 图标旋转(`dig-spin` keyframes)并防重入,允许网络慢慢来。fetch 独立按钮保留(用户撤回删除要求),「⋯」菜单与 rail 双入口。
+- **feat fetch/pull/push 三图标按 VS Code codicon 语义重绘(用户反馈:纯颜色区分太抽象)**。三者共用同一底部基准线(本地侧),仅箭头不同:**fetch 杆为虚线段**(只取引用不合并)、**pull 实线杆向下**(远程落进来)、**push 实线杆向上**(本地推出去);形状自足,原有 tone 颜色体系保留(用户要求颜色也保留)。同批:**diff** 图标重绘为 codicon-diff 解剖(文档+右半 +/−,替换原普通文件形)、**新建分支** 从裸 plus 换为 branch+新芽加号(git-branch-create 的 16px 诠释)。其余 rail 图标与 codicon 已同构(refresh/git-branch/trash/tag/star),未动。
+- **词典**:21 门语言各新增 48 键(七个子菜单组名、提交变体、拉推变体、远程/存储/标记操作与全部确认文案),冒烟逐门比对通过。
+- **验证**:`npm test` **109/109**;ssr-check 4/4(SSR 自检再次抓到 hooks 依赖 TDZ——`remoteReady`/`moreMenu` 引用先于声明,均已按不变量 12 归位);隔离实例真机探针 **24/24**:rail 无 ⋯ 且 fetch 保留、组头 ⋯ 可开菜单、七个顶级子菜单+查看和排序+Git 输出齐备、提交 ▸ 六类变体与存储 ▸ 三类入口 hover 展开、刷新 spin 规则注入且带 fetch 的手动刷新无错、全程零 pageerror。真机环境:隔离 DSH_HOME、仅装本插件(原生右栏座位),dsh 0.1.7-rc.2 web。
+- **研究方法更正(用户指正)**:本轮起 microsoft/vscode 以 shallow clone 常驻沙箱(`/Users/kanna/sandbox/vscode`,136M,`extensions/git` 已恢复完整),菜单结构从 `package.json` 贡献点+`package.nls.json` 本地逐项提取,不再单文件 curl。GitLens 等闭源扩展仍只对标行为。
+
 ## v0.15.0 — 2026-10-10
 
 **类型**:feat(「...」更多操作菜单,对标 VS Code SCM 标题菜单)+ fix(issue #11 大量变更时面板卡死;顶栏长分支名截断)

@@ -187,6 +187,54 @@ window.__ModuleLoader__.load({
       'diff.copy': '复制',
       'diff.copied': '已复制',
       'toolbar.refresh': '刷新',
+      'more.sort': '查看和排序',
+      'more.commitGroup': '提交',
+      'more.changesGroup': '更改',
+      'more.pullpushGroup': '拉取，推送',
+      'more.branchGroup': '分支',
+      'more.remoteGroup': '远程',
+      'more.stashGroup': '存储',
+      'more.tagGroup': '标记',
+      'more.commitStaged': '提交已暂存文件...',
+      'more.commitAll': '全部提交...',
+      'more.undoCommit': '撤销上次提交',
+      'more.rebaseAbort': '中止变基',
+      'more.commitStagedAmend': '提交已暂存文件(修改)...',
+      'more.commitAllAmend': '全部提交(修改)...',
+      'more.commitStagedSign': '提交已暂存文件(已签收)...',
+      'more.commitAllSign': '全部提交(已签收)...',
+      'prompt.commitMessage': '提交信息',
+      'more.discardAll': '放弃所有更改...',
+      'more.sync': '同步(拉取并推送)',
+      'more.syncRebase': '同步(变基并推送)',
+      'more.pullRebase': '拉取(变基)',
+      'more.pullFrom': '从远程拉取',
+      'more.pushForce': '推送(强制)...',
+      'more.pushTo': '推送到远程',
+      'more.fetchAll': '从所有远程抓取',
+      'more.deleteRemoteBranch': '删除远程分支...',
+      'more.publish': '发布分支...',
+      'more.addRemote': '添加远程...',
+      'more.removeRemote': '删除远程...',
+      'more.stashTracked': '贮藏(仅已跟踪)',
+      'more.stashStaged': '贮藏已暂存文件',
+      'more.stashApplyPick': '应用贮藏...',
+      'more.stashPopPick': '弹出贮藏...',
+      'more.stashDropAny': '删除贮藏...',
+      'more.stashClear': '删除全部贮藏...',
+      'stash.none': '没有可用的贮藏',
+      'more.tagDeleteRemote': '删除远程标签...',
+      'more.pushTags': '推送标签...',
+      'confirm.undoCommit': '撤销上次提交?提交的改动会保留在暂存区。',
+      'confirm.discardAll': '放弃全部未暂存与未跟踪的更改?可通过撤回浮窗恢复(冲突文件除外)。',
+      'confirm.pushForce': '强制推送会用本地分支覆盖远程(--force-with-lease,他人有新提交时会被拒绝)。继续?',
+      'confirm.deleteRemoteBranch': '删除远程 {remote} 上的分支 {branch}?',
+      'confirm.remoteRemove': '删除远程 {name}?其跟踪配置一并移除。',
+      'confirm.stashClear': '删除全部贮藏?此操作不可撤回。',
+      'confirm.pushTags': '推送全部标签到 {remote}?',
+      'prompt.remoteName': '远程名称',
+      'prompt.remoteUrl': '远程 URL',
+      'prompt.deleteRemoteTag': '要删除的远程标签(将推送到 {remote})',
       'toolbar.more': '更多操作',
       'more.sortGit': 'Git 顺序',
       'more.sortPath': '按路径',
@@ -428,6 +476,54 @@ window.__ModuleLoader__.load({
       'diff.copy': 'Copy',
       'diff.copied': 'Copied',
       'toolbar.refresh': 'Refresh',
+      'more.sort': 'View & Sort',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Changes',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Branch',
+      'more.remoteGroup': 'Remote',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Tags',
+      'more.commitStaged': 'Commit Staged...',
+      'more.commitAll': 'Commit All...',
+      'more.undoCommit': 'Undo Last Commit',
+      'more.rebaseAbort': 'Abort Rebase',
+      'more.commitStagedAmend': 'Commit Staged (Amend)...',
+      'more.commitAllAmend': 'Commit All (Amend)...',
+      'more.commitStagedSign': 'Commit Staged (Signed Off)...',
+      'more.commitAllSign': 'Commit All (Signed Off)...',
+      'prompt.commitMessage': 'Commit message',
+      'more.discardAll': 'Discard All Changes...',
+      'more.sync': 'Sync (Pull then Push)',
+      'more.syncRebase': 'Sync (Rebase then Push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull from Remote',
+      'more.pushForce': 'Push (Force)...',
+      'more.pushTo': 'Push to Remote',
+      'more.fetchAll': 'Fetch from All Remotes',
+      'more.deleteRemoteBranch': 'Delete Remote Branch...',
+      'more.publish': 'Publish Branch...',
+      'more.addRemote': 'Add Remote...',
+      'more.removeRemote': 'Remove Remote...',
+      'more.stashTracked': 'Stash (Tracked Only)',
+      'more.stashStaged': 'Stash Staged',
+      'more.stashApplyPick': 'Apply Stash...',
+      'more.stashPopPick': 'Pop Stash...',
+      'more.stashDropAny': 'Drop Stash...',
+      'more.stashClear': 'Drop All Stashes...',
+      'stash.none': 'No stashes available',
+      'more.tagDeleteRemote': 'Delete Remote Tag...',
+      'more.pushTags': 'Push Tags...',
+      'confirm.undoCommit': 'Undo the last commit? Its changes stay staged.',
+      'confirm.discardAll': 'Discard ALL unstaged and untracked changes? Recoverable via undo toasts (conflicted files excluded).',
+      'confirm.pushForce': 'Force push overwrites the remote with this branch (--force-with-lease refuses when others pushed). Continue?',
+      'confirm.deleteRemoteBranch': 'Delete branch {branch} on {remote}?',
+      'confirm.remoteRemove': 'Remove remote {name}? Its tracking config goes with it.',
+      'confirm.stashClear': 'Drop ALL stashes? This cannot be undone.',
+      'confirm.pushTags': 'Push all tags to {remote}?',
+      'prompt.remoteName': 'Remote name',
+      'prompt.remoteUrl': 'Remote URL',
+      'prompt.deleteRemoteTag': 'Remote tag to delete (pushed to {remote})',
       'toolbar.more': 'More actions',
       'more.sortGit': 'Git order',
       'more.sortPath': 'By path',
@@ -677,6 +773,54 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'more.sort': '查看和排序',
+      'more.commitGroup': '提交',
+      'more.changesGroup': '更改',
+      'more.pullpushGroup': '拉取，推送',
+      'more.branchGroup': '分支',
+      'more.remoteGroup': '遠端',
+      'more.stashGroup': '儲存',
+      'more.tagGroup': '標籤',
+      'more.commitStaged': '提交已暫存檔案...',
+      'more.commitAll': '全部提交...',
+      'more.undoCommit': '撤銷上次提交',
+      'more.rebaseAbort': '中止變基',
+      'more.commitStagedAmend': '提交已暫存檔案(修改)...',
+      'more.commitAllAmend': '全部提交(修改)...',
+      'more.commitStagedSign': '提交已暫存檔案(已簽收)...',
+      'more.commitAllSign': '全部提交(已簽收)...',
+      'prompt.commitMessage': '提交資訊',
+      'more.discardAll': '放棄所有變更...',
+      'more.sync': '同步(拉取並推送)',
+      'more.syncRebase': '同步(變基並推送)',
+      'more.pullRebase': '拉取(變基)',
+      'more.pullFrom': '從遠端拉取',
+      'more.pushForce': '推送(強制)...',
+      'more.pushTo': '推送到遠端',
+      'more.fetchAll': '從所有遠端抓取',
+      'more.deleteRemoteBranch': '刪除遠端分支...',
+      'more.publish': '發布分支...',
+      'more.addRemote': '新增遠端...',
+      'more.removeRemote': '刪除遠端...',
+      'more.stashTracked': '儲存(僅已追蹤)',
+      'more.stashStaged': '儲存已暫存檔案',
+      'more.stashApplyPick': '套用儲存...',
+      'more.stashPopPick': '彈出儲存...',
+      'more.stashDropAny': '刪除儲存...',
+      'more.stashClear': '刪除全部儲存...',
+      'stash.none': '沒有可用的儲存',
+      'more.tagDeleteRemote': '刪除遠端標籤...',
+      'more.pushTags': '推送標籤...',
+      'confirm.undoCommit': '撤銷上次提交?提交的變更會保留在暫存區。',
+      'confirm.discardAll': '放棄全部未暫存與未追蹤的變更?可透過復原浮窗恢復(衝突檔案除外)。',
+      'confirm.pushForce': '強制推送會以本地分支覆寫遠端(--force-with-lease,他人有新提交時會被拒絕)。繼續?',
+      'confirm.deleteRemoteBranch': '刪除遠端 {remote} 上的分支 {branch}?',
+      'confirm.remoteRemove': '刪除遠端 {name}?其追蹤設定一併移除。',
+      'confirm.stashClear': '刪除全部儲存?此操作不可復原。',
+      'confirm.pushTags': '推送全部標籤到 {remote}?',
+      'prompt.remoteName': '遠端名稱',
+      'prompt.remoteUrl': '遠端 URL',
+      'prompt.deleteRemoteTag': '要刪除的遠端標籤(將推送到 {remote})',
       'toolbar.more': '更多操作',
       'more.sortGit': 'Git 順序',
       'more.sortPath': '按路徑',
@@ -918,6 +1062,54 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'more.sort': '查看和排序',
+      'more.commitGroup': '提交',
+      'more.changesGroup': '變更',
+      'more.pullpushGroup': '拉取，推送',
+      'more.branchGroup': '分支',
+      'more.remoteGroup': '遠端',
+      'more.stashGroup': '擱置',
+      'more.tagGroup': '標籤',
+      'more.commitStaged': '提交已暫存檔案...',
+      'more.commitAll': '全部提交...',
+      'more.undoCommit': '復原上次提交',
+      'more.rebaseAbort': '中止變基',
+      'more.commitStagedAmend': '提交已暫存檔案(修改)...',
+      'more.commitAllAmend': '全部提交(修改)...',
+      'more.commitStagedSign': '提交已暫存檔案(已簽核)...',
+      'more.commitAllSign': '全部提交(已簽核)...',
+      'prompt.commitMessage': '提交資訊',
+      'more.discardAll': '捨棄所有變更...',
+      'more.sync': '同步(拉取並推送)',
+      'more.syncRebase': '同步(變基並推送)',
+      'more.pullRebase': '拉取(變基)',
+      'more.pullFrom': '從遠端拉取',
+      'more.pushForce': '推送(強制)...',
+      'more.pushTo': '推送到遠端',
+      'more.fetchAll': '從所有遠端擷取',
+      'more.deleteRemoteBranch': '刪除遠端分支...',
+      'more.publish': '發佈分支...',
+      'more.addRemote': '新增遠端...',
+      'more.removeRemote': '移除遠端...',
+      'more.stashTracked': '擱置(僅已追蹤)',
+      'more.stashStaged': '擱置已暫存檔案',
+      'more.stashApplyPick': '套用擱置...',
+      'more.stashPopPick': '取出擱置...',
+      'more.stashDropAny': '刪除擱置...',
+      'more.stashClear': '刪除全部擱置...',
+      'stash.none': '沒有可用的擱置',
+      'more.tagDeleteRemote': '刪除遠端標籤...',
+      'more.pushTags': '推送標籤...',
+      'confirm.undoCommit': '復原上次提交?提交的變更會保留在暫存區。',
+      'confirm.discardAll': '捨棄全部未暫存與未追蹤的變更?可透過復原浮窗復原(衝突檔案除外)。',
+      'confirm.pushForce': '強制推送會以本地分支覆寫遠端(--force-with-lease,他人有新提交時會被拒絕)。繼續?',
+      'confirm.deleteRemoteBranch': '刪除遠端 {remote} 上的分支 {branch}?',
+      'confirm.remoteRemove': '移除遠端 {name}?其追蹤設定一併移除。',
+      'confirm.stashClear': '刪除全部擱置?此作業無法復原。',
+      'confirm.pushTags': '推送全部標籤到 {remote}?',
+      'prompt.remoteName': '遠端名稱',
+      'prompt.remoteUrl': '遠端 URL',
+      'prompt.deleteRemoteTag': '要刪除的遠端標籤(將推送至 {remote})',
       'toolbar.more': '更多操作',
       'more.sortGit': 'Git 順序',
       'more.sortPath': '按路徑',
@@ -1159,6 +1351,54 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'more.sort': '查看和排序',
+      'more.commitGroup': '提交',
+      'more.changesGroup': '更改',
+      'more.pullpushGroup': '拉取，推送',
+      'more.branchGroup': '分支',
+      'more.remoteGroup': '遠端',
+      'more.stashGroup': '儲存',
+      'more.tagGroup': '標籤',
+      'more.commitStaged': '提交已暫存檔案...',
+      'more.commitAll': '全部提交...',
+      'more.undoCommit': '撤銷上次提交',
+      'more.rebaseAbort': '中止變基',
+      'more.commitStagedAmend': '提交已暫存檔案(修改)...',
+      'more.commitAllAmend': '全部提交(修改)...',
+      'more.commitStagedSign': '提交已暫存檔案(已簽收)...',
+      'more.commitAllSign': '全部提交(已簽收)...',
+      'prompt.commitMessage': '提交資訊',
+      'more.discardAll': '放棄所有變更...',
+      'more.sync': '同步(拉取並推送)',
+      'more.syncRebase': '同步(變基並推送)',
+      'more.pullRebase': '拉取(變基)',
+      'more.pullFrom': '從遠端拉取',
+      'more.pushForce': '推送(強制)...',
+      'more.pushTo': '推送到遠端',
+      'more.fetchAll': '從所有遠端抓取',
+      'more.deleteRemoteBranch': '刪除遠端分支...',
+      'more.publish': '發布分支...',
+      'more.addRemote': '新增遠端...',
+      'more.removeRemote': '刪除遠端...',
+      'more.stashTracked': '儲存(僅已追蹤)',
+      'more.stashStaged': '儲存已暫存檔案',
+      'more.stashApplyPick': '套用儲存...',
+      'more.stashPopPick': '彈出儲存...',
+      'more.stashDropAny': '刪除儲存...',
+      'more.stashClear': '刪除全部儲存...',
+      'stash.none': '沒有可用的儲存',
+      'more.tagDeleteRemote': '刪除遠端標籤...',
+      'more.pushTags': '推送標籤...',
+      'confirm.undoCommit': '撤銷上次提交?提交的變更會保留在暫存區。',
+      'confirm.discardAll': '放棄全部未暫存與未追蹤的變更?可透過復原浮窗恢復(衝突檔案除外)。',
+      'confirm.pushForce': '強制推送會以本地分支覆寫遠端(--force-with-lease,他人有新提交時會被拒絕)。繼續?',
+      'confirm.deleteRemoteBranch': '刪除遠端 {remote} 上的分支 {branch}?',
+      'confirm.remoteRemove': '刪除遠端 {name}?其追蹤設定一併移除。',
+      'confirm.stashClear': '刪除全部儲存?此操作不可復原。',
+      'confirm.pushTags': '推送全部標籤到 {remote}?',
+      'prompt.remoteName': '遠端名稱',
+      'prompt.remoteUrl': '遠端 URL',
+      'prompt.deleteRemoteTag': '要刪除的遠端標籤(將推送到 {remote})',
       'toolbar.more': '更多操作',
       'more.sortGit': 'Git 順序',
       'more.sortPath': '按路徑',
@@ -1400,6 +1640,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'コピー',
         'diff.copied': 'コピーしました',
         'toolbar.refresh': '更新',
+      'more.sort': '表示と並べ替え',
+      'more.commitGroup': 'コミット',
+      'more.changesGroup': '変更',
+      'more.pullpushGroup': 'プル,プッシュ',
+      'more.branchGroup': 'ブランチ',
+      'more.remoteGroup': 'リモート',
+      'more.stashGroup': 'スタッシュ',
+      'more.tagGroup': 'タグ',
+      'more.commitStaged': 'ステージ済みをコミット...',
+      'more.commitAll': 'すべてコミット...',
+      'more.undoCommit': '最後のコミットを取り消す',
+      'more.rebaseAbort': 'リベースを中止',
+      'more.commitStagedAmend': 'ステージ済みをコミット(修正)...',
+      'more.commitAllAmend': 'すべてコミット(修正)...',
+      'more.commitStagedSign': 'ステージ済みをコミット(署名)...',
+      'more.commitAllSign': 'すべてコミット(署名)...',
+      'prompt.commitMessage': 'コミットメッセージ',
+      'more.discardAll': 'すべての変更を破棄...',
+      'more.sync': '同期(プルしてプッシュ)',
+      'more.syncRebase': '同期(リベースしてプッシュ)',
+      'more.pullRebase': 'プル(リベース)',
+      'more.pullFrom': 'リモートからプル',
+      'more.pushForce': '強制プッシュ...',
+      'more.pushTo': 'リモートへプッシュ',
+      'more.fetchAll': '全リモートからフェッチ',
+      'more.deleteRemoteBranch': 'リモートブランチを削除...',
+      'more.publish': 'ブランチを公開...',
+      'more.addRemote': 'リモートを追加...',
+      'more.removeRemote': 'リモートを削除...',
+      'more.stashTracked': 'スタッシュ(追跡済みのみ)',
+      'more.stashStaged': 'ステージ済みをスタッシュ',
+      'more.stashApplyPick': 'スタッシュを適用...',
+      'more.stashPopPick': 'スタッシュをポップ...',
+      'more.stashDropAny': 'スタッシュを削除...',
+      'more.stashClear': 'すべてのスタッシュを削除...',
+      'stash.none': '利用可能なスタッシュはありません',
+      'more.tagDeleteRemote': 'リモートタグを削除...',
+      'more.pushTags': 'タグをプッシュ...',
+      'confirm.undoCommit': '最後のコミットを取り消しますか?変更はステージに残ります。',
+      'confirm.discardAll': 'ステージ外と未追跡のすべての変更を破棄しますか?元に戻すトーストで復元できます(競合ファイルを除く)。',
+      'confirm.pushForce': '強制プッシュはリモートをこのブランチで上書きします(--force-with-lease により他者の更新時は拒否)。続行しますか?',
+      'confirm.deleteRemoteBranch': '{remote} のブランチ {branch} を削除しますか?',
+      'confirm.remoteRemove': 'リモート {name} を削除しますか?追跡設定も削除されます。',
+      'confirm.stashClear': 'すべてのスタッシュを削除しますか?この操作は元に戻せません。',
+      'confirm.pushTags': 'すべてのタグを {remote} にプッシュしますか?',
+      'prompt.remoteName': 'リモート名',
+      'prompt.remoteUrl': 'リモート URL',
+      'prompt.deleteRemoteTag': '削除するリモートタグ({remote} にプッシュ)',
       'toolbar.more': 'その他の操作',
       'more.sortGit': 'Git の順序',
       'more.sortPath': 'パス順',
@@ -1641,6 +1929,54 @@ window.__ModuleLoader__.load({
         'diff.copy': '복사',
         'diff.copied': '복사됨',
         'toolbar.refresh': '새로 고침',
+      'more.sort': '보기 및 정렬',
+      'more.commitGroup': '커밋',
+      'more.changesGroup': '변경',
+      'more.pullpushGroup': '풀, 푸시',
+      'more.branchGroup': '브랜치',
+      'more.remoteGroup': '원격',
+      'more.stashGroup': '스태시',
+      'more.tagGroup': '태그',
+      'more.commitStaged': '스테이지된 파일 커밋...',
+      'more.commitAll': '모두 커밋...',
+      'more.undoCommit': '마지막 커밋 취소',
+      'more.rebaseAbort': '리베이스 중단',
+      'more.commitStagedAmend': '스테이지된 파일 커밋(수정)...',
+      'more.commitAllAmend': '모두 커밋(수정)...',
+      'more.commitStagedSign': '스테이지된 파일 커밋(서명)...',
+      'more.commitAllSign': '모두 커밋(서명)...',
+      'prompt.commitMessage': '커밋 메시지',
+      'more.discardAll': '모든 변경 내용 취소...',
+      'more.sync': '동기화(풀 후 푸시)',
+      'more.syncRebase': '동기화(리베이스 후 푸시)',
+      'more.pullRebase': '풀(리베이스)',
+      'more.pullFrom': '원격에서 풀',
+      'more.pushForce': '강제 푸시...',
+      'more.pushTo': '원격으로 푸시',
+      'more.fetchAll': '모든 원격에서 페치',
+      'more.deleteRemoteBranch': '원격 브랜치 삭제...',
+      'more.publish': '브랜치 게시...',
+      'more.addRemote': '원격 추가...',
+      'more.removeRemote': '원격 제거...',
+      'more.stashTracked': '스태시(추적된 파일만)',
+      'more.stashStaged': '스테이지된 파일 스태시',
+      'more.stashApplyPick': '스태시 적용...',
+      'more.stashPopPick': '스태시 팝...',
+      'more.stashDropAny': '스태시 삭제...',
+      'more.stashClear': '모든 스태시 삭제...',
+      'stash.none': '사용 가능한 스태시가 없습니다',
+      'more.tagDeleteRemote': '원격 태그 삭제...',
+      'more.pushTags': '태그 푸시...',
+      'confirm.undoCommit': '마지막 커밋을 취소할까요?변경 사항은 스테이지에 유지됩니다.',
+      'confirm.discardAll': '스테이지되지 않은 모든 변경과 추적되지 않는 파일을 취소할까요?실행 취소 토스트로 복구할 수 있습니다(충돌 파일 제외).',
+      'confirm.pushForce': '강제 푸시는 원격을 이 브랜치로 덮어씁니다(--force-with-lease, 다른 사람이 푸시했으면 거부됨).계속할까요?',
+      'confirm.deleteRemoteBranch': '{remote}의 브랜치 {branch}를 삭제할까요?',
+      'confirm.remoteRemove': '원격 {name}을(를) 제거할까요?추적 설정도 함께 제거됩니다.',
+      'confirm.stashClear': '모든 스태시를 삭제할까요?이 작업은 되돌릴 수 없습니다.',
+      'confirm.pushTags': '모든 태그를 {remote}에 푸시할까요?',
+      'prompt.remoteName': '원격 이름',
+      'prompt.remoteUrl': '원격 URL',
+      'prompt.deleteRemoteTag': '삭제할 원격 태그({remote}로 푸시됨)',
       'toolbar.more': '더 보기',
       'more.sortGit': 'Git 순서',
       'more.sortPath': '경로순',
@@ -1882,6 +2218,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopieren',
         'diff.copied': 'Kopiert',
         'toolbar.refresh': 'Aktualisieren',
+      'more.sort': 'Anzeigen & Sortieren',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Änderungen',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Branch',
+      'more.remoteGroup': 'Remote',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Tags',
+      'more.commitStaged': 'Staged committen...',
+      'more.commitAll': 'Alles committen...',
+      'more.undoCommit': 'Letzten Commit zurücknehmen',
+      'more.rebaseAbort': 'Rebase abbrechen',
+      'more.commitStagedAmend': 'Staged committen (Amend)...',
+      'more.commitAllAmend': 'Alles committen (Amend)...',
+      'more.commitStagedSign': 'Staged committen (Signed Off)...',
+      'more.commitAllSign': 'Alles committen (Signed Off)...',
+      'prompt.commitMessage': 'Commit-Nachricht',
+      'more.discardAll': 'Alle Änderungen verwerfen...',
+      'more.sync': 'Synchronisieren (Pull, dann Push)',
+      'more.syncRebase': 'Synchronisieren (Rebase, dann Push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Von Remote pullen',
+      'more.pushForce': 'Push (Erzwingen)...',
+      'more.pushTo': 'Auf Remote pushen',
+      'more.fetchAll': 'Von allen Remotes holen',
+      'more.deleteRemoteBranch': 'Remote-Branch löschen...',
+      'more.publish': 'Branch veröffentlichen...',
+      'more.addRemote': 'Remote hinzufügen...',
+      'more.removeRemote': 'Remote entfernen...',
+      'more.stashTracked': 'Stash (nur getrackt)',
+      'more.stashStaged': 'Staged stashed',
+      'more.stashApplyPick': 'Stash anwenden...',
+      'more.stashPopPick': 'Stash poppen...',
+      'more.stashDropAny': 'Stash löschen...',
+      'more.stashClear': 'Alle Stashes löschen...',
+      'stash.none': 'Keine Stashes vorhanden',
+      'more.tagDeleteRemote': 'Remote-Tag löschen...',
+      'more.pushTags': 'Tags pushen...',
+      'confirm.undoCommit': 'Letzten Commit zurücknehmen? Die Änderungen bleiben gestaged.',
+      'confirm.discardAll': 'ALLE ungestageden und ungetrackten Änderungen verwerfen? Über Undo-Toasts wiederherstellbar (Konfliktdateien ausgenommen).',
+      'confirm.pushForce': 'Force-Push überschreibt das Remote mit diesem Branch (--force-with-lease lehnt ab, wenn andere gepusht haben). Fortfahren?',
+      'confirm.deleteRemoteBranch': 'Branch {branch} auf {remote} löschen?',
+      'confirm.remoteRemove': 'Remote {name} entfernen? Die Tracking-Konfiguration wird mitentfernt.',
+      'confirm.stashClear': 'ALLE Stashes löschen? Das kann nicht rückgängig gemacht werden.',
+      'confirm.pushTags': 'Alle Tags auf {remote} pushen?',
+      'prompt.remoteName': 'Remote-Name',
+      'prompt.remoteUrl': 'Remote-URL',
+      'prompt.deleteRemoteTag': 'Zu löschendes Remote-Tag (wird nach {remote} gepusht)',
       'toolbar.more': 'Weitere Aktionen',
       'more.sortGit': 'Git-Reihenfolge',
       'more.sortPath': 'Nach Pfad',
@@ -2123,6 +2507,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copier',
         'diff.copied': 'Copié',
         'toolbar.refresh': 'Rafraîchir',
+      'more.sort': 'Afficher & trier',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Modifications',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Branche',
+      'more.remoteGroup': 'Distant',
+      'more.stashGroup': 'Remisage',
+      'more.tagGroup': 'Étiquettes',
+      'more.commitStaged': 'Commit des fichiers indexés...',
+      'more.commitAll': 'Tout committer...',
+      'more.undoCommit': 'Annuler le dernier commit',
+      'more.rebaseAbort': 'Abandonner le rebase',
+      'more.commitStagedAmend': 'Commit indexé (Amend)...',
+      'more.commitAllAmend': 'Tout committer (Amend)...',
+      'more.commitStagedSign': 'Commit indexé (Signé)...',
+      'more.commitAllSign': 'Tout committer (Signé)...',
+      'prompt.commitMessage': 'Message de commit',
+      'more.discardAll': 'Abandonner toutes les modifications...',
+      'more.sync': 'Synchroniser (pull puis push)',
+      'more.syncRebase': 'Synchroniser (rebase puis push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull depuis un dépôt distant',
+      'more.pushForce': 'Push (Forcer)...',
+      'more.pushTo': 'Push vers un distant',
+      'more.fetchAll': 'Récupérer de tous les distants',
+      'more.deleteRemoteBranch': 'Supprimer la branche distante...',
+      'more.publish': 'Publier la branche...',
+      'more.addRemote': 'Ajouter un distant...',
+      'more.removeRemote': 'Supprimer le distant...',
+      'more.stashTracked': 'Remisage (suivis seulement)',
+      'more.stashStaged': 'Remiser les fichiers indexés',
+      'more.stashApplyPick': 'Appliquer un remisage...',
+      'more.stashPopPick': 'Dépiler un remisage...',
+      'more.stashDropAny': 'Supprimer un remisage...',
+      'more.stashClear': 'Supprimer tous les remisages...',
+      'stash.none': 'Aucun remisage disponible',
+      'more.tagDeleteRemote': 'Supprimer l\'étiquette distante...',
+      'more.pushTags': 'Pousser les étiquettes...',
+      'confirm.undoCommit': 'Annuler le dernier commit ? Ses modifications restent indexées.',
+      'confirm.discardAll': 'Abandonner TOUTES les modifications non indexées et non suivies ? Récupérable via les toasts d\'annulation (fichiers en conflit exclus).',
+      'confirm.pushForce': 'Le forçage du push écrasera le distant avec cette branche (--force-with-lease refuse si d\'autres ont poussé). Continuer ?',
+      'confirm.deleteRemoteBranch': 'Supprimer la branche {branch} sur {remote} ?',
+      'confirm.remoteRemove': 'Supprimer le distant {name} ? Sa configuration de suivi part avec lui.',
+      'confirm.stashClear': 'Supprimer TOUS les remisages ? Irréversible.',
+      'confirm.pushTags': 'Pousser toutes les étiquettes vers {remote} ?',
+      'prompt.remoteName': 'Nom du distant',
+      'prompt.remoteUrl': 'URL du distant',
+      'prompt.deleteRemoteTag': 'Étiquette distante à supprimer (poussée vers {remote})',
       'toolbar.more': 'Actions supplémentaires',
       'more.sortGit': 'Ordre Git',
       'more.sortPath': 'Par chemin',
@@ -2364,6 +2796,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Копировать',
         'diff.copied': 'Скопировано',
         'toolbar.refresh': 'Обновить',
+      'more.sort': 'Просмотр и сортировка',
+      'more.commitGroup': 'Фиксация',
+      'more.changesGroup': 'Изменения',
+      'more.pullpushGroup': 'Изъять, отправить',
+      'more.branchGroup': 'Ветвь',
+      'more.remoteGroup': 'Сервер',
+      'more.stashGroup': 'Отложить',
+      'more.tagGroup': 'Метки',
+      'more.commitStaged': 'Фиксация индексированного...',
+      'more.commitAll': 'Фиксация всего...',
+      'more.undoCommit': 'Отменить последнюю фиксацию',
+      'more.rebaseAbort': 'Прервать перебазирование',
+      'more.commitStagedAmend': 'Фиксация индексированного (Amend)...',
+      'more.commitAllAmend': 'Фиксация всего (Amend)...',
+      'more.commitStagedSign': 'Фиксация индексированного (С подписью)...',
+      'more.commitAllSign': 'Фиксация всего (С подписью)...',
+      'prompt.commitMessage': 'Сообщение фиксации',
+      'more.discardAll': 'Отменить все изменения...',
+      'more.sync': 'Синхронизировать (изъять, затем отправить)',
+      'more.syncRebase': 'Синхронизировать (перебазировать, затем отправить)',
+      'more.pullRebase': 'Изъять (перебазирование)',
+      'more.pullFrom': 'Изъять с сервера',
+      'more.pushForce': 'Отправить (принудительно)...',
+      'more.pushTo': 'Отправить на сервер',
+      'more.fetchAll': 'Изъять со всех серверов',
+      'more.deleteRemoteBranch': 'Удалить ветвь на сервере...',
+      'more.publish': 'Опубликовать ветвь...',
+      'more.addRemote': 'Добавить сервер...',
+      'more.removeRemote': 'Удалить сервер...',
+      'more.stashTracked': 'Отложить (только отслеживаемое)',
+      'more.stashStaged': 'Отложить индексированное',
+      'more.stashApplyPick': 'Применить отложенное...',
+      'more.stashPopPick': 'Снять отложенное...',
+      'more.stashDropAny': 'Удалить отложенное...',
+      'more.stashClear': 'Удалить всё отложенное...',
+      'stash.none': 'Нет отложенных изменений',
+      'more.tagDeleteRemote': 'Удалить метку на сервере...',
+      'more.pushTags': 'Отправить метки...',
+      'confirm.undoCommit': 'Отменить последнюю фиксацию? Её изменения останутся в индексе.',
+      'confirm.discardAll': 'Отменить ВСЕ непроиндексированные и неотслеживаемые изменения? Можно восстановить через уведомления (кроме конфликтных файлов).',
+      'confirm.pushForce': 'Принудительная отправка перезапишет сервер этой ветвью (--force-with-lease отклонит при чужих отправках). Продолжить?',
+      'confirm.deleteRemoteBranch': 'Удалить ветвь {branch} на {remote}?',
+      'confirm.remoteRemove': 'Удалить сервер {name}? Конфигурация отслеживания будет удалена.',
+      'confirm.stashClear': 'Удалить ВСЁ отложенное? Это необратимо.',
+      'confirm.pushTags': 'Отправить все метки на {remote}?',
+      'prompt.remoteName': 'Имя сервера',
+      'prompt.remoteUrl': 'URL сервера',
+      'prompt.deleteRemoteTag': 'Метка для удаления (будет удалена с {remote})',
       'toolbar.more': 'Дополнительные действия',
       'more.sortGit': 'Порядок Git',
       'more.sortPath': 'По пути',
@@ -2605,6 +3085,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copiar',
         'diff.copied': 'Copiado',
         'toolbar.refresh': 'Atualizar',
+      'more.sort': 'Ver & ordenar',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Alterações',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Ramificação',
+      'more.remoteGroup': 'Remoto',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Etiquetas',
+      'more.commitStaged': 'Commit dos ficheiros em staging...',
+      'more.commitAll': 'Commit de tudo...',
+      'more.undoCommit': 'Desfazer último commit',
+      'more.rebaseAbort': 'Abortar rebase',
+      'more.commitStagedAmend': 'Commit em staging (Amend)...',
+      'more.commitAllAmend': 'Commit de tudo (Amend)...',
+      'more.commitStagedSign': 'Commit em staging (Assinado)...',
+      'more.commitAllSign': 'Commit de tudo (Assinado)...',
+      'prompt.commitMessage': 'Mensagem de commit',
+      'more.discardAll': 'Descartar todas as alterações...',
+      'more.sync': 'Sincronizar (pull e push)',
+      'more.syncRebase': 'Sincronizar (rebase e push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull de remoto',
+      'more.pushForce': 'Push (Forçado)...',
+      'more.pushTo': 'Push para remoto',
+      'more.fetchAll': 'Fetch de todos os remotos',
+      'more.deleteRemoteBranch': 'Eliminar ramo remoto...',
+      'more.publish': 'Publicar ramificação...',
+      'more.addRemote': 'Adicionar remoto...',
+      'more.removeRemote': 'Remover remoto...',
+      'more.stashTracked': 'Stash (apenas rastreados)',
+      'more.stashStaged': 'Stash de ficheiros em staging',
+      'more.stashApplyPick': 'Aplicar stash...',
+      'more.stashPopPick': 'Pop stash...',
+      'more.stashDropAny': 'Eliminar stash...',
+      'more.stashClear': 'Eliminar todos os stashes...',
+      'stash.none': 'Sem stashes disponíveis',
+      'more.tagDeleteRemote': 'Eliminar etiqueta remota...',
+      'more.pushTags': 'Enviar etiquetas...',
+      'confirm.undoCommit': 'Desfazer o último commit? As alterações ficam em staging.',
+      'confirm.discardAll': 'Descartar TODAS as alterações não em staging e não rastreadas? Recuperável pelos avisos de desfazer (ficheiros em conflito excluídos).',
+      'confirm.pushForce': 'O push forçado sobrescreve o remoto com esta ramificação (--force-with-lease recusa se outros enviaram). Continuar?',
+      'confirm.deleteRemoteBranch': 'Eliminar o ramo {branch} em {remote}?',
+      'confirm.remoteRemove': 'Remover o remoto {name}? A configuração de tracking vai junto.',
+      'confirm.stashClear': 'Eliminar TODOS os stashes? Isto não pode ser desfeito.',
+      'confirm.pushTags': 'Enviar todas as etiquetas para {remote}?',
+      'prompt.remoteName': 'Nome do remoto',
+      'prompt.remoteUrl': 'URL do remoto',
+      'prompt.deleteRemoteTag': 'Etiqueta remota a eliminar (enviada para {remote})',
       'toolbar.more': 'Mais ações',
       'more.sortGit': 'Ordem do Git',
       'more.sortPath': 'Por caminho',
@@ -2846,6 +3374,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copia',
         'diff.copied': 'Copiato',
         'toolbar.refresh': 'Aggiorna',
+      'more.sort': 'Visualizza e ordina',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Modifiche',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Branch',
+      'more.remoteGroup': 'Remoto',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Tag',
+      'more.commitStaged': 'Commit dei file in staging...',
+      'more.commitAll': 'Esegui commit di tutto...',
+      'more.undoCommit': 'Annulla ultimo commit',
+      'more.rebaseAbort': 'Interrompi rebase',
+      'more.commitStagedAmend': 'Commit in staging (Amend)...',
+      'more.commitAllAmend': 'Commit di tutto (Amend)...',
+      'more.commitStagedSign': 'Commit in staging (Firmato)...',
+      'more.commitAllSign': 'Commit di tutto (Firmato)...',
+      'prompt.commitMessage': 'Messaggio di commit',
+      'more.discardAll': 'Scarta tutte le modifiche...',
+      'more.sync': 'Sincronizza (pull e push)',
+      'more.syncRebase': 'Sincronizza (rebase e push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull da remoto',
+      'more.pushForce': 'Push (Forza)...',
+      'more.pushTo': 'Push su remoto',
+      'more.fetchAll': 'Fetch da tutti i remoti',
+      'more.deleteRemoteBranch': 'Elimina branch remoto...',
+      'more.publish': 'Pubblica branch...',
+      'more.addRemote': 'Aggiungi remoto...',
+      'more.removeRemote': 'Rimuovi remoto...',
+      'more.stashTracked': 'Stash (solo tracciati)',
+      'more.stashStaged': 'Stash dei file in staging',
+      'more.stashApplyPick': 'Applica stash...',
+      'more.stashPopPick': 'Pop stash...',
+      'more.stashDropAny': 'Elimina stash...',
+      'more.stashClear': 'Elimina tutti gli stash...',
+      'stash.none': 'Nessuno stash disponibile',
+      'more.tagDeleteRemote': 'Elimina tag remoto...',
+      'more.pushTags': 'Esegui push dei tag...',
+      'confirm.undoCommit': 'Annullare l\'ultimo commit? Le modifiche restano in staging.',
+      'confirm.discardAll': 'Scartare TUTTE le modifiche non in staging e non tracciate? Recuperabili dai toast di annullamento (file in conflitto esclusi).',
+      'confirm.pushForce': 'Il push forzato sovrascrive il remoto con questo branch (--force-with-lease rifiuta se altri hanno fatto push). Continuare?',
+      'confirm.deleteRemoteBranch': 'Eliminare il branch {branch} su {remote}?',
+      'confirm.remoteRemove': 'Rimuovere il remoto {name}? La configurazione di tracking viene rimossa.',
+      'confirm.stashClear': 'Eliminare TUTTI gli stash? Operazione irreversibile.',
+      'confirm.pushTags': 'Eseguire il push di tutti i tag su {remote}?',
+      'prompt.remoteName': 'Nome remoto',
+      'prompt.remoteUrl': 'URL remoto',
+      'prompt.deleteRemoteTag': 'Tag remoto da eliminare (verrà rimosso da {remote})',
       'toolbar.more': 'Altre azioni',
       'more.sortGit': 'Ordine Git',
       'more.sortPath': 'Per percorso',
@@ -3087,6 +3663,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiëren',
         'diff.copied': 'Gekopieerd',
         'toolbar.refresh': 'Vernieuwen',
+      'more.sort': 'Weergeven & sorteren',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Wijzigingen',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Branch',
+      'more.remoteGroup': 'Remote',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Tags',
+      'more.commitStaged': 'Staged committen...',
+      'more.commitAll': 'Alles committen...',
+      'more.undoCommit': 'Laatste commit ongedaan maken',
+      'more.rebaseAbort': 'Rebase afbreken',
+      'more.commitStagedAmend': 'Staged committen (Amend)...',
+      'more.commitAllAmend': 'Alles committen (Amend)...',
+      'more.commitStagedSign': 'Staged committen (Getekend)...',
+      'more.commitAllSign': 'Alles committen (Getekend)...',
+      'prompt.commitMessage': 'Commitbericht',
+      'more.discardAll': 'Alle wijzigingen verwijderen...',
+      'more.sync': 'Synchroniseren (pull, dan push)',
+      'more.syncRebase': 'Synchroniseren (rebase, dan push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull van remote',
+      'more.pushForce': 'Push (Forceer)...',
+      'more.pushTo': 'Naar remote pushen',
+      'more.fetchAll': 'Van alle remotes halen',
+      'more.deleteRemoteBranch': 'Remote branch verwijderen...',
+      'more.publish': 'Branch publiceren...',
+      'more.addRemote': 'Remote toevoegen...',
+      'more.removeRemote': 'Remote verwijderen...',
+      'more.stashTracked': 'Stash (alleen gevolgd)',
+      'more.stashStaged': 'Staged stashen',
+      'more.stashApplyPick': 'Stash toepassen...',
+      'more.stashPopPick': 'Stash poppen...',
+      'more.stashDropAny': 'Stash verwijderen...',
+      'more.stashClear': 'Alle stashes verwijderen...',
+      'stash.none': 'Geen stashes beschikbaar',
+      'more.tagDeleteRemote': 'Remote tag verwijderen...',
+      'more.pushTags': 'Tags pushen...',
+      'confirm.undoCommit': 'Laatste commit ongedaan maken? De wijzigingen blijven staged.',
+      'confirm.discardAll': 'ALLE niet-staged en niet-gevolgde wijzigingen verwijderen? Herstelbaar via undo-toasts (conflictbestanden uitgezonderd).',
+      'confirm.pushForce': 'Force push overschrijft de remote met deze branch (--force-with-lease weigert bij en en ander zijn push). Doorgaan?',
+      'confirm.deleteRemoteBranch': 'Branch {branch} op {remote} verwijderen?',
+      'confirm.remoteRemove': 'Remote {name} verwijderen? De trackingconfiguratie gaat mee.',
+      'confirm.stashClear': 'ALLE stashes verwijderen? Dit kan niet ongedaan worden gemaakt.',
+      'confirm.pushTags': 'Alle tags naar {remote} pushen?',
+      'prompt.remoteName': 'Remote-naam',
+      'prompt.remoteUrl': 'Remote-URL',
+      'prompt.deleteRemoteTag': 'Te verwijderen remote tag (wordt naar {remote} gepusht)',
       'toolbar.more': 'Meer acties',
       'more.sortGit': 'Git-volgorde',
       'more.sortPath': 'Op pad',
@@ -3328,6 +3952,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiuj',
         'diff.copied': 'Skopiowano',
         'toolbar.refresh': 'Odśwież',
+      'more.sort': 'Widok i sortowanie',
+      'more.commitGroup': 'Zatwierdź',
+      'more.changesGroup': 'Zmiany',
+      'more.pullpushGroup': 'Pobierz, wyślij',
+      'more.branchGroup': 'Gałąź',
+      'more.remoteGroup': 'Zdalne',
+      'more.stashGroup': 'Schowaj',
+      'more.tagGroup': 'Tagi',
+      'more.commitStaged': 'Zatwierdź przechowane...',
+      'more.commitAll': 'Zatwierdź wszystko...',
+      'more.undoCommit': 'Cofnij ostatnie zatwierdzenie',
+      'more.rebaseAbort': 'Przerwij rebase',
+      'more.commitStagedAmend': 'Zatwierdź przechowane (Amend)...',
+      'more.commitAllAmend': 'Zatwierdź wszystko (Amend)...',
+      'more.commitStagedSign': 'Zatwierdź przechowane (Podpisane)...',
+      'more.commitAllSign': 'Zatwierdź wszystko (Podpisane)...',
+      'prompt.commitMessage': 'Opis zatwierdzenia',
+      'more.discardAll': 'Odrzuć wszystkie zmiany...',
+      'more.sync': 'Synchronizuj (pobierz, potem wyślij)',
+      'more.syncRebase': 'Synchronizuj (rebase, potem wyślij)',
+      'more.pullRebase': 'Pobierz (Rebase)',
+      'more.pullFrom': 'Pobierz z zdalnego',
+      'more.pushForce': 'Wyślij (Wymuszone)...',
+      'more.pushTo': 'Wyślij do zdalnego',
+      'more.fetchAll': 'Pobierz ze wszystkich zdalnych',
+      'more.deleteRemoteBranch': 'Usuń zdalną gałąź...',
+      'more.publish': 'Opublikuj gałąź...',
+      'more.addRemote': 'Dodaj zdalne...',
+      'more.removeRemote': 'Usuń zdalne...',
+      'more.stashTracked': 'Schowaj (tylko śledzone)',
+      'more.stashStaged': 'Schowaj przechowane',
+      'more.stashApplyPick': 'Zastosuj schowek...',
+      'more.stashPopPick': 'Zdejmij schowek...',
+      'more.stashDropAny': 'Usuń schowek...',
+      'more.stashClear': 'Usuń wszystkie schowki...',
+      'stash.none': 'Brak dostępnych schowków',
+      'more.tagDeleteRemote': 'Usuń zdalny tag...',
+      'more.pushTags': 'Wyślij tagi...',
+      'confirm.undoCommit': 'Cofnąć ostatnie zatwierdzenie? Zmiany pozostaną przechowane.',
+      'confirm.discardAll': 'Odrzucić WSZYSTKIE nieprzechowane i nieśledzone zmiany? Do odzyskania przez powiadomienia (pliki konfliktowe wyłączone).',
+      'confirm.pushForce': 'Wymuszone wysłanie nadpisze zdalne tą gałęzią (--force-with-lease odmówi, gdy inni wysłali). Kontynuować?',
+      'confirm.deleteRemoteBranch': 'Usunąć gałąź {branch} na {remote}?',
+      'confirm.remoteRemove': 'Usunąć zdalne {name}? Konfiguracja śledzenia zostanie usunięta.',
+      'confirm.stashClear': 'Usunąć WSZYSTKIE schowki? Tego nie da się cofnąć.',
+      'confirm.pushTags': 'Wysłać wszystkie tagi do {remote}?',
+      'prompt.remoteName': 'Nazwa zdalnego',
+      'prompt.remoteUrl': 'URL zdalnego',
+      'prompt.deleteRemoteTag': 'Zdalny tag do usunięcia (zostanie usunięty z {remote})',
       'toolbar.more': 'Więcej akcji',
       'more.sortGit': 'Kolejność Gita',
       'more.sortPath': 'Według ścieżki',
@@ -3569,6 +4241,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiera',
         'diff.copied': 'Kopierat',
         'toolbar.refresh': 'Uppdatera',
+      'more.sort': 'Visa & sortera',
+      'more.commitGroup': 'Checka in',
+      'more.changesGroup': 'Ändringar',
+      'more.pullpushGroup': 'Hämta, skicka',
+      'more.branchGroup': 'Gren',
+      'more.remoteGroup': 'Fjärr',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Taggar',
+      'more.commitStaged': 'Checka in stagingade...',
+      'more.commitAll': 'Checka in allt...',
+      'more.undoCommit': 'Ångra senaste incheckning',
+      'more.rebaseAbort': 'Avbryt rebase',
+      'more.commitStagedAmend': 'Checka in stagingade (Amend)...',
+      'more.commitAllAmend': 'Checka in allt (Amend)...',
+      'more.commitStagedSign': 'Checka in stagingade (Signerat)...',
+      'more.commitAllSign': 'Checka in allt (Signerat)...',
+      'prompt.commitMessage': 'Incheckningsmeddelande',
+      'more.discardAll': 'Kasta alla ändringar...',
+      'more.sync': 'Synka (hämta, sedan skicka)',
+      'more.syncRebase': 'Synka (rebase, sedan skicka)',
+      'more.pullRebase': 'Hämta (Rebase)',
+      'more.pullFrom': 'Hämta från fjärr',
+      'more.pushForce': 'Skicka (Tvinga)...',
+      'more.pushTo': 'Skicka till fjärr',
+      'more.fetchAll': 'Hämta från alla fjärrar',
+      'more.deleteRemoteBranch': 'Ta bort fjärrgren...',
+      'more.publish': 'Publicera gren...',
+      'more.addRemote': 'Lägg till fjärr...',
+      'more.removeRemote': 'Ta bort fjärr...',
+      'more.stashTracked': 'Stash (endast spårade)',
+      'more.stashStaged': 'Stasha stagingade',
+      'more.stashApplyPick': 'Använd stash...',
+      'more.stashPopPick': 'Poppa stash...',
+      'more.stashDropAny': 'Ta bort stash...',
+      'more.stashClear': 'Ta bort alla stash:ar...',
+      'stash.none': 'Inga stash:ar tillgängliga',
+      'more.tagDeleteRemote': 'Ta bort fjärrtagg...',
+      'more.pushTags': 'Skicka taggar...',
+      'confirm.undoCommit': 'Ångra senaste incheckningen? Ändringarna stannar i staging.',
+      'confirm.discardAll': 'Kasta ALLA ostagingade och ospårade ändringar? Återställningsbara via ångra-toasts (konfliktfiler undantagna).',
+      'confirm.pushForce': 'Tvingad sändning skriver över fjärren med denna gren (--force-with-lease nekar om andra skickat). Fortsätta?',
+      'confirm.deleteRemoteBranch': 'Ta bort grenen {branch} på {remote}?',
+      'confirm.remoteRemove': 'Ta bort fjärren {name}? Spårningskonfigurationen tas bort med den.',
+      'confirm.stashClear': 'Ta bort ALLA stash:ar? Detta går inte att ångra.',
+      'confirm.pushTags': 'Skicka alla taggar till {remote}?',
+      'prompt.remoteName': 'Fjärrnamn',
+      'prompt.remoteUrl': 'Fjärr-URL',
+      'prompt.deleteRemoteTag': 'Fjärrtagg att ta bort (skickas till {remote})',
       'toolbar.more': 'Fler åtgärder',
       'more.sortGit': 'Git-ordning',
       'more.sortPath': 'Efter sökväg',
@@ -3810,6 +4530,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopyala',
         'diff.copied': 'Kopyalandı',
         'toolbar.refresh': 'Yenile',
+      'more.sort': 'Görüntüle & sırala',
+      'more.commitGroup': 'İşle',
+      'more.changesGroup': 'Değişiklikler',
+      'more.pullpushGroup': 'Çek, Gönder',
+      'more.branchGroup': 'Dal',
+      'more.remoteGroup': 'Uzak',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Etiket',
+      'more.commitStaged': 'Staged dosyaları işle...',
+      'more.commitAll': 'Tümünü işle...',
+      'more.undoCommit': 'Son işlemi geri al',
+      'more.rebaseAbort': 'Rebase\'i durdur',
+      'more.commitStagedAmend': 'Staged dosyaları işle (Düzelt)...',
+      'more.commitAllAmend': 'Tümünü işle (Düzelt)...',
+      'more.commitStagedSign': 'Staged dosyaları işle (İmzalı)...',
+      'more.commitAllSign': 'Tümünü işle (İmzalı)...',
+      'prompt.commitMessage': 'İşleme mesajı',
+      'more.discardAll': 'TÜM değişiklikleri at...',
+      'more.sync': 'Eşitle (çek, sonra gönder)',
+      'more.syncRebase': 'Eşitle (rebase, sonra gönder)',
+      'more.pullRebase': 'Çek (Rebase)',
+      'more.pullFrom': 'Uzaktan çek',
+      'more.pushForce': 'Gönder (Zorla)...',
+      'more.pushTo': 'Uzağa gönder',
+      'more.fetchAll': 'Tüm uzaklardan al',
+      'more.deleteRemoteBranch': 'Uzak dalı sil...',
+      'more.publish': 'Dalı yayınla...',
+      'more.addRemote': 'Uzak ekle...',
+      'more.removeRemote': 'Uzağı kaldır...',
+      'more.stashTracked': 'Stash (yalnızca izlenen)',
+      'more.stashStaged': 'Staged dosyaları stash\'le',
+      'more.stashApplyPick': 'Stash uygula...',
+      'more.stashPopPick': 'Stash pop yap...',
+      'more.stashDropAny': 'Stash sil...',
+      'more.stashClear': 'Tüm stash\'leri sil...',
+      'stash.none': 'Kullanılabilir stash yok',
+      'more.tagDeleteRemote': 'Uzak etiketi sil...',
+      'more.pushTags': 'Etiketleri gönder...',
+      'confirm.undoCommit': 'Son işlem geri alınsın mı? Değişiklikler staged olarak kalır.',
+      'confirm.discardAll': 'Staged OLMAYAN ve izlenmeyen TÜM değişiklikler atılsın mı? Geri alma bildirimlerinden kurtarılabilir (çakışan dosyalar hariç).',
+      'confirm.pushForce': 'Zorla gönderme, uzakta olanı bu dalla üzerine yazar (--force-with-lease, başkası göndermişse reddeder).Devam edilsin mi?',
+      'confirm.deleteRemoteBranch': '{remote} üzerindeki {branch} dalı silinsin mi?',
+      'confirm.remoteRemove': '{name} uzaklığı kaldırılsın mı? Takip yapılandırması da kaldırılır.',
+      'confirm.stashClear': 'TÜM stash\'ler silinsin mi? Bu geri alınamaz.',
+      'confirm.pushTags': 'Tüm etiketler {remote} üzerine gönderilsin mi?',
+      'prompt.remoteName': 'Uzak adı',
+      'prompt.remoteUrl': 'Uzak URL',
+      'prompt.deleteRemoteTag': 'Silinecek uzak etiket ({remote} üzerine gönderilir)',
       'toolbar.more': 'Diğer eylemler',
       'more.sortGit': 'Git sırası',
       'more.sortPath': 'Yola göre',
@@ -4051,6 +4819,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Salin',
         'diff.copied': 'Tersalin',
         'toolbar.refresh': 'Segarkan',
+      'more.sort': 'Lihat & urutkan',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Perubahan',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Cabang',
+      'more.remoteGroup': 'Remote',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Tag',
+      'more.commitStaged': 'Commit file yang di-stage...',
+      'more.commitAll': 'Commit semua...',
+      'more.undoCommit': 'Batalkan commit terakhir',
+      'more.rebaseAbort': 'Batalkan rebase',
+      'more.commitStagedAmend': 'Commit stage (Amend)...',
+      'more.commitAllAmend': 'Commit semua (Amend)...',
+      'more.commitStagedSign': 'Commit stage (Ditandatangani)...',
+      'more.commitAllSign': 'Commit semua (Ditandatangani)...',
+      'prompt.commitMessage': 'Pesan commit',
+      'more.discardAll': 'Buang semua perubahan...',
+      'more.sync': 'Sinkronkan (pull lalu push)',
+      'more.syncRebase': 'Sinkronkan (rebase lalu push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull dari remote',
+      'more.pushForce': 'Push (Paksa)...',
+      'more.pushTo': 'Push ke remote',
+      'more.fetchAll': 'Fetch dari semua remote',
+      'more.deleteRemoteBranch': 'Hapus cabang remote...',
+      'more.publish': 'Publikasikan cabang...',
+      'more.addRemote': 'Tambah remote...',
+      'more.removeRemote': 'Hapus remote...',
+      'more.stashTracked': 'Stash (hanya yang dilacak)',
+      'more.stashStaged': 'Stage yang di-stash',
+      'more.stashApplyPick': 'Terapkan stash...',
+      'more.stashPopPick': 'Pop stash...',
+      'more.stashDropAny': 'Buang stash...',
+      'more.stashClear': 'Buang semua stash...',
+      'stash.none': 'Tidak ada stash tersedia',
+      'more.tagDeleteRemote': 'Hapus tag remote...',
+      'more.pushTags': 'Kirim tag...',
+      'confirm.undoCommit': 'Batalkan commit terakhir? Perubahannya tetap di stage.',
+      'confirm.discardAll': 'Buang SEMUA perubahan yang tidak di-stage dan tidak dilacak? Dapat dipulihkan lewat toast undo (file konflik dikecualikan).',
+      'confirm.pushForce': 'Push paksa menimpa remote dengan cabang ini (--force-with-lease menolak jika orang lain sudah push).Lanjutkan?',
+      'confirm.deleteRemoteBranch': 'Hapus cabang {branch} di {remote}?',
+      'confirm.remoteRemove': 'Hapus remote {name}? Konfigurasi trackingnya ikut terhapus.',
+      'confirm.stashClear': 'Buang SEMUA stash? Ini tidak bisa dibatalkan.',
+      'confirm.pushTags': 'Kirim semua tag ke {remote}?',
+      'prompt.remoteName': 'Nama remote',
+      'prompt.remoteUrl': 'URL remote',
+      'prompt.deleteRemoteTag': 'Tag remote yang akan dihapus (didorong ke {remote})',
       'toolbar.more': 'Tindakan lainnya',
       'more.sortGit': 'Urutan Git',
       'more.sortPath': 'Menurut jalur',
@@ -4292,6 +5108,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Sao chép',
         'diff.copied': 'Đã sao chép',
         'toolbar.refresh': 'Làm mới',
+      'more.sort': 'Xem & sắp xếp',
+      'more.commitGroup': 'Commit',
+      'more.changesGroup': 'Thay đổi',
+      'more.pullpushGroup': 'Pull, Push',
+      'more.branchGroup': 'Nhánh',
+      'more.remoteGroup': 'Remote',
+      'more.stashGroup': 'Stash',
+      'more.tagGroup': 'Thẻ',
+      'more.commitStaged': 'Commit các tệp đã stage...',
+      'more.commitAll': 'Commit tất cả...',
+      'more.undoCommit': 'Hoàn tác commit cuối',
+      'more.rebaseAbort': 'Hủy rebase',
+      'more.commitStagedAmend': 'Commit đã stage (Sửa)...',
+      'more.commitAllAmend': 'Commit tất cả (Sửa)...',
+      'more.commitStagedSign': 'Commit đã stage (Ký)...',
+      'more.commitAllSign': 'Commit tất cả (Ký)...',
+      'prompt.commitMessage': 'Thông điệp commit',
+      'more.discardAll': 'Bỏ TẤT CẢ thay đổi...',
+      'more.sync': 'Đồng bộ (pull rồi push)',
+      'more.syncRebase': 'Đồng bộ (rebase rồi push)',
+      'more.pullRebase': 'Pull (Rebase)',
+      'more.pullFrom': 'Pull từ remote',
+      'more.pushForce': 'Push (Ép)...',
+      'more.pushTo': 'Push lên remote',
+      'more.fetchAll': 'Fetch từ mọi remote',
+      'more.deleteRemoteBranch': 'Xóa nhánh remote...',
+      'more.publish': 'Công bố nhánh...',
+      'more.addRemote': 'Thêm remote...',
+      'more.removeRemote': 'Xóa remote...',
+      'more.stashTracked': 'Stash (chỉ theo dõi)',
+      'more.stashStaged': 'Stash các tệp đã stage',
+      'more.stashApplyPick': 'Áp dụng stash...',
+      'more.stashPopPick': 'Pop stash...',
+      'more.stashDropAny': 'Xóa stash...',
+      'more.stashClear': 'Xóa tất cả stash...',
+      'stash.none': 'Không có stash nào',
+      'more.tagDeleteRemote': 'Xóa thẻ remote...',
+      'more.pushTags': 'Đẩy thẻ...',
+      'confirm.undoCommit': 'Hoàn tác commit cuối? Các thay đổi vẫn giữ trong stage.',
+      'confirm.discardAll': 'Bỏ TẤT CẢ thay đổi chưa stage và chưa theo dõi? Có thể khôi phục qua toast hoàn tác (trừ tệp xung đột).',
+      'confirm.pushForce': 'Push ép sẽ ghi đè remote bằng nhánh này (--force-with-lease từ chối nếu người khác đã đẩy).Tiếp tục?',
+      'confirm.deleteRemoteBranch': 'Xóa nhánh {branch} trên {remote}?',
+      'confirm.remoteRemove': 'Xóa remote {name}? Cấu hình theo dõi cũng bị xóa.',
+      'confirm.stashClear': 'Xóa TẤT CẢ stash? Không thể hoàn tác.',
+      'confirm.pushTags': 'Đẩy tất cả thẻ lên {remote}?',
+      'prompt.remoteName': 'Tên remote',
+      'prompt.remoteUrl': 'URL remote',
+      'prompt.deleteRemoteTag': 'Thẻ remote cần xóa (sẽ đẩy lên {remote})',
       'toolbar.more': 'Thao tác khác',
       'more.sortGit': 'Thứ tự Git',
       'more.sortPath': 'Theo đường dẫn',
@@ -4533,6 +5397,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'نسخ',
         'diff.copied': 'تم النسخ',
         'toolbar.refresh': 'تحديث',
+      'more.sort': 'عرض وفرز',
+      'more.commitGroup': 'إيداع',
+      'more.changesGroup': 'التغييرات',
+      'more.pullpushGroup': 'سحب، دفع',
+      'more.branchGroup': 'فرع',
+      'more.remoteGroup': 'جهاز بعيد',
+      'more.stashGroup': 'خبئ',
+      'more.tagGroup': 'وسوم',
+      'more.commitStaged': 'إيداع الملفات المجهزة...',
+      'more.commitAll': 'إيداع الكل...',
+      'more.undoCommit': 'تراجع عن آخر إيداع',
+      'more.rebaseAbort': 'إلغاء إعادة الأساس',
+      'more.commitStagedAmend': 'إيداع المجهز (تعديل)...',
+      'more.commitAllAmend': 'إيداع الكل (تعديل)...',
+      'more.commitStagedSign': 'إيداع المجهز (موقع)...',
+      'more.commitAllSign': 'إيداع الكل (موقع)...',
+      'prompt.commitMessage': 'رسالة الإيداع',
+      'more.discardAll': 'تجاهل جميع التغييرات...',
+      'more.sync': 'مزامنة (سحب ثم دفع)',
+      'more.syncRebase': 'مزامنة (إعادة أساس ثم دفع)',
+      'more.pullRebase': 'سحب (إعادة أساس)',
+      'more.pullFrom': 'سحب من الجهاز البعيد',
+      'more.pushForce': 'دفع (قسري)...',
+      'more.pushTo': 'دفع إلى جهاز بعيد',
+      'more.fetchAll': 'جلب من كل الأجهزة البعيدة',
+      'more.deleteRemoteBranch': 'حذف فرع بعيد...',
+      'more.publish': 'نشر الفرع...',
+      'more.addRemote': 'إضافة جهاز بعيد...',
+      'more.removeRemote': 'إزالة جهاز بعيد...',
+      'more.stashTracked': 'خبئ (المتتبع فقط)',
+      'more.stashStaged': 'خبئ الملفات المجهزة',
+      'more.stashApplyPick': 'تطبيق مخبأ...',
+      'more.stashPopPick': 'فرقغ مخبأ...',
+      'more.stashDropAny': 'حذف مخبأ...',
+      'more.stashClear': 'حذف جميع المخبآء...',
+      'stash.none': 'لا توجد مخبآء متاحة',
+      'more.tagDeleteRemote': 'حذف وسم بعيد...',
+      'more.pushTags': 'دفع الوسوم...',
+      'confirm.undoCommit': 'التراجع عن آخر إيداع؟تبقى تغييراته في منطقة التجهيز.',
+      'confirm.discardAll': 'تجاهل كل التغييرات غير المجهزة وغير المتتبعة؟يمكن استعادتها من إشعارات التراجع (ملفات التعارض مستثناة).',
+      'confirm.pushForce': 'الدفع القسري سيستبدل البعيد بهذا الفرع(--force-with-lease يرفض إن دفع غيرك).المتابعة؟',
+      'confirm.deleteRemoteBranch': 'حذف الفرع {branch} على {remote}؟',
+      'confirm.remoteRemove': 'إزالة البعيد {name}؟ستُزال إعدادات التتبع معه.',
+      'confirm.stashClear': 'حذف جميع المخبآء؟لا يمكن التراجع.',
+      'confirm.pushTags': 'دفع كل الوسوم إلى {remote}؟',
+      'prompt.remoteName': 'اسم البعيد',
+      'prompt.remoteUrl': 'رابط البعيد',
+      'prompt.deleteRemoteTag': 'الوسم البعيد المراد حذفه(سيُدفع إلى {remote})',
       'toolbar.more': 'مزيد من الإجراءات',
       'more.sortGit': 'ترتيب Git',
       'more.sortPath': 'حسب المسار',
@@ -4774,6 +5686,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'कॉपी करें',
         'diff.copied': 'कॉपी हो गया',
         'toolbar.refresh': 'ताज़ा करें',
+      'more.sort': 'देखें और क्रमबद्ध करें',
+      'more.commitGroup': 'कमिट',
+      'more.changesGroup': 'बदलाव',
+      'more.pullpushGroup': 'पुल, पुश',
+      'more.branchGroup': 'ब्रांच',
+      'more.remoteGroup': 'रिमोट',
+      'more.stashGroup': 'स्टैश',
+      'more.tagGroup': 'टैग',
+      'more.commitStaged': 'स्टेज्ड फ़ाइलें कमिट करें...',
+      'more.commitAll': 'सभी कमिट करें...',
+      'more.undoCommit': 'अंतिम कमिट रद्द करें',
+      'more.rebaseAbort': 'रिबेस रोकें',
+      'more.commitStagedAmend': 'स्टेज्ड कमिट (संशोधन)...',
+      'more.commitAllAmend': 'सभी कमिट (संशोधन)...',
+      'more.commitStagedSign': 'स्टेज्ड कमिट (हस्ताक्षरित)...',
+      'more.commitAllSign': 'सभी कमिट (हस्ताक्षरित)...',
+      'prompt.commitMessage': 'कमिट संदेश',
+      'more.discardAll': 'सभी बदलाव छोड़ें...',
+      'more.sync': 'सिंक (पुल फिर पुश)',
+      'more.syncRebase': 'सिंक (रिबेस फिर पुश)',
+      'more.pullRebase': 'पुल (रिबेस)',
+      'more.pullFrom': 'रिमोट से पुल',
+      'more.pushForce': 'पुश (बलपूर्वक)...',
+      'more.pushTo': 'रिमोट पर पुश',
+      'more.fetchAll': 'सभी रिमोट से फ़ेच',
+      'more.deleteRemoteBranch': 'रिमोट ब्रांच हटाएँ...',
+      'more.publish': 'ब्रांच प्रकाशित करें...',
+      'more.addRemote': 'रिमोट जोड़ें...',
+      'more.removeRemote': 'रिमोट हटाएँ...',
+      'more.stashTracked': 'स्टैश (केवल ट्रैक की गई)',
+      'more.stashStaged': 'स्टेज्ड स्टैश करें',
+      'more.stashApplyPick': 'स्टैश लागू करें...',
+      'more.stashPopPick': 'स्टैश पॉप करें...',
+      'more.stashDropAny': 'स्टैश हटाएँ...',
+      'more.stashClear': 'सभी स्टैश हटाएँ...',
+      'stash.none': 'कोई स्टैश उपलब्ध नहीं',
+      'more.tagDeleteRemote': 'रिमोट टैग हटाएँ...',
+      'more.pushTags': 'टैग पुश करें...',
+      'confirm.undoCommit': 'अंतिम कमिट रद्द करें?इसके बदलाव स्टेज पर रहेंगे।',
+      'confirm.discardAll': 'सभी अन-स्टेज्ड और अन-ट्रैक्ड बदलाव छोड़ें?अन्डू टोस्ट से पुनर्प्राप्त संभव (कॉन्फ्लिक्ट फ़ाइलें छोड़कर)।',
+      'confirm.pushForce': 'फोर्स पुश रिमोट को इस ब्रांच से अधिलेखित करेगा(--force-with-lease अस्वीकार करेगा यदि दूसरों ने पुश किया)।जारी रखें?',
+      'confirm.deleteRemoteBranch': '{remote} पर ब्रांच {branch} हटाएँ?',
+      'confirm.remoteRemove': 'रिमोट {name} हटाएँ?इसकी ट्रैकिंग सेटिंग भी हट जाएगी।',
+      'confirm.stashClear': 'सभी स्टैश हटाएँ?यह पूर्ववत नहीं हो सकता।',
+      'confirm.pushTags': 'सभी टैग {remote} पर पुश करें?',
+      'prompt.remoteName': 'रिमोट नाम',
+      'prompt.remoteUrl': 'रिमोट URL',
+      'prompt.deleteRemoteTag': 'हटाने के लिए रिमोट टैग ({remote} पर पुश होगा)',
       'toolbar.more': 'अधिक क्रियाएँ',
       'more.sortGit': 'Git क्रम',
       'more.sortPath': 'पथ से',
@@ -5015,6 +5975,54 @@ window.__ModuleLoader__.load({
         'diff.copy': 'คัดลอก',
         'diff.copied': 'คัดลอกแล้ว',
         'toolbar.refresh': 'รีเฟรช',
+      'more.sort': 'ดู & เรียงลำดับ',
+      'more.commitGroup': 'คอมมิต',
+      'more.changesGroup': 'การเปลี่ยนแปลง',
+      'more.pullpushGroup': 'พูล, พุช',
+      'more.branchGroup': 'บรานช์',
+      'more.remoteGroup': 'รีโมต',
+      'more.stashGroup': 'สแตช',
+      'more.tagGroup': 'แท็ก',
+      'more.commitStaged': 'คอมมิตไฟล์ที่สเตจ...',
+      'more.commitAll': 'คอมมิตทั้งหมด...',
+      'more.undoCommit': 'ยกเลิกคอมมิตล่าสุด',
+      'more.rebaseAbort': 'ยกเลิกรีเบส',
+      'more.commitStagedAmend': 'คอมมิตไฟล์ที่สเตจ(แก้ไข)...',
+      'more.commitAllAmend': 'คอมมิตทั้งหมด(แก้ไข)...',
+      'more.commitStagedSign': 'คอมมิตไฟล์ที่สเตจ(ลงนาม)...',
+      'more.commitAllSign': 'คอมมิตทั้งหมด(ลงนาม)...',
+      'prompt.commitMessage': 'ข้อความคอมมิต',
+      'more.discardAll': 'ทิ้งการเปลี่ยนแปลงทั้งหมด...',
+      'more.sync': 'ซิงก์(พูลแล้วพุช)',
+      'more.syncRebase': 'ซิงก์(รีเบสแล้วพุช)',
+      'more.pullRebase': 'พูล(รีเบส)',
+      'more.pullFrom': 'พูลจากรีโมต',
+      'more.pushForce': 'พุช(บังคับ)...',
+      'more.pushTo': 'พุชไปรีโมต',
+      'more.fetchAll': 'ฟีตช์จากทุกรีโมต',
+      'more.deleteRemoteBranch': 'ลบบรานช์รีโมต...',
+      'more.publish': 'เผยแพร่บรานช์...',
+      'more.addRemote': 'เพิ่มรีโมต...',
+      'more.removeRemote': 'ลบรีโมต...',
+      'more.stashTracked': 'สแตช(เฉพาะไฟล์ที่ติดตาม)',
+      'more.stashStaged': 'สแตชไฟล์ที่สเตจ',
+      'more.stashApplyPick': 'ใช้สแตช...',
+      'more.stashPopPick': 'ป๊อปสแตช...',
+      'more.stashDropAny': 'ลบสแตช...',
+      'more.stashClear': 'ลบสแตชทั้งหมด...',
+      'stash.none': 'ไม่มีสแตชที่ใช้ได้',
+      'more.tagDeleteRemote': 'ลบแท็กรีโมต...',
+      'more.pushTags': 'พุชแท็ก...',
+      'confirm.undoCommit': 'ยกเลิกคอมมิตล่าสุด?การเปลี่ยนแปลงจะอยู่ในสเตจ',
+      'confirm.discardAll': 'ทิ้งการเปลี่ยนแปลงที่ไม่ได้สเตจและไม่ได้ติดตามทั้งหมด?กู้คืนได้จาก toast เลิกทำ(ยกเว้นไฟล์ขัดแย้ง)',
+      'confirm.pushForce': 'พุชแบบบังคับจะเขียนทับรีโมตด้วยบรานช์นี้(--force-with-lease จะปฏิเสธหากคนอื่นพุชแล้ว)ดำเนินการต่อ?',
+      'confirm.deleteRemoteBranch': 'ลบบรานช์ {branch} บน {remote}?',
+      'confirm.remoteRemove': 'ลบรีโมต {name}?การตั้งค่าติดตามจะถูกลบด้วย',
+      'confirm.stashClear': 'ลบสแตชทั้งหมด?ทำไม่ได้ที่จะย้อนกลับ',
+      'confirm.pushTags': 'พุชแท็กทั้งหมดไปยัง {remote}?',
+      'prompt.remoteName': 'ชื่อรีโมต',
+      'prompt.remoteUrl': 'URL รีโมต',
+      'prompt.deleteRemoteTag': 'แท็กรีโมตที่จะลบ(จะพุชไปยัง {remote})',
       'toolbar.more': 'การกระทำเพิ่มเติม',
       'more.sortGit': 'ลำดับ Git',
       'more.sortPath': 'ตามเส้นทาง',
@@ -5573,21 +6581,24 @@ window.__ModuleLoader__.load({
       { id: 'float', icon: 'float', key: 'action.float', tone: 'accent' },
       { id: 'split', icon: 'split', key: 'action.split', tone: 'secondary' },
       { id: 'fullscreen', icon: 'fullscreen', key: 'action.fullscreen', tone: 'secondary' },
-      { id: 'newBranch', icon: 'plus', key: 'toolbar.newBranch', tone: 'success' },
+      { id: 'newBranch', icon: 'branchCreate', key: 'toolbar.newBranch', tone: 'success' },
       { id: 'checkout', icon: 'checkout', key: 'action.checkout', tone: 'accent' },
       { id: 'delete', icon: 'trash', key: 'action.delete', tone: 'danger' },
       { id: 'compare', icon: 'compare', key: 'action.compare', tone: 'violet' },
-      { id: 'diff', icon: 'file', key: 'action.showDiff', tone: 'secondary' },
+      { id: 'diff', icon: 'diff', key: 'action.showDiff', tone: 'secondary' },
       { id: 'stash', icon: 'stash', key: 'action.stash', tone: 'cyan' },
       { id: 'tag', icon: 'tag', key: 'action.newTagHere', tone: 'warn' },
       { id: 'favorite', icon: 'star', key: 'action.favorite', tone: 'warn' },
+      /* fetch keeps its own button (user walked back the removal, 2026-10-10);
+         the refresh button ALSO fetches when clicked manually — refresh means
+         "see whether the remote has anything new", and the dedicated fetch is
+         still there for the explicit gesture. */
       { id: 'fetch', icon: 'fetch', key: 'toolbar.fetch', tone: 'cyan' },
       { id: 'pull', icon: 'pull', key: 'toolbar.pull', tone: 'accent' },
       { id: 'push', icon: 'push', key: 'toolbar.push', tone: 'success' },
-      /* VS Code-style "..." menu: view mode, sort, and every repository action
-         that has no rail button of its own. A rail action (not a chrome
-         button) so the user can hide/move it like any other, per invariant 14. */
-      { id: 'more', icon: 'more', key: 'toolbar.more', tone: 'secondary' },
+      /* The ⋯ menu moved to the changes-section header (user correction,
+         2026-10-10: the SCM ▸ menu lives where the changes live, not on the
+         rail). Nothing else about the menu changed. */
     ]
     const RAIL_IDS = RAIL_SPECS.map((spec) => spec.id)
     /* Actions that arrange the view rather than touch the repository, so a running
@@ -7225,12 +8236,16 @@ window.__ModuleLoader__.load({
       branch: ['M4 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M12 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M4 6.5v3a3 3 0 0 0 3 3h2', 'M12 6.5v1a3 3 0 0 1-3 3'],
       commit: ['M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z', 'M8 1.5v4', 'M8 10.5v4'],
       refresh: ['M13 8a5 5 0 1 1-1.6-3.7', 'M13 3v3h-3'],
-      fetch: ['M8 2v8', 'M4.5 6.5 8 10l3.5-3.5', 'M3 13h10'],
-      // pull mirrors push: arrow INTO the local side (down) with the rail on top,
-      // where fetch keeps its arrow against the bottom rail. Both used to point up,
-      // so pull read as "push" in the rail (reported on v0.3.9).
-      pull: ['M8 3v8', 'M4.5 7.5 8 11l3.5-3.5', 'M3 2h10'],
-      push: ['M8 2v8', 'M4.5 5.5 8 2l3.5 3.5', 'M3 13h10'],
+      /* Sync icons redrawn after the VS Code SCM trio (user request, 2026-10-10:
+         the colour-coding alone was too abstract). All three share the SAME
+         ground rail at the bottom (the local side) and differ only in the
+         arrow, so the shape alone tells the actions apart:
+           fetch — a BROKEN stem: the references come down, nothing is merged;
+           pull  — a solid stem pointing down: the remote lands here;
+           push  — a solid stem pointing up: the local goes out. */
+      fetch: ['M8 2v2', 'M8 5.6v2.2', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
+      pull: ['M8 2v7.8', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
+      push: ['M8 9.8V2.2', 'M4.6 5.6 8 2.2l3.4 3.4', 'M3 13h10'],
       plus: ['M8 3v10', 'M3 8h10'],
       minus: ['M3 8h10'],
       undo: ['M5 6H2V3', 'M2.5 6.5a5.5 5.5 0 1 1 1.8 5'],
@@ -7239,6 +8254,12 @@ window.__ModuleLoader__.load({
       star: ['M8 2.2l1.8 3.8 4 .5-2.9 2.7.8 4-3.7-2.1-3.7 2.1.8-4L2.2 6.5l4-.5z'],
       folder: ['M2 4.5h4l1.2 1.5H14v6.5H2z'],
       file: ['M4 2h5l3 3v9H4z', 'M9 2v3h3'],
+      /* diff follows the codicon-diff anatomy: a document whose right half
+         carries a + above a −, so it reads as "what changed" and not just
+         "a file". newBranch is the branch glyph with a small + at the new
+         growth tip (codicon git-branch-create's idea at 16px). */
+      diff: ['M3.5 2h6l3.5 3.5V14h-9.5z', 'M9.5 2v3.5H13', 'M8 6.2v3', 'M6.5 7.7h3', 'M6.5 11h3'],
+      branchCreate: ['M4 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M11.5 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z', 'M4 6.5v3a3 3 0 0 0 3 3h2.2', 'M11.5 6.5v1.5', 'M13.2 10.6v3.8', 'M11.3 12.5h3.8'],
       trash: ['M3 5h10', 'M6.5 5V3.5h3V5', 'M4.5 5l.6 8.5h5.8L11.5 5', 'M6.8 7v4', 'M9.2 7v4'],
       checkout: ['M3 8h7', 'M7.5 5.5 10 8l-2.5 2.5', 'M13 3.5v9'],
       compare: ['M4 4h7', 'M4 12h7', 'M6.5 1.5 4 4l2.5 2.5', 'M9.5 9.5 12 12l-2.5 2.5'],
@@ -7290,13 +8311,18 @@ window.__ModuleLoader__.load({
        the panel box, and the menu scrolls when it is taller than the room left. */
     function ContextMenu(props) {
       const ref = useRef(null)
+      const cardRef = useRef(null)
       const closeRef = useRef(props.onClose)
       const [position, setPosition] = useState({ left: props.anchor.x, top: props.anchor.y })
+      /* The open submenu: { items, left, top } in wrapper-relative pixels, or
+         null. Hover-driven — moving onto a different parent row swaps or
+         closes it, so no timers are needed. */
+      const [sub, setSub] = useState(null)
       useEffect(() => { closeRef.current = props.onClose })
       // Layout effect: the clamp below runs before the browser paints, so the menu
       // never flashes at its raw (possibly out-of-panel) anchor position.
       useLayoutEffect(() => {
-        const element = ref.current
+        const element = cardRef.current
         if (element === null) return
         const rect = element.getBoundingClientRect()
         const width = props.boundsWidth === undefined ? 0 : props.boundsWidth
@@ -7321,37 +8347,64 @@ window.__ModuleLoader__.load({
           document.removeEventListener('keydown', onKey)
         }
       }, [])
+      /* Hover onto a parent row opens its submenu flush with the row's right
+         edge (VS Code's SCM ▸ pattern); when the panel has no room to the
+         right the submenu flips to the left edge. Only the TOP level opens
+         submenus — hovering rows inside the submenu never re-enters here. */
+      const openSub = (item, inSub, event) => {
+        if (inSub === true || Array.isArray(item.items) !== true || item.items.length === 0) return
+        const card = cardRef.current
+        if (card === null) return
+        const cardRect = card.getBoundingClientRect()
+        const itemRect = event.currentTarget.getBoundingClientRect()
+        const bounds = props.boundsWidth === undefined ? 0 : props.boundsWidth
+        const SUB_W = 220
+        let left = cardRect.width + 2
+        if (bounds > 0 && position.left + left + SUB_W > bounds - 4) left = -SUB_W - 2
+        setSub({ items: item.items, left: left, top: Math.max(0, itemRect.top - cardRect.top - 4) })
+      }
+      const renderItem = (item, index, inSub) => {
+        if (item === null) return E('div', { key: 'sep-' + index, className: 'dig-menu-sep' })
+        const hasSub = inSub !== true && Array.isArray(item.items) === true && item.items.length > 0
+        return E('button', {
+          key: item.id + '-' + index + (inSub === true ? '-sub' : ''),
+          type: 'button',
+          title: item.disabled === true && item.reason !== undefined ? item.reason : '',
+          className: 'dig-menu-item'
+            + (item.danger === true ? ' dig-menu-danger' : '')
+            + (item.disabled === true ? ' dig-menu-disabled' : '')
+            + (item.active === true ? ' dig-menu-item-active' : ''),
+          // The row keeps its id on the DOM so a `⋯ 更多` entry is addressable
+          // (the rail's own buttons do the same; probes click through either).
+          'data-action': item.id === undefined ? undefined : item.id,
+          disabled: item.disabled === true,
+          onMouseEnter: (event) => openSub(item, inSub, event),
+          onClick: (event) => {
+            if (hasSub === true) return // a submenu parent opens on hover; the click must not close the menu
+            closeRef.current(); item.run(event)
+          },
+        },
+          item.icon === undefined ? null : E('span', { className: 'dig-menu-icon dig-tone-' + (item.tone === undefined ? 'secondary' : item.tone) }, E(Icon, { name: item.icon, size: 13 })),
+          E('span', { className: 'dig-menu-label' }, item.label),
+          hasSub === true ? E('span', { className: 'dig-menu-chevron' }, E(Icon, { name: 'chevron', size: 10 })) : null)
+      }
       /* Two boxes on purpose (dsh 0.1.7-rc.2 menu-material contract): the outer
          card owns the material (a `::before` painted on its own layer, so the
          backdrop filter never becomes the containing block or backdrop root of
          the rows) and the inner box owns the scroll. `data-menu-material` is the
          theme's hook for the dark-menu stroke rebind — the same hook the shipped
-         MenuSurface sets. The card must stay a plain `position: absolute` box
+         MenuSurface sets. Everything stays a plain `position: absolute` box
          inside `.dig-root`: panel-internal positioning is an invariant (13), and
-         a portal to `document.body` would land outside the panel. */
-      return E('div', {
-        className: 'dig-menu', ref: ref, 'data-menu-material': 'translucent',
-        style: { left: position.left + 'px', top: position.top + 'px' },
-      },
-        E('div', { className: 'dig-menu-scroll' },
-          props.items.map((item, index) => (item === null
-            ? E('div', { key: 'sep-' + index, className: 'dig-menu-sep' })
-            : E('button', {
-                key: item.id + '-' + index,
-                type: 'button',
-                title: item.disabled === true && item.reason !== undefined ? item.reason : '',
-                className: 'dig-menu-item'
-                  + (item.danger === true ? ' dig-menu-danger' : '')
-                  + (item.disabled === true ? ' dig-menu-disabled' : '')
-                  + (item.active === true ? ' dig-menu-item-active' : ''),
-                // The row keeps its id on the DOM so a `⋯ 更多` entry is addressable
-                // (the rail's own buttons do the same; probes click through either).
-                'data-action': item.id === undefined ? undefined : item.id,
-                disabled: item.disabled === true,
-                onClick: (event) => { closeRef.current(); item.run(event) },
-              },
-              item.icon === undefined ? null : E('span', { className: 'dig-menu-icon dig-tone-' + (item.tone === undefined ? 'secondary' : item.tone) }, E(Icon, { name: item.icon, size: 13 })),
-              E('span', { className: 'dig-menu-label' }, item.label))))))
+         a portal to `document.body` would land outside the panel. The submenu is
+         a second card inside the same wrapper, so outside-click and Escape cover
+         both without extra wiring. */
+      return E('div', { className: 'dig-menu-wrap', ref: ref, style: { left: position.left + 'px', top: position.top + 'px' } },
+        E('div', { className: 'dig-menu', ref: cardRef, 'data-menu-material': 'translucent' },
+          E('div', { className: 'dig-menu-scroll' },
+            props.items.map((item, index) => renderItem(item, index, false)))),
+        sub === null ? null : E('div', { className: 'dig-menu dig-menu-sub', 'data-menu-material': 'translucent', style: { left: sub.left + 'px', top: sub.top + 'px' } },
+          E('div', { className: 'dig-menu-scroll' },
+            sub.items.map((item, index) => renderItem(item, index, true)))))
     }
 
     /* Lets the user choose which actions the rail shows and in which order. The
@@ -8622,7 +9675,14 @@ window.__ModuleLoader__.load({
           className: 'dig-icon-btn dig-icon-btn-small' + (props.showIgnored === true ? ' dig-icon-btn-active' : ''),
           title: t('changes.showIgnored'),
           onClick: () => props.onToggleIgnored(),
-        }, E(Icon, { name: props.showIgnored === true ? 'eye' : 'eyeOff', size: 13 })))
+        }, E(Icon, { name: props.showIgnored === true ? 'eye' : 'eyeOff', size: 13 })),
+        props.onMoreMenu === undefined ? null : E('button', {
+          type: 'button',
+          className: 'dig-icon-btn dig-icon-btn-small',
+          title: t('toolbar.more'),
+          'data-action': 'more',
+          onClick: (event) => props.onMoreMenu(event),
+        }, E(Icon, { name: 'more', size: 13 })))
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
@@ -9438,18 +10498,40 @@ window.__ModuleLoader__.load({
         return data
       }, [base, pathFilter])
 
-      const refresh = useCallback(async () => {
+      /* `fetchRemote` turns the refresh into what the rail button means: "see
+         whether the remote has anything new to pull" — a `git fetch --prune`
+         runs first so ahead/behind land with the fresh summary. Only the
+         MANUAL refresh passes it: the network call is the slow part, so the
+         automatic refreshes (12s poll, post-action, mount) stay off it, and a
+         failed fetch degrades silently — a refresh must not turn into an
+         error banner just because the network is down. While it runs the rail
+         icon spins: fetching is allowed to take a moment, and the spin says
+         the wait is real while blocking a second click. */
+      /* Declared before refresh (hooks dep TDZ rule): the manual refresh
+         fetches only when a remote exists. */
+      const remoteReady = branches !== null && Array.isArray(branches.remotes) && branches.remotes.length > 0
+      const [refreshSpinning, setRefreshSpinning] = useState(false)
+      const refresh = useCallback(async (opts) => {
         if (repoRoot === null) return
-        await guard(async () => {
-          const [summaryData, branchesData, page] = await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
-          /* The write side of the first-paint cache: exactly the FIRST page
-             (a paged fetch never reaches this path), replaced on every
-             refresh — the auto-refresh included — so a session switch through
-             the same workspace seeds fresh data, not the mount-time
-             snapshot. */
-          writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
-        })
-      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot])
+        const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReady === true
+        if (withFetch === true) setRefreshSpinning(true)
+        try {
+          await guard(async () => {
+            if (withFetch === true) {
+              try { await request('fetch', Object.assign({}, base, { prune: true })) } catch (error) { void error }
+            }
+            const [summaryData, branchesData, page] = await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
+            /* The write side of the first-paint cache: exactly the FIRST page
+               (a paged fetch never reaches this path), replaced on every
+               refresh — the auto-refresh included — so a session switch through
+               the same workspace seeds fresh data, not the mount-time
+               snapshot. */
+            writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
+          })
+        } finally {
+          if (withFetch === true) setRefreshSpinning(false)
+        }
+      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base])
 
       useEffect(() => {
         if (repoRoot === null) return undefined
@@ -9914,6 +10996,16 @@ window.__ModuleLoader__.load({
         if (state.kind === 'renameBranch') { await run('branchRename', { from: state.from, to: value }); return }
         if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
         if (state.kind === 'deleteTag') { await run('tagDelete', { name: value }); return }
+        /* SCM ▸ Commit ▸ variants: one dialog, four (all/staged × amend/sign)
+           shapes. `all` stages every visible change first — the paths go in
+           explicitly, never '.', so the host's root guard stays shut. */
+        if (state.kind === 'commitMsg') {
+          const paths = state.all === true
+            ? summary === null ? [] : summary.changes.staged.concat(summary.changes.unstaged, summary.changes.untracked).map((entry) => entry.path)
+            : undefined
+          await run('commit', { message: value, paths: paths, amend: state.amend === true, signoff: state.sign === true })
+          return
+        }
       }, [run])
 
       /* ---------- toasts + undo ---------- */
@@ -9955,6 +11047,26 @@ window.__ModuleLoader__.load({
           onAction: () => { void undoAction(data.undo.id) },
         })
       }, [run, pushToast, undoAction, t])
+
+      /* SCM ▸ Changes ▸ Discard All Changes: tracked paths go through
+         `checkout --`, untracked through `clean -fd`. Conflicted entries are
+         deliberately NOT touched — a merge conflict needs a decision, not a
+         silent side-taking; the dialog says so. */
+      const discardAllChanges = useCallback(async () => {
+        const changes = summary === null ? null : summary.changes
+        if (changes === null) return
+        const tracked = changes.unstaged.map((entry) => entry.path)
+        const untracked = changes.untracked.map((entry) => entry.path)
+        if (tracked.length > 0) await run('discard', { paths: tracked, confirm: true })
+        if (untracked.length > 0) await run('discard', { paths: untracked, untracked: true, confirm: true })
+      }, [run, summary])
+
+      /* SCM ▸ Commit ▸ Undo Last Commit: a soft reset to HEAD~1 keeps the
+         commit's work staged, exactly like VS Code's undo. The commit leaves
+         the branch but stays in the reflog — no undo handle needed. */
+      const undoLastCommit = useCallback(async () => {
+        await run('reset', { hash: 'HEAD~1', mode: 'soft', confirm: true })
+      }, [run])
 
       // A discard really overwrote the working tree, so it hands back the same
       // kind of handle a delete does: the host snapshotted the bytes first.
@@ -10063,27 +11175,6 @@ window.__ModuleLoader__.load({
         E('span', { className: 'dig-banner-text' }, note),
         E('button', { type: 'button', className: 'dig-link', onClick: () => setNote(null) }, t('error.dismiss')))
 
-      const commitSettings = readCommitSettings()
-      const changesPane = E(ChangesPanel, {
-        t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
-        groupBy: groupBy, sortKey: sortKey, onGroupBy: setGroupBy,
-        request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings, base: base,
-        showIgnored: showIgnored,
-        onToggleIgnored: () => setShowIgnored((value) => !value),
-        // Commit-and-push carries the confirm flag with it: the button already
-        // says exactly what it will publish, so the host guard is satisfied by
-        // the click itself rather than by a second dialog.
-        onCommit: (message, amend, push) => {
-          void run('commit', { message: message, amend: amend, push: push === true, confirm: push === true })
-        },
-        onStage: (item) => { void run('stage', { paths: [item.path] }) },
-        onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
-        onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
-        onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
-        onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
-        onDiff: (item, group) => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) },
-        onChangeMenu: changeMenu,
-      })
 
       const historyPane = view === 'detail'
         ? E(CommitDetail, {
@@ -10131,10 +11222,33 @@ window.__ModuleLoader__.load({
           run: () => {
             if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
             if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
+            if (kind === 'merge') { void run('merge', { branch: entry.name }); return }
+            if (kind === 'rebase') { void run('rebase', { onto: entry.name }); return }
             void compareWith(current, entry.name)
           },
         })))
       }
+
+      /* Remote branches (origin/main…): a flat menu, each entry pre-split into
+         its remote and branch halves for the destructive confirm. */
+      const remoteBranches = branches === null ? [] : branches.remote
+      const pickRemoteBranchMenu = (event) => {
+        if (remoteBranches.length === 0) { setNote(t('note.noBranches')); return }
+        openMenuAt(event, remoteBranches.map((entry) => {
+          const slash = entry.name.indexOf('/')
+          const remote = slash >= 0 ? entry.name.slice(0, slash) : entry.name
+          const branch = slash >= 0 ? entry.name.slice(slash + 1) : entry.name
+          return {
+            id: 'remote-delete:' + entry.name,
+            icon: 'trash', tone: 'danger', danger: true,
+            label: entry.name,
+            run: () => setDialog({ kind: 'deleteRemoteBranch', remote: remote, branch: branch }),
+          }
+        }))
+      }
+
+      /* Remotes themselves, for "pull from" / "push to" style entries. */
+      const remoteNames = branches === null ? [] : branches.remotes.map((entry) => entry.name === undefined ? String(entry) : entry.name)
 
       const showWorkingDiff = () => {
         const changes = summary === null ? null : summary.changes
@@ -10164,7 +11278,6 @@ window.__ModuleLoader__.load({
 
       /* favorites/toggleFavoriteBranch live above branchMenu: a useCallback dep array is evaluated during render. */
       const headBranch = branches === null ? '' : branches.branch
-      const remoteReady = branches !== null && Array.isArray(branches.remotes) && branches.remotes.length > 0
       const tracked = summary !== null && summary.upstream !== null
       const stashCount = summary === null ? 0 : summary.stashCount
       const reason = t('action.unavailable')
@@ -10173,43 +11286,162 @@ window.__ModuleLoader__.load({
          changes, branch/stash/tag shortcuts, and the Git-output view at the
          bottom. Every entry reuses the very handlers the rail rows and group
          heads already run, so the menu can never disagree with them. */
+      /* The ⋯ menu, restructured to the FULL VS Code SCM ▸ tree (issue: the
+         flat 22-item list ignored the submenu anatomy the user asked for).
+         Groups are real submenus now (ContextMenu.items[]); every entry maps
+         onto an action that already exists elsewhere in the panel, and the
+         few new backend verbs (rebaseAbort / remoteAdd / remoteRemove /
+         branchDeleteRemote / tagDeleteRemote / pushTags / stashClear) back
+         their VS Code counterparts one-to-one. */
       const moreMenu = (event) => {
         const tagCount = branches === null || Array.isArray(branches.tags) !== true ? 0 : branches.tags.length
         const stageable = summary === null ? [] : summary.changes.unstaged.concat(summary.changes.untracked)
         const stagedPaths = summary === null ? [] : summary.changes.staged.map((entry) => entry.path)
+        const allChangePaths = stagedPaths.concat(stageable.map((entry) => entry.path))
         const sort = (key) => () => setSortKey(key)
+        const operation = summary === null ? null : summary.operation
+        const pickRemote = (run) => (ev) => openMenuAt(ev, remoteNames.map((name) => ({
+          id: 'remote:' + name, icon: 'fetch', tone: 'violet', label: name,
+          run: () => run(name),
+        })))
+        const pickStash = (verb) => async (ev) => {
+          try {
+            const data = await request('stashList', base)
+            const list = Array.isArray(data.stashes) ? data.stashes : []
+            if (list.length === 0) { setNote(t('stash.none')); return }
+            openMenuAt(ev, list.map((entry) => ({
+              id: 'stash:' + entry.ref, icon: 'stash', tone: 'violet',
+              label: entry.ref + ' · ' + entry.subject,
+              run: () => { void run('stashApply', { ref: entry.ref, pop: verb === 'pop' }) },
+            })))
+          } catch (error) { void error }
+        }
         openMenuAt(event, [
+          /* —— view (VS Code: 以列表形式查看 / 查看和排序 ▸) —— */
           { id: 'view-flat', icon: 'commit', tone: 'secondary', label: t('changes.groupFlat'), active: groupBy === 'flat', run: () => setGroupBy('flat') },
           { id: 'view-dir', icon: 'folder', tone: 'secondary', label: t('changes.groupDir'), active: groupBy === 'dir', run: () => setGroupBy('dir') },
+          { id: 'view-sort', icon: 'compare', tone: 'secondary', label: t('more.sort'), items: [
+            { id: 'sort-git', label: t('more.sortGit'), active: sortKey === 'git', run: sort('git') },
+            { id: 'sort-path', label: t('more.sortPath'), active: sortKey === 'path', run: sort('path') },
+            { id: 'sort-name', label: t('more.sortName'), active: sortKey === 'name', run: sort('name') },
+            { id: 'sort-status', label: t('more.sortStatus'), active: sortKey === 'status', run: sort('status') },
+          ] },
           null,
-          { id: 'sort-git', icon: 'commit', tone: 'secondary', label: t('more.sortGit'), active: sortKey === 'git', run: sort('git') },
-          { id: 'sort-path', icon: 'commit', tone: 'secondary', label: t('more.sortPath'), active: sortKey === 'path', run: sort('path') },
-          { id: 'sort-name', icon: 'commit', tone: 'secondary', label: t('more.sortName'), active: sortKey === 'name', run: sort('name') },
-          { id: 'sort-status', icon: 'commit', tone: 'secondary', label: t('more.sortStatus'), active: sortKey === 'status', run: sort('status') },
-          null,
+          /* —— top-level sync (VS Code header row) —— */
           { id: 'mm-pull', icon: 'pull', tone: 'accent', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'ff-only' }) } },
           { id: 'mm-push', icon: 'push', tone: 'success', label: t('toolbar.push'), disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'push' }) },
-          { id: 'mm-fetch', icon: 'fetch', tone: 'cyan', label: t('toolbar.fetch'), disabled: remoteReady !== true, reason, run: () => { void run('fetch', { prune: true }) } },
-          { id: 'mm-checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout') + '...', disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'checkout') },
           { id: 'mm-clone', icon: 'plus', tone: 'secondary', label: t('more.clone'), run: () => setDialog({ kind: 'clone' }) },
+          { id: 'mm-checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout') + '...', disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'checkout') },
+          { id: 'mm-fetch', icon: 'fetch', tone: 'cyan', label: t('toolbar.fetch'), disabled: remoteReady !== true, reason, run: () => { void run('fetch', { prune: true }) } },
           null,
-          { id: 'mm-stage-all', icon: 'plus', tone: 'success', label: t('changes.stageAll'), disabled: stageable.length === 0, reason, run: () => { void run('stage', { paths: stageable.map((entry) => entry.path) }) } },
-          { id: 'mm-unstage-all', icon: 'minus', tone: 'warn', label: t('changes.unstageAll'), disabled: stagedPaths.length === 0, reason, run: () => { void run('unstage', { paths: stagedPaths }) } },
-          null,
-          { id: 'mm-new-branch', icon: 'plus', tone: 'success', label: t('toolbar.newBranch'), disabled: blocked, reason, run: () => setDialog({ kind: 'newBranch' }) },
-          { id: 'mm-delete-branch', icon: 'trash', tone: 'danger', danger: true, label: t('action.delete'), disabled: otherBranches.length === 0, reason, run: (ev) => pickBranchMenu(ev, 'delete') },
-          null,
-          { id: 'mm-stash-push', icon: 'stash', tone: 'violet', label: t('stash.push'), disabled: dirty === 0, reason, run: () => { void run('stashPush', { includeUntracked: true }) } },
-          { id: 'mm-stash-apply', icon: 'checkout', tone: 'accent', label: t('stash.apply'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', {}) } },
-          { id: 'mm-stash-pop', icon: 'stash', tone: 'accent', label: t('more.stashPop'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', { pop: true }) } },
-          { id: 'mm-stash-drop', icon: 'trash', tone: 'danger', danger: true, label: t('stash.drop'), disabled: stashCount === 0, reason, run: () => setDialog({ kind: 'stashDrop', ref: 'stash@{0}' }) },
-          null,
-          { id: 'mm-new-tag', icon: 'tag', tone: 'warn', label: t('action.newTagHere'), disabled: commits.length === 0, reason, run: () => setDialog({ kind: 'newTag' }) },
-          { id: 'mm-delete-tag', icon: 'trash', tone: 'danger', danger: true, label: t('more.deleteTag'), disabled: tagCount === 0, reason, run: () => setDialog({ kind: 'deleteTag' }) },
+          /* —— SCM ▸ Commit ▸ —— */
+          { id: 'sub-commit', icon: 'commit', tone: 'accent', label: t('more.commitGroup'), items: [
+            { id: 'c-staged', label: t('more.commitStaged'), disabled: stagedPaths.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: false, amend: false, sign: false }) },
+            { id: 'c-all', label: t('more.commitAll'), disabled: allChangePaths.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: true, amend: false, sign: false }) },
+            null,
+            { id: 'c-undo', label: t('more.undoCommit'), disabled: commits.length === 0 || blocked, reason, run: () => setDialog({ kind: 'undoCommit' }) },
+            { id: 'c-abort', label: t('more.rebaseAbort'), disabled: operation !== 'rebase', reason, run: () => { void run('rebaseAbort', {}) } },
+            null,
+            { id: 'c-staged-amend', label: t('more.commitStagedAmend'), disabled: stagedPaths.length === 0 || commits.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: false, amend: true, sign: false }) },
+            { id: 'c-all-amend', label: t('more.commitAllAmend'), disabled: allChangePaths.length === 0 || commits.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: true, amend: true, sign: false }) },
+            null,
+            { id: 'c-staged-sign', label: t('more.commitStagedSign'), disabled: stagedPaths.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: false, amend: false, sign: true }) },
+            { id: 'c-all-sign', label: t('more.commitAllSign'), disabled: allChangePaths.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: true, amend: false, sign: true }) },
+          ] },
+          /* —— SCM ▸ Changes ▸ —— */
+          { id: 'sub-changes', icon: 'file', tone: 'secondary', label: t('more.changesGroup'), items: [
+            { id: 'ch-stage', label: t('changes.stageAll'), disabled: stageable.length === 0, reason, run: () => { void run('stage', { paths: stageable.map((entry) => entry.path) }) } },
+            { id: 'ch-unstage', label: t('changes.unstageAll'), disabled: stagedPaths.length === 0, reason, run: () => { void run('unstage', { paths: stagedPaths }) } },
+            null,
+            { id: 'ch-discard', label: t('more.discardAll'), danger: true, disabled: dirty === 0, reason, run: () => setDialog({ kind: 'discardAll' }) },
+          ] },
+          /* —— SCM ▸ Pull, Push ▸ —— */
+          { id: 'sub-pullpush', icon: 'pull', tone: 'accent', label: t('more.pullpushGroup'), items: [
+            { id: 'pp-sync', label: t('more.sync'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void (async () => { await run('pull', { mode: 'ff-only' }); await run('push', { confirm: true }) })() } },
+            { id: 'pp-sync-rebase', label: t('more.syncRebase'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void (async () => { await run('pull', { mode: 'rebase' }); await run('push', { confirm: true }) })() } },
+            null,
+            { id: 'pp-pull', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'ff-only' }) } },
+            { id: 'pp-pull-rebase', label: t('more.pullRebase'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'rebase' }) } },
+            { id: 'pp-pull-from', label: t('more.pullFrom'), disabled: remoteNames.length === 0, reason, run: pickRemote((name) => { void run('pull', { mode: 'ff-only', remote: name }) }) },
+            null,
+            { id: 'pp-push', label: t('toolbar.push'), disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'push' }) },
+            { id: 'pp-push-force', label: t('more.pushForce'), danger: true, disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'pushForce' }) },
+            { id: 'pp-push-to', label: t('more.pushTo'), disabled: remoteNames.length === 0 || blocked, reason, run: pickRemote((name) => { void run('push', { remote: name, confirm: true }) }) },
+            null,
+            { id: 'pp-fetch', label: t('toolbar.fetch'), disabled: remoteReady !== true, reason, run: () => { void run('fetch', { prune: true }) } },
+            { id: 'pp-fetch-all', label: t('more.fetchAll'), disabled: remoteNames.length === 0, reason, run: () => { void run('fetch', { all: true, prune: true }) } },
+          ] },
+          /* —— SCM ▸ Branch ▸ —— */
+          { id: 'sub-branch', icon: 'branch', tone: 'secondary', label: t('more.branchGroup'), items: [
+            { id: 'br-merge', label: t('action.mergeIntoCurrent'), disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'merge') },
+            { id: 'br-rebase', label: t('action.rebaseCurrentOnto'), disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'rebase') },
+            null,
+            { id: 'br-new', label: t('toolbar.newBranch'), disabled: blocked, reason, run: () => setDialog({ kind: 'newBranch' }) },
+            null,
+            { id: 'br-rename', label: t('action.rename'), disabled: headBranch === '' || blocked, reason, run: () => setDialog({ kind: 'renameBranch', from: headBranch }) },
+            { id: 'br-delete', label: t('action.delete'), danger: true, disabled: otherBranches.length === 0, reason, run: (ev) => pickBranchMenu(ev, 'delete') },
+            { id: 'br-delete-remote', label: t('more.deleteRemoteBranch'), danger: true, disabled: remoteBranches.length === 0 || blocked, reason, run: (ev) => pickRemoteBranchMenu(ev) },
+            null,
+            { id: 'br-publish', label: t('more.publish'), disabled: remoteReady !== true || tracked === true || blocked, reason, run: () => { void run('push', { setUpstream: true, confirm: true }) } },
+          ] },
+          /* —— SCM ▸ Remote ▸ —— */
+          { id: 'sub-remote', icon: 'fetch', tone: 'violet', label: t('more.remoteGroup'), items: [
+            { id: 'rm-add', label: t('more.addRemote'), run: () => setDialog({ kind: 'remoteAdd' }) },
+            { id: 'rm-remove', label: t('more.removeRemote'), danger: true, disabled: remoteNames.length === 0, reason, run: (ev) => openMenuAt(ev, remoteNames.map((name) => ({
+              id: 'rm-del:' + name, icon: 'trash', tone: 'danger', danger: true, label: name,
+              run: () => setDialog({ kind: 'remoteRemove', name: name }),
+            }))) },
+          ] },
+          /* —— SCM ▸ Stash ▸ —— */
+          { id: 'sub-stash', icon: 'stash', tone: 'violet', label: t('more.stashGroup'), items: [
+            { id: 'st-push', label: t('more.stashTracked'), disabled: dirty === 0, reason, run: () => { void run('stashPush', {}) } },
+            { id: 'st-push-all', label: t('stash.push'), disabled: dirty === 0, reason, run: () => { void run('stashPush', { includeUntracked: true }) } },
+            { id: 'st-push-staged', label: t('more.stashStaged'), disabled: stagedPaths.length === 0, reason, run: () => { void run('stashPush', { staged: true }) } },
+            null,
+            { id: 'st-apply', label: t('stash.apply'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', {}) } },
+            { id: 'st-apply-pick', label: t('more.stashApplyPick'), disabled: stashCount === 0, reason, run: pickStash('apply') },
+            null,
+            { id: 'st-pop', label: t('more.stashPop'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', { pop: true }) } },
+            { id: 'st-pop-pick', label: t('more.stashPopPick'), disabled: stashCount === 0, reason, run: pickStash('pop') },
+            null,
+            { id: 'st-drop', label: t('more.stashDropAny'), danger: true, disabled: stashCount === 0, reason, run: (ev) => pickStash('drop')(ev) },
+            { id: 'st-clear', label: t('more.stashClear'), danger: true, disabled: stashCount === 0, reason, run: () => setDialog({ kind: 'stashClear' }) },
+          ] },
+          /* —— SCM ▸ Tags ▸ —— */
+          { id: 'sub-tags', icon: 'tag', tone: 'warn', label: t('more.tagGroup'), items: [
+            { id: 'tg-new', label: t('action.newTagHere'), disabled: commits.length === 0, reason, run: () => setDialog({ kind: 'newTag' }) },
+            { id: 'tg-delete', label: t('more.deleteTag'), danger: true, disabled: tagCount === 0, reason, run: () => setDialog({ kind: 'deleteTag' }) },
+            { id: 'tg-delete-remote', label: t('more.tagDeleteRemote'), danger: true, disabled: tagCount === 0 || remoteNames.length === 0 || blocked, reason, run: () => setDialog({ kind: 'deleteRemoteTag' }) },
+            null,
+            { id: 'tg-push', label: t('more.pushTags'), disabled: tagCount === 0 || remoteNames.length === 0 || blocked, reason, run: () => setDialog({ kind: 'pushTags' }) },
+          ] },
           null,
           { id: 'mm-git-output', icon: 'commit', tone: 'secondary', label: t('more.gitOutput'), run: () => { void openGitOutput() } },
         ])
       }
+      const commitSettings = readCommitSettings()
+      const changesPane = E(ChangesPanel, {
+        t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
+        groupBy: groupBy, sortKey: sortKey, onGroupBy: setGroupBy,
+        onMoreMenu: moreMenu,
+        request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings, base: base,
+        showIgnored: showIgnored,
+        onToggleIgnored: () => setShowIgnored((value) => !value),
+        // Commit-and-push carries the confirm flag with it: the button already
+        // says exactly what it will publish, so the host guard is satisfied by
+        // the click itself rather than by a second dialog.
+        onCommit: (message, amend, push) => {
+          void run('commit', { message: message, amend: amend, push: push === true, confirm: push === true })
+        },
+        onStage: (item) => { void run('stage', { paths: [item.path] }) },
+        onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
+        onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
+        onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
+        onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
+        onDiff: (item, group) => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) },
+        onChangeMenu: changeMenu,
+      })
+
 
       /* One descriptor per action, with the availability IDEA would use: delete /
          checkout / compare need another local branch, fetch and push need a remote,
@@ -10217,7 +11449,7 @@ window.__ModuleLoader__.load({
          The rail renders a user-chosen subset in a user-chosen order. */
       const railActions = RAIL_SPECS.map((spec) => {
         const entry = { id: spec.id, icon: spec.icon, tone: spec.tone, label: t(spec.key), disabled: false, active: false, run: () => {} }
-        if (spec.id === 'refresh') entry.run = () => setTick((value) => value + 1)
+        if (spec.id === 'refresh') { entry.disabled = refreshSpinning === true; entry.spinning = refreshSpinning === true; entry.run = () => { void refresh({ fetchRemote: true }) } }
         else if (spec.id === 'newBranch') entry.run = () => setDialog({ kind: 'newBranch' })
         else if (spec.id === 'checkout') { entry.disabled = otherBranches.length === 0 || blocked; entry.run = (event) => pickBranchMenu(event, 'checkout') }
         else if (spec.id === 'delete') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'delete') }
@@ -10229,7 +11461,6 @@ window.__ModuleLoader__.load({
         else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
         else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
         else if (spec.id === 'push') { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
-        else if (spec.id === 'more') { entry.run = (event) => moreMenu(event) }
         else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
         else if (spec.id === 'float') {
           // Label AND icon follow where the panel actually is: floating panels get
@@ -10326,7 +11557,7 @@ window.__ModuleLoader__.load({
         const children = railVisible.slice(0, slots).map((action) => E('button', {
           key: action.id,
           type: 'button',
-          className: 'dig-rail-btn dig-tone-' + action.tone + (action.active === true ? ' dig-rail-btn-active' : ''),
+          className: 'dig-rail-btn dig-tone-' + action.tone + (action.active === true ? ' dig-rail-btn-active' : '') + (action.spinning === true ? ' dig-spin' : ''),
           'data-action': action.id,
           'aria-pressed': action.active === true ? 'true' : 'false',
           title: action.disabled === true ? action.label + ' · ' + reason : action.label,
@@ -10461,8 +11692,8 @@ window.__ModuleLoader__.load({
           onClose: () => setRailSettings(false),
         }))
       }
-      if (dialog !== null && (dialog.kind === 'newBranch' || dialog.kind === 'renameBranch' || dialog.kind === 'newTag' || dialog.kind === 'deleteTag')) {
-        const titles = { newBranch: t('prompt.newBranch'), renameBranch: t('prompt.renameBranch'), newTag: t('prompt.newTag'), deleteTag: t('prompt.deleteTag') }
+      if (dialog !== null && (dialog.kind === 'newBranch' || dialog.kind === 'renameBranch' || dialog.kind === 'newTag' || dialog.kind === 'deleteTag' || dialog.kind === 'commitMsg')) {
+        const titles = { newBranch: t('prompt.newBranch'), renameBranch: t('prompt.renameBranch'), newTag: t('prompt.newTag'), deleteTag: t('prompt.deleteTag'), commitMsg: t('prompt.commitMessage') }
         overlays.push(E(PromptDialog, {
           key: 'prompt',
           title: titles[dialog.kind],
@@ -10482,6 +11713,101 @@ window.__ModuleLoader__.load({
           okLabel: t('clone.run'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onSubmit: (url, dir) => { setDialog(null); void run('clone', { url: url, dir: dir }) },
+        }))
+      }
+      /* SCM ▸ additions (v0.15): each destructive one is a ConfirmDialog whose
+         text names the exact target; the tag/remote ones carry the picked
+         remote through. */
+      if (dialog !== null && dialog.kind === 'undoCommit') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'undoCommit', t: t,
+          title: t('confirm.title'),
+          text: t('confirm.undoCommit'),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void undoLastCommit() },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'discardAll') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'discardAll', t: t,
+          title: t('confirm.title'),
+          text: t('confirm.discardAll'),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void discardAllChanges() },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'pushForce') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'pushForce', t: t,
+          title: t('confirm.title'),
+          text: t('confirm.pushForce'),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void run('push', { force: true, confirm: true }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'deleteRemoteBranch') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'deleteRemoteBranch', t: t,
+          title: t('confirm.title'),
+          text: fill(t('confirm.deleteRemoteBranch'), { remote: dialog.remote, branch: dialog.branch }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { const r = dialog.remote; const b = dialog.branch; setDialog(null); void run('branchDeleteRemote', { remote: r, branch: b, confirm: true }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'remoteAdd') {
+        overlays.push(E(CloneDialog, {
+          key: 'remoteAdd',
+          title: t('more.addRemote'),
+          urlPlaceholder: t('prompt.remoteName'),
+          dirPlaceholder: t('prompt.remoteUrl'),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onSubmit: (name, url) => { setDialog(null); void run('remoteAdd', { name: name, url: url }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'remoteRemove') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'remoteRemove', t: t,
+          title: t('confirm.title'),
+          text: fill(t('confirm.remoteRemove'), { name: dialog.name }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { const n = dialog.name; setDialog(null); void run('remoteRemove', { name: n, confirm: true }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'stashClear') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'stashClear', t: t,
+          title: t('confirm.title'),
+          text: t('confirm.stashClear'),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void run('stashClear', { confirm: true }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'deleteRemoteTag') {
+        overlays.push(E(PromptDialog, {
+          key: 'deleteRemoteTag',
+          title: t('more.tagDeleteRemote'),
+          placeholder: fill(t('prompt.deleteRemoteTag'), { remote: remoteNames[0] === undefined ? 'origin' : remoteNames[0] }),
+          initialValue: '',
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onSubmit: (name) => { setDialog(null); void run('tagDeleteRemote', { remote: remoteNames[0] === undefined ? 'origin' : remoteNames[0], name: name, confirm: true }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'pushTags') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'pushTags', t: t,
+          title: t('confirm.title'),
+          text: fill(t('confirm.pushTags'), { remote: remoteNames[0] === undefined ? 'origin' : remoteNames[0] }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void run('pushTags', { remote: remoteNames[0] === undefined ? 'origin' : remoteNames[0], confirm: true }) },
         }))
       }
       if (dialog !== null && dialog.kind === 'deleteBranch') {
@@ -10611,6 +11937,9 @@ window.__ModuleLoader__.load({
       )
     }
     LANE_TRACE_RULES.push('.dig-graph line,.dig-graph path,.dig-graph circle{transition:stroke-opacity .15s,fill-opacity .15s}')
+    /* The rail refresh button spins while its fetch+refresh round-trip runs. */
+    LANE_TRACE_RULES.push('.dig-spin svg{animation:dig-spin-rotate .9s linear infinite}')
+    LANE_TRACE_RULES.push('@keyframes dig-spin-rotate{to{transform:rotate(360deg)}}')
 
     const CSS = [
       '.dig-root{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:13px;line-height:1.5;font-weight:600;overflow:hidden}',
@@ -10913,10 +12242,17 @@ window.__ModuleLoader__.load({
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      '.dig-menu{position:absolute;z-index:70;box-sizing:border-box;min-width:min(200px,calc(100% - 8px));max-width:calc(100% - 8px);max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
+      /* The wrapper carries the panel-relative anchor and the outside-click ref;
+         the card(s) are plain children. The submenu is a second card offset to
+         the parent card's edge, flipping left when the panel runs out of room
+         (see ContextMenu.openSub). */
+      '.dig-menu-wrap{position:absolute;z-index:70}',
+      '.dig-menu{box-sizing:border-box;min-width:min(200px,calc(100% - 8px));max-width:calc(100% - 8px);max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
+      '.dig-menu-sub{position:absolute;min-width:180px;max-width:260px;z-index:71}',
       '.dig-menu::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));pointer-events:none}',
       '.dig-menu-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column}',
       '.dig-menu-item{display:flex;align-items:center;gap:8px;padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;text-align:left;border-radius:var(--dsw-radius-sm,8px);cursor:pointer;white-space:nowrap;overflow:hidden}',
+      '.dig-menu-chevron{margin-left:auto;opacity:.6;flex:none;display:inline-flex}',
       '.dig-menu-icon{display:inline-flex;flex:none}',
       '.dig-menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-menu-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
