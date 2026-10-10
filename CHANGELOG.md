@@ -3,6 +3,18 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.15.0 — 2026-10-10
+
+**类型**:feat(「...」更多操作菜单,对标 VS Code SCM 标题菜单)+ fix(issue #11 大量变更时面板卡死;顶栏长分支名截断)
+
+- **feat rail 新增「⋯ 更多操作」菜单(对标 VS Code 源控制面板标题栏的 `...`)**。新 rail 动作 `more`(RAIL_SPECS 追加,可配置/可隐藏/可排序,不变量 14 同权),点开面板内平铺分组菜单,共 22 项:`查看方式(平铺/按目录,即原 groupBy 提升)+ 排序(Git 顺序/按路径/按名称/按状态,新增 sortKey 纯客户端排序)` | `拉取/推送/抓取/签出到.../克隆...` | `全部暂存/全部取消暂存` | `新建分支/删除分支` | `贮藏(推入/应用/弹出/删除)` | `标记(新建/删除)` | `显示 Git 输出`。全部条目复用 rail/组头/右键菜单的既有 handler(菜单与它们永不分叉);弹出的「贮藏」与 rail stash 菜单同源。对照 [microsoft/vscode extensions/git scm/title 菜单](https://github.com/microsoft/vscode/blob/main/extensions/git/package.json)(MIT)逐段对齐;VS Code 有而本版未做的(撤销提交/合并/变基子菜单/远程管理/放弃全部更改)后续按需补。
+- **feat 新增「克隆...」**:`clone` 方法(`git clone <url> <dir>`,argv 数组、`requireUrl` 校验(拒 `-` 开头/空白/控制字符/超长)、目标必须绝对路径、10 分钟超时、登记 WRITE_METHODS)+ 双输入 CloneDialog(URL+目录一行拿下,两次单输入链会丢第一个值)。
+- **feat 新增「显示 Git 输出」**:`runGit` 全路径(含超时分支)写入 200 条环形缓冲(每条 argv/code/耗时/stdout+stderr 首尾截断),`gitLogs` 只读方法取尾部;面板底部抽屉 `.dig-gitlog`(面板内绝对定位,不变量 13)展示,退出码非 0 红标,自动滚到最新,手动刷新。
+- **fix issue #11:大量文件变更时 Git 面板卡死**(chiyan171 报告,数千文件时面板卡死无法操作)。三层叠加:① 宿主 `summary()` 十来个 git 子进程全串行,其中两遍 `git diff --numstat`(每变更文件算真实 diff)最贵;② 客户端 `rowsOf` 全量渲染全部 ChangeRow(无 memo);③ 12s 自动刷新把 ①② 变成循环,且 interval 回调不走 `guard`,长扫描期间请求在 repo 锁后排队叠加。修复全部**无损准确**:**两阶段**——`summary` 接受 `stats:false` 跳过两遍 numstat 先回行(`statsDeferred:true`),新 `stats` 方法(两遍 numstat 并行,`[path,+,−,binary]` 行)后补,客户端 `applyStats` 按 path 不可变合并(未变行保持对象引用);**并行化**——branch 链(branch→upstream→ahead/behind)与其余全部 `Promise.all`(总耗时从求和变取最大);**memo**——`ChangeRow` 包 `memo` + 自定义比较(只比 `item/group/t`,回调全是内联箭头默认浅比较永不胜出;repo 切换必伴随全新 summary 数组=全新 item 引用,陈旧闭包风险由此封闭);**刷新闸**——interval 的 in-flight ref,上一轮未完跳过本轮。**不做任何截断/近似**:每行 `+x −y` 最终都是真实数字,只是大仓库时统计比行晚到(VS Code 同类面板的做法是干脆不显示行级统计,本方案保住了它)。`commitMessage` 路径不带 `stats:false`,行为不变。
+- **fix 顶栏长分支名显示不全**(用户报告:仓库/分支选择处,分支名长了偶尔显示不全)。根因:`.dig-select-branch` 硬上限 150px + `.dig-repo-name` 200px + 顶栏 `overflow:hidden` 直接裁。修复:上限从按钮挪到 wrap(topbar 直接子项,`max-width:90%` 百分比才解析);分支按钮解除上限、**换行到第二行**显示全名(侧栏 ~400px 宽,600px 的分支名单行物理放不下,两行可以,`overflow-wrap:anywhere`);`title` 悬停兜底显示全名(分支=分支名,多仓库=完整路径)。`flex:0 1 auto` 保证空间不足时仍优雅退化。
+- **词典**:21 门语言(ZH/EN+19 locale)各新增 16 键(more.*/clone.*/prompt.deleteTag/gitLog.*),逐门插入,冒烟逐门比对键集通过。
+- **验证**:`npm test` **109/109**(基线 107 + clone/gitLogs 集成 1 + 两阶段 summary/stats 1);ssr-check 4/4;layout-probe 11 档宽度全过零 pageerror;conversation-probe(主对话区座位,10 项断言)all checks passed;新增临时真机探针(原生右侧栏座位):more 菜单 22 项渲染、Git 输出抽屉 200 条记录、79 字符长分支名两行完整显示 + title 全名,ALL CHECKS PASSED。真机环境:隔离 DSH_HOME、仅装本插件(无 better-sidebar,即原生右栏通道),dsh 0.1.7-rc.2 web。
+
 ## v0.14.5 — 2026-10-09
 
 **类型**:fix(用户真机报告:「变更面板点未提交的文件,预览空白什么都看不见」;+ 社区 PR)

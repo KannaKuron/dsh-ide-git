@@ -46,7 +46,7 @@ try {
 /** Rail action ids, in rail order. MUST mirror RAIL_SPECS in src/client.js. */
 const RAIL_CONFIG_IDS = [
   'refresh', 'tree', 'float', 'split', 'fullscreen', 'newBranch', 'checkout', 'delete',
-  'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push',
+  'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push', 'more',
 ]
 
 /** Volatile refs (dsh >= 0.1.7 settings contract) or plain values on older hosts. */
@@ -84,6 +84,21 @@ export const Config = Schema === null ? undefined : railConfigSchema(Schema)
 
 const ROUTE_PREFIX = '/dsh-ide-git/api'
 const MAX_OUTPUT_BYTES = 8 * 1024 * 1024
+
+/* Ring buffer of the most recent git runs — the panel's "Git output" view
+   (VS Code's scm showOutput equivalent). Bounded on both axes: entries and
+   per-entry text, so a hostile `log -p` cannot grow it without limit. */
+const GIT_LOG_MAX_ENTRIES = 200
+const GIT_LOG_TEXT_MAX = 4000
+const gitLog = []
+function pushGitLog(entry) {
+  gitLog.push(entry)
+  if (gitLog.length > GIT_LOG_MAX_ENTRIES) gitLog.splice(0, gitLog.length - GIT_LOG_MAX_ENTRIES)
+}
+function clipGitLogText(text) {
+  if (typeof text !== 'string' || text.length <= GIT_LOG_TEXT_MAX) return text
+  return text.slice(0, GIT_LOG_TEXT_MAX / 2) + '\n…[' + String(text.length - GIT_LOG_TEXT_MAX) + ' more chars]…\n' + text.slice(-GIT_LOG_TEXT_MAX / 2)
+}
 const MAX_DIFF_CHARS = 400 * 1024
 const DEFAULT_TIMEOUT_MS = 30_000
 const NETWORK_TIMEOUT_MS = 180_000
@@ -118,6 +133,7 @@ function gitBinary() {
  */
 function runGit(cwd, args, options = {}) {
   const timeoutMs = options.timeoutMs === undefined ? DEFAULT_TIMEOUT_MS : options.timeoutMs
+  const startedAt = Date.now()
   return new Promise((resolve, reject) => {
     let child
     try {
@@ -135,6 +151,7 @@ function runGit(cwd, args, options = {}) {
       if (settled) return
       settled = true
       child.kill('SIGKILL')
+      pushGitLog({ at: new Date(startedAt).toISOString(), argv: args.join(' '), code: 'timeout', ms: timeoutMs, out: '', err: 'timed out after ' + String(timeoutMs) + 'ms' })
       reject(new PanelError('git-timeout', 'git ' + args[0] + ' timed out after ' + timeoutMs + 'ms', 504))
     }, timeoutMs)
     child.stdout.on('data', (chunk) => {
@@ -155,6 +172,14 @@ function runGit(cwd, args, options = {}) {
       if (settled) return
       settled = true
       clearTimeout(timer)
+      pushGitLog({
+        at: new Date(startedAt).toISOString(),
+        argv: args.join(' '),
+        code: code === null ? -1 : code,
+        ms: Date.now() - startedAt,
+        out: clipGitLogText(Buffer.concat(out).toString('utf8')),
+        err: clipGitLogText(Buffer.concat(err).toString('utf8')),
+      })
       resolve({
         code: code === null ? -1 : code,
         signal: signal === null ? undefined : signal,
@@ -436,7 +461,7 @@ function withRepoLock(key, work) {
 const WRITE_METHODS = new Set([
   'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename',
   'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
-  'push', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'undoApply',
+  'push', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'undoApply', 'clone',
 ])
 
 function lockKeyOf(payload) {
@@ -574,23 +599,42 @@ async function operationOf(root) {
 async function summary(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
-  const branch = await currentBranchOf(root)
-  const detached = branch === 'HEAD'
-  const upstream = detached ? null : await upstreamOf(root, branch)
-  const tracking = upstream === null ? { ahead: 0, behind: 0 } : await aheadBehindOf(root, upstream, branch)
-  const statusOut = await git(root, ['status', '--porcelain=v1', '-z', '--untracked-files=all'])
+  /* Two-phase changes (issue #11): with `stats: false` the two `diff
+     --numstat` passes — the most expensive step once a tree holds thousands
+     of changes — are skipped, `statsDeferred: true` announces that the +/-
+     numbers arrive through the `stats` method instead. The rows themselves
+     are complete without them; nothing is truncated. */
+  const deferStats = payload.stats === false
+  /* The branch chain (branch → upstream → ahead/behind) is sequential by
+     necessity; everything else is independent and runs concurrently, so a
+     large `status` scan no longer serialises behind five cheap calls
+     (issue #11: the sum of ~ten sequential commands became the max of two
+     chains). */
+  const [branchInfo, statusOut, unstagedStat, stagedStat, ignored, stashCount, worktrees, operation] = await Promise.all([
+    (async () => {
+      const branch = await currentBranchOf(root)
+      const detached = branch === 'HEAD'
+      const upstream = detached ? null : await upstreamOf(root, branch)
+      const tracking = upstream === null ? { ahead: 0, behind: 0 } : await aheadBehindOf(root, upstream, branch)
+      return { branch, detached, upstream, tracking }
+    })(),
+    git(root, ['status', '--porcelain=v1', '-z', '--untracked-files=all']),
+    deferStats ? Promise.resolve(new Map()) : numstatOf(root, []),
+    deferStats ? Promise.resolve(new Map()) : numstatOf(root, ['--cached']),
+    payload.ignored === true ? ignoredEntriesOf(root) : { entries: [], truncated: false },
+    stashCountOf(root),
+    worktreesOf(root),
+    operationOf(root),
+  ])
   const groups = classify(parsePorcelain(statusOut))
-  const ignored = payload.ignored === true ? await ignoredEntriesOf(root) : { entries: [], truncated: false }
-  const unstagedStat = await numstatOf(root, [])
-  const stagedStat = await numstatOf(root, ['--cached'])
   return {
     repoRoot: root,
     cwd,
-    branch,
-    detached,
-    upstream,
-    ahead: tracking.ahead,
-    behind: tracking.behind,
+    branch: branchInfo.branch,
+    detached: branchInfo.detached,
+    upstream: branchInfo.upstream,
+    ahead: branchInfo.tracking.ahead,
+    behind: branchInfo.tracking.behind,
     changes: {
       staged: decorate(groups.staged, stagedStat),
       unstaged: decorate(groups.unstaged, unstagedStat),
@@ -599,10 +643,29 @@ async function summary(payload) {
       ignored: ignored.entries,
       ignoredTruncated: ignored.truncated,
     },
-    stashCount: await stashCountOf(root),
-    worktrees: await worktreesOf(root),
-    operation: await operationOf(root),
+    statsDeferred: deferStats === true,
+    stashCount: stashCount,
+    worktrees: worktrees,
+    operation: operation,
   }
+}
+
+/* The second phase of the two-phase changes (issue #11): the two numstat
+   passes, concurrent, packed as [path, additions, deletions, binary] rows so
+   they survive JSON. Paths are post-rename paths — exactly what `summary`
+   decorates its entries with. Read-only: deliberately not in WRITE_METHODS. */
+async function stats(payload) {
+  const root = await repoRootOf(cwdOf(payload), payload)
+  const [unstaged, staged] = await Promise.all([
+    numstatOf(root, []),
+    numstatOf(root, ['--cached']),
+  ])
+  const pack = (map) => {
+    const rows = []
+    for (const [path, stat] of map) rows.push([path, stat.additions, stat.deletions, stat.binary === true])
+    return rows
+  }
+  return { unstaged: pack(unstaged), staged: pack(staged) }
 }
 
 async function branches(payload) {
@@ -1050,6 +1113,32 @@ async function tagDelete(payload) {
   const tag = requireRef(payload.name, 'name')
   await git(root, ['tag', '-d', tag])
   return { tag }
+}
+
+/* VS Code's SCM title "Clone..." — clone a URL into an absolute local path.
+   The PARENT of the target must exist; git creates the last component itself
+   and refuses a non-empty one, which is the safety net for typos. It writes a
+   brand-new tree (never touches an existing repository), but it does write the
+   filesystem, so it rides the write queue like everything else that mutates. */
+const CLONE_TIMEOUT_MS = 10 * 60 * 1000
+function requireUrl(value, label) {
+  if (typeof value !== 'string' || value.trim() === '') throw badRequest(label + ' is required')
+  const text = value.trim()
+  if (text.startsWith('-') === true || /[\s\u0000-\u001f]/.test(text) === true || text.length > 2048) {
+    throw badRequest(label + ' is not a valid repository URL')
+  }
+  return text
+}
+async function clone(payload) {
+  const url = requireUrl(payload.url, 'url')
+  const dir = requireAbsolute(payload.dir, 'dir')
+  await git(path.dirname(dir), ['clone', url, dir], { timeoutMs: CLONE_TIMEOUT_MS })
+  return { dir }
+}
+
+/* The tail of the git run ring buffer (see runGit). Read-only, global. */
+async function gitLogs() {
+  return { entries: gitLog.slice(-GIT_LOG_MAX_ENTRIES) }
 }
 
 /** What this repository can still undo right now (newest last). */
@@ -1666,6 +1755,7 @@ const METHODS = {
   'commit-efforts': commitEfforts,
   repos,
   summary,
+  stats,
   branches,
   log,
   commitDetail,
@@ -1693,6 +1783,8 @@ const METHODS = {
   stashDrop,
   tagCreate,
   tagDelete,
+  clone,
+  gitLogs,
   undoList,
   undoApply,
 }

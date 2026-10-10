@@ -99,6 +99,58 @@ test('summary classifies staged / unstaged / untracked with diffstats', async ()
   assert.equal(body.data.worktrees.length, 1)
 })
 
+test('summary with stats: false defers the diffstats, stats delivers phase two (issue #11)', async () => {
+  const deferred = await call('summary', { cwd: repo, stats: false })
+  assert.equal(deferred.status, 200)
+  assert.equal(deferred.body.data.statsDeferred, true)
+  // Rows are complete without the numbers; stats simply read as 0 until the merge.
+  assert.deepEqual(deferred.body.data.changes.staged.map((file) => file.path), ['staged.txt'])
+  assert.equal(deferred.body.data.changes.unstaged[0].additions, 0)
+  assert.equal(deferred.body.data.changes.unstaged[0].deletions, 0)
+  // A summary without the flag keeps the legacy single-phase shape.
+  const full = await call('summary', { cwd: repo })
+  assert.equal(full.body.data.statsDeferred, false)
+  assert.equal(full.body.data.changes.unstaged[0].additions, 1)
+
+  const second = await call('stats', { cwd: repo })
+  assert.equal(second.status, 200)
+  assert.equal(second.body.ok, true)
+  const unstaged = second.body.data.unstaged.filter((row) => row[0] === 'a.txt')
+  assert.equal(unstaged.length, 1)
+  assert.equal(unstaged[0][1], 1)
+  assert.equal(unstaged[0][2], 0)
+  assert.equal(unstaged[0][3], false)
+  const staged = second.body.data.staged.filter((row) => row[0] === 'staged.txt')
+  assert.equal(staged.length, 1)
+  assert.equal(staged[0][1], 1)
+})
+
+test('gitLogs records runs and clone validates its inputs (v0.15 more-menu)', async () => {
+  const logs = await call('gitLogs', {})
+  assert.equal(logs.status, 200)
+  assert.ok(Array.isArray(logs.body.data.entries))
+  assert.ok(logs.body.data.entries.length > 0)
+  const last = logs.body.data.entries[logs.body.data.entries.length - 1]
+  assert.equal(typeof last.argv, 'string')
+  assert.equal(typeof last.code, 'number')
+  assert.equal(typeof last.at, 'string')
+
+  // A local path is a valid clone source — fast, offline, and proves the happy path.
+  const target = join(tmpdir(), 'dig-clone-' + String(process.pid))
+  const cloned = await call('clone', { url: repo, dir: target })
+  assert.equal(cloned.status, 200)
+  assert.equal(cloned.body.ok, true)
+  assert.ok(existsSync(join(target, '.git')))
+  rmSync(target, { recursive: true, force: true })
+
+  const badUrl = await call('clone', { url: '', dir: join(tmpdir(), 'x') })
+  assert.notEqual(badUrl.status, 200)
+  const badDir = await call('clone', { url: repo, dir: 'relative/path' })
+  assert.notEqual(badDir.status, 200)
+  const flagUrl = await call('clone', { url: '--upload-pack=evil', dir: join(tmpdir(), 'x') })
+  assert.notEqual(flagUrl.status, 200)
+})
+
 test('branches reports locals, remotes, tags and HEAD', async () => {
   const { body } = await call('branches', { cwd: repo })
   const names = body.data.local.map((entry) => entry.name)

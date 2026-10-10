@@ -186,6 +186,22 @@ window.__ModuleLoader__.load({
       'diff.copy': '复制',
       'diff.copied': '已复制',
       'toolbar.refresh': '刷新',
+      'toolbar.more': '更多操作',
+      'more.sortGit': 'Git 顺序',
+      'more.sortPath': '按路径',
+      'more.sortName': '按名称',
+      'more.sortStatus': '按状态',
+      'more.clone': '克隆...',
+      'more.stashPop': '弹出最近贮藏',
+      'more.deleteTag': '删除标签...',
+      'more.gitOutput': '显示 Git 输出',
+      'clone.title': '克隆仓库',
+      'clone.url': '仓库 URL',
+      'clone.dir': '目标目录(绝对路径)',
+      'clone.run': '克隆',
+      'prompt.deleteTag': '要删除的标签名',
+      'gitLog.title': 'Git 输出',
+      'gitLog.empty': '暂无 Git 运行记录',
       'toolbar.newBranch': '新建分支',
       'toolbar.fetch': '抓取(Fetch)',
       'toolbar.pull': '拉取(Pull)',
@@ -411,6 +427,22 @@ window.__ModuleLoader__.load({
       'diff.copy': 'Copy',
       'diff.copied': 'Copied',
       'toolbar.refresh': 'Refresh',
+      'toolbar.more': 'More actions',
+      'more.sortGit': 'Git order',
+      'more.sortPath': 'By path',
+      'more.sortName': 'By name',
+      'more.sortStatus': 'By status',
+      'more.clone': 'Clone...',
+      'more.stashPop': 'Pop latest stash',
+      'more.deleteTag': 'Delete tag...',
+      'more.gitOutput': 'Show Git output',
+      'clone.title': 'Clone repository',
+      'clone.url': 'Repository URL',
+      'clone.dir': 'Target directory (absolute path)',
+      'clone.run': 'Clone',
+      'prompt.deleteTag': 'Tag name to delete',
+      'gitLog.title': 'Git output',
+      'gitLog.empty': 'No git runs yet',
       'toolbar.newBranch': 'New branch',
       'toolbar.fetch': 'Fetch',
       'toolbar.pull': 'Pull',
@@ -644,6 +676,22 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'toolbar.more': '更多操作',
+      'more.sortGit': 'Git 順序',
+      'more.sortPath': '按路徑',
+      'more.sortName': '按名稱',
+      'more.sortStatus': '按狀態',
+      'more.clone': '複製存放庫...',
+      'more.stashPop': '彈出最近貯藏',
+      'more.deleteTag': '刪除標籤...',
+      'more.gitOutput': '顯示 Git 輸出',
+      'clone.title': '複製存放庫',
+      'clone.url': '存放庫 URL',
+      'clone.dir': '目標目錄(絕對路徑)',
+      'clone.run': '複製',
+      'prompt.deleteTag': '要刪除的標籤名',
+      'gitLog.title': 'Git 輸出',
+      'gitLog.empty': '暫無 Git 執行記錄',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
@@ -869,6 +917,22 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'toolbar.more': '更多操作',
+      'more.sortGit': 'Git 順序',
+      'more.sortPath': '按路徑',
+      'more.sortName': '按名稱',
+      'more.sortStatus': '按狀態',
+      'more.clone': '複製存放庫...',
+      'more.stashPop': '取出最近擱置',
+      'more.deleteTag': '刪除標籤...',
+      'more.gitOutput': '顯示 Git 輸出',
+      'clone.title': '複製存放庫',
+      'clone.url': '存放庫 URL',
+      'clone.dir': '目標目錄(絕對路徑)',
+      'clone.run': '複製',
+      'prompt.deleteTag': '要刪除的標籤名',
+      'gitLog.title': 'Git 輸出',
+      'gitLog.empty': '暫無 Git 執行記錄',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
@@ -1094,6 +1158,22 @@ window.__ModuleLoader__.load({
         'diff.copy': '複製',
         'diff.copied': '已複製',
         'toolbar.refresh': '重新整理',
+      'toolbar.more': '更多操作',
+      'more.sortGit': 'Git 順序',
+      'more.sortPath': '按路徑',
+      'more.sortName': '按名稱',
+      'more.sortStatus': '按狀態',
+      'more.clone': '複製存放庫...',
+      'more.stashPop': '彈出最近貯藏',
+      'more.deleteTag': '刪除標籤...',
+      'more.gitOutput': '顯示 Git 輸出',
+      'clone.title': '複製存放庫',
+      'clone.url': '存放庫 URL',
+      'clone.dir': '目標目錄(絕對路徑)',
+      'clone.run': '複製',
+      'prompt.deleteTag': '要刪除的標籤名',
+      'gitLog.title': 'Git 輸出',
+      'gitLog.empty': '暫無 Git 執行記錄',
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
@@ -1319,6 +1399,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'コピー',
         'diff.copied': 'コピーしました',
         'toolbar.refresh': '更新',
+      'toolbar.more': 'その他の操作',
+      'more.sortGit': 'Git の順序',
+      'more.sortPath': 'パス順',
+      'more.sortName': '名前順',
+      'more.sortStatus': '状態順',
+      'more.clone': 'リポジトリを複製...',
+      'more.stashPop': '最新のスタッシュをポップ',
+      'more.deleteTag': 'タグを削除...',
+      'more.gitOutput': 'Git 出力を表示',
+      'clone.title': 'リポジトリを複製',
+      'clone.url': 'リポジトリ URL',
+      'clone.dir': '複製先ディレクトリ(絶対パス)',
+      'clone.run': '複製',
+      'prompt.deleteTag': '削除するタグ名',
+      'gitLog.title': 'Git 出力',
+      'gitLog.empty': 'Git 実行履歴はまだありません',
         'toolbar.newBranch': '新しいブランチ',
         'toolbar.fetch': 'フェッチ',
         'toolbar.pull': 'プル',
@@ -1544,6 +1640,22 @@ window.__ModuleLoader__.load({
         'diff.copy': '복사',
         'diff.copied': '복사됨',
         'toolbar.refresh': '새로 고침',
+      'toolbar.more': '더 보기',
+      'more.sortGit': 'Git 순서',
+      'more.sortPath': '경로순',
+      'more.sortName': '이름순',
+      'more.sortStatus': '상태순',
+      'more.clone': '복제...',
+      'more.stashPop': '최신 스태시 팝',
+      'more.deleteTag': '태그 삭제...',
+      'more.gitOutput': 'Git 출력 표시',
+      'clone.title': '리포지토리 복제',
+      'clone.url': '리포지토리 URL',
+      'clone.dir': '대상 디렉터리(절대 경로)',
+      'clone.run': '복제',
+      'prompt.deleteTag': '삭제할 태그 이름',
+      'gitLog.title': 'Git 출력',
+      'gitLog.empty': '아직 Git 실행 기록이 없습니다',
         'toolbar.newBranch': '새 브랜치',
         'toolbar.fetch': '페치',
         'toolbar.pull': '풀',
@@ -1769,6 +1881,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopieren',
         'diff.copied': 'Kopiert',
         'toolbar.refresh': 'Aktualisieren',
+      'toolbar.more': 'Weitere Aktionen',
+      'more.sortGit': 'Git-Reihenfolge',
+      'more.sortPath': 'Nach Pfad',
+      'more.sortName': 'Nach Name',
+      'more.sortStatus': 'Nach Status',
+      'more.clone': 'Repository klonen...',
+      'more.stashPop': 'Letzten Stash poppen',
+      'more.deleteTag': 'Tag löschen...',
+      'more.gitOutput': 'Git-Ausgabe anzeigen',
+      'clone.title': 'Repository klonen',
+      'clone.url': 'Repository-URL',
+      'clone.dir': 'Zielverzeichnis (absoluter Pfad)',
+      'clone.run': 'Klonen',
+      'prompt.deleteTag': 'Zu löschender Tag-Name',
+      'gitLog.title': 'Git-Ausgabe',
+      'gitLog.empty': 'Noch keine Git-Ausführungen',
         'toolbar.newBranch': 'Neuer Branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -1994,6 +2122,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copier',
         'diff.copied': 'Copié',
         'toolbar.refresh': 'Rafraîchir',
+      'toolbar.more': 'Actions supplémentaires',
+      'more.sortGit': 'Ordre Git',
+      'more.sortPath': 'Par chemin',
+      'more.sortName': 'Par nom',
+      'more.sortStatus': 'Par statut',
+      'more.clone': 'Cloner...',
+      'more.stashPop': 'Pop du dernier stash',
+      'more.deleteTag': 'Supprimer l\'étiquette...',
+      'more.gitOutput': 'Afficher la sortie Git',
+      'clone.title': 'Cloner le dépôt',
+      'clone.url': 'URL du dépôt',
+      'clone.dir': 'Répertoire cible (chemin absolu)',
+      'clone.run': 'Cloner',
+      'prompt.deleteTag': 'Nom de l\'étiquette à supprimer',
+      'gitLog.title': 'Sortie Git',
+      'gitLog.empty': 'Aucune exécution Git pour l\'instant',
         'toolbar.newBranch': 'Nouvelle branche',
         'toolbar.fetch': 'Récupérer',
         'toolbar.pull': 'Tirer',
@@ -2219,6 +2363,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Копировать',
         'diff.copied': 'Скопировано',
         'toolbar.refresh': 'Обновить',
+      'toolbar.more': 'Дополнительные действия',
+      'more.sortGit': 'Порядок Git',
+      'more.sortPath': 'По пути',
+      'more.sortName': 'По имени',
+      'more.sortStatus': 'По состоянию',
+      'more.clone': 'Клонировать...',
+      'more.stashPop': 'Pop последнего stash',
+      'more.deleteTag': 'Удалить тег...',
+      'more.gitOutput': 'Показать вывод Git',
+      'clone.title': 'Клонировать репозиторий',
+      'clone.url': 'URL репозитория',
+      'clone.dir': 'Целевой каталог (абсолютный путь)',
+      'clone.run': 'Клонировать',
+      'prompt.deleteTag': 'Имя тега для удаления',
+      'gitLog.title': 'Вывод Git',
+      'gitLog.empty': 'Запусков Git пока нет',
         'toolbar.newBranch': 'Новая ветка',
         'toolbar.fetch': 'Получить',
         'toolbar.pull': 'Забрать',
@@ -2444,6 +2604,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copiar',
         'diff.copied': 'Copiado',
         'toolbar.refresh': 'Atualizar',
+      'toolbar.more': 'Mais ações',
+      'more.sortGit': 'Ordem do Git',
+      'more.sortPath': 'Por caminho',
+      'more.sortName': 'Por nome',
+      'more.sortStatus': 'Por status',
+      'more.clone': 'Clonar...',
+      'more.stashPop': 'Pop do último stash',
+      'more.deleteTag': 'Excluir tag...',
+      'more.gitOutput': 'Mostrar saída do Git',
+      'clone.title': 'Clonar repositório',
+      'clone.url': 'URL do repositório',
+      'clone.dir': 'Diretório de destino (caminho absoluto)',
+      'clone.run': 'Clonar',
+      'prompt.deleteTag': 'Nome da tag a excluir',
+      'gitLog.title': 'Saída do Git',
+      'gitLog.empty': 'Ainda não há execuções do Git',
         'toolbar.newBranch': 'Nova branch',
         'toolbar.fetch': 'Buscar',
         'toolbar.pull': 'Puxar',
@@ -2669,6 +2845,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Copia',
         'diff.copied': 'Copiato',
         'toolbar.refresh': 'Aggiorna',
+      'toolbar.more': 'Altre azioni',
+      'more.sortGit': 'Ordine Git',
+      'more.sortPath': 'Per percorso',
+      'more.sortName': 'Per nome',
+      'more.sortStatus': 'Per stato',
+      'more.clone': 'Clona...',
+      'more.stashPop': 'Pop dell\'ultimo stash',
+      'more.deleteTag': 'Elimina tag...',
+      'more.gitOutput': 'Mostra output Git',
+      'clone.title': 'Clona repository',
+      'clone.url': 'URL del repository',
+      'clone.dir': 'Directory di destinazione (percorso assoluto)',
+      'clone.run': 'Clona',
+      'prompt.deleteTag': 'Nome del tag da eliminare',
+      'gitLog.title': 'Output Git',
+      'gitLog.empty': 'Nessuna esecuzione Git registrata',
         'toolbar.newBranch': 'Nuovo branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -2894,6 +3086,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiëren',
         'diff.copied': 'Gekopieerd',
         'toolbar.refresh': 'Vernieuwen',
+      'toolbar.more': 'Meer acties',
+      'more.sortGit': 'Git-volgorde',
+      'more.sortPath': 'Op pad',
+      'more.sortName': 'Op naam',
+      'more.sortStatus': 'Op status',
+      'more.clone': 'Klonen...',
+      'more.stashPop': 'Pop laatste stash',
+      'more.deleteTag': 'Tag verwijderen...',
+      'more.gitOutput': 'Git-uitvoer tonen',
+      'clone.title': 'Repository klonen',
+      'clone.url': 'Repository-URL',
+      'clone.dir': 'Doelmap (absoluut pad)',
+      'clone.run': 'Klonen',
+      'prompt.deleteTag': 'Naam van de te verwijderen tag',
+      'gitLog.title': 'Git-uitvoer',
+      'gitLog.empty': 'Nog geen Git-uitvoeringen',
         'toolbar.newBranch': 'Nieuwe branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -3119,6 +3327,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiuj',
         'diff.copied': 'Skopiowano',
         'toolbar.refresh': 'Odśwież',
+      'toolbar.more': 'Więcej akcji',
+      'more.sortGit': 'Kolejność Gita',
+      'more.sortPath': 'Według ścieżki',
+      'more.sortName': 'Według nazwy',
+      'more.sortStatus': 'Według stanu',
+      'more.clone': 'Klonuj...',
+      'more.stashPop': 'Pop ostatniego stash',
+      'more.deleteTag': 'Usuń tag...',
+      'more.gitOutput': 'Pokaż dane wyjściowe Git',
+      'clone.title': 'Klonuj repozytorium',
+      'clone.url': 'URL repozytorium',
+      'clone.dir': 'Katalog docelowy (ścieżka bezwzględna)',
+      'clone.run': 'Klonuj',
+      'prompt.deleteTag': 'Nazwa tagu do usunięcia',
+      'gitLog.title': 'Dane wyjściowe Git',
+      'gitLog.empty': 'Brak zapisanych wykonań Git',
         'toolbar.newBranch': 'Nowa gałąź',
         'toolbar.fetch': 'Pobierz',
         'toolbar.pull': 'Ściągnij',
@@ -3344,6 +3568,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopiera',
         'diff.copied': 'Kopierat',
         'toolbar.refresh': 'Uppdatera',
+      'toolbar.more': 'Fler åtgärder',
+      'more.sortGit': 'Git-ordning',
+      'more.sortPath': 'Efter sökväg',
+      'more.sortName': 'Efter namn',
+      'more.sortStatus': 'Efter status',
+      'more.clone': 'Klona...',
+      'more.stashPop': 'Pop:a senaste stash',
+      'more.deleteTag': 'Ta bort tagg...',
+      'more.gitOutput': 'Visa Git-utdata',
+      'clone.title': 'Klona lagringsplats',
+      'clone.url': 'URL till lagringsplats',
+      'clone.dir': 'Målkatalog (absolut sökväg)',
+      'clone.run': 'Klona',
+      'prompt.deleteTag': 'Tagnamn som ska tas bort',
+      'gitLog.title': 'Git-utdata',
+      'gitLog.empty': 'Inga Git-körningar ännu',
         'toolbar.newBranch': 'Ny gren',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -3569,6 +3809,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Kopyala',
         'diff.copied': 'Kopyalandı',
         'toolbar.refresh': 'Yenile',
+      'toolbar.more': 'Diğer eylemler',
+      'more.sortGit': 'Git sırası',
+      'more.sortPath': 'Yola göre',
+      'more.sortName': 'Ada göre',
+      'more.sortStatus': 'Duruma göre',
+      'more.clone': 'Klonla...',
+      'more.stashPop': 'Son stash\'i aç',
+      'more.deleteTag': 'Etiket sil...',
+      'more.gitOutput': 'Git çıktısını göster',
+      'clone.title': 'Depoyu klonla',
+      'clone.url': 'Depo URL\'si',
+      'clone.dir': 'Hedef dizin (mutlak yol)',
+      'clone.run': 'Klonla',
+      'prompt.deleteTag': 'Silinecek etiket adı',
+      'gitLog.title': 'Git çıktısı',
+      'gitLog.empty': 'Henüz Git çalıştırması yok',
         'toolbar.newBranch': 'Yeni dal',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -3794,6 +4050,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Salin',
         'diff.copied': 'Tersalin',
         'toolbar.refresh': 'Segarkan',
+      'toolbar.more': 'Tindakan lainnya',
+      'more.sortGit': 'Urutan Git',
+      'more.sortPath': 'Menurut jalur',
+      'more.sortName': 'Menurut nama',
+      'more.sortStatus': 'Menurut status',
+      'more.clone': 'Kloning...',
+      'more.stashPop': 'Pop stash terbaru',
+      'more.deleteTag': 'Hapus tag...',
+      'more.gitOutput': 'Tampilkan keluaran Git',
+      'clone.title': 'Kloning repositori',
+      'clone.url': 'URL repositori',
+      'clone.dir': 'Direktori target (jalur absolut)',
+      'clone.run': 'Kloning',
+      'prompt.deleteTag': 'Nama tag yang akan dihapus',
+      'gitLog.title': 'Keluaran Git',
+      'gitLog.empty': 'Belum ada eksekusi Git',
         'toolbar.newBranch': 'Branch baru',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -4019,6 +4291,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'Sao chép',
         'diff.copied': 'Đã sao chép',
         'toolbar.refresh': 'Làm mới',
+      'toolbar.more': 'Thao tác khác',
+      'more.sortGit': 'Thứ tự Git',
+      'more.sortPath': 'Theo đường dẫn',
+      'more.sortName': 'Theo tên',
+      'more.sortStatus': 'Theo trạng thái',
+      'more.clone': 'Clone...',
+      'more.stashPop': 'Pop stash gần nhất',
+      'more.deleteTag': 'Xóa thẻ...',
+      'more.gitOutput': 'Hiện đầu ra Git',
+      'clone.title': 'Clone kho',
+      'clone.url': 'URL kho',
+      'clone.dir': 'Thư mục đích (đường dẫn tuyệt đối)',
+      'clone.run': 'Clone',
+      'prompt.deleteTag': 'Tên thẻ cần xóa',
+      'gitLog.title': 'Đầu ra Git',
+      'gitLog.empty': 'Chưa có lần chạy Git nào',
         'toolbar.newBranch': 'Nhánh mới',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -4244,6 +4532,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'نسخ',
         'diff.copied': 'تم النسخ',
         'toolbar.refresh': 'تحديث',
+      'toolbar.more': 'مزيد من الإجراءات',
+      'more.sortGit': 'ترتيب Git',
+      'more.sortPath': 'حسب المسار',
+      'more.sortName': 'حسب الاسم',
+      'more.sortStatus': 'حسب الحالة',
+      'more.clone': 'استنساخ...',
+      'more.stashPop': 'تفريغ آخر stash',
+      'more.deleteTag': 'حذف الوسم...',
+      'more.gitOutput': 'إظهار مخرجات Git',
+      'clone.title': 'استنساخ المستودع',
+      'clone.url': 'رابط المستودع',
+      'clone.dir': 'المجلد الهدف (مسار مطلق)',
+      'clone.run': 'استنساخ',
+      'prompt.deleteTag': 'اسم الوسم المطلوب حذفه',
+      'gitLog.title': 'مخرجات Git',
+      'gitLog.empty': 'لا توجد عمليات Git بعد',
         'toolbar.newBranch': 'فرع جديد',
         'toolbar.fetch': 'جلب',
         'toolbar.pull': 'سحب',
@@ -4469,6 +4773,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'कॉपी करें',
         'diff.copied': 'कॉपी हो गया',
         'toolbar.refresh': 'ताज़ा करें',
+      'toolbar.more': 'अधिक क्रियाएँ',
+      'more.sortGit': 'Git क्रम',
+      'more.sortPath': 'पथ से',
+      'more.sortName': 'नाम से',
+      'more.sortStatus': 'स्थिति से',
+      'more.clone': 'क्लोन करें...',
+      'more.stashPop': 'नवीनतम स्टैश पॉप करें',
+      'more.deleteTag': 'टैग हटाएँ...',
+      'more.gitOutput': 'Git आउटपुट दिखाएँ',
+      'clone.title': 'रिपॉज़िटरी क्लोन करें',
+      'clone.url': 'रिपॉज़िटरी URL',
+      'clone.dir': 'लक्ष्य डायरेक्टरी (पूर्ण पथ)',
+      'clone.run': 'क्लोन करें',
+      'prompt.deleteTag': 'हटाने के लिए टैग नाम',
+      'gitLog.title': 'Git आउटपुट',
+      'gitLog.empty': 'अभी तक कोई Git रन नहीं',
         'toolbar.newBranch': 'नई शाखा',
         'toolbar.fetch': 'फ़ेच',
         'toolbar.pull': 'पुल',
@@ -4694,6 +5014,22 @@ window.__ModuleLoader__.load({
         'diff.copy': 'คัดลอก',
         'diff.copied': 'คัดลอกแล้ว',
         'toolbar.refresh': 'รีเฟรช',
+      'toolbar.more': 'การกระทำเพิ่มเติม',
+      'more.sortGit': 'ลำดับ Git',
+      'more.sortPath': 'ตามเส้นทาง',
+      'more.sortName': 'ตามชื่อ',
+      'more.sortStatus': 'ตามสถานะ',
+      'more.clone': 'โคลน...',
+      'more.stashPop': 'ป๊อป stash ล่าสุด',
+      'more.deleteTag': 'ลบแท็ก...',
+      'more.gitOutput': 'แสดงเอาต์พุต Git',
+      'clone.title': 'โคลนรีโพซิทอรี',
+      'clone.url': 'URL ของรีโพซิทอรี',
+      'clone.dir': 'ไดเรกทอรีเป้าหมาย (พาธสัมบูรณ์)',
+      'clone.run': 'โคลน',
+      'prompt.deleteTag': 'ชื่อแท็กที่จะลบ',
+      'gitLog.title': 'เอาต์พุต Git',
+      'gitLog.empty': 'ยังไม่มีการรัน Git',
         'toolbar.newBranch': 'แบรนช์ใหม่',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
@@ -5247,6 +5583,10 @@ window.__ModuleLoader__.load({
       { id: 'fetch', icon: 'fetch', key: 'toolbar.fetch', tone: 'cyan' },
       { id: 'pull', icon: 'pull', key: 'toolbar.pull', tone: 'accent' },
       { id: 'push', icon: 'push', key: 'toolbar.push', tone: 'success' },
+      /* VS Code-style "..." menu: view mode, sort, and every repository action
+         that has no rail button of its own. A rail action (not a chrome
+         button) so the user can hide/move it like any other, per invariant 14. */
+      { id: 'more', icon: 'more', key: 'toolbar.more', tone: 'secondary' },
     ]
     const RAIL_IDS = RAIL_SPECS.map((spec) => spec.id)
     /* Actions that arrange the view rather than touch the repository, so a running
@@ -7596,6 +7936,68 @@ window.__ModuleLoader__.load({
             E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: submit }, props.okLabel))))
     }
 
+    /* VS Code's "Clone...": a URL plus an absolute target path. Two inputs in
+       one dialog — chaining two single prompts would forget the URL by the
+       time the directory is typed. */
+    function CloneDialog(props) {
+      const [url, setUrl] = useState('')
+      const [dir, setDir] = useState('')
+      const ref = useRef(null)
+      useEffect(() => { if (ref.current !== null) ref.current.focus() }, [])
+      const ready = url.trim() !== '' && dir.trim() !== ''
+      const submit = () => { if (ready === true) props.onSubmit(url.trim(), dir.trim()) }
+      const onKey = (event) => {
+        if (event.key === 'Enter') { event.preventDefault(); submit() }
+        if (event.key === 'Escape') { event.preventDefault(); props.onCancel() }
+      }
+      return E('div', { className: 'dig-overlay' },
+        E('div', { className: 'dig-dialog' },
+          E('div', { className: 'dig-dialog-title' }, props.title),
+          E('input', {
+            ref: ref, className: 'dig-input', value: url, spellCheck: false,
+            placeholder: props.urlPlaceholder === undefined ? '' : props.urlPlaceholder,
+            onChange: (event) => setUrl(event.target.value), onKeyDown: onKey,
+          }),
+          E('input', {
+            className: 'dig-input', value: dir, spellCheck: false,
+            placeholder: props.dirPlaceholder === undefined ? '' : props.dirPlaceholder,
+            onChange: (event) => setDir(event.target.value), onKeyDown: onKey,
+          }),
+          E('div', { className: 'dig-dialog-actions' },
+            E('button', { type: 'button', className: 'dig-btn', onClick: props.onCancel }, props.cancelLabel),
+            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', disabled: ready === false, onClick: submit }, props.okLabel))))
+    }
+
+    /* VS Code's "Git output" view (showOutput): the tail of the host's git-run
+       ring buffer, fetched through the gitLogs method. A debugging view —
+       opened on demand, refreshed by hand; newest land at the bottom and the
+       body auto-scrolls to them. Panel-internal absolute positioning (13). */
+    function GitOutputDrawer(props) {
+      const t = props.t
+      const ref = useRef(null)
+      useEffect(() => { if (ref.current !== null) ref.current.scrollTop = ref.current.scrollHeight }, [props.entries])
+      return E('div', { className: 'dig-gitlog' },
+        E('div', { className: 'dig-gitlog-head' },
+          E('span', { className: 'dig-gitlog-title' }, t('gitLog.title')),
+          E('span', { className: 'dig-topbar-spacer' }),
+          E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('toolbar.refresh'), onClick: props.onRefresh }, E(Icon, { name: 'refresh', size: 13 })),
+          E('button', { type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('confirm.cancel'), onClick: props.onClose }, E(Icon, { name: 'collapse', size: 13 }))),
+        props.entries.length === 0
+          ? E('div', { className: 'dig-gitlog-empty' }, t('gitLog.empty'))
+          : E('div', { className: 'dig-gitlog-body', ref: ref },
+            props.entries.map((entry, index) => E('div', {
+              key: index,
+              className: 'dig-gitlog-row' + (String(entry.code) === '0' ? '' : ' dig-gitlog-row-bad'),
+            },
+              E('div', { className: 'dig-gitlog-meta' },
+                E('span', { className: 'dig-gitlog-code' }, String(entry.code)),
+                E('span', { className: 'dig-gitlog-ms' }, String(entry.ms) + 'ms'),
+                E('span', { className: 'dig-gitlog-at' }, String(entry.at)),
+                E('span', { className: 'dig-gitlog-argv' }, String(entry.argv))),
+              entry.out === '' && entry.err === '' ? null
+                : E('pre', { className: 'dig-gitlog-pre' }, String(entry.err) === '' ? String(entry.out) : String(entry.out) + '\n' + String(entry.err))))))
+    }
+
     /* A destructive confirm: focus starts on Cancel (never on the red button), Enter
        only submits when the dialog asked for a typed confirmation, and passing
        requireText turns the dialog into a type-the-name gate. */
@@ -7726,7 +8128,7 @@ window.__ModuleLoader__.load({
          system colours over a dark translucent panel) and was unreadable. */
       let current = null
       for (const repo of props.repos) { if (repo.path === props.value) { current = repo; break } }
-      return E('span', { className: 'dig-select-wrap', title: t('repo.switch') },
+      return E('span', { className: 'dig-select-wrap', title: current === null ? t('repo.switch') : current.path },
         E(Icon, { name: 'folder', size: 12 }),
         E('button', {
           type: 'button',
@@ -7913,7 +8315,15 @@ window.__ModuleLoader__.load({
 
     /* ============================== changes ============================== */
 
-    function ChangeRow(props) {
+    /* Memoised with a hand-rolled comparison (issue #11): the callbacks are
+       inline arrows and change identity on every parent render, so default
+       shallow memo would never hit. Rows re-render only when their `item`
+       reference changes — which is exactly what the two-phase stats merge
+       produces (untouched rows keep their object). Stale-callback safety:
+       every callback closes over `run`/`base`, and those only change together
+       with a repo switch, which lands as a brand-new summary array — i.e.
+       new `item` references, so the rows do re-render with fresh closures. */
+    const ChangeRow = memo(function ChangeRow(props) {
       const t = props.t
       const item = props.item
       const raw = item.index === '?' ? '?' : (item.index + item.worktree).trim()
@@ -7939,7 +8349,7 @@ window.__ModuleLoader__.load({
           ? E('button', { type: 'button', className: 'dig-mini', title: t('action.unstage'), onClick: (event) => { event.stopPropagation(); props.onUnstage(item) } }, E(Icon, { name: 'minus', size: 12 }))
           : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 }))),
         readOnly ? null : E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
-    }
+    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t)
 
     function ChangesPanel(props) {
       const t = props.t
@@ -7965,7 +8375,12 @@ window.__ModuleLoader__.load({
       // clusters each group's files under their folder, the way "Group by:
       // Directory" does in an IDE. Folders are addressed by <group>|<dir>, so a
       // refresh never loses which ones the user folded away.
-      const [groupBy, setGroupBy] = useState('flat')
+      // Lifted to the panel (v0.15): the "..." menu drives the same state, so
+      // the header toggle and the menu can never disagree. The alias pair keeps
+      // the body reads below untouched.
+      const groupBy = props.groupBy === 'dir' ? 'dir' : 'flat'
+      const setGroupBy = props.onGroupBy
+      const sortKey = props.sortKey === undefined ? 'git' : props.sortKey
       const [foldedDirs, setFoldedDirs] = useState({})
       const changes = summary === null ? null : summary.changes
       const conflicted = changes === null ? [] : changes.conflicted
@@ -8021,10 +8436,20 @@ window.__ModuleLoader__.load({
         const dir = dirName(item.path)
         return dir === '' ? t('changes.rootDir') : dir
       }
+      /* The "..." menu's sort orders (v0.15). 'git' keeps git's own status
+         order; the others are pure client-side sorts of already-loaded
+         entries — no extra git calls, no re-fetch. */
+      const sortedOf = (entries) => {
+        if (sortKey === 'path') return entries.slice().sort((a, b) => a.path.localeCompare(b.path))
+        if (sortKey === 'name') return entries.slice().sort((a, b) => baseName(a.path).localeCompare(baseName(b.path)) || a.path.localeCompare(b.path))
+        if (sortKey === 'status') return entries.slice().sort((a, b) => (a.index + a.worktree).localeCompare(b.index + b.worktree) || a.path.localeCompare(b.path))
+        return entries
+      }
       const rowsOf = (key, entries) => {
-        if (groupBy !== 'dir') return entries.map((item) => entryRow(key, item))
+        const sorted = sortedOf(entries)
+        if (groupBy !== 'dir') return sorted.map((item) => entryRow(key, item))
         const folders = new Map()
-        for (const item of entries) {
+        for (const item of sorted) {
           const name = folderOf(item)
           if (folders.has(name) === false) folders.set(name, [])
           folders.get(name).push(item)
@@ -8734,9 +9159,78 @@ window.__ModuleLoader__.load({
         return () => { cancelled = true }
       }, [cwd, sessionId, tick])
 
+      /* Changes view state, lifted out of ChangesPanel so the "..." menu (a
+         rail action, invariant 14) can drive the same groupBy and the sort
+         order it introduces — one source of truth, wherever the click came
+         from. sortKey 'git' keeps git's own status order. */
+      const [groupBy, setGroupBy] = useState('flat')
+      const [sortKey, setSortKey] = useState('git')
+      /* The Git-output drawer (VS Code showOutput): null = closed, an array =
+         the entries it currently shows. Opened on demand, refreshed by hand or
+         by reopening — it is a debugging view, not a live stream. */
+      const [gitOutput, setGitOutput] = useState(null)
+      const openGitOutput = useCallback(async () => {
+        try {
+          const data = await request('gitLogs', {})
+          setGitOutput(Array.isArray(data.entries) ? data.entries : [])
+        } catch (caught) {
+          setError(caught instanceof Error ? caught.message : String(caught))
+        }
+      }, [request])
+
+
+      /* Phase-two merge (issue #11): fold the [path, additions, deletions,
+         binary] rows from the `stats` method into a deferred summary. Pure and
+         immutable — untouched rows keep their object reference so the memoised
+         ChangeRow skips them, and a group with no numeric change keeps its
+         array reference so React reconciles nothing. Declared before use
+         (hooks dependency TDZ rule). */
+      const applyStats = (data, statsPayload) => {
+        if (data === null || typeof data !== 'object' || statsPayload === null || typeof statsPayload !== 'object') return data
+        const build = (entries, rows) => {
+          if (Array.isArray(entries) !== true || entries.length === 0 || Array.isArray(rows) !== true) return entries
+          const map = new Map()
+          for (const row of rows) {
+            if (Array.isArray(row) === true && row.length >= 4 && typeof row[0] === 'string') {
+              map.set(row[0], { additions: row[1] | 0, deletions: row[2] | 0, binary: row[3] === true })
+            }
+          }
+          let touched = false
+          const next = entries.map((entry) => {
+            const stat = map.get(entry.path)
+            if (stat === undefined) {
+              if (entry.additions === 0 && entry.deletions === 0 && entry.binary !== true) return entry
+              touched = true
+              return Object.assign({}, entry, { additions: 0, deletions: 0, binary: false })
+            }
+            if (entry.additions === stat.additions && entry.deletions === stat.deletions && entry.binary === stat.binary) return entry
+            touched = true
+            return Object.assign({}, entry, stat)
+          })
+          return touched ? next : entries
+        }
+        const changes = data.changes
+        const staged = build(changes.staged, statsPayload.staged)
+        const unstaged = build(changes.unstaged, statsPayload.unstaged)
+        if (staged === changes.staged && unstaged === changes.unstaged) return data
+        return Object.assign({}, data, {
+          statsDeferred: false,
+          changes: Object.assign({}, changes, { staged: staged, unstaged: unstaged }),
+        })
+      }
+
       const loadSummary = useCallback(async () => {
-        const data = await request('summary', Object.assign({}, base, { ignored: showIgnored }))
+        /* Two-phase (issue #11): the rows land first (`stats: false` skips the
+           two numstat passes), then the +/- numbers merge in behind them. The
+           panel is usable the moment the rows arrive; the numbers are exact
+           when they arrive — nothing is approximated or dropped. */
+        const data = await request('summary', Object.assign({}, base, { ignored: showIgnored, stats: false }))
         setSummary(data)
+        if (data.statsDeferred === true) {
+          const merged = applyStats(data, await request('stats', base))
+          setSummary(merged)
+          return merged
+        }
         return data
       }, [base, showIgnored])
 
@@ -8790,9 +9284,18 @@ window.__ModuleLoader__.load({
 
       useEffect(() => {
         if (props.visible !== true || repoRoot === null) return undefined
+        /* In-flight gate (issue #11): a summary over a tree with thousands of
+           changes can outlast AUTO_REFRESH_MS, and re-entering just piles
+           queued scans behind the repo lock (the interval deliberately does
+           not run through `guard` — a background refresh must not flash the
+           busy UI). Skip while the previous round is still running; the next
+           tick re-checks. */
+        let inFlight = false
         const timer = setInterval(() => {
+          if (inFlight === true) return
+          inFlight = true
           void (async () => {
-            try { await loadSummary() } catch (error) { void error }
+            try { await loadSummary() } catch (error) { void error } finally { inFlight = false }
           })()
         }, AUTO_REFRESH_MS)
         return () => clearInterval(timer)
@@ -9222,6 +9725,7 @@ window.__ModuleLoader__.load({
         if (state.kind === 'newBranch') { await run('checkout', { branch: value, create: true, startPoint: state.from }); return }
         if (state.kind === 'renameBranch') { await run('branchRename', { from: state.from, to: value }); return }
         if (state.kind === 'newTag') { await run('tagCreate', { name: value, hash: state.hash }); return }
+        if (state.kind === 'deleteTag') { await run('tagDelete', { name: value }); return }
       }, [run])
 
       /* ---------- toasts + undo ---------- */
@@ -9343,7 +9847,7 @@ window.__ModuleLoader__.load({
           loading: repoState === null,
           onOpenMenu: openRepoMenu,
         }),
-        branches === null || branches.local.length === 0 ? null : E('span', { className: 'dig-select-wrap', title: t('branch.switch') },
+        branches === null || branches.local.length === 0 ? null : E('span', { className: 'dig-select-wrap', title: branches.branch },
           E(Icon, { name: 'branch', size: 12 }),
           E('button', {
             type: 'button',
@@ -9374,6 +9878,7 @@ window.__ModuleLoader__.load({
       const commitSettings = readCommitSettings()
       const changesPane = E(ChangesPanel, {
         t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
+        groupBy: groupBy, sortKey: sortKey, onGroupBy: setGroupBy,
         request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings, base: base,
         showIgnored: showIgnored,
         onToggleIgnored: () => setShowIgnored((value) => !value),
@@ -9476,6 +9981,48 @@ window.__ModuleLoader__.load({
       const stashCount = summary === null ? 0 : summary.stashCount
       const reason = t('action.unavailable')
 
+      /* VS Code-style "..." menu — the SCM title menu: view mode, sort, sync,
+         changes, branch/stash/tag shortcuts, and the Git-output view at the
+         bottom. Every entry reuses the very handlers the rail rows and group
+         heads already run, so the menu can never disagree with them. */
+      const moreMenu = (event) => {
+        const tagCount = branches === null || Array.isArray(branches.tags) !== true ? 0 : branches.tags.length
+        const stageable = summary === null ? [] : summary.changes.unstaged.concat(summary.changes.untracked)
+        const stagedPaths = summary === null ? [] : summary.changes.staged.map((entry) => entry.path)
+        const sort = (key) => () => setSortKey(key)
+        openMenuAt(event, [
+          { id: 'view-flat', icon: 'commit', tone: 'secondary', label: t('changes.groupFlat'), active: groupBy === 'flat', run: () => setGroupBy('flat') },
+          { id: 'view-dir', icon: 'folder', tone: 'secondary', label: t('changes.groupDir'), active: groupBy === 'dir', run: () => setGroupBy('dir') },
+          null,
+          { id: 'sort-git', icon: 'commit', tone: 'secondary', label: t('more.sortGit'), active: sortKey === 'git', run: sort('git') },
+          { id: 'sort-path', icon: 'commit', tone: 'secondary', label: t('more.sortPath'), active: sortKey === 'path', run: sort('path') },
+          { id: 'sort-name', icon: 'commit', tone: 'secondary', label: t('more.sortName'), active: sortKey === 'name', run: sort('name') },
+          { id: 'sort-status', icon: 'commit', tone: 'secondary', label: t('more.sortStatus'), active: sortKey === 'status', run: sort('status') },
+          null,
+          { id: 'mm-pull', icon: 'pull', tone: 'accent', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'ff-only' }) } },
+          { id: 'mm-push', icon: 'push', tone: 'success', label: t('toolbar.push'), disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'push' }) },
+          { id: 'mm-fetch', icon: 'fetch', tone: 'cyan', label: t('toolbar.fetch'), disabled: remoteReady !== true, reason, run: () => { void run('fetch', { prune: true }) } },
+          { id: 'mm-checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout') + '...', disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'checkout') },
+          { id: 'mm-clone', icon: 'plus', tone: 'secondary', label: t('more.clone'), run: () => setDialog({ kind: 'clone' }) },
+          null,
+          { id: 'mm-stage-all', icon: 'plus', tone: 'success', label: t('changes.stageAll'), disabled: stageable.length === 0, reason, run: () => { void run('stage', { paths: stageable.map((entry) => entry.path) }) } },
+          { id: 'mm-unstage-all', icon: 'minus', tone: 'warn', label: t('changes.unstageAll'), disabled: stagedPaths.length === 0, reason, run: () => { void run('unstage', { paths: stagedPaths }) } },
+          null,
+          { id: 'mm-new-branch', icon: 'plus', tone: 'success', label: t('toolbar.newBranch'), disabled: blocked, reason, run: () => setDialog({ kind: 'newBranch' }) },
+          { id: 'mm-delete-branch', icon: 'trash', tone: 'danger', danger: true, label: t('action.delete'), disabled: otherBranches.length === 0, reason, run: (ev) => pickBranchMenu(ev, 'delete') },
+          null,
+          { id: 'mm-stash-push', icon: 'stash', tone: 'violet', label: t('stash.push'), disabled: dirty === 0, reason, run: () => { void run('stashPush', { includeUntracked: true }) } },
+          { id: 'mm-stash-apply', icon: 'checkout', tone: 'accent', label: t('stash.apply'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', {}) } },
+          { id: 'mm-stash-pop', icon: 'stash', tone: 'accent', label: t('more.stashPop'), disabled: stashCount === 0, reason, run: () => { void run('stashApply', { pop: true }) } },
+          { id: 'mm-stash-drop', icon: 'trash', tone: 'danger', danger: true, label: t('stash.drop'), disabled: stashCount === 0, reason, run: () => setDialog({ kind: 'stashDrop', ref: 'stash@{0}' }) },
+          null,
+          { id: 'mm-new-tag', icon: 'tag', tone: 'warn', label: t('action.newTagHere'), disabled: commits.length === 0, reason, run: () => setDialog({ kind: 'newTag' }) },
+          { id: 'mm-delete-tag', icon: 'trash', tone: 'danger', danger: true, label: t('more.deleteTag'), disabled: tagCount === 0, reason, run: () => setDialog({ kind: 'deleteTag' }) },
+          null,
+          { id: 'mm-git-output', icon: 'commit', tone: 'secondary', label: t('more.gitOutput'), run: () => { void openGitOutput() } },
+        ])
+      }
+
       /* One descriptor per action, with the availability IDEA would use: delete /
          checkout / compare need another local branch, fetch and push need a remote,
          pull needs an upstream, diff needs pending changes, tag needs a commit.
@@ -9494,6 +10041,7 @@ window.__ModuleLoader__.load({
         else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
         else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
         else if (spec.id === 'push') { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
+        else if (spec.id === 'more') { entry.run = (event) => moreMenu(event) }
         else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
         else if (spec.id === 'float') {
           // Label AND icon follow where the panel actually is: floating panels get
@@ -9725,8 +10273,8 @@ window.__ModuleLoader__.load({
           onClose: () => setRailSettings(false),
         }))
       }
-      if (dialog !== null && (dialog.kind === 'newBranch' || dialog.kind === 'renameBranch' || dialog.kind === 'newTag')) {
-        const titles = { newBranch: t('prompt.newBranch'), renameBranch: t('prompt.renameBranch'), newTag: t('prompt.newTag') }
+      if (dialog !== null && (dialog.kind === 'newBranch' || dialog.kind === 'renameBranch' || dialog.kind === 'newTag' || dialog.kind === 'deleteTag')) {
+        const titles = { newBranch: t('prompt.newBranch'), renameBranch: t('prompt.renameBranch'), newTag: t('prompt.newTag'), deleteTag: t('prompt.deleteTag') }
         overlays.push(E(PromptDialog, {
           key: 'prompt',
           title: titles[dialog.kind],
@@ -9735,6 +10283,17 @@ window.__ModuleLoader__.load({
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onSubmit: (value) => { void submitDialog(dialog, value) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'clone') {
+        overlays.push(E(CloneDialog, {
+          key: 'clone',
+          title: t('clone.title'),
+          urlPlaceholder: t('clone.url'),
+          dirPlaceholder: t('clone.dir'),
+          okLabel: t('clone.run'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onSubmit: (url, dir) => { setDialog(null); void run('clone', { url: url, dir: dir }) },
         }))
       }
       if (dialog !== null && dialog.kind === 'deleteBranch') {
@@ -9830,6 +10389,11 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-shell' },
           columns === true && repoRoot !== null ? renderRail(true) : null,
           body),
+        gitOutput === null ? null : E(GitOutputDrawer, {
+          t: t, entries: gitOutput,
+          onRefresh: () => { void openGitOutput() },
+          onClose: () => setGitOutput(null),
+        }),
         overlays,
         E(ToastStack, { t: t, toasts: toasts }))
     }
@@ -9850,17 +10414,24 @@ window.__ModuleLoader__.load({
       '.dig-topbar-spacer{flex:1;min-width:4px}',
       '.dig-busy{color:var(--dsw-alias-label-tertiary);flex:none;white-space:nowrap}',
       '.dig-track{color:var(--dsw-alias-label-secondary);flex:none;font-variant-numeric:tabular-nums;white-space:nowrap}',
-      '.dig-select-wrap{display:inline-flex;align-items:center;gap:4px;min-width:0;color:var(--dsw-alias-label-secondary)}',
-      '.dig-select{appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm,8px);color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;padding:1px 6px;height:22px;max-width:190px;min-width:0;cursor:pointer;text-overflow:ellipsis}',
+      '.dig-select-wrap{display:inline-flex;align-items:center;gap:4px;min-width:0;flex:0 1 auto;max-width:90%;color:var(--dsw-alias-label-secondary)}',
+      '.dig-select{appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm,8px);color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;padding:1px 6px;height:22px;max-width:min(280px,42%);min-width:0;cursor:pointer;text-overflow:ellipsis}',
       '.dig-select:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-select:focus-visible{outline:1px solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:-1px}',
       '.dig-select-btn{display:inline-flex;align-items:center;gap:4px;text-align:left;white-space:nowrap;overflow:hidden}',
       '.dig-select-btn .dig-repo-name{flex:1;min-width:0;max-width:none}',
-      '.dig-select-repo{max-width:200px}',
+      '.dig-select-repo{max-width:none}',
       '.dig-select option,.dig-filter-select option{background:var(--dsw-alias-bg-layer-1,#22262e);color:var(--dsw-alias-label-primary,#e6e8ee)}',
-      '.dig-select-branch{max-width:150px}',
+      /* Long branch names (the topbar picker): the cap lives on the WRAP (a
+         direct topbar child, so the percentage resolves against the bar). The
+         button grows a SECOND LINE instead of ellipsising — a sidebar is
+         ~400px wide, and a 600px branch name simply cannot fit on one line,
+         but two lines hold it (the user-facing rule: show the WHOLE name).
+         The full name also rides on the wrapper's title. */
+      '.dig-select-branch{max-width:none;height:auto;min-height:22px;align-items:center}',
+      '.dig-select-branch .dig-repo-name{white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.3}',
       '.dig-repo-static{display:inline-flex;align-items:center;gap:5px;min-width:0;color:var(--dsw-alias-label-secondary)}',
-      '.dig-repo-name{color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}',
+      '.dig-repo-name{color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:none}',
       '.dig-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
       '.dig-icon-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-icon-btn:disabled{opacity:.4;cursor:default}',
@@ -10118,6 +10689,21 @@ window.__ModuleLoader__.load({
       '.dig-file-icon{flex:none;opacity:.95}',
       '.dig-overlay{position:absolute;inset:0;padding:8px;box-sizing:border-box;background:var(--dsw-alias-bg-mask-1,rgba(0,0,0,.42));-webkit-backdrop-filter:var(--dsw-mask-blur,none);backdrop-filter:var(--dsw-mask-blur,none);display:flex;align-items:center;justify-content:center;z-index:60}',
       '.dig-dialog{box-sizing:border-box;min-width:min(240px,100%);max-width:min(420px,94%);max-height:100%;overflow:auto;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border:0;border-radius:var(--dsw-radius-panel,28px);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--dsw-elevation-prominent,0 12px 32px rgba(0,0,0,.35))}',
+      /* Git-output drawer (VS Code showOutput): panel-internal absolute bottom
+         sheet (invariant 13). */
+      '.dig-gitlog{position:absolute;left:0;right:0;bottom:0;z-index:55;height:46%;min-height:132px;display:flex;flex-direction:column;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border-radius:var(--dsw-radius-panel,28px) var(--dsw-radius-panel,28px) 0 0;box-shadow:var(--dsw-elevation-prominent,0 -8px 28px rgba(0,0,0,.3))}',
+      '.dig-gitlog-head{display:flex;align-items:center;gap:4px;padding:8px 14px 6px;flex:none}',
+      '.dig-gitlog-title{font-weight:600}',
+      '.dig-gitlog-empty{padding:10px 14px;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-gitlog-body{flex:1;min-height:0;overflow:auto;padding:0 14px 10px;font-weight:400}',
+      '.dig-gitlog-row{padding:6px 0;border-top:1px solid var(--dsw-alias-border-l1,transparent)}',
+      '.dig-gitlog-row-bad .dig-gitlog-code{color:var(--dsw-alias-state-danger,#e5484d);font-weight:700}',
+      '.dig-gitlog-meta{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}',
+      '.dig-gitlog-code{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
+      '.dig-gitlog-ms{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
+      '.dig-gitlog-at{color:var(--dsw-alias-label-tertiary);font-size:11px}',
+      '.dig-gitlog-argv{font-weight:600;word-break:break-all}',
+      '.dig-gitlog-pre{margin:4px 0 0;padding:6px 8px;border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-3,var(--dsw-alias-bg-layer-2));overflow:auto;max-height:160px;white-space:pre-wrap;word-break:break-all;font-size:11px}',
       '.dig-dialog-wide{min-width:min(360px,92%)}',
       '.dig-dialog-title{font-weight:600}',
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
