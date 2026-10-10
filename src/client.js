@@ -6273,7 +6273,10 @@ window.__ModuleLoader__.load({
       return segments
     }
 
-    function GraphCell(props) {
+    /* Memoised: rows come from a useMemo, so a row object is referentially
+       stable across re-renders unless the commit list actually changed — the
+       26px graph cells then skip re-rendering on every filter keystroke. */
+    const GraphCell = memo(function GraphCell(props) {
       const row = props.row
       const height = props.height
       const width = Math.min(Math.max(1, row.width), GRAPH_MAX_LANES) * LANE_WIDTH + 8
@@ -6306,7 +6309,7 @@ window.__ModuleLoader__.load({
         ? E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.8, fill: 'none', stroke: color(row.lane), strokeWidth: 2 })
         : E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.6, fill: color(row.lane) }))
       return E('svg', { className: 'dig-graph', width: width, height: height, viewBox: '0 0 ' + width + ' ' + height }, children)
-    }
+    }, (prev, next) => prev.row === next.row && prev.height === next.height)
 
     /* ============================== composer send ============================== */
     /* "Send to chat": drop a reference chip / short text into the CURRENT
@@ -8618,6 +8621,57 @@ window.__ModuleLoader__.load({
       return { name: value, kind: value.indexOf('/') >= 0 ? 'remote' : 'local' }
     }
 
+    /* Display form of a decoration: a HEAD decoration names the branch it points
+       at, so the badge says "HEAD → main" — where HEAD sits must be readable at
+       a glance (GitLens-style), not only inferable from the hollow dot. */
+    function refLabel(decoration) {
+      if (decoration.kind !== 'head') return decoration.name
+      return decoration.name === 'HEAD' ? 'HEAD' : 'HEAD → ' + decoration.name
+    }
+
+    /* One history row, memoised on its data (commit + graph row + selection):
+       filter keystrokes re-render the list shell without touching unchanged
+       rows, and the +N overflow badge opens the hidden refs in a menu instead
+       of hiding them behind a bare count. */
+    const REF_ICONS = { head: 'star', local: 'branch', remote: 'fetch', tag: 'tag' }
+    const REF_TONES = { head: 'success', local: 'accent', remote: 'violet', tag: 'warn' }
+    const CommitRow = memo(function CommitRow(props) {
+      const commit = props.commit
+      const decorations = (Array.isArray(commit.refs) ? commit.refs : []).map(refInfo)
+      const shown = decorations.slice(0, 3)
+      const hidden = decorations.length - shown.length
+      return E('div', {
+        className: 'dig-commit' + (props.selected === true ? ' dig-commit-selected' : ''),
+        onClick: () => props.onSelect(commit),
+        onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
+      },
+        E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
+        E('span', { className: 'dig-commit-author', title: commit.author }, commit.author),
+        E(GraphCell, { row: props.row, height: 26 }),
+        shown.map((decoration, index) => E('span', {
+          key: decoration.kind + ':' + decoration.name + ':' + index,
+          className: 'dig-ref dig-ref-' + decoration.kind,
+          title: refLabel(decoration),
+        }, refLabel(decoration))),
+        hidden > 0 ? E('span', {
+          className: 'dig-ref dig-ref-more',
+          title: decorations.slice(3).map(refLabel).join('\n'),
+          onClick: (event) => {
+            event.stopPropagation()
+            if (props.openMenuAt === undefined) return
+            props.openMenuAt(event, decorations.slice(3).map((decoration, at) => ({
+              id: 'ref:' + at,
+              icon: REF_ICONS[decoration.kind] === undefined ? 'branch' : REF_ICONS[decoration.kind],
+              tone: REF_TONES[decoration.kind] === undefined ? 'secondary' : REF_TONES[decoration.kind],
+              label: refLabel(decoration),
+              run: () => { copyText(refLabel(decoration)) },
+            })))
+          },
+        }, '+' + hidden) : null,
+        E('span', { className: 'dig-commit-subject', title: commit.subject }, commit.subject),
+        E('span', { className: 'dig-commit-fill' }))
+    }, (prev, next) => prev.commit === next.commit && prev.row === next.row && prev.selected === next.selected && prev.t === next.t)
+
     function sinceThreshold(key) {
       if (key === 'today') { const start = new Date(); start.setHours(0, 0, 0, 0); return start.getTime() }
       if (key === 'week') return Date.now() - 7 * DAY_MS
@@ -8754,29 +8808,12 @@ window.__ModuleLoader__.load({
       return E('div', { className: 'dig-history' }, filterBar,
         E('div', { className: 'dig-history-scroll' },
           rows.length === 0 ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : t('history.empty')) : null,
-          rows.map((row) => {
-            const commit = row.commit
-            const decorations = (Array.isArray(commit.refs) ? commit.refs : []).map(refInfo)
-            const shown = decorations.slice(0, 3)
-            const hidden = decorations.length - shown.length
-            return E('div', {
-              key: commit.hash,
-              className: 'dig-commit' + (props.selectedHash === commit.hash ? ' dig-commit-selected' : ''),
-              onClick: () => props.onSelect(commit),
-              onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
-            },
-              E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
-              E('span', { className: 'dig-commit-author', title: commit.author }, commit.author),
-              E(GraphCell, { row: row, height: 26 }),
-              shown.map((decoration, index) => E('span', {
-                key: decoration.kind + ':' + decoration.name + ':' + index,
-                className: 'dig-ref dig-ref-' + decoration.kind,
-                title: decoration.name,
-              }, decoration.name)),
-              hidden > 0 ? E('span', { className: 'dig-ref dig-ref-more' }, '+' + hidden) : null,
-              E('span', { className: 'dig-commit-subject', title: commit.subject }, commit.subject),
-              E('span', { className: 'dig-commit-fill' }))
-          }),
+          rows.map((row) => E(CommitRow, {
+            key: row.commit.hash,
+            commit: row.commit, row: row, t: t,
+            selected: props.selectedHash === row.commit.hash,
+            onSelect: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
+          })),
           props.hasMore === true
             ? E('button', { type: 'button', className: 'dig-load-more', disabled: props.busy === true, onClick: props.onLoadMore }, t('history.loadMore'))
             : null))
@@ -10615,7 +10652,7 @@ window.__ModuleLoader__.load({
       '.dig-ref-local{color:var(--dsw-alias-brand-primary)}',
       '.dig-ref-remote{color:#b083f0}',
       '.dig-ref-tag{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      '.dig-ref-more{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-ref-more{color:var(--dsw-alias-label-tertiary);cursor:pointer}',
       '.dig-filters{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;min-width:0;overflow-x:auto;overflow-y:hidden;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-filter-text{flex:1 1 90px;min-width:80px;width:auto}',
       '.dig-filter-select{flex:none;max-width:118px;appearance:none;-webkit-appearance:none;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm,8px);color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;height:22px;padding:0 4px;cursor:pointer;text-overflow:ellipsis}',
