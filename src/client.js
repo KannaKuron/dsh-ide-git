@@ -21,6 +21,7 @@ window.__ModuleLoader__.load({
   factory: (require) => {
     const React = require('react')
     const E = React.createElement
+    const Fragment = React.Fragment
     const useState = React.useState
     const useEffect = React.useEffect
     const useMemo = React.useMemo
@@ -6289,6 +6290,7 @@ window.__ModuleLoader__.load({
       for (const segment of laneSegments(row, height)) {
         children.push(E('line', {
           key: 'lane-' + segment.lane,
+          'data-lane': String(segment.lane),
           x1: x(segment.lane), y1: segment.y1, x2: x(segment.lane), y2: segment.y2,
           stroke: color(segment.lane), strokeWidth: 2, strokeLinecap: 'round',
         }))
@@ -6297,6 +6299,7 @@ window.__ModuleLoader__.load({
         if (parentLane === row.lane) continue
         children.push(E('path', {
           key: 'edge-' + parentLane,
+          'data-lane': String(parentLane),
           d: 'M ' + x(row.lane) + ' ' + middle + ' C ' + x(row.lane) + ' ' + height + ', ' + x(parentLane) + ' ' + middle + ', ' + x(parentLane) + ' ' + height,
           fill: 'none',
           stroke: color(parentLane),
@@ -6306,8 +6309,8 @@ window.__ModuleLoader__.load({
       }
       const isHead = Array.isArray(row.commit.refs) && row.commit.refs.some((ref) => String(ref).indexOf('HEAD') >= 0)
       children.push(isHead
-        ? E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.8, fill: 'none', stroke: color(row.lane), strokeWidth: 2 })
-        : E('circle', { key: 'dot', cx: x(row.lane), cy: middle, r: 3.6, fill: color(row.lane) }))
+        ? E('circle', { key: 'dot', 'data-lane': String(row.lane), cx: x(row.lane), cy: middle, r: 3.8, fill: 'none', stroke: color(row.lane), strokeWidth: 2 })
+        : E('circle', { key: 'dot', 'data-lane': String(row.lane), cx: x(row.lane), cy: middle, r: 3.6, fill: color(row.lane) }))
       return E('svg', { className: 'dig-graph', width: width, height: height, viewBox: '0 0 ' + width + ' ' + height }, children)
     }, (prev, next) => prev.row === next.row && prev.height === next.height)
 
@@ -8448,30 +8451,70 @@ window.__ModuleLoader__.load({
         if (sortKey === 'status') return entries.slice().sort((a, b) => (a.index + a.worktree).localeCompare(b.index + b.worktree) || a.path.localeCompare(b.path))
         return entries
       }
-      const rowsOf = (key, entries) => {
-        const sorted = sortedOf(entries)
-        if (groupBy !== 'dir') return sorted.map((item) => entryRow(key, item))
-        const folders = new Map()
-        for (const item of sorted) {
-          const name = folderOf(item)
-          if (folders.has(name) === false) folders.set(name, [])
-          folders.get(name).push(item)
+      /* Windowing: the change list is flattened into (group-head | folder-head
+         | row) items with FIXED heights (see ITEM_HEIGHTS + the CSS pins), a
+         prefix-sum index locates the visible window, and only that slice is
+         mounted. A tree with thousands of files scrolls at frame rate. */
+      const changesScrollRef = useRef(null)
+      const changesViewport = useViewportBox(changesScrollRef)
+      const changeItems = useMemo(() => {
+        const out = []
+        const groupHead = (key, title, entries) => E('div', { className: 'dig-group-head' },
+          E('span', null, title),
+          key === 'staged' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onUnstageAll() }, t('changes.unstageAll')) : null,
+          key === 'unstaged' || key === 'untracked' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onStageAll(entries) }, t('changes.stageAll')) : null)
+        const emitRows = (key, entries) => {
+          const sorted = sortedOf(entries)
+          if (groupBy !== 'dir') {
+            for (const item of sorted) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item) })
+            return
+          }
+          const folders = new Map()
+          for (const item of sorted) {
+            const name = folderOf(item)
+            if (folders.has(name) === false) folders.set(name, [])
+            folders.get(name).push(item)
+          }
+          for (const name of Array.from(folders.keys()).sort()) {
+            const id = key + '|' + name
+            const open = foldedDirs[id] !== true
+            const list = folders.get(name)
+            out.push({
+              kind: 'folder', key: 'folder:' + id, h: ITEM_HEIGHTS.folder,
+              node: E('button', {
+                type: 'button', className: 'dig-folder-head',
+                onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
+              },
+                E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+                E('span', { className: 'dig-folder-name' }, name),
+                E('span', { className: 'dig-count' }, String(list.length))),
+            })
+            if (open === true) for (const item of list) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item) })
+          }
         }
-        return Array.from(folders.keys()).sort().map((name) => {
-          const id = key + '|' + name
-          const open = foldedDirs[id] !== true
-          const list = folders.get(name)
-          return E('div', { className: 'dig-folder', key: id },
-            E('button', {
-              type: 'button', className: 'dig-folder-head',
-              onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
-            },
-              E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
-              E('span', { className: 'dig-folder-name' }, name),
-              E('span', { className: 'dig-count' }, String(list.length))),
-            open ? list.map((item) => entryRow(key, item)) : null)
-        })
-      }
+        const emitGroup = (key, title, entries) => {
+          if (entries.length === 0) return
+          out.push({ kind: 'group', key: 'group:' + key, h: ITEM_HEIGHTS.group, node: groupHead(key, title, entries) })
+          emitRows(key, entries)
+        }
+        emitGroup('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted)
+        emitGroup('staged', fill(t('counts.staged'), { n: staged.length }), staged)
+        emitGroup('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged)
+        emitGroup('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)
+        emitGroup('ignored', fill(t('counts.ignored'), { n: ignored.length }), ignored)
+        return out
+      }, [conflicted, staged, unstaged, untracked, ignored, groupBy, foldedDirs, sortKey, t, props.onUnstageAll, props.onStageAll])
+      const changeOffsets = useMemo(() => {
+        const sums = [0]
+        for (const item of changeItems) sums.push(sums[sums.length - 1] + item.h)
+        return sums
+      }, [changeItems])
+      const winFirst = Math.max(0, windowStart(changeOffsets, changesViewport.scrollTop) - WINDOW_OVERSCAN)
+      const winLimit = Math.ceil(changesViewport.viewH / ITEM_HEIGHTS.row) + WINDOW_OVERSCAN * 3
+      let winLast = winFirst
+      let used = 0
+      while (winLast < changeItems.length && used < winLimit) { used += changeItems[winLast].h; winLast += 1 }
+      const visibleItems = changeItems.slice(winFirst, winLast)
       const foldAll = (value) => {
         const next = {}
         if (value === true) {
@@ -8480,12 +8523,6 @@ window.__ModuleLoader__.load({
         }
         setFoldedDirs(next)
       }
-      const group = (key, title, entries) => entries.length === 0 ? null : E('div', { className: 'dig-group', key: key },
-        E('div', { className: 'dig-group-head' },
-          E('span', null, title),
-          key === 'staged' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onUnstageAll() }, t('changes.unstageAll')) : null,
-          key === 'unstaged' || key === 'untracked' ? E('button', { type: 'button', className: 'dig-link', onClick: () => props.onStageAll(entries) }, t('changes.stageAll')) : null),
-        rowsOf(key, entries))
       const aiConfirmDialog = aiAsk !== true ? null : E(ConfirmDialog, {
         t: t,
         title: t('changes.aiOverwriteTitle'),
@@ -8590,14 +8627,14 @@ window.__ModuleLoader__.load({
         aiConfirmDialog,
         head,
         E('div', { className: 'dig-changes-body' },
-          E('div', { className: 'dig-changes-list' },
+          E('div', { className: 'dig-changes-list', ref: changesScrollRef },
             collapsed ? null : [
               total === 0 && ignored.length === 0 ? E('div', { className: 'dig-empty', key: 'empty' }, t('changes.empty')) : null,
-              group('conflicted', fill(t('counts.conflicted'), { n: conflicted.length }), conflicted),
-              group('staged', fill(t('counts.staged'), { n: staged.length }), staged),
-              group('unstaged', fill(t('counts.unstaged'), { n: unstaged.length }), unstaged),
-              group('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked),
-              group('ignored', fill(t('counts.ignored'), { n: ignored.length }), ignored),
+              /* Windowed slice: spacers above/below stand in for the unmounted
+                 rows (fixed heights, see ITEM_HEIGHTS). */
+              winFirst > 0 ? E('div', { key: 'pad-top', style: { height: String(changeOffsets[winFirst]) + 'px' } }) : null,
+              visibleItems.map((item) => E(Fragment, { key: item.key }, item.node)),
+              winLast < changeItems.length ? E('div', { key: 'pad-bottom', style: { height: String(changeOffsets[changeItems.length] - changeOffsets[winLast]) + 'px' } }) : null,
             ]),
           composer))
     }
@@ -8629,6 +8666,55 @@ window.__ModuleLoader__.load({
       return decoration.name === 'HEAD' ? 'HEAD' : 'HEAD → ' + decoration.name
     }
 
+    /* ---- list windowing (issue #11 follow-up: hundreds of rows stay smooth) ----
+       Both long lists (history rows, change rows) render only what the viewport
+       can see plus an overscan skirt; spacer divs keep the scrollbar honest.
+       Row heights are FIXED constants — the CSS pins each row kind to an exact
+       height, so a prefix-sum index plus binary search locates the first
+       visible item without measuring. */
+    const HISTORY_ROW_H = 28 /* .dig-commit: height 26 + 2×1px padding */
+    const ITEM_HEIGHTS = { group: 21, folder: 16, row: 24 }
+    const WINDOW_OVERSCAN = 6
+
+    /* Tracks a scroll container's scrollTop (rAF-throttled) and clientHeight
+       (ResizeObserver). SSR-safe: the effect never runs on the server. */
+    function useViewportBox(scrollRef) {
+      const [scrollTop, setScrollTop] = useState(0)
+      const [viewH, setViewH] = useState(360)
+      useEffect(() => {
+        const el = scrollRef.current
+        if (el === null || typeof ResizeObserver !== 'function') return undefined
+        const observer = new ResizeObserver(() => setViewH(el.clientHeight))
+        observer.observe(el)
+        setViewH(el.clientHeight)
+        let frame = 0
+        const onScroll = () => {
+          if (frame !== 0) return
+          frame = requestAnimationFrame(() => { frame = 0; setScrollTop(el.scrollTop) })
+        }
+        el.addEventListener('scroll', onScroll, { passive: true })
+        return () => {
+          observer.disconnect()
+          el.removeEventListener('scroll', onScroll)
+          if (frame !== 0) cancelAnimationFrame(frame)
+        }
+      }, [scrollRef])
+      return { scrollTop: scrollTop, viewH: viewH }
+    }
+
+    /* First index whose cumulative offset exceeds `at` (binary search over the
+       prefix-sum array; offsets.length === items.length + 1). */
+    function windowStart(offsets, at) {
+      let low = 0
+      let high = offsets.length - 1
+      while (low < high) {
+        const mid = (low + high) >> 1
+        if (offsets[mid] <= at) low = mid + 1
+        else high = mid
+      }
+      return Math.max(0, low - 1)
+    }
+
     /* One history row, memoised on its data (commit + graph row + selection):
        filter keystrokes re-render the list shell without touching unchanged
        rows, and the +N overflow badge opens the hidden refs in a menu instead
@@ -8638,9 +8724,41 @@ window.__ModuleLoader__.load({
     const CommitRow = memo(function CommitRow(props) {
       const commit = props.commit
       const decorations = (Array.isArray(commit.refs) ? commit.refs : []).map(refInfo)
-      const shown = decorations.slice(0, 3)
-      const hidden = decorations.length - shown.length
+      /* Remote folding (GitLens-style dedupe): a remote whose short name
+         (origin/main → main) matches a LOCAL or HEAD badge on the same commit
+         stops taking a badge of its own — the local badge's title gains a
+         "⇅ origin/main" line and the overflow menu still lists it. Nothing is
+         lost, the row just stops saying "main" and "origin/main" twice. */
+      const localNames = new Set(decorations.filter((d) => d.kind === 'local' || d.kind === 'head').map((d) => d.name))
+      const foldedBy = new Map()
+      const kept = []
+      for (const decoration of decorations) {
+        if (decoration.kind === 'remote') {
+          const slash = decoration.name.indexOf('/')
+          const short = slash >= 0 ? decoration.name.slice(slash + 1) : decoration.name
+          if (localNames.has(short) === true) {
+            if (foldedBy.has(short) === false) foldedBy.set(short, [])
+            foldedBy.get(short).push(decoration.name)
+            continue
+          }
+        }
+        kept.push(decoration)
+      }
+      const folded = []
+      for (const list of foldedBy.values()) folded.push(...list)
+      const shown = kept.slice(0, 3)
+      const hidden = kept.length - shown.length
+      const badgeTitle = (decoration) => {
+        const label = refLabel(decoration)
+        if (decoration.kind !== 'local' && decoration.kind !== 'head') return label
+        const folds = foldedBy.get(decoration.name)
+        return folds === undefined ? label : label + '\n⇅ ' + folds.join(', ')
+      }
       return E('div', {
+        /* data-lane feeds the hover highlight: the scroll container copies the
+           hovered row's lane into data-hover-lane, and generated CSS dims every
+           graph stroke whose data-lane differs — zero React re-renders. */
+        'data-lane': String(props.row.lane),
         className: 'dig-commit' + (props.selected === true ? ' dig-commit-selected' : ''),
         onClick: () => props.onSelect(commit),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
@@ -8651,23 +8769,29 @@ window.__ModuleLoader__.load({
         shown.map((decoration, index) => E('span', {
           key: decoration.kind + ':' + decoration.name + ':' + index,
           className: 'dig-ref dig-ref-' + decoration.kind,
-          title: refLabel(decoration),
+          title: badgeTitle(decoration),
         }, refLabel(decoration))),
-        hidden > 0 ? E('span', {
+        hidden > 0 || folded.length > 0 ? E('span', {
           className: 'dig-ref dig-ref-more',
-          title: decorations.slice(3).map(refLabel).join('\n'),
+          title: kept.slice(3).map(refLabel).concat(folded.map((name) => '⇅ ' + name)).join('\n'),
           onClick: (event) => {
             event.stopPropagation()
             if (props.openMenuAt === undefined) return
-            props.openMenuAt(event, decorations.slice(3).map((decoration, at) => ({
+            const entries = kept.slice(3).map((decoration, at) => ({
               id: 'ref:' + at,
               icon: REF_ICONS[decoration.kind] === undefined ? 'branch' : REF_ICONS[decoration.kind],
               tone: REF_TONES[decoration.kind] === undefined ? 'secondary' : REF_TONES[decoration.kind],
               label: refLabel(decoration),
               run: () => { copyText(refLabel(decoration)) },
+            })).concat(folded.map((name, at) => ({
+              id: 'fold:' + at,
+              icon: 'fetch', tone: 'violet',
+              label: '⇅ ' + name,
+              run: () => { copyText(name) },
             })))
+            props.openMenuAt(event, entries)
           },
-        }, '+' + hidden) : null,
+        }, '+' + String(hidden + folded.length)) : null,
         E('span', { className: 'dig-commit-subject', title: commit.subject }, commit.subject),
         E('span', { className: 'dig-commit-fill' }))
     }, (prev, next) => prev.commit === next.commit && prev.row === next.row && prev.selected === next.selected && prev.t === next.t)
@@ -8683,6 +8807,8 @@ window.__ModuleLoader__.load({
     function HistoryList(props) {
       const t = props.t
       const commits = props.commits
+      const historyScrollRef = useRef(null)
+      const viewport = useViewportBox(historyScrollRef)
       const [text, setText] = useState('')
       const [author, setAuthor] = useState('')
       const [refName, setRefName] = useState('')
@@ -8805,15 +8931,40 @@ window.__ModuleLoader__.load({
           onClick: clearAll,
         }, E(Icon, { name: 'close', size: 12 })) : null)
 
+      /* Windowed rendering: only the visible slice (± overscan) is mounted —
+         "load more" into the hundreds still scrolls at frame rate. Spacers
+         keep the scrollbar and the load-more button at honest positions. */
+      const winStart = Math.max(0, Math.floor(viewport.scrollTop / HISTORY_ROW_H) - WINDOW_OVERSCAN)
+      const winEnd = Math.min(rows.length, winStart + Math.ceil(viewport.viewH / HISTORY_ROW_H) + WINDOW_OVERSCAN * 2)
+      const visibleRows = rows.slice(winStart, winEnd)
+
       return E('div', { className: 'dig-history' }, filterBar,
-        E('div', { className: 'dig-history-scroll' },
+        E('div', {
+          className: 'dig-history-scroll',
+          ref: historyScrollRef,
+          /* Lane hover highlight (GitLens-style trace): copy the hovered row's
+             lane into data-hover-lane; generated CSS dims every stroke whose
+             data-lane differs. Direct DOM dataset writes on purpose — the
+             alternative is re-rendering every row on each hover change. */
+          onMouseOver: (event) => {
+            const host = event.currentTarget
+            const row = event.target instanceof Element ? event.target.closest('.dig-commit') : null
+            const lane = row === null ? null : row.getAttribute('data-lane')
+            if (lane === host.getAttribute('data-hover-lane')) return
+            if (lane === null) host.removeAttribute('data-hover-lane')
+            else host.setAttribute('data-hover-lane', lane)
+          },
+          onMouseLeave: (event) => event.currentTarget.removeAttribute('data-hover-lane'),
+        },
           rows.length === 0 ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : t('history.empty')) : null,
-          rows.map((row) => E(CommitRow, {
+          winStart > 0 ? E('div', { key: 'pad-top', style: { height: String(winStart * HISTORY_ROW_H) + 'px' } }) : null,
+          visibleRows.map((row) => E(CommitRow, {
             key: row.commit.hash,
             commit: row.commit, row: row, t: t,
             selected: props.selectedHash === row.commit.hash,
             onSelect: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
           })),
+          winEnd < rows.length ? E('div', { key: 'pad-bottom', style: { height: String((rows.length - winEnd) * HISTORY_ROW_H) + 'px' } }) : null,
           props.hasMore === true
             ? E('button', { type: 'button', className: 'dig-load-more', disabled: props.busy === true, onClick: props.onLoadMore }, t('history.loadMore'))
             : null))
@@ -10445,6 +10596,22 @@ window.__ModuleLoader__.load({
     /* Tokens only (--dsw-alias-*): transparent themes and background plugins
        (dsh-any-background) keep showing through, like the host's own panels. */
 
+    /* Lane-hover trace, generated: one rule per lane (lanes are capped at
+       GRAPH_MAX_LANES, so this is a fixed handful). When the scroll container
+       carries data-hover-lane="N", every graph stroke whose data-lane differs
+       fades — the hovered lane reads as one continuous thread down the graph
+       with zero React involvement. */
+    const LANE_TRACE_RULES = []
+    for (let lane = 0; lane < GRAPH_MAX_LANES; lane += 1) {
+      LANE_TRACE_RULES.push(
+        '.dig-history-scroll[data-hover-lane="' + lane + '"] .dig-graph line:not([data-lane="' + lane + '"])'
+        + ',.dig-history-scroll[data-hover-lane="' + lane + '"] .dig-graph path:not([data-lane="' + lane + '"])'
+        + ',.dig-history-scroll[data-hover-lane="' + lane + '"] .dig-graph circle:not([data-lane="' + lane + '"])'
+        + '{stroke-opacity:.18;fill-opacity:.18}',
+      )
+    }
+    LANE_TRACE_RULES.push('.dig-graph line,.dig-graph path,.dig-graph circle{transition:stroke-opacity .15s,fill-opacity .15s}')
+
     const CSS = [
       '.dig-root{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;background:transparent;color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:13px;line-height:1.5;font-weight:600;overflow:hidden}',
       '.dig-topbar{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-border-l2);overflow:hidden}',
@@ -10617,7 +10784,7 @@ window.__ModuleLoader__.load({
       '.dig-folder{display:flex;flex-direction:column}',
       '.dig-branch-folder{display:flex;flex-direction:column}',
       '.dig-row-picked{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
-      '.dig-folder-head{display:flex;align-items:center;gap:6px;width:100%;padding:1px 8px 1px 4px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;cursor:pointer;text-align:left}',
+      '.dig-folder-head{display:flex;align-items:center;gap:6px;width:100%;padding:1px 8px 1px 4px;height:14px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;cursor:pointer;text-align:left}',
       '.dig-folder-head:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
       '.dig-count{margin-left:auto;opacity:.6;font-weight:400}',
@@ -10668,10 +10835,10 @@ window.__ModuleLoader__.load({
       '.dig-changes-body{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-changes-list{flex:1;overflow:auto;min-height:0}',
       '.dig-group{display:flex;flex-direction:column}',
-      '.dig-group-head{display:flex;align-items:center;gap:8px;padding:2px 8px;color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:600}',
+      '.dig-group-head{display:flex;align-items:center;gap:8px;padding:2px 8px;height:17px;color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:600}',
       '.dig-link{margin-left:auto;border:none;background:transparent;color:var(--dsw-alias-brand-primary);font:inherit;cursor:pointer;padding:0;flex:none}',
       '.dig-link:hover{text-decoration:underline}',
-      '.dig-row-file{gap:6px}',
+      '.dig-row-file{gap:6px;height:20px}',
       '.dig-file-status{flex:none;width:14px;text-align:center;font-weight:700;font-size:10px;color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-label-secondary))}',
       '.dig-file-status-A{color:var(--dsw-alias-state-success-primary)}',
       '.dig-file-status-D{color:var(--dsw-alias-state-error-primary)}',
@@ -10842,7 +11009,7 @@ window.__ModuleLoader__.load({
       '.dig-lf-tool svg{width:15px;height:15px}',
       '.dig-lf-tool:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-lf-tool[aria-pressed=true] .dig-lf-compareIcon{transform:rotate(90deg)}',
-    ].join('\n')
+    ].concat(LANE_TRACE_RULES).join('\n')
 
     /* ============================== plugin ============================== */
 
