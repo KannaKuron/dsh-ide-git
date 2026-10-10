@@ -8243,7 +8243,7 @@ window.__ModuleLoader__.load({
            fetch — a BROKEN stem: the references come down, nothing is merged;
            pull  — a solid stem pointing down: the remote lands here;
            push  — a solid stem pointing up: the local goes out. */
-      fetch: ['M8 2v2', 'M8 5.6v2.2', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
+      fetch: ['M8 2v1.6', 'M8 4.8v1.6', 'M8 7.7v1.6', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
       pull: ['M8 2v7.8', 'M4.6 6.4 8 9.8l3.4-3.4', 'M3 13h10'],
       push: ['M8 9.8V2.2', 'M4.6 5.6 8 2.2l3.4 3.4', 'M3 13h10'],
       plus: ['M8 3v10', 'M3 8h10'],
@@ -8314,9 +8314,9 @@ window.__ModuleLoader__.load({
       const cardRef = useRef(null)
       const closeRef = useRef(props.onClose)
       const [position, setPosition] = useState({ left: props.anchor.x, top: props.anchor.y })
-      /* The open submenu: { items, left, top } in wrapper-relative pixels, or
-         null. Hover-driven — moving onto a different parent row swaps or
-         closes it, so no timers are needed. */
+      /* The open submenu: { items, top, flip } or null. Hover-driven — moving
+         onto a different parent row swaps or closes it, so no timers are
+         needed. Horizontal placement is pure CSS against the wrapper. */
       const [sub, setSub] = useState(null)
       useEffect(() => { closeRef.current = props.onClose })
       // Layout effect: the clamp below runs before the browser paints, so the menu
@@ -8358,10 +8358,11 @@ window.__ModuleLoader__.load({
         const cardRect = card.getBoundingClientRect()
         const itemRect = event.currentTarget.getBoundingClientRect()
         const bounds = props.boundsWidth === undefined ? 0 : props.boundsWidth
-        const SUB_W = 220
-        let left = cardRect.width + 2
-        if (bounds > 0 && position.left + left + SUB_W > bounds - 4) left = -SUB_W - 2
-        setSub({ items: item.items, left: left, top: Math.max(0, itemRect.top - cardRect.top - 4) })
+        /* Direction only — the flush offset is CSS (`left:100%` / `right:100%`
+           against the wrapper, whose width IS the parent card), so the seam is
+           zero no matter how wide the submenu actually renders. */
+        const flip = bounds > 0 && position.left + cardRect.width + 220 > bounds - 4
+        setSub({ items: item.items, flip: flip, top: Math.max(0, itemRect.top - cardRect.top - 4) })
       }
       const renderItem = (item, index, inSub) => {
         if (item === null) return E('div', { key: 'sep-' + index, className: 'dig-menu-sep' })
@@ -8402,7 +8403,7 @@ window.__ModuleLoader__.load({
         E('div', { className: 'dig-menu', ref: cardRef, 'data-menu-material': 'translucent' },
           E('div', { className: 'dig-menu-scroll' },
             props.items.map((item, index) => renderItem(item, index, false)))),
-        sub === null ? null : E('div', { className: 'dig-menu dig-menu-sub', 'data-menu-material': 'translucent', style: { left: sub.left + 'px', top: sub.top + 'px' } },
+        sub === null ? null : E('div', { className: 'dig-menu dig-menu-sub', 'data-menu-material': 'translucent', style: sub.flip === true ? { right: '100%', top: sub.top + 'px' } : { left: '100%', top: sub.top + 'px' } },
           E('div', { className: 'dig-menu-scroll' },
             sub.items.map((item, index) => renderItem(item, index, true)))))
     }
@@ -9440,7 +9441,11 @@ window.__ModuleLoader__.load({
       const groupBy = props.groupBy === 'dir' ? 'dir' : 'flat'
       const setGroupBy = props.onGroupBy
       const sortKey = props.sortKey === undefined ? 'git' : props.sortKey
-      const [foldedDirs, setFoldedDirs] = useState({})
+      /* foldedDirs lifted too (v0.16.1): the header row lost its four buttons —
+         everything they did lives in the ⋯ menu now, so the menu drives this
+         state directly through props. */
+      const foldedDirs = props.foldedDirs === undefined ? {} : props.foldedDirs
+      const setFoldedDirs = props.onFoldedDirs
       const changes = summary === null ? null : summary.changes
       const conflicted = changes === null ? [] : changes.conflicted
       const staged = changes === null ? [] : changes.staged
@@ -9568,14 +9573,6 @@ window.__ModuleLoader__.load({
       let used = 0
       while (winLast < changeItems.length && used < winLimit) { used += changeItems[winLast].h; winLast += 1 }
       const visibleItems = changeItems.slice(winFirst, winLast)
-      const foldAll = (value) => {
-        const next = {}
-        if (value === true) {
-          const groups = [['conflicted', conflicted], ['staged', staged], ['unstaged', unstaged], ['untracked', untracked], ['ignored', ignored]]
-          for (const pair of groups) for (const item of pair[1]) next[pair[0] + '|' + folderOf(item)] = true
-        }
-        setFoldedDirs(next)
-      }
       const aiConfirmDialog = aiAsk !== true ? null : E(ConfirmDialog, {
         t: t,
         title: t('changes.aiOverwriteTitle'),
@@ -9654,35 +9651,18 @@ window.__ModuleLoader__.load({
           E('span', null, t('changes.title')),
           E('span', { className: 'dig-count' }, String(total))),
         E('span', { className: 'dig-topbar-spacer' }),
-        E('button', {
-          type: 'button',
-          className: 'dig-icon-btn dig-icon-btn-small' + (groupBy === 'dir' ? ' dig-icon-btn-active' : ''),
-          title: t('changes.groupBy') + ': ' + (groupBy === 'dir' ? t('changes.groupDir') : t('changes.groupFlat')),
-          onClick: () => setGroupBy((value) => (value === 'dir' ? 'flat' : 'dir')),
-        }, E(Icon, { name: 'folder', size: 13 })),
-        E('button', {
-          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
-          title: t('changes.expandAll'), disabled: groupBy !== 'dir',
-          onClick: () => foldAll(false),
-        }, E(Icon, { name: 'expand', size: 13 })),
-        E('button', {
-          type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
-          title: t('changes.foldAll'), disabled: groupBy !== 'dir',
-          onClick: () => foldAll(true),
-        }, E(Icon, { name: 'collapse', size: 13 })),
-        E('button', {
-          type: 'button',
-          className: 'dig-icon-btn dig-icon-btn-small' + (props.showIgnored === true ? ' dig-icon-btn-active' : ''),
-          title: t('changes.showIgnored'),
-          onClick: () => props.onToggleIgnored(),
-        }, E(Icon, { name: props.showIgnored === true ? 'eye' : 'eyeOff', size: 13 })),
+        /* The four header toggles (group-by / expand / fold / ignored) moved
+           INTO the ⋯ menu (v0.16.1, user request): one consistent entry point
+           instead of five small buttons, same actions, same state. */
         props.onMoreMenu === undefined ? null : E('button', {
           type: 'button',
-          className: 'dig-icon-btn dig-icon-btn-small',
+          /* Same 24px footprint and 15px glyph as the rail buttons above — the
+             user asked for one consistent size across both rows. */
+          className: 'dig-icon-btn',
           title: t('toolbar.more'),
           'data-action': 'more',
           onClick: (event) => props.onMoreMenu(event),
-        }, E(Icon, { name: 'more', size: 13 })))
+        }, E(Icon, { name: 'more', size: 15 })))
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
@@ -10511,6 +10491,10 @@ window.__ModuleLoader__.load({
          fetches only when a remote exists. */
       const remoteReady = branches !== null && Array.isArray(branches.remotes) && branches.remotes.length > 0
       const [refreshSpinning, setRefreshSpinning] = useState(false)
+      /* Fold state of the per-directory groups, lifted from ChangesPanel so the
+         ⋯ menu's 展开全部/折叠全部 entries drive the same map the folder
+         headers toggle. */
+      const [foldedDirs, setFoldedDirs] = useState({})
       const refresh = useCallback(async (opts) => {
         if (repoRoot === null) return
         const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReady === true
@@ -11325,6 +11309,26 @@ window.__ModuleLoader__.load({
             { id: 'sort-path', label: t('more.sortPath'), active: sortKey === 'path', run: sort('path') },
             { id: 'sort-name', label: t('more.sortName'), active: sortKey === 'name', run: sort('name') },
             { id: 'sort-status', label: t('more.sortStatus'), active: sortKey === 'status', run: sort('status') },
+            null,
+            /* The old header toggles live here now (v0.16.1): fold/unfold need
+               the directory map, which only exists when grouping is on. */
+            { id: 'view-expand', label: t('changes.expandAll'), disabled: groupBy !== 'dir', reason, run: () => setFoldedDirs({}) },
+            { id: 'view-fold', label: t('changes.foldAll'), disabled: groupBy !== 'dir', reason, run: () => {
+              const next = {}
+              const changes = summary === null ? null : summary.changes
+              if (changes !== null) {
+                const groups = [['conflicted', changes.conflicted], ['staged', changes.staged], ['unstaged', changes.unstaged], ['untracked', changes.untracked], ['ignored', changes.ignored === undefined ? [] : changes.ignored]]
+                for (const pair of groups) {
+                  for (const item of pair[1]) {
+                    const dir = dirName(item.path)
+                    next[pair[0] + '|' + (dir === '' ? t('changes.rootDir') : dir)] = true
+                  }
+                }
+              }
+              setFoldedDirs(next)
+            } },
+            null,
+            { id: 'view-ignored', label: t('changes.showIgnored'), active: showIgnored === true, run: () => setShowIgnored(showIgnored !== true) },
           ] },
           null,
           /* —— top-level sync (VS Code header row) —— */
@@ -11423,6 +11427,7 @@ window.__ModuleLoader__.load({
       const changesPane = E(ChangesPanel, {
         t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
         groupBy: groupBy, sortKey: sortKey, onGroupBy: setGroupBy,
+        foldedDirs: foldedDirs, onFoldedDirs: setFoldedDirs,
         onMoreMenu: moreMenu,
         request: request, cwd: cwd, sessionId: sessionId, commitSettings: commitSettings, base: base,
         showIgnored: showIgnored,
@@ -12242,13 +12247,15 @@ window.__ModuleLoader__.load({
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
       '.dig-dialog-actions{display:flex;justify-content:flex-end;gap:8px}',
       '.dig-dialog-actions .dig-btn-primary{margin-left:0}',
-      /* The wrapper carries the panel-relative anchor and the outside-click ref;
-         the card(s) are plain children. The submenu is a second card offset to
-         the parent card's edge, flipping left when the panel runs out of room
-         (see ContextMenu.openSub). */
-      '.dig-menu-wrap{position:absolute;z-index:70}',
-      '.dig-menu{box-sizing:border-box;min-width:min(200px,calc(100% - 8px));max-width:calc(100% - 8px);max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
-      '.dig-menu-sub{position:absolute;min-width:180px;max-width:260px;z-index:71}',
+      /* The wrapper carries the panel-relative anchor and the outside-click ref,
+         plus the ONLY percentage widths (its containing block is .dig-root, so
+         `max-width` resolves against the panel — on the card it would resolve
+         against the shrink-to-fit wrapper and collapse the menu, cutting labels).
+         The submenu is a second card offset to the parent card's edge, flipping
+         left when the panel runs out of room (see ContextMenu.openSub). */
+      '.dig-menu-wrap{position:absolute;z-index:70;width:max-content;max-width:calc(100% - 8px)}',
+      '.dig-menu{box-sizing:border-box;min-width:200px;max-height:calc(100% - 8px);padding:4px;border:0;border-radius:var(--dsw-radius-md,12px);background:transparent;box-shadow:var(--dsw-elevation-prominent,0 10px 28px rgba(0,0,0,.35));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);isolation:isolate;display:flex;flex-direction:column}',
+      '.dig-menu-sub{position:absolute;min-width:180px;max-width:300px;z-index:71}',
       '.dig-menu::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));backdrop-filter:var(--dsw-menu-backdrop-filter,blur(14px) saturate(1.2));pointer-events:none}',
       '.dig-menu-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column}',
       '.dig-menu-item{display:flex;align-items:center;gap:8px;padding:4px 8px;border:none;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-weight:500;text-align:left;border-radius:var(--dsw-radius-sm,8px);cursor:pointer;white-space:nowrap;overflow:hidden}',

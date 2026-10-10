@@ -634,7 +634,7 @@ test('the rc.2 surface contract: theme-owned menu material on its own layer', ()
   // only balances against `left/top >= 4` in ContextMenu.
   assert.match(menu, /box-sizing:border-box/)
   assert.match(menu, /max-height:calc\(100% - 8px\)/)
-  assert.match(menu, /max-width:calc\(100% - 8px\)/)
+  assert.match(cssRule('.dig-menu-wrap'), /max-width:calc\(100% - 8px\)/)
   assert.match(client, /className: 'dig-menu-scroll'/)
   assert.match(client, /'data-menu-material': 'translucent'/)
   assert.doesNotMatch(client, /createPortal/, 'overlays must stay inside .dig-root')
@@ -1503,8 +1503,8 @@ test('every overlay is clamped to the panel it lives in', () => {
   // in CSS — so the context menu came out wider than the panel and hung past its
   // right edge. Invariant 13 is about the panel's box, not just its origin.
   assert.match(cssRule('.dig-menu'), /box-sizing:border-box/)
-  assert.match(cssRule('.dig-menu'), /min-width:min\(200px,calc\(100% - 8px\)\)/, 'the menu minimum must yield to the panel')
-  assert.match(cssRule('.dig-menu'), /max-width:calc\(100% - 8px\)/)
+  assert.match(cssRule('.dig-menu'), /min-width:200px/, 'the menu keeps a readable floor; the panel cap lives on .dig-menu-wrap')
+  assert.match(cssRule('.dig-menu-wrap'), /max-width:calc\(100% - 8px\)/, 'the panel cap moved to the wrapper')
   assert.match(cssRule('.dig-dialog'), /box-sizing:border-box/, 'a content-box dialog adds its padding on top of the clamp')
   assert.match(cssRule('.dig-dialog'), /min-width:min\(240px,100%\)/)
   assert.match(cssRule('.dig-dialog'), /max-width:min\(420px,94%\)/)
