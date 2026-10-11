@@ -9578,11 +9578,12 @@ window.__ModuleLoader__.load({
         for (const item of changeItems) sums.push(sums[sums.length - 1] + item.h)
         return sums
       }, [changeItems])
+      /* Virtual window, VSCode-style (ListView.getVisibleRange): both ends are
+         pixel→index conversions over the same prefix-sum array, so no "row
+         count" ever enters the math (issue #12 — the old winLimit computed a
+         row count while the loop accumulated pixels, stalling at 2 entries). */
       const winFirst = Math.max(0, windowStart(changeOffsets, changesViewport.scrollTop) - WINDOW_OVERSCAN)
-      const winLimit = Math.ceil(changesViewport.viewH / ITEM_HEIGHTS.row) + WINDOW_OVERSCAN * 3
-      let winLast = winFirst
-      let used = 0
-      while (winLast < changeItems.length && used < winLimit) { used += changeItems[winLast].h; winLast += 1 }
+      const winLast = Math.min(changeItems.length, windowStart(changeOffsets, changesViewport.scrollTop + changesViewport.viewH) + 1 + WINDOW_OVERSCAN)
       const visibleItems = changeItems.slice(winFirst, winLast)
       const aiConfirmDialog = aiAsk !== true ? null : E(ConfirmDialog, {
         t: t,
