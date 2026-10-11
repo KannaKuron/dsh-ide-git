@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.16.4 — 2026-10-11
+
+**类型**:fix(issue #12 变更列表虚拟滚动 + Windows 宿主 untracked diff)
+
+- **fix 变更列表恒定只渲染组头 + 1 行,其余被 pad-bottom 盖住(#12,报告人 kairui007)**:`bf86446` 引入的窗口预算把「行数」当「像素」——`winLimit` 按 `viewH ÷ 行高` 算出行数(≈31),循环却累加条目像素(组头 21px + 首行 24px 即越线),恒定挂载 2 个条目:数据再多也只见 1 行、滚动无效、下方一片空白(pad-bottom 占位把未挂载条目的高度撑出来了)。按 VSCode `ListView.getVisibleRange` 同款重写:窗口两端都是对同一前缀和数组的「像素→索引」二分(终点 = `windowStart(scrollTop + viewH) + 1 + overscan`),行数只作结果、不再作输入。验证:从 `src/client.js` 提取真实代码跑矩阵,1 组头 + 190 行在 viewH 300/648/900/1690 下挂载条数 2/2/3/4 → 19/34/44/77,4 档 × 5 滚动位共 20 场景的可见区覆盖断言全过;旧实现跑同一断言立即失败(数学层面钉死根因)。
+- **fix Windows 上未跟踪文件的 diff 预览必报 bad-request(既有 bug,基线即红:api.test 在 Windows 108/109)**:两处叠加——① `repoRootOf` 不归一化分隔符,`rev-parse --show-toplevel` 在 Windows 输出 `C:/…` 而 `path.join` 产出 `C:\…`,围栏 `startsWith(root + path.sep)` 永不匹配 → 仓库内路径一律误拒;② git ≥2.55 对反斜杠路径的 diff header 做引号 + C 转义(`"a\\C:\\…"`),且 a 侧不再写 `/dev/null` 而写实际路径,按路径前缀匹配的 header 重写整块落空。修法:`repoRootOf` 返回统一过 `path.normalize`;git 参数改走正斜杠(header 免转义),重写改按路径匹配。macOS/Linux 恒等无感;Windows 宿主「未跟踪文件预览」从此可用。
+- **验证**:`npm test` 109/109(修复前基线 108/109,红者即上条)。
+
 ## v0.16.3 — 2026-10-10
 
 **类型**:fix(rail/组头图标 16 → 18px,用户反馈"还是不够大")。settings 齿轮断言同步。
