@@ -239,7 +239,11 @@ function cwdOf(payload) {
 /* ============================== git reads ============================== */
 
 async function repoRootOf(cwd, payload) {
-  if (payload !== undefined && payload.repoRoot !== undefined) return requireAbsolute(payload.repoRoot, 'repoRoot')
+  /* Normalize the separator: `rev-parse --show-toplevel` spells drive paths
+     with forward slashes on Windows while path.join produces backslashes, so
+     the untracked-diff fence (root + path.sep prefix check) rejected every
+     in-repo path there. macOS/Linux are byte-identical no-ops. */
+  if (payload !== undefined && payload.repoRoot !== undefined) return path.normalize(requireAbsolute(payload.repoRoot, 'repoRoot'))
   const result = await runGit(cwd, ['rev-parse', '--show-toplevel'])
   if (result.code !== 0) {
     // A workspace that is not a repository is a normal state, not a failure:
@@ -247,7 +251,7 @@ async function repoRootOf(cwd, payload) {
     throw new PanelError('not-a-repo', 'not a git repository: ' + cwd, 409)
   }
   const top = result.stdout.trim()
-  return top === '' ? cwd : top
+  return path.normalize(top === '' ? cwd : top)
 }
 
 async function currentBranchOf(root) {
@@ -800,7 +804,12 @@ async function diff(payload) {
     /* --no-index reads the file for real, so unlike the plain `git diff --`
        form an absolute path must NOT be allowed to escape the repository. */
     if (absolute !== root && !absolute.startsWith(root + path.sep)) throw badRequest('path must stay inside the repository')
-    const result = await runGit(root, ['diff', '--no-color', '--no-ext-diff', '-U3', '--no-index', '--', '/dev/null', absolute])
+    /* git quotes and C-escapes backslash paths inside the diff header (and
+       git ≥2.55 spells the a/ side with the real path instead of /dev/null);
+       passing forward slashes keeps the header unquoted, so the rewrite below
+       can match it verbatim. POSIX is a no-op. */
+    const headerPath = absolute.split(path.sep).join('/')
+    const result = await runGit(root, ['diff', '--no-color', '--no-ext-diff', '-U3', '--no-index', '--', '/dev/null', headerPath])
     if (result.code !== 0 && result.code !== 1) {
       const detail = result.stderr.trim() === '' ? result.stdout.trim() : result.stderr.trim()
       throw new PanelError('git-failed', 'git diff --no-index failed: ' + (detail === '' ? 'exit ' + result.code : detail), 409)
@@ -809,12 +818,12 @@ async function diff(payload) {
        the header lines back to the repository-relative spelling so the preview
        reads like every other patch (body lines are left untouched). */
     let out = result.stdout
-    if (out.indexOf(absolute) >= 0 && out.indexOf('\n') !== -1) {
+    if (out.indexOf(headerPath) >= 0 && out.indexOf('\n') !== -1) {
       out = out.split('\n').map((line) => {
-        if (line.startsWith('diff --git ') && line.indexOf(absolute) >= 0) return 'diff --git a/' + rel + ' b/' + rel
-        /* the b/ side of --no-index carries the absolute path verbatim (its
-           leading slash merged into the separator): match '+++ b' + absolute. */
-        if (line.startsWith('+++ b' + absolute)) return '+++ b/' + rel
+        if (line.startsWith('diff --git ') && line.indexOf(headerPath) >= 0) return 'diff --git a/' + rel + ' b/' + rel
+        /* git ≥2.55 quotes the header and spells the a/ side with the real
+           path instead of /dev/null, so match on the path, not the prefix. */
+        if (line.startsWith('+++ ') && line.indexOf(headerPath) >= 0) return '+++ b/' + rel
         return line
       }).join('\n')
     }
