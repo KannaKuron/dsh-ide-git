@@ -279,7 +279,7 @@ window.__ModuleLoader__.load({
       'lf.truncated': '只显示前 {count} 行',
       'preview.title': 'Git 预览',
       'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
-      'settings.rail.title': '动作条按钮',
+      'settings.rail.title': '动作条',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
       'settings.commit.title': 'AI 提交信息',
@@ -568,7 +568,7 @@ window.__ModuleLoader__.load({
       'lf.truncated': 'Showing the first {count} lines',
       'preview.title': 'Git Preview',
       'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
-      'settings.rail.title': 'Action rail buttons',
+      'settings.rail.title': 'Action rail',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
       'settings.commit.title': 'AI commit message',
@@ -865,7 +865,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
-        'settings.rail.title': '動作列按鈕',
+        'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
@@ -1154,7 +1154,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
-        'settings.rail.title': '動作列按鈕',
+        'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
@@ -1443,7 +1443,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
-        'settings.rail.title': '動作列按鈕',
+        'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
@@ -1732,7 +1732,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '先頭 {count} 行のみ表示',
         'preview.title': 'Git プレビュー',
         'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
-        'settings.rail.title': 'アクションレールのボタン',
+        'settings.rail.title': 'レール',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
         'settings.commit.title': 'AI コミットメッセージ',
@@ -2021,7 +2021,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '처음 {count}줄만 표시',
         'preview.title': 'Git 미리보기',
         'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
-        'settings.rail.title': '액션 레일 버튼',
+        'settings.rail.title': '레일',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
         'settings.commit.title': 'AI 커밋 메시지',
@@ -2310,7 +2310,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Nur die ersten {count} Zeilen',
         'preview.title': 'Git-Vorschau',
         'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
-        'settings.rail.title': 'Schaltflächen der Aktionsleiste',
+        'settings.rail.title': 'Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
         'settings.commit.title': 'KI-Commit-Nachricht',
@@ -2599,7 +2599,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Affichage des {count} premières lignes',
         'preview.title': 'Aperçu Git',
         'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
-        'settings.rail.title': 'Boutons de la barre d’actions',
+        'settings.rail.title': 'Barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
         'settings.commit.title': 'Message de commit par IA',
@@ -2888,7 +2888,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Показаны первые {count} строк',
         'preview.title': 'Git-предпросмотр',
         'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
-        'settings.rail.title': 'Кнопки панели действий',
+        'settings.rail.title': 'Панель действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
         'settings.commit.title': 'Сообщение коммита от ИИ',
@@ -3177,7 +3177,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Mostrando as primeiras {count} linhas',
         'preview.title': 'Pré-visualização do Git',
         'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
-        'settings.rail.title': 'Botões da barra de ações',
+        'settings.rail.title': 'Barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
         'settings.commit.title': 'Mensagem de commit por IA',
@@ -3466,7 +3466,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Mostrate le prime {count} righe',
         'preview.title': 'Anteprima Git',
         'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
-        'settings.rail.title': 'Pulsanti della barra azioni',
+        'settings.rail.title': 'Barra delle azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
         'settings.commit.title': 'Messaggio di commit con IA',
@@ -3755,7 +3755,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Eerste {count} regels worden weergegeven',
         'preview.title': 'Git-voorbeeld',
         'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
-        'settings.rail.title': 'Knoppen van de actiebalk',
+        'settings.rail.title': 'Actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
         'settings.commit.title': 'AI-commitbericht',
@@ -4044,7 +4044,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Pokazano pierwsze {count} wierszy',
         'preview.title': 'Podgląd Git',
         'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
-        'settings.rail.title': 'Przyciski paska akcji',
+        'settings.rail.title': 'Pasek akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
         'settings.commit.title': 'Wiadomość commita od AI',
@@ -4333,7 +4333,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Visar de första {count} raderna',
         'preview.title': 'Git-förhandsvisning',
         'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
-        'settings.rail.title': 'Knappar i åtgärdsfältet',
+        'settings.rail.title': 'Åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
         'settings.commit.title': 'AI-commitmeddelande',
@@ -4622,7 +4622,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Yalnızca ilk {count} satır gösteriliyor',
         'preview.title': 'Git Önizlemesi',
         'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
-        'settings.rail.title': 'Eylem çubuğu düğmeleri',
+        'settings.rail.title': 'Eylem çubuğu',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
         'settings.commit.title': 'AI commit mesajı',
@@ -4911,7 +4911,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Menampilkan {count} baris pertama',
         'preview.title': 'Pratinjau Git',
         'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
-        'settings.rail.title': 'Tombol bilah aksi',
+        'settings.rail.title': 'Bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
         'settings.commit.title': 'Pesan commit AI',
@@ -5200,7 +5200,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Chỉ hiện {count} dòng đầu',
         'preview.title': 'Xem trước Git',
         'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
-        'settings.rail.title': 'Nút thanh tác vụ',
+        'settings.rail.title': 'Thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
         'settings.commit.title': 'Thông điệp commit do AI viết',
@@ -5489,7 +5489,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'عرض أول {count} سطرًا فقط',
         'preview.title': 'معاينة Git',
         'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
-        'settings.rail.title': 'أزرار شريط الإجراءات',
+        'settings.rail.title': 'شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
         'settings.commit.title': 'رسالة إيداع بالذكاء الاصطناعي',
@@ -5778,7 +5778,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'केवल पहली {count} पंक्तियाँ दिखाई जा रही हैं',
         'preview.title': 'Git पूर्वावलोकन',
         'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
-        'settings.rail.title': 'एक्शन रेल बटन',
+        'settings.rail.title': 'क्रिया रेल',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
         'settings.commit.title': 'AI कमिट संदेश',
@@ -6067,7 +6067,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'แสดงเฉพาะ {count} บรรทัดแรก',
         'preview.title': 'ดูตัวอย่าง Git',
         'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
-        'settings.rail.title': 'ปุ่มแถบการทำงาน',
+        'settings.rail.title': 'แถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
         'settings.commit.title': 'ข้อความคอมมิตโดย AI',
@@ -8574,6 +8574,31 @@ window.__ModuleLoader__.load({
           }, children),
           hint === null ? null : E('div', { className: 'dig-settings-subnote' }, hint))
       }
+      /* Collapsible sections, HAND-DRAWN. The official disclosure row was ruled
+         out the same way the sibling dsh-gitbash-shell ruled it out (v0.38.0 -
+         0.38.3): the ui-primitives module shape this plugin's restricted require
+         returns does not expose it, so a borrowed component silently degrades to
+         a flat title+stack pile. One button + one conditional draws the whole
+         thing: the header row always renders, the body only while open, and all
+         sections ship collapsed. State lives with the other hooks, above every
+         early return, so a status flip cannot reorder them. */
+      const [folds, setFolds] = useState({})
+      const toggleFold = (key) => {
+        setFolds((previous) => Object.assign({}, previous, { [key]: !(previous[key] === true) }))
+      }
+      const fold = (titleKey, ...body) => {
+        const open = folds[titleKey] === true
+        return E('div', { className: 'dig-fold' },
+          E('button', {
+            type: 'button',
+            className: 'dig-foldHead',
+            'aria-expanded': open ? 'true' : 'false',
+            onClick: () => toggleFold(titleKey),
+          },
+            E('span', { className: 'dig-foldChevron' + (open ? ' dig-foldChevronOpen' : ''), 'aria-hidden': 'true' }, '▸'),
+            E('span', { className: 'dig-foldTitle' }, t(titleKey))),
+          open ? E('div', { className: 'dig-stack' }, body) : null)
+      }
       const flush = () => {
         pendingFlush.current = null
         /* The pending TARGET per field, not "whatever the render-time intent
@@ -8728,9 +8753,14 @@ window.__ModuleLoader__.load({
          and a sentence, not controls that silently do nothing. */
       const readOnly = snapshot.writable !== true
       return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': status, 'data-settings-readonly': readOnly === true ? 'true' : 'false' },
-        E('div', { className: 'dig-settings-hint' }, t('settings.rail.hint')),
         E('div', { className: readOnly === true ? 'dig-settings-note' : 'dig-settings-note dig-settings-note-hidden', 'data-settings-readonly-note': '' }, t('settings.rail.readonly')),
         note === '' ? null : E('div', { className: 'dig-settings-error', 'data-settings-error': '' }, note),
+        /* Three collapsible sections, one per functional domain — the header
+           rows are what a collapsed card shows. The readonly/error notes stay
+           OUTSIDE them: they are status, not settings, and must stay visible.
+           Section 1 carries its own hint (it describes exactly this list). */
+        fold('settings.rail.title',
+        E('div', { className: 'dig-settings-hint' }, t('settings.rail.hint')),
         E('div', { className: 'dig-settings-list' }, RAIL_SPECS.map((spec) => {
           const inputId = 'dig-rail-' + spec.id
           const visible = shown(spec)
@@ -8778,11 +8808,11 @@ window.__ModuleLoader__.load({
             }),
             E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: spec.icon, size: 13 })),
             E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t(spec.key)))
-        })),
-        /* Placement (issue #8): one switch, the same optimistic-write contract
-           the rail rows keep. The conversation tab registers/unregisters live
-           (see door 3 in apply), so the flip is visible without a reload. */
-        E('div', { className: 'dig-settings-sub' }, t('settings.placement.title')),
+        }))),
+        /* Section 2 — placement (issue #8): one switch, the same optimistic-write
+           contract the rail rows keep. The conversation tab registers/unregisters
+           live (see door 3 in apply), so the flip is visible without a reload. */
+        fold('settings.placement.title',
         (() => {
           const field = 'conversationTab'
           const inputId = 'dig-placement-' + field
@@ -8865,8 +8895,10 @@ window.__ModuleLoader__.load({
               E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'commit', size: 13 })),
               E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.placement.immersive'))),
             E('div', { className: 'dig-settings-subnote' }, t('settings.placement.immersiveHint')))
-        })(),
-        E('div', { className: 'dig-settings-sub' }, t('settings.commit.title')),
+        })()),
+        /* Section 3 — the AI commit message (issue #6): model, reasoning and the
+           prompt template. */
+        fold('settings.commit.title',
         (() => {
           /* The model row is a picker over the host's provider catalog; while
              the catalog has not answered (or cannot), the row stays the plain
@@ -8912,7 +8944,7 @@ window.__ModuleLoader__.load({
           }
           return textRow('commitReasoning', 'settings.commit.reasoning', 'settings.commit.reasoningHint', 60, false)
         })(),
-        textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true)))
+        textRow('commitPrompt', 'settings.commit.prompt', 'settings.commit.promptHint', 2000, true))))
     }
 
     function RailSettings(props) {
@@ -12052,6 +12084,14 @@ window.__ModuleLoader__.load({
       '.dig-settings-glyph{display:inline-flex;flex:none;color:var(--dsw-alias-label-secondary)}',
       '.dig-settings-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}',
       '.dig-root-narrow .dig-settings-label{white-space:normal}',
+      /* Collapsible setting sections (hand-drawn, same pattern as dsh-gitbash-shell v0.38.4). */
+      '.dig-fold{border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm,8px);padding:4px 12px 12px;background:var(--dsw-alias-bg-layer-1,transparent)}',
+      '.dig-fold .dig-stack{padding-top:10px}',
+      '.dig-foldHead{display:flex;align-items:center;gap:8px;width:100%;appearance:none;background:none;border:0;padding:6px 0;font:inherit;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--dsw-alias-label-secondary);cursor:pointer;text-align:left}',
+      '.dig-foldHead:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-foldChevron{flex:none;display:inline-block;color:var(--dsw-alias-label-tertiary);transition:transform .16s}',
+      '.dig-foldChevron.dig-foldChevronOpen{transform:rotate(90deg)}',
+      '.dig-foldTitle{min-width:0;overflow-wrap:anywhere}',
       '.dig-root-narrow .dig-menu-item{white-space:normal}',
       '.dig-root-narrow .dig-toast-text{white-space:normal}',
       '.dig-toasts{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:80;max-width:min(340px,92%)}',

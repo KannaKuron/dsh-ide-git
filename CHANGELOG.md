@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.17.0 — 2026-10-13
+
+**类型**:feat(设置卡可折叠分区,跟随 dsh-gitbash-shell v0.38.4 的同款改造)
+
+- **feat 设置卡按功能域分成三个可折叠分区**:`RailSettingsCard` 的开关面从一整列平铺改为「动作条 / 面板放置 / AI 提交信息」三个折叠卡片,默认全部收起,点标题行展开。只读与写入失败提示保持在折叠区**之外**(它们是状态不是设置,收起不得藏住它们);`settings.rail.hint` 跟随自己描述的动作条分区走。字段名、写入通道、默认值零变化。
+- **实现是自绘的,且必须继续自绘**:官方 ui-primitives 的 DisclosureRow 在插件的受限 require 下拿不到(icon 查找返回 null),会静默退化成平铺——dsh-gitbash-shell v0.38.0-0.38.3 真机实证过,故与 v0.38.4 同款手绘(一个 button + 一个条件渲染)。圆角走 `--dsw-radius-*` token(本仓 radius 纪律)。
+- **词典**:复用既有孤儿键 `settings.rail.title`(原各门文案「动作条按钮」等,组件中无任何调用点),就地修正为分区标题「动作条」等,21 门逐门对齐,未新增键。
+- **验证**:`npm test` 110/110(新增 smoke 用例锁:fold hook 在 early return 之前、aria-expanded、收起不渲染 body、三个分区键、`dig-settings-sub` 平铺小节标题不得回归);`scripts/ssr-check.mjs` 4/4;临时卡片 SSR 九项断言(三头、默认收起、hint 随区、note 在区外、只读/缺失态)全过;`scripts/settings-card-probe.mjs` 的 `openCard()` 适配为先展开全部分区再驱动开关。
+
 ## v0.16.4 — 2026-10-11
 
 **类型**:fix(issue #12 变更列表虚拟滚动 + Windows 宿主 untracked diff)

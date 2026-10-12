@@ -85,6 +85,14 @@ async function ensurePanel() {
 async function openCard() {
   await page.locator('.dig-root:visible .dig-rail-settings').first().click({ timeout: 6000 })
   await settle(2500)
+  /* The card's sections are collapsible and ship COLLAPSED, so the switches this
+     probe drives are not in the DOM until their section is unfolded. Open every
+     fold head before any assertion runs (also re-opens after each reload). */
+  const heads = page.locator('[data-plugin-config] .dig-foldHead')
+  const headCount = await heads.count()
+  for (let index = 0; index < headCount; index++) {
+    try { await heads.nth(index).click({ timeout: 4000 }); await settle(300) } catch (error) { void error }
+  }
   return page.locator('[data-plugin-config] .dig-settings').count()
 }
 

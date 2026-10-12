@@ -1240,6 +1240,31 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   }
 })
 
+test('the settings card folds into collapsible sections, collapsed by default', () => {
+  // The card's controls group into three functional domains behind fold headers
+  // (action rail / placement / AI commit), all collapsed until clicked. The
+  // component is HAND-DRAWN on purpose: the official disclosure row is not
+  // reachable through this plugin's restricted require — dsh-gitbash-shell
+  // v0.38.0-0.38.3 watched it silently degrade to a flat title+stack pile on a
+  // real machine. The readonly/error notes stay OUTSIDE the folds: they are
+  // status, not settings, and a collapsed section must never hide them.
+  const card = client.slice(client.indexOf('function RailSettingsCard('), client.indexOf('function RailSettings('))
+  assert.match(card, /const \[folds, setFolds\] = useState\(\{\}\)/,
+    'the fold state is a hook, declared above every early return')
+  assert.match(card, /className: 'dig-foldHead'/, 'each section header is a real button')
+  assert.match(card, /'aria-expanded': open \? 'true' : 'false'/, 'the header announces its state to assistive tech')
+  assert.match(card, /open \? E\('div', \{ className: 'dig-stack' \}, body\) : null/,
+    'a collapsed section renders no body at all')
+  for (const key of ['settings.rail.title', 'settings.placement.title', 'settings.commit.title']) {
+    assert.match(card, new RegExp("fold\\('" + key.replace(/\./g, '\\.') + "'"),
+      'the ' + key + ' section header comes from the dictionary')
+  }
+  const titleOccurrences = client.split("'settings.rail.title'").length - 1
+  assert.ok(titleOccurrences >= 22, 'settings.rail.title must ship in ZH + EN + every LOCALES entry (saw ' + titleOccurrences + ')')
+  assert.doesNotMatch(card, /className: 'dig-settings-sub'/,
+    'the flat section titles are gone, replaced by fold headers')
+})
+
 test('the ai commit message keeps the model honest and the input bounded', async () => {
   // Issue #6. Four shapes are locked here because each one has produced (or could
   // produce) a "false success" in this repository before:
