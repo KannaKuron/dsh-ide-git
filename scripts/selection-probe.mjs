@@ -193,6 +193,14 @@ try {
   /* ---- 1-2. Ctrl+click toggle / Shift+click span + the selection bar ---- */
   const rowCount = await changeRows().count()
   check(rowCount >= 3, 'change list has rows to select (saw ' + rowCount + ')')
+  /* FRESH-SHIFT first (regression lock for the anchorless-Shift fix): the panel
+     just mounted, no plain click has ever set an anchor — Shift+click must
+     span from the FIRST row, not silently degrade to single-select. */
+  await changeRows().nth(2).click({ modifiers: ['Shift'] })
+  await settle(400)
+  check(await selectedRows().count() === 3, 'Shift+click with no anchor spans from the first row (saw ' + await selectedRows().count() + ')')
+  await page.keyboard.press('Escape')
+  await settle(300)
   await changeRows().nth(0).click({ modifiers: ['Meta'] })
   await settle(400)
   check(await selectedRows().count() === 1, 'Ctrl+click selects the first row')
@@ -340,6 +348,17 @@ try {
   const commitRows = page.locator('.dig-history-scroll .dig-commit')
   const commitCount = await commitRows.count()
   check(commitCount >= 2, 'history offers commits to multi-select (saw ' + commitCount + ')')
+  /* FRESH-SHIFT (anchorless): the history list has never been clicked, so the
+     first Shift+click must span from the FIRST commit (the exact usage the
+     user reported as dead — "按住 shift 选择 commit 完全没效果"). */
+  if (commitCount >= 5) {
+    await commitRows.nth(4).click({ modifiers: ['Shift'] })
+    await settle(500)
+    check(await page.locator('.dig-history-scroll .dig-commit.dig-commit-selected').count() === 5,
+      'Shift+click with no anchor spans the first five commits')
+    await page.keyboard.press('Escape')
+    await settle(300)
+  }
   if (commitCount >= 2) {
     await commitRows.nth(0).click({ modifiers: ['Meta'] })
     await settle(400)

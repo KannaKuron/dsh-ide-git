@@ -9829,8 +9829,12 @@ window.__ModuleLoader__.load({
       }
       const handlePick = useCallback((event, entry, selKey) => {
         const ordered = visibleRef.current.map((leaf) => branchSelKeyOf(leaf.entry))
-        if (event.shiftKey === true && pickAnchor.current !== null) {
-          const from = ordered.indexOf(pickAnchor.current)
+        if (event.shiftKey === true) {
+          /* No anchor yet (fresh tree, nothing clicked): VS Code semantics —
+             the range starts at the FIRST visible row, so a first-click Shift
+             still multi-selects instead of silently degrading to single. */
+          const anchorKey = pickAnchor.current !== null ? pickAnchor.current : ordered[0]
+          const from = ordered.indexOf(anchorKey)
           const to = ordered.indexOf(selKey)
           if (from >= 0 && to >= 0) {
             const low = Math.min(from, to)
@@ -10075,9 +10079,12 @@ window.__ModuleLoader__.load({
            of this handler (their memo compares item/group/t/selected, not the
            callback — same stale-callback trade-off as the stage buttons), so
            the selection must never be read from it. */
-        if (event.shiftKey === true && anchorRef !== undefined && anchorRef.current !== null) {
+        if (event.shiftKey === true && anchorRef !== undefined) {
           const ordered = orderedRowKeys()
-          const from = ordered.indexOf(anchorRef.current)
+          /* Anchor falls back to the FIRST row (VS Code semantics): a Shift
+             click on a fresh list must multi-select, not degrade to single. */
+          const anchorKey = anchorRef.current !== null ? anchorRef.current : ordered[0]
+          const from = ordered.indexOf(anchorKey)
           const to = ordered.indexOf(key)
           if (from >= 0 && to >= 0) {
             const low = Math.min(from, to)
@@ -10704,8 +10711,11 @@ window.__ModuleLoader__.load({
         /* Functional updates only — memoised CommitRows may hold a stale
            closure of this handler (their memo compares commit/row/selected),
            so the picked set is never read from it. */
-        if (event.shiftKey === true && pickAnchor.current !== null) {
-          const from = ordered.indexOf(pickAnchor.current)
+        if (event.shiftKey === true) {
+          /* Anchor falls back to the FIRST row (VS Code semantics): a Shift
+             click on a fresh list must multi-select, not degrade to single. */
+          const anchorHash = pickAnchor.current !== null ? pickAnchor.current : ordered[0]
+          const from = ordered.indexOf(anchorHash)
           if (from >= 0 && index >= 0) {
             const low = Math.min(from, index)
             const high = Math.max(from, index)
@@ -13279,10 +13289,12 @@ window.__ModuleLoader__.load({
       '.dig-row-sub{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
       '.dig-row-dir{margin-left:auto;opacity:.75}',
       '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;corner-shape:round;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
-      /* Ahead/behind colours (user request): pending pushes read green, pending
-         pulls read blue — the same semantics in the tree rows and the top bar. */
-      '.dig-badge-ahead,.dig-track-ahead{color:var(--dsw-alias-state-success-primary)}',
-      '.dig-badge-behind,.dig-track-behind{color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary))}',
+      /* Ahead/behind colours + size (user request): pending pushes read green,
+         pending pulls read blue — the same semantics in the tree rows and the
+         top bar. 12px/600 keeps the counts legible at a glance. */
+      '.dig-badge-ahead,.dig-track-ahead{color:var(--dsw-alias-state-success-primary);font-size:12px;font-weight:600}',
+      '.dig-badge-behind,.dig-track-behind{color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary));font-size:12px;font-weight:600}',
+      '.dig-badge.dig-badge-ahead,.dig-badge.dig-badge-behind{padding:0 6px}',
       '.dig-badge-muted{opacity:.8}',
       '.dig-badge-worktree{padding:0 3px;display:inline-flex;align-items:center;height:14px}',
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',
