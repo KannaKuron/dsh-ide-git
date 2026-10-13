@@ -9745,8 +9745,8 @@ window.__ModuleLoader__.load({
           className: 'dig-badge dig-badge-muted dig-badge-worktree',
           title: t('branches.worktree') + ': ' + entry.worktree,
         }, E(Icon, { name: 'folder', size: 10 })),
-        entry.ahead > 0 ? E('span', { className: 'dig-badge' }, '↑' + entry.ahead) : null,
-        entry.behind > 0 ? E('span', { className: 'dig-badge' }, '↓' + entry.behind) : null)
+        entry.ahead > 0 ? E('span', { className: 'dig-badge dig-badge-ahead' }, '↑' + entry.ahead) : null,
+        entry.behind > 0 ? E('span', { className: 'dig-badge dig-badge-behind' }, '↓' + entry.behind) : null)
     }
 
     function BranchTree(props) {
@@ -12207,7 +12207,8 @@ window.__ModuleLoader__.load({
             E('span', { className: 'dig-repo-name' }, branches.branch),
             E(Icon, { name: 'chevron', size: 12 }))),
         summary === null || summary.upstream === null ? null : E('span', { className: 'dig-track' },
-          (summary.ahead > 0 ? '↑' + summary.ahead : '') + (summary.behind > 0 ? ' ↓' + summary.behind : '')),
+          summary.ahead > 0 ? E('span', { className: 'dig-track-ahead' }, '↑' + summary.ahead) : null,
+          summary.behind > 0 ? E('span', { className: 'dig-track-behind' }, (summary.ahead > 0 ? ' ' : '') + '↓' + summary.behind) : null),
         operation === null ? null : E('span', { className: 'dig-opchip', title: t('operation.hint') }, t('operation.' + operation)),
         E('button', {
           type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
@@ -13278,6 +13279,10 @@ window.__ModuleLoader__.load({
       '.dig-row-sub{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
       '.dig-row-dir{margin-left:auto;opacity:.75}',
       '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;corner-shape:round;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
+      /* Ahead/behind colours (user request): pending pushes read green, pending
+         pulls read blue — the same semantics in the tree rows and the top bar. */
+      '.dig-badge-ahead,.dig-track-ahead{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-badge-behind,.dig-track-behind{color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary))}',
       '.dig-badge-muted{opacity:.8}',
       '.dig-badge-worktree{padding:0 3px;display:inline-flex;align-items:center;height:14px}',
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',

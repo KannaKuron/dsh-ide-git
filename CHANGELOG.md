@@ -3,6 +3,12 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.18.1 — 2026-10-13
+
+**类型**:feat(前后徽章配色,用户反馈)
+
+- **feat 待推送/待拉取徽章配色**:分支树的 `↑N`(待推送)箭头与数字改绿色(`--dsw-alias-state-success-primary`),`↓N`(待拉取)改蓝色(`--dsw-alias-state-business-primary`,跟随主题的官方品牌蓝 alias);顶栏 branch 条的 `↑N ↓N` 同语义同色,两处一致。纯样式:新增四个 class(`dig-badge-ahead` / `dig-badge-behind` / `dig-track-ahead` / `dig-track-behind`),结构与数据零变化。
+
 ## v0.18.0 — 2026-10-13
 
 **类型**:feat(issue #13「变更目录无法多选」升级版:全面板多选 + Ctrl+C 复制 + Del 删除)
