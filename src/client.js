@@ -9996,9 +9996,11 @@ window.__ModuleLoader__.load({
       return E('div', {
         className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : ''),
         title: item.origPath === undefined ? item.path : item.origPath + ' → ' + item.path,
-        /* The click is handled ONE level up (ChangesPanel): plain click still
-           opens the diff, Shift/Ctrl+click join or toggle the multi-select. */
+        /* The click is handled ONE level up (ChangesPanel): plain click only
+           selects, DOUBLE-click opens the diff (v0.18.3 — one interaction model
+           across every list). */
         onClick: (event) => props.onRowClick(event, item, props.group),
+        onDoubleClick: () => props.onDblClick(item, props.group),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, item, props.group) },
       },
         FileTypeGlyph({ path: item.path }),
@@ -10108,8 +10110,10 @@ window.__ModuleLoader__.load({
           return
         }
         anchorRef.current = key
-        setSelection((previous) => previous.size === 0 ? previous : new Set())
-        props.onDiff(item, group)
+        /* Plain click only SELECTS (single-replace, the branch tree's model):
+           the diff moved to DOUBLE-click — a stray click mid-multi-select must
+           not yank the pane away (v0.18.3). */
+        setSelection((previous) => previous.size === 1 && previous.has(key) === true ? previous : new Set([key]))
       }, [setSelection, anchorRef, props.onDiff])
       /* ---- rubber-band selection over the windowed list: the fixed row
          heights + the prefix-sum offsets turn a pixel span back into the
@@ -10251,6 +10255,7 @@ window.__ModuleLoader__.load({
         key: key + ':' + item.path, item: item, group: key, t: t,
         selected: selection.has(key + ':' + item.path) === true,
         onRowClick: handleRowClick,
+        onDblClick: props.onDiff,
         onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
       })
       const folderOf = (item) => {
@@ -10438,7 +10443,6 @@ window.__ModuleLoader__.load({
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
-        selectionBar,
         E('div', { className: 'dig-changes-body' },
           E('div', {
             className: 'dig-changes-list', ref: changesScrollRef,
@@ -10463,6 +10467,7 @@ window.__ModuleLoader__.load({
               winLast < changeItems.length ? E('div', { key: 'pad-bottom', style: { height: String(changeOffsets[changeItems.length] - changeOffsets[winLast]) + 'px' } }) : null,
             ]),
           composer),
+        selectionBar,
         marquee === null ? null : E('div', {
           className: 'dig-marquee',
           style: { left: marquee.x + 'px', top: marquee.y + 'px', width: marquee.w + 'px', height: marquee.h + 'px' },
@@ -10591,8 +10596,10 @@ window.__ModuleLoader__.load({
         'data-lane': String(props.row.lane),
         className: 'dig-commit' + (props.selected === true ? ' dig-commit-selected' : ''),
         /* Modifier handling lives in HistoryList (it owns the rendered row
-           order the Shift-range walks); a plain click still opens the detail. */
+           order the Shift-range walks); a plain click only selects and the
+           DOUBLE-click opens the detail (v0.18.3, same model as the tree). */
         onClick: (event) => props.onRowClick(event, commit),
+        onDoubleClick: () => props.onOpenDetail(commit),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
       },
         E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
@@ -10698,10 +10705,12 @@ window.__ModuleLoader__.load({
       const rows = useMemo(() => buildRows(filtered), [filtered])
       /* Multi-select gestures (issue #13): the rendered row order is what the
          Shift-range walks, and the range is computed over the FILTERED rows —
-         the same list the eye sees. Plain click keeps opening the detail and
-         collapses the multi-select, exactly like the other two lists. The
-         stale-callback risk is nil: rows change identity with the filters, and
-         every row re-renders whenever its commit reference changes. */
+         the same list the eye sees. A plain click only SELECTS (single-replace,
+         like the branch tree); it must NOT open the detail view — that killed
+         any multi-select mid-flight and is now the DOUBLE-click's job (user
+         request, v0.18.3). The stale-callback risk is nil: rows change identity
+         with the filters, and every row re-renders whenever its commit
+         reference changes. */
       const handleRowClick = (event, commit) => {
         const pickedHashes = props.pickedHashes
         const setPicks = props.onPicksChange
@@ -10857,7 +10866,7 @@ window.__ModuleLoader__.load({
             commit: row.commit, row: row, t: t,
             selected: props.selectedHash === row.commit.hash
               || (props.pickedHashes !== undefined && props.pickedHashes.has(row.commit.hash) === true),
-            onRowClick: handleRowClick, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
+            onRowClick: handleRowClick, onOpenDetail: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
           })),
           winEnd < rows.length ? E('div', { key: 'pad-bottom', style: { height: String((rows.length - winEnd) * HISTORY_ROW_H) + 'px' } }) : null,
           props.hasMore === true
@@ -10884,7 +10893,10 @@ window.__ModuleLoader__.load({
             key: file.path,
             className: 'dig-row dig-row-file' + (props.selectedPath === file.path ? ' dig-row-selected' : ''),
             title: file.path,
+            /* Same click model as everywhere else (v0.18.3): plain click only
+               selects, DOUBLE-click opens the diff. */
             onClick: () => props.onSelectFile(file),
+            onDoubleClick: () => props.onOpenFile(file),
             onContextMenu: props.onFileMenu === undefined ? undefined : (event) => { event.preventDefault(); props.onFileMenu(event, file) },
           },
             FileTypeGlyph({ path: file.path }),
@@ -12241,7 +12253,10 @@ window.__ModuleLoader__.load({
         ? E(CommitDetail, {
             t: t, detail: detail, selectedPath: selectedPath,
             onBack: () => { setView('history'); setSelectedPath(null); setPatch(''); setDiffContext(null) },
-            onSelectFile: (file) => {
+            /* Plain click only highlights the file; the DOUBLE-click opens its
+               diff (v0.18.3, one click model across every list). */
+            onSelectFile: (file) => { setSelectedPath(file.path) },
+            onOpenFile: (file) => {
               setSelectedPath(file.path)
               showDiff({
                 hash: detail === null || detail === undefined ? undefined : detail.hash,
@@ -13331,7 +13346,11 @@ window.__ModuleLoader__.load({
          VIEWPORT-space .dig-changes (invariant 13: position:fixed would be
          captured by the workbench's contain:layout and flung off-panel). */
       '.dig-marquee{position:absolute;border:1px solid var(--dsw-alias-brand-primary);background:color-mix(in srgb,var(--dsw-alias-brand-primary) 14%,transparent);pointer-events:none;z-index:6}',
-      '.dig-selection-bar{display:flex;align-items:center;gap:12px;padding:3px 10px;font-size:11px;background:var(--dsw-alias-interactive-bg-hover);border-bottom:1px solid var(--dsw-alias-border-subtle,transparent)}',
+      /* The selection bar FLOATS over the top of the list (absolute, solid
+         surface): as an in-flow bar it shoved the whole list down one row on
+         the first selection — the second click of every double-click then
+         landed on the shifted group head and the dblclick died (v0.18.3). */
+      '.dig-selection-bar{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:12px;padding:3px 10px;font-size:11px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border-bottom:1px solid var(--dsw-alias-border-subtle,transparent);box-shadow:var(--dsw-elevation-prominent,0 4px 14px rgba(0,0,0,.3))}',
       '.dig-selection-bar .dig-link{margin-left:0}',
       '.dig-selection-bar .dig-link-danger{color:var(--dsw-alias-state-error-primary)}',
       '.dig-selection-count{color:var(--dsw-alias-label-secondary);white-space:nowrap}',

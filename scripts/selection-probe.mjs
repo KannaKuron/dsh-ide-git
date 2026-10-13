@@ -383,7 +383,41 @@ try {
     await settle(400)
     await page.keyboard.press('Escape')
     await settle(300)
+    /* DOUBLE-click opens the commit detail (v0.18.3 click model). */
+    await commitRows.nth(0).dblclick()
+    await settle(1200)
+    check(await page.locator('.dig-detail:visible').count() === 1, 'double-click opens the commit detail')
+    const back = page.getByRole('button', { name: /返回历史|Back/ }).first()
+    if (await back.count() > 0) await back.click({ timeout: 4000 }).catch(() => {})
+    await settle(800)
+    check(await page.locator('.dig-detail:visible').count() === 0, 'detail closes back to history')
   }
+  /* ---- 10. DOUBLE-click opens the diff (v0.18.3 click model) ----
+     The diff lands in the external better-sidebar preview tab when the base
+     offers the seat channel (the modern reality), or the in-panel diff pane
+     on an older base — accept either. */
+  await rows.nth(0).dblclick()
+  await settle(1200)
+  /* The diff lands in the external better-sidebar preview tab when the base
+     offers the seat channel — which SWAPS the right-column away from the Git
+     panel (the panel tab is replaced, not stacked). Accept the swap as the
+     open signal, then switch back for the remaining assertions. */
+  const diffOpened = await page.evaluate(() => {
+    if (document.querySelector('.dig-diff-pane') !== null) return 'pane'
+    const root = document.querySelector('.dig-root')
+    if (root === null || root.offsetParent === null) return 'switched'
+    return 'none'
+  })
+  check(diffOpened !== 'none', 'double-click opens the diff (' + diffOpened + ')')
+  /* Best-effort switch back ONLY — last assertion; the swapped-in diff tab
+     has no guide card, so a failed return must not crash the run. */
+  if (diffOpened === 'switched') {
+    const card2 = page.locator('[data-sidebar-right-guide-entry="dsh-ide-git:panel"]').first()
+    if (await card2.count() > 0) await card2.click({ timeout: 4000 }).catch(() => {})
+    await settle(1200)
+  }
+
+
 } catch (error) {
   failures.push('probe crashed: ' + String(error && error.message ? error.message : error))
   console.log(error)
