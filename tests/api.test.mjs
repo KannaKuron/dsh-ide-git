@@ -318,6 +318,49 @@ test('undo refuses when the branch name is taken again', async () => {
   git('branch', '-q', '-D', 'redo')
 })
 
+test('multi-select batch: branch/tag delete accept arrays and stay reversible', async () => {
+  git('branch', 'batch-a', 'HEAD')
+  git('branch', 'batch-b', 'HEAD')
+  const removed = await call('branchDelete', { cwd: repo, names: ['batch-a', 'batch-b'] })
+  assert.equal(removed.status, 200)
+  assert.deepEqual(removed.body.data.names, ['batch-a', 'batch-b'])
+  assert.equal(git('branch', '--list', 'batch-a').trim(), '')
+  assert.equal(git('branch', '--list', 'batch-b').trim(), '')
+  // ONE handle restores BOTH branches.
+  const undone = await call('undoApply', { cwd: repo, id: removed.body.data.undo.id })
+  assert.equal(undone.status, 200)
+  const base = git('rev-parse', 'HEAD').trim()
+  assert.equal(git('rev-parse', 'batch-a').trim(), base)
+  assert.equal(git('rev-parse', 'batch-b').trim(), base)
+  git('branch', '-q', '-D', 'batch-a', 'batch-b')
+  // The checked-out branch is refused even inside a batch.
+  const current = git('rev-parse', '--abbrev-ref', 'HEAD').trim()
+  const refused = await call('branchDelete', { cwd: repo, names: ['batch-a', current] })
+  assert.equal(refused.status, 409)
+  assert.equal(refused.body.error.code, 'protected-branch')
+  // Ref names inside a batch go through the same guard.
+  const injected = await call('branchDelete', { cwd: repo, names: ['--force'] })
+  assert.equal(injected.body.error.code, 'bad-request')
+
+  git('tag', 'batch-t1', 'HEAD')
+  git('tag', 'batch-t2', 'HEAD')
+  const tags = await call('tagDelete', { cwd: repo, names: ['batch-t1', 'batch-t2'] })
+  assert.equal(tags.status, 200)
+  assert.deepEqual(tags.body.data.names, ['batch-t1', 'batch-t2'])
+  assert.equal(git('tag', '--list', 'batch-t1').trim(), '')
+  assert.equal(git('tag', '--list', 'batch-t2').trim(), '')
+})
+
+test('multi-select batch: cherry-pick expands hashes to one git call', async () => {
+  // A well-formed but unknown hash proves the array reaches git (git-failed),
+  // while a ref-injection attempt is stopped by the per-item guard (bad-request).
+  const missing = await call('cherryPick', { cwd: repo, hashes: ['deadbeefdeadbeefdeadbeefdeadbeefdeadbeef'] })
+  assert.equal(missing.status, 409)
+  assert.equal(missing.body.error.code, 'git-failed')
+  const injected = await call('cherryPick', { cwd: repo, hashes: ['HEAD; rm -rf /'] })
+  assert.equal(injected.body.error.code, 'bad-request')
+})
+
 test('the checked-out branch and protected branches are guarded', async () => {
   const current = await call('branchDelete', { cwd: repo, name: 'main', confirm: true })
   assert.equal(current.status, 409)

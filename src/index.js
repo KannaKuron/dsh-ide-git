@@ -948,17 +948,34 @@ async function branchRename(payload) {
 async function branchDelete(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
-  const name = requireRef(payload.name, 'name')
   const force = payload.force === true
   if (force && payload.confirm !== true) throw badRequest('force delete requires confirm: true')
+  /* Batch form (multi-select): `names` wins when present; the single `name`
+     keeps working exactly as before. Every name goes through the same ref
+     guard — an array never bypasses validation. */
+  const names = Array.isArray(payload.names)
+    ? payload.names.map((entry) => requireRef(entry, 'name'))
+    : [requireRef(payload.name, 'name')]
   const current = await currentBranchOf(root)
-  if (name === current) throw new PanelError('protected-branch', 'refusing to delete the checked-out branch "' + name + '"', 409)
-  if (PROTECTED_BRANCHES.has(name) && payload.confirm !== true) throw badRequest('deleting "' + name + '" requires confirm: true')
-  const head = (await git(root, ['rev-parse', '--verify', 'refs/heads/' + name])).trim()
+  for (const name of names) {
+    if (name === current) throw new PanelError('protected-branch', 'refusing to delete the checked-out branch "' + name + '"', 409)
+    if (PROTECTED_BRANCHES.has(name) && payload.confirm !== true) throw badRequest('deleting "' + name + '" requires confirm: true')
+  }
+  const branches = []
+  for (const name of names) {
+    const head = (await git(root, ['rev-parse', '--verify', 'refs/heads/' + name])).trim()
+    branches.push({ name: name, hash: head })
+  }
   // -d (the default) refuses to drop an unmerged branch: git is the guard here.
-  await git(root, ['branch', force ? '-D' : '-d', name])
-  const undo = pushUndo(root, { kind: 'branch-delete', label: name, name: name, hash: head })
-  return { branch: name, force, hash: head, undo: undo }
+  await git(root, ['branch', force ? '-D' : '-d', ...names])
+  const label = names.length === 1 ? names[0] : names.length + ' branches'
+  const undo = pushUndo(root, {
+    kind: 'branch-delete', label: label,
+    branches: branches,
+    // Legacy single-branch fields stay so an in-flight old handle keeps working.
+    name: names[0], hash: branches[0].hash,
+  })
+  return { branch: names[0], hash: branches[0].hash, names: names, branches: branches, force: force, undo: undo }
 }
 
 async function merge(payload) {
@@ -1030,10 +1047,14 @@ async function branchDeleteRemote(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
   const remote = requireRef(payload.remote, 'remote')
-  const branch = requireRef(payload.branch, 'branch')
+  /* Batch form (multi-select): `branches` wins; the single `branch` keeps
+     working. `git push --delete` accepts several names in one go. */
+  const branches = Array.isArray(payload.branches)
+    ? payload.branches.map((entry) => requireRef(entry, 'branch'))
+    : [requireRef(payload.branch, 'branch')]
   if (payload.confirm !== true) throw badRequest('deleting a remote branch requires confirm: true')
-  const out = await git(root, ['push', remote, '--delete', branch], { timeoutMs: NETWORK_TIMEOUT_MS })
-  return { remote, branch, output: out.trim() }
+  const out = await git(root, ['push', remote, '--delete', ...branches], { timeoutMs: NETWORK_TIMEOUT_MS })
+  return { remote: remote, branch: branches[0], branches: branches, output: out.trim() }
 }
 
 /* SCM ▸ Tags ▸ Delete Remote Tag... / Push Tags. */
@@ -1070,12 +1091,17 @@ async function stashClear(payload) {
 async function cherryPick(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
-  const hash = requireRef(payload.hash, 'hash')
-  const result = await runGit(root, ['cherry-pick', hash])
+  /* Batch form (multi-select): `hashes` are applied in the order given — the
+     client sends them oldest-first so the sequence replays topologically. The
+     single `hash` keeps working. */
+  const hashes = Array.isArray(payload.hashes)
+    ? payload.hashes.map((entry) => requireRef(entry, 'hash'))
+    : [requireRef(payload.hash, 'hash')]
+  const result = await runGit(root, ['cherry-pick', ...hashes])
   const combined = (result.stdout + '\n' + result.stderr).trim()
   const conflicted = /CONFLICT/.test(combined)
   if (result.code !== 0 && !conflicted) throw new PanelError('git-failed', combined === '' ? 'cherry-pick failed' : combined, 409)
-  return { hash, conflicted, output: combined }
+  return { hash: hashes[0], hashes: hashes, conflicted: conflicted, output: combined }
 }
 
 async function revert(payload) {
@@ -1201,9 +1227,12 @@ async function tagCreate(payload) {
 async function tagDelete(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
-  const tag = requireRef(payload.name, 'name')
-  await git(root, ['tag', '-d', tag])
-  return { tag }
+  /* Batch form (multi-select): `names` wins; the single `name` keeps working. */
+  const names = Array.isArray(payload.names)
+    ? payload.names.map((entry) => requireRef(entry, 'name'))
+    : [requireRef(payload.name, 'name')]
+  await git(root, ['tag', '-d', ...names])
+  return { tag: names[0], names: names }
 }
 
 /* VS Code's SCM title "Clone..." — clone a URL into an absolute local path.
@@ -1257,9 +1286,14 @@ async function undoApply(payload) {
   if (index < 0) throw new PanelError('undo-gone', 'this action can no longer be undone', 409)
   const entry = list[index]
   if (entry.kind === 'branch-delete') {
-    const exists = await runGit(root, ['show-ref', '--verify', '--quiet', 'refs/heads/' + entry.name])
-    if (exists.code === 0) throw new PanelError('undo-conflict', 'branch "' + entry.name + '" already exists again', 409)
-    await git(root, ['branch', entry.name, entry.hash])
+    /* Batch handles carry `branches: [{name, hash}]`; older single-branch
+       handles only have `name`/`hash` — normalise both to one list. */
+    const restores = Array.isArray(entry.branches) ? entry.branches : [{ name: entry.name, hash: entry.hash }]
+    for (const item of restores) {
+      const exists = await runGit(root, ['show-ref', '--verify', '--quiet', 'refs/heads/' + item.name])
+      if (exists.code === 0) throw new PanelError('undo-conflict', 'branch "' + item.name + '" already exists again', 409)
+      await git(root, ['branch', item.name, item.hash])
+    }
   } else if (entry.kind === 'stash-drop') {
     await git(root, ['stash', 'store', '-m', 'dsh-ide-git: restored ' + entry.label, entry.hash])
   } else if (entry.kind === 'discard') {

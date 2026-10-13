@@ -3,6 +3,18 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.18.0 — 2026-10-13
+
+**类型**:feat(issue #13「变更目录无法多选」升级版:全面板多选 + Ctrl+C 复制 + Del 删除)
+
+- **feat 变更列表多选**:`Ctrl/Cmd+点击` 切换选中、`Shift+点击` 以渲染序为锚的范围选择、**列表空白处/行上按住拖动拉框选**(橡皮筋选框复用 #12 的 `windowStart` 像素→索引二分,拖到边缘自动滚动,虚拟化窗口内只有可见行参与重渲);选中集上浮「已选 N 项」操作条(暂存 / 取消暂存 / 丢弃 / 复制路径 / 清除);右键落在选中集内时菜单整体批量(暂存 N 项 / 取消暂存 N 项 / 还原 N 项 / 复制 N 个路径);批量丢弃弹分组确认(tracked 走 `checkout --`、untracked 走 `clean -fd`,与「全部丢弃」同款双路,撤回句柄不变)。
+- **feat 分支树多选**:树选择从单值 `picked` 升级为 Set(`local:name` / `remote:name` / `tag:name` 前缀防同名冲突),`Ctrl/Cmd+点击` / `Shift+点击` / `Ctrl+A` / `Esc` 全套;右键选中集出现批量动词(复制 N 个名称 / 删除 N 个本地分支 / 删除 N 个远程分支 / 删除 N 个标签),`Del/Backspace` 走同一个分组确认弹窗(HEAD 分支自动剔除);本地分支菜单补上「复制名称」,远程分支与标签补上此前缺失的「删除」单项菜单(标签删除此前只能走 ⋯ 菜单)。
+- **feat 提交历史多选**:`Ctrl/Cmd+点击` / `Shift+点击` 选多个提交(范围按过滤后的可见序),右键菜单批量化为「复制 N 个哈希」与「Cherry-pick N 个提交」(按旧→新排序一次性 `git cherry-pick h1 h2…`);`Ctrl+C` 复制完整哈希(此前只有短哈希入菜单);普通点击行为不变(选中+开详情)。
+- **feat 键盘联动**:三个列表容器可聚焦(点击行即聚焦,`focus-visible` 环由选中高亮替代),`Ctrl/Cmd+C` 复制当前列表选中项(变更=路径、分支=名称、提交=完整哈希,带 toast 反馈)、`Del/Backspace` 触发删除类动作(变更=批量丢弃确认、树=分组删除确认;历史无删除语义,刻意不映射)、`Ctrl+A` 全选当前列表(变更列表排除 ignored)、`Esc` 清空;输入框/可编辑区内完全不劫持。macOS 保留 `Ctrl+点击=右键` 的系统惯例,多选修饰键跟随 VS Code 用 `Cmd`(实现上 metaKey/ctrlKey 都认,Windows/Linux 用户 Ctrl 即可)。
+- **feat(host 半)**:`branchDelete` / `tagDelete` / `cherryPick` / `branchDeleteRemote` 全部接受数组(`names` / `hashes` / `branches`,单值字段向后兼容,逐项过同一套 `requireRef` 校验);`branchDelete` 批量的 undo 是**一条**句柄恢复全部分支(`branch-delete` 条目扩展 `branches[]`,旧单分支句柄兼容),保护分支(当前分支拒绝、main/master/trunk 需 confirm)逐个检查。
+- **词典**:新增 19 键 × 21 门(选择条 / 批量菜单 / 两个确认弹窗 / toast),键集由冒烟测试强制。
+- **验证**:`npm test` 112/112(api 新增批量用例:分支/tag 批量删除可逆 + 批量 cherry-pick 管道;smoke 的 send-funnel 守卫正则放宽为「依赖包含」语义);`ssr-check` 4/4;`layout-probe` 布局表与基线一致;**新增 `scripts/selection-probe.mjs`**(25 项断言的端到端交互探针:修饰键选、框选、批量暂存真实生效、Backspace 确认、剪贴板回读、树/历史多选与复制,要求发布版 dsh 的干净隔离实例,自带演示仓库重置与 gateway 建工作区)。
+
 ## v0.17.0 — 2026-10-13
 
 **类型**:feat(设置卡可折叠分区,跟随 dsh-gitbash-shell v0.38.4 的同款改造)

@@ -221,8 +221,10 @@ test('send payloads are self-describing (git commit / branch + repo, v0.13.3 fee
   }
   // Both git-summary menus (branch + commit) close over the funnel and the
   // label; a stale closure would send the PREVIOUS repo's name (invariant 12:
-  // dependency arrays are evaluated during render).
-  const menuDeps = (client.match(/sendGitSummaryToChat, repoLabel\]\)/g) || []).length
+  // dependency arrays are evaluated during render). The multi-select episode
+  // (issue #13) appended copyValues to both arrays — the guard needs the pair
+  // PRESENT, not last, so a lookahead tolerates trailing deps.
+  const menuDeps = (client.match(/sendGitSummaryToChat, repoLabel(?=[,\]])/g) || []).length
   assert.ok(menuDeps >= 2, 'branch and commit menus must both list the funnel + repoLabel (saw ' + menuDeps + ')')
 })
 

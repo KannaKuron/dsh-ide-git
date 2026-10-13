@@ -122,6 +122,25 @@ window.__ModuleLoader__.load({
       'changes.commit': '提交',
       'changes.amend': '修补',
       'changes.stageAll': '全部暂存',
+      'selection.count': '已选 {n} 项',
+      'selection.copied': '已复制 {n} 项',
+      'selection.copyPaths': '复制路径',
+      'selection.clear': '清除选择',
+      'action.copyName': '复制名称',
+      'menu.copyNamesN': '复制 {n} 个名称',
+      'menu.copyHashesN': '复制 {n} 个哈希',
+      'menu.copyPathsN': '复制 {n} 个路径',
+      'menu.stageN': '暂存 {n} 项',
+      'menu.unstageN': '取消暂存 {n} 项',
+      'menu.discardN': '还原 {n} 项…',
+      'menu.cherryN': 'Cherry-pick {n} 个提交',
+      'menu.deleteLocalN': '删除 {n} 个本地分支…',
+      'menu.deleteRemoteN': '删除 {n} 个远程分支…',
+      'menu.deleteTagsN': '删除 {n} 个标签…',
+      'confirm.deleteRefs': '删除所选引用?本地分支 {b} 个、远程分支 {r} 个、标签 {g} 个。',
+      'confirm.discardMany': '还原 {n} 个文件的未提交改动?',
+      'confirm.discardManyUntracked': '其中 {m} 个未跟踪文件将被彻底删除。',
+      'toast.branchesDeleted': '已删除 {n} 个分支',
       'changes.unstageAll': '全部取消暂存',
       'changes.groupBy': '分组依据',
       'changes.groupFlat': '平铺',
@@ -411,6 +430,25 @@ window.__ModuleLoader__.load({
       'changes.commit': 'Commit',
       'changes.amend': 'Amend',
       'changes.stageAll': 'Stage all',
+      'selection.count': '{n} selected',
+      'selection.copied': 'Copied {n} item(s)',
+      'selection.copyPaths': 'Copy paths',
+      'selection.clear': 'Clear selection',
+      'action.copyName': 'Copy name',
+      'menu.copyNamesN': 'Copy {n} names',
+      'menu.copyHashesN': 'Copy {n} hashes',
+      'menu.copyPathsN': 'Copy {n} paths',
+      'menu.stageN': 'Stage {n} items',
+      'menu.unstageN': 'Unstage {n} items',
+      'menu.discardN': 'Discard {n} items…',
+      'menu.cherryN': 'Cherry-pick {n} commits',
+      'menu.deleteLocalN': 'Delete {n} local branches…',
+      'menu.deleteRemoteN': 'Delete {n} remote branches…',
+      'menu.deleteTagsN': 'Delete {n} tags…',
+      'confirm.deleteRefs': 'Delete the selected refs? {b} local, {r} remote, {g} tag(s).',
+      'confirm.discardMany': 'Discard uncommitted changes of {n} files?',
+      'confirm.discardManyUntracked': '{m} untracked file(s) will be deleted for good.',
+      'toast.branchesDeleted': '{n} branch(es) deleted',
       'changes.unstageAll': 'Unstage all',
       'changes.groupBy': 'Group by',
       'changes.groupFlat': 'Flat list',
@@ -708,6 +746,25 @@ window.__ModuleLoader__.load({
         'changes.commit': '提交',
         'changes.amend': '修訂上次提交',
         'changes.stageAll': '全部暫存',
+        'selection.count': '已選 {n} 項',
+        'selection.copied': '已複製 {n} 項',
+        'selection.copyPaths': '複製路徑',
+        'selection.clear': '清除選擇',
+        'action.copyName': '複製名稱',
+        'menu.copyNamesN': '複製 {n} 個名稱',
+        'menu.copyHashesN': '複製 {n} 個雜湊',
+        'menu.copyPathsN': '複製 {n} 個路徑',
+        'menu.stageN': '暫存 {n} 項',
+        'menu.unstageN': '取消暫存 {n} 項',
+        'menu.discardN': '還原 {n} 項…',
+        'menu.cherryN': 'Cherry-pick {n} 個提交',
+        'menu.deleteLocalN': '刪除 {n} 個本地分支…',
+        'menu.deleteRemoteN': '刪除 {n} 個遠端分支…',
+        'menu.deleteTagsN': '刪除 {n} 個標籤…',
+        'confirm.deleteRefs': '刪除所選引用?本地分支 {b} 個、遠端分支 {r} 個、標籤 {g} 個。',
+        'confirm.discardMany': '還原 {n} 個檔案的未提交變更?',
+        'confirm.discardManyUntracked': '其中 {m} 個未追蹤檔案將被徹底刪除。',
+        'toast.branchesDeleted': '已刪除 {n} 個分支',
         'changes.unstageAll': '全部取消暫存',
         'changes.groupBy': '分組方式',
         'changes.groupFlat': '平面清單',
@@ -997,6 +1054,25 @@ window.__ModuleLoader__.load({
         'changes.commit': '提交',
         'changes.amend': '修訂上次提交',
         'changes.stageAll': '全部暫存',
+        'selection.count': '已選 {n} 項',
+        'selection.copied': '已複製 {n} 項',
+        'selection.copyPaths': '複製路徑',
+        'selection.clear': '清除選擇',
+        'action.copyName': '複製名稱',
+        'menu.copyNamesN': '複製 {n} 個名稱',
+        'menu.copyHashesN': '複製 {n} 個雜湊',
+        'menu.copyPathsN': '複製 {n} 個路徑',
+        'menu.stageN': '暫存 {n} 項',
+        'menu.unstageN': '取消暫存 {n} 項',
+        'menu.discardN': '還原 {n} 項…',
+        'menu.cherryN': 'Cherry-pick {n} 個提交',
+        'menu.deleteLocalN': '刪除 {n} 個本地分支…',
+        'menu.deleteRemoteN': '刪除 {n} 個遠端分支…',
+        'menu.deleteTagsN': '刪除 {n} 個標籤…',
+        'confirm.deleteRefs': '刪除所選引用?本地分支 {b} 個、遠端分支 {r} 個、標籤 {g} 個。',
+        'confirm.discardMany': '還原 {n} 個檔案的未提交變更?',
+        'confirm.discardManyUntracked': '其中 {m} 個未追蹤檔案將被徹底刪除。',
+        'toast.branchesDeleted': '已刪除 {n} 個分支',
         'changes.unstageAll': '全部取消暫存',
         'changes.groupBy': '分組方式',
         'changes.groupFlat': '平面清單',
@@ -1286,6 +1362,25 @@ window.__ModuleLoader__.load({
         'changes.commit': '提交',
         'changes.amend': '修訂上次提交',
         'changes.stageAll': '全部暫存',
+        'selection.count': '已選 {n} 項',
+        'selection.copied': '已複製 {n} 項',
+        'selection.copyPaths': '複製路徑',
+        'selection.clear': '清除選擇',
+        'action.copyName': '複製名稱',
+        'menu.copyNamesN': '複製 {n} 個名稱',
+        'menu.copyHashesN': '複製 {n} 個雜湊',
+        'menu.copyPathsN': '複製 {n} 個路徑',
+        'menu.stageN': '暫存 {n} 項',
+        'menu.unstageN': '取消暫存 {n} 項',
+        'menu.discardN': '還原 {n} 項…',
+        'menu.cherryN': 'Cherry-pick {n} 個提交',
+        'menu.deleteLocalN': '刪除 {n} 個本地分支…',
+        'menu.deleteRemoteN': '刪除 {n} 個遠端分支…',
+        'menu.deleteTagsN': '刪除 {n} 個標籤…',
+        'confirm.deleteRefs': '刪除所選引用?本地分支 {b} 個、遠端分支 {r} 個、標籤 {g} 個。',
+        'confirm.discardMany': '還原 {n} 個檔案的未提交變更?',
+        'confirm.discardManyUntracked': '其中 {m} 個未追蹤檔案將被徹底刪除。',
+        'toast.branchesDeleted': '已刪除 {n} 個分支',
         'changes.unstageAll': '全部取消暫存',
         'changes.groupBy': '分組方式',
         'changes.groupFlat': '平面清單',
@@ -1575,6 +1670,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'コミット',
         'changes.amend': '前回のコミットを修正',
         'changes.stageAll': 'すべてステージ',
+        'selection.count': '{n} 件を選択中',
+        'selection.copied': '{n} 件をコピーしました',
+        'selection.copyPaths': 'パスをコピー',
+        'selection.clear': '選択を解除',
+        'action.copyName': '名前をコピー',
+        'menu.copyNamesN': '{n} 件の名前をコピー',
+        'menu.copyHashesN': '{n} 件のハッシュをコピー',
+        'menu.copyPathsN': '{n} 件のパスをコピー',
+        'menu.stageN': '{n} 件をステージ',
+        'menu.unstageN': '{n} 件のステージ解除',
+        'menu.discardN': '{n} 件を破棄…',
+        'menu.cherryN': 'コミット {n} 件をチェリーピック',
+        'menu.deleteLocalN': 'ローカルブランチ {n} 件を削除…',
+        'menu.deleteRemoteN': 'リモートブランチ {n} 件を削除…',
+        'menu.deleteTagsN': 'タグ {n} 件を削除…',
+        'confirm.deleteRefs': '選択した参照を削除しますか?ローカル {b} 件、リモート {r} 件、タグ {g} 件。',
+        'confirm.discardMany': '{n} 件の未コミット変更を破棄しますか?',
+        'confirm.discardManyUntracked': 'うち {m} 件の未追跡ファイルは完全に削除されます。',
+        'toast.branchesDeleted': '{n} 件のブランチを削除しました',
         'changes.unstageAll': 'すべてステージ解除',
         'changes.groupBy': 'グループ化',
         'changes.groupFlat': 'フラット表示',
@@ -1864,6 +1978,25 @@ window.__ModuleLoader__.load({
         'changes.commit': '커밋',
         'changes.amend': '이전 커밋 수정',
         'changes.stageAll': '모두 스테이지',
+        'selection.count': '{n}개 선택됨',
+        'selection.copied': '{n}개 복사됨',
+        'selection.copyPaths': '경로 복사',
+        'selection.clear': '선택 해제',
+        'action.copyName': '이름 복사',
+        'menu.copyNamesN': '이름 {n}개 복사',
+        'menu.copyHashesN': '해시 {n}개 복사',
+        'menu.copyPathsN': '경로 {n}개 복사',
+        'menu.stageN': '{n}개 스테이지',
+        'menu.unstageN': '{n}개 스테이지 해제',
+        'menu.discardN': '{n}개 되돌리기…',
+        'menu.cherryN': '커밋 {n}개 체리픽',
+        'menu.deleteLocalN': '로컬 브랜치 {n}개 삭제…',
+        'menu.deleteRemoteN': '원격 브랜치 {n}개 삭제…',
+        'menu.deleteTagsN': '태그 {n}개 삭제…',
+        'confirm.deleteRefs': '선택한 레퍼런스를 삭제할까요? 로컬 {b}개, 원격 {r}개, 태그 {g}개.',
+        'confirm.discardMany': '{n}개 파일의 커밋되지 않은 변경을 되돌릴까요?',
+        'confirm.discardManyUntracked': '이 중 추적되지 않는 {m}개 파일은 완전히 삭제됩니다.',
+        'toast.branchesDeleted': '브랜치 {n}개 삭제됨',
         'changes.unstageAll': '모두 스테이지 해제',
         'changes.groupBy': '그룹 기준',
         'changes.groupFlat': '평면 목록',
@@ -2153,6 +2286,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Committen',
         'changes.amend': 'Letzten Commit ergänzen',
         'changes.stageAll': 'Alle vormerken',
+        'selection.count': '{n} ausgewählt',
+        'selection.copied': '{n} Element(e) kopiert',
+        'selection.copyPaths': 'Pfade kopieren',
+        'selection.clear': 'Auswahl aufheben',
+        'action.copyName': 'Name kopieren',
+        'menu.copyNamesN': '{n} Namen kopieren',
+        'menu.copyHashesN': '{n} Hashes kopieren',
+        'menu.copyPathsN': '{n} Pfade kopieren',
+        'menu.stageN': '{n} Elemente vormerken',
+        'menu.unstageN': '{n} Elemente zurücknehmen',
+        'menu.discardN': '{n} Elemente verwerfen…',
+        'menu.cherryN': '{n} Commits cherry-picken',
+        'menu.deleteLocalN': '{n} lokale Branches löschen…',
+        'menu.deleteRemoteN': '{n} Remote-Branches löschen…',
+        'menu.deleteTagsN': '{n} Tags löschen…',
+        'confirm.deleteRefs': 'Ausgewählte Referenzen löschen? {b} lokal, {r} remote, {g} Tag(s).',
+        'confirm.discardMany': 'Uncommittete Änderungen von {n} Dateien verwerfen?',
+        'confirm.discardManyUntracked': '{m} unbeobachtete Datei(en) werden endgültig gelöscht.',
+        'toast.branchesDeleted': '{n} Branch(es) gelöscht',
         'changes.unstageAll': 'Alle zurücknehmen',
         'changes.groupBy': 'Gruppieren nach',
         'changes.groupFlat': 'Flache Liste',
@@ -2442,6 +2594,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Valider',
         'changes.amend': 'Corriger le dernier commit',
         'changes.stageAll': 'Tout indexer',
+        'selection.count': '{n} sélectionné(s)',
+        'selection.copied': '{n} élément(s) copié(s)',
+        'selection.copyPaths': 'Copier les chemins',
+        'selection.clear': 'Effacer la sélection',
+        'action.copyName': 'Copier le nom',
+        'menu.copyNamesN': 'Copier {n} noms',
+        'menu.copyHashesN': 'Copier {n} hachages',
+        'menu.copyPathsN': 'Copier {n} chemins',
+        'menu.stageN': 'Indexer {n} éléments',
+        'menu.unstageN': 'Désindexer {n} éléments',
+        'menu.discardN': 'Abandonner {n} éléments…',
+        'menu.cherryN': 'Cherry-pick de {n} commits',
+        'menu.deleteLocalN': 'Supprimer {n} branches locales…',
+        'menu.deleteRemoteN': 'Supprimer {n} branches distantes…',
+        'menu.deleteTagsN': 'Supprimer {n} étiquettes…',
+        'confirm.deleteRefs': 'Supprimer les références sélectionnées ? {b} locale(s), {r} distante(s), {g} étiquette(s).',
+        'confirm.discardMany': 'Abandonner les modifications non commitées de {n} fichiers ?',
+        'confirm.discardManyUntracked': '{m} fichier(s) non suivi(s) seront définitivement supprimés.',
+        'toast.branchesDeleted': '{n} branche(s) supprimée(s)',
         'changes.unstageAll': 'Tout désindexer',
         'changes.groupBy': 'Grouper par',
         'changes.groupFlat': 'Liste plate',
@@ -2731,6 +2902,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Закоммитить',
         'changes.amend': 'Дополнить последний коммит',
         'changes.stageAll': 'Добавить всё в индекс',
+        'selection.count': 'Выбрано: {n}',
+        'selection.copied': 'Скопировано: {n}',
+        'selection.copyPaths': 'Копировать пути',
+        'selection.clear': 'Снять выделение',
+        'action.copyName': 'Копировать имя',
+        'menu.copyNamesN': 'Копировать имён: {n}',
+        'menu.copyHashesN': 'Копировать хешей: {n}',
+        'menu.copyPathsN': 'Копировать путей: {n}',
+        'menu.stageN': 'В индекс: {n}',
+        'menu.unstageN': 'Из индекса: {n}',
+        'menu.discardN': 'Отменить изменения: {n}…',
+        'menu.cherryN': 'Cherry-pick {n} коммит(ов)',
+        'menu.deleteLocalN': 'Удалить локальных ветвей: {n}…',
+        'menu.deleteRemoteN': 'Удалить внешних ветвей: {n}…',
+        'menu.deleteTagsN': 'Удалить меток: {n}…',
+        'confirm.deleteRefs': 'Удалить выбранные ссылки? Локальных: {b}, внешних: {r}, меток: {g}.',
+        'confirm.discardMany': 'Отменить незафиксированные изменения в {n} файлах?',
+        'confirm.discardManyUntracked': 'Будет безвозвратно удалено непрослеживаемых файлов: {m}.',
+        'toast.branchesDeleted': 'Ветвей удалено: {n}',
         'changes.unstageAll': 'Убрать всё из индекса',
         'changes.groupBy': 'Группировать по',
         'changes.groupFlat': 'Плоский список',
@@ -3020,6 +3210,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Commitar',
         'changes.amend': 'Corrigir o último commit',
         'changes.stageAll': 'Preparar tudo',
+        'selection.count': '{n} selecionado(s)',
+        'selection.copied': '{n} item(ns) copiado(s)',
+        'selection.copyPaths': 'Copiar caminhos',
+        'selection.clear': 'Limpar seleção',
+        'action.copyName': 'Copiar nome',
+        'menu.copyNamesN': 'Copiar {n} nomes',
+        'menu.copyHashesN': 'Copiar {n} hashes',
+        'menu.copyPathsN': 'Copiar {n} caminhos',
+        'menu.stageN': 'Preparar {n} itens',
+        'menu.unstageN': 'Despreparar {n} itens',
+        'menu.discardN': 'Descartar {n} itens…',
+        'menu.cherryN': 'Cherry-pick de {n} commits',
+        'menu.deleteLocalN': 'Excluir {n} ramificações locais…',
+        'menu.deleteRemoteN': 'Excluir {n} ramificações remotas…',
+        'menu.deleteTagsN': 'Excluir {n} etiquetas…',
+        'confirm.deleteRefs': 'Excluir as referências selecionadas? {b} locais, {r} remotas, {g} etiqueta(s).',
+        'confirm.discardMany': 'Descartar as alterações não commitadas de {n} arquivos?',
+        'confirm.discardManyUntracked': '{m} arquivo(s) não rastreado(s) serão excluídos em definitivo.',
+        'toast.branchesDeleted': '{n} ramificação(ões) excluída(s)',
         'changes.unstageAll': 'Despreparar tudo',
         'changes.groupBy': 'Agrupar por',
         'changes.groupFlat': 'Lista simples',
@@ -3309,6 +3518,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Esegui commit',
         'changes.amend': 'Correggi l’ultimo commit',
         'changes.stageAll': 'Metti tutto in stage',
+        'selection.count': '{n} selezionato/i',
+        'selection.copied': '{n} elemento/i copiato/i',
+        'selection.copyPaths': 'Copia percorsi',
+        'selection.clear': 'Azzera selezione',
+        'action.copyName': 'Copia nome',
+        'menu.copyNamesN': 'Copia {n} nomi',
+        'menu.copyHashesN': 'Copia {n} hash',
+        'menu.copyPathsN': 'Copia {n} percorsi',
+        'menu.stageN': 'Metti in stage {n} elementi',
+        'menu.unstageN': 'Rimuovi {n} elementi dallo stage',
+        'menu.discardN': 'Scarta {n} elementi…',
+        'menu.cherryN': 'Cherry-pick di {n} commit',
+        'menu.deleteLocalN': 'Elimina {n} branch locali…',
+        'menu.deleteRemoteN': 'Elimina {n} branch remoti…',
+        'menu.deleteTagsN': 'Elimina {n} tag…',
+        'confirm.deleteRefs': 'Eliminare i riferimenti selezionati? {b} locali, {r} remoti, {g} tag.',
+        'confirm.discardMany': 'Scartare le modifiche non commitate di {n} file?',
+        'confirm.discardManyUntracked': '{m} file non tracciati saranno eliminati definitivamente.',
+        'toast.branchesDeleted': '{n} branch eliminati',
         'changes.unstageAll': 'Rimuovi tutto dallo stage',
         'changes.groupBy': 'Raggruppa per',
         'changes.groupFlat': 'Elenco piatto',
@@ -3598,6 +3826,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Committen',
         'changes.amend': 'Laatste commit aanvullen',
         'changes.stageAll': 'Alles stagen',
+        'selection.count': '{n} geselecteerd',
+        'selection.copied': '{n} item(s) gekopieerd',
+        'selection.copyPaths': 'Paden kopiëren',
+        'selection.clear': 'Selectie wissen',
+        'action.copyName': 'Naam kopiëren',
+        'menu.copyNamesN': '{n} namen kopiëren',
+        'menu.copyHashesN': '{n} hashes kopiëren',
+        'menu.copyPathsN': '{n} paden kopiëren',
+        'menu.stageN': '{n} items stagen',
+        'menu.unstageN': '{n} items unstagen',
+        'menu.discardN': '{n} items weggooien…',
+        'menu.cherryN': '{n} commits cherry-picken',
+        'menu.deleteLocalN': '{n} lokale branches verwijderen…',
+        'menu.deleteRemoteN': '{n} remote branches verwijderen…',
+        'menu.deleteTagsN': '{n} tags verwijderen…',
+        'confirm.deleteRefs': 'De geselecteerde referenties verwijderen? {b} lokaal, {r} remote, {g} tag(s).',
+        'confirm.discardMany': 'Niet-gecommitte wijzigingen van {n} bestanden weggooien?',
+        'confirm.discardManyUntracked': '{m} niet-gevolgde bestand(en) worden definitief verwijderd.',
+        'toast.branchesDeleted': '{n} branch(es) verwijderd',
         'changes.unstageAll': 'Alles unstagen',
         'changes.groupBy': 'Groeperen op',
         'changes.groupFlat': 'Platte lijst',
@@ -3887,6 +4134,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Zatwierdź',
         'changes.amend': 'Popraw ostatni commit',
         'changes.stageAll': 'Dodaj wszystko do indeksu',
+        'selection.count': 'Wybrano: {n}',
+        'selection.copied': 'Skopiowano: {n}',
+        'selection.copyPaths': 'Kopiuj ścieżki',
+        'selection.clear': 'Wyczyść zaznaczenie',
+        'action.copyName': 'Kopiuj nazwę',
+        'menu.copyNamesN': 'Kopiuj {n} nazw',
+        'menu.copyHashesN': 'Kopiuj {n} skrótów',
+        'menu.copyPathsN': 'Kopiuj {n} ścieżek',
+        'menu.stageN': 'Dodaj {n} do indeksu',
+        'menu.unstageN': 'Usuń {n} z indeksu',
+        'menu.discardN': 'Odrzuć {n}…',
+        'menu.cherryN': 'Cherry-pick {n} commit(ów)',
+        'menu.deleteLocalN': 'Usuń {n} gałęzi lokalnych…',
+        'menu.deleteRemoteN': 'Usuń {n} gałęzi zdalnych…',
+        'menu.deleteTagsN': 'Usuń {n} tagów…',
+        'confirm.deleteRefs': 'Usunąć wybrane referencje? Lokalne: {b}, zdalne: {r}, tagi: {g}.',
+        'confirm.discardMany': 'Odrzucić niezacommitowane zmiany w {n} plikach?',
+        'confirm.discardManyUntracked': '{m} nieśledzonych plików zostanie trwale usuniętych.',
+        'toast.branchesDeleted': 'Usunięto gałęzi: {n}',
         'changes.unstageAll': 'Usuń wszystko z indeksu',
         'changes.groupBy': 'Grupuj według',
         'changes.groupFlat': 'Płaska lista',
@@ -4176,6 +4442,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Committa',
         'changes.amend': 'Komplettera senaste commit',
         'changes.stageAll': 'Klädda alla',
+        'selection.count': '{n} markerade',
+        'selection.copied': 'Kopierade {n} objekt',
+        'selection.copyPaths': 'Kopiera sökvägar',
+        'selection.clear': 'Rensa markering',
+        'action.copyName': 'Kopiera namn',
+        'menu.copyNamesN': 'Kopiera {n} namn',
+        'menu.copyHashesN': 'Kopiera {n} hashar',
+        'menu.copyPathsN': 'Kopiera {n} sökvägar',
+        'menu.stageN': 'Klädda {n} objekt',
+        'menu.unstageN': 'Avklädda {n} objekt',
+        'menu.discardN': 'Förkasta {n} objekt…',
+        'menu.cherryN': 'Cherry-picka {n} commit(s)',
+        'menu.deleteLocalN': 'Ta bort {n} lokala grenar…',
+        'menu.deleteRemoteN': 'Ta bort {n} fjärrgrenar…',
+        'menu.deleteTagsN': 'Ta bort {n} taggar…',
+        'confirm.deleteRefs': 'Ta bort markerade referenser? {b} lokala, {r} fjärr, {g} taggar.',
+        'confirm.discardMany': 'Förkasta icke-committade ändringar i {n} filer?',
+        'confirm.discardManyUntracked': '{m} ospårade filer tas bort permanent.',
+        'toast.branchesDeleted': 'Tog bort {n} gren(ar)',
         'changes.unstageAll': 'Avklädda alla',
         'changes.groupBy': 'Gruppera efter',
         'changes.groupFlat': 'Platt lista',
@@ -4465,6 +4750,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Commit’le',
         'changes.amend': 'Son commit’i düzelt',
         'changes.stageAll': 'Tümünü hazırla',
+        'selection.count': '{n} seçili',
+        'selection.copied': '{n} öğe kopyalandı',
+        'selection.copyPaths': 'Yolları kopyala',
+        'selection.clear': 'Seçimi temizle',
+        'action.copyName': 'Adı kopyala',
+        'menu.copyNamesN': '{n} adı kopyala',
+        'menu.copyHashesN': '{n} karmayı kopyala',
+        'menu.copyPathsN': '{n} yolu kopyala',
+        'menu.stageN': '{n} öğeyi hazırla',
+        'menu.unstageN': '{n} öğeyi hazırlıktan çıkar',
+        'menu.discardN': '{n} öğeyi at…',
+        'menu.cherryN': '{n} commit seçip al',
+        'menu.deleteLocalN': '{n} yerel dalı sil…',
+        'menu.deleteRemoteN': '{n} uzak dalı sil…',
+        'menu.deleteTagsN': '{n} etiketi sil…',
+        'confirm.deleteRefs': 'Seçili referanslar silinsin mi? {b} yerel, {r} uzak, {g} etiket.',
+        'confirm.discardMany': '{n} dosyanın commitlenmemiş değişiklikleri atılsın mı?',
+        'confirm.discardManyUntracked': '{m} izlenmeyen dosya kalıcı olarak silinecek.',
+        'toast.branchesDeleted': '{n} dal silindi',
         'changes.unstageAll': 'Tümünü hazırlıktan çıkar',
         'changes.groupBy': 'Gruplama ölçütü',
         'changes.groupFlat': 'Düz liste',
@@ -4754,6 +5058,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Commit',
         'changes.amend': 'Perbaiki commit terakhir',
         'changes.stageAll': 'Stage semua',
+        'selection.count': '{n} dipilih',
+        'selection.copied': '{n} item disalin',
+        'selection.copyPaths': 'Salin jalur',
+        'selection.clear': 'Hapus pilihan',
+        'action.copyName': 'Salin nama',
+        'menu.copyNamesN': 'Salin {n} nama',
+        'menu.copyHashesN': 'Salin {n} hash',
+        'menu.copyPathsN': 'Salin {n} jalur',
+        'menu.stageN': 'Stage {n} item',
+        'menu.unstageN': 'Batalkan stage {n} item',
+        'menu.discardN': 'Buang {n} item…',
+        'menu.cherryN': 'Cherry-pick {n} commit',
+        'menu.deleteLocalN': 'Hapus {n} cabang lokal…',
+        'menu.deleteRemoteN': 'Hapus {n} cabang remote…',
+        'menu.deleteTagsN': 'Hapus {n} tag…',
+        'confirm.deleteRefs': 'Hapus referensi terpilih? {b} lokal, {r} remote, {g} tag.',
+        'confirm.discardMany': 'Buang perubahan yang belum di-commit dari {n} berkas?',
+        'confirm.discardManyUntracked': '{m} berkas yang tidak dilacak akan dihapus permanen.',
+        'toast.branchesDeleted': '{n} cabang dihapus',
         'changes.unstageAll': 'Batalkan stage semua',
         'changes.groupBy': 'Kelompokkan menurut',
         'changes.groupFlat': 'Daftar datar',
@@ -5043,6 +5366,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'Commit',
         'changes.amend': 'Sửa commit gần nhất',
         'changes.stageAll': 'Stage tất cả',
+        'selection.count': 'Đã chọn {n}',
+        'selection.copied': 'Đã sao chép {n} mục',
+        'selection.copyPaths': 'Sao chép đường dẫn',
+        'selection.clear': 'Bỏ chọn',
+        'action.copyName': 'Sao chép tên',
+        'menu.copyNamesN': 'Sao chép {n} tên',
+        'menu.copyHashesN': 'Sao chép {n} hash',
+        'menu.copyPathsN': 'Sao chép {n} đường dẫn',
+        'menu.stageN': 'Stage {n} mục',
+        'menu.unstageN': 'Bỏ stage {n} mục',
+        'menu.discardN': 'Bỏ {n} mục…',
+        'menu.cherryN': 'Cherry-pick {n} commit',
+        'menu.deleteLocalN': 'Xoá {n} nhánh cục bộ…',
+        'menu.deleteRemoteN': 'Xoá {n} nhánh từ xa…',
+        'menu.deleteTagsN': 'Xoá {n} thẻ…',
+        'confirm.deleteRefs': 'Xoá các tham chiếu đã chọn? {b} cục bộ, {r} từ xa, {g} thẻ.',
+        'confirm.discardMany': 'Bỏ thay đổi chưa commit của {n} tệp?',
+        'confirm.discardManyUntracked': '{m} tệp chưa theo dõi sẽ bị xoá vĩnh viễn.',
+        'toast.branchesDeleted': 'Đã xoá {n} nhánh',
         'changes.unstageAll': 'Bỏ stage tất cả',
         'changes.groupBy': 'Nhóm theo',
         'changes.groupFlat': 'Danh sách phẳng',
@@ -5332,6 +5674,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'التزام',
         'changes.amend': 'تعديل الالتزام الأخير',
         'changes.stageAll': 'جهّز الكل',
+        'selection.count': 'تم تحديد {n}',
+        'selection.copied': 'تم نسخ {n} عنصرًا',
+        'selection.copyPaths': 'انسخ المسارات',
+        'selection.clear': 'امسح التحديد',
+        'action.copyName': 'انسخ الاسم',
+        'menu.copyNamesN': 'انسخ {n} اسمًا',
+        'menu.copyHashesN': 'انسخ {n} تجزئة',
+        'menu.copyPathsN': 'انسخ {n} مسارًا',
+        'menu.stageN': 'جهّز {n} عنصرًا',
+        'menu.unstageN': 'ألغِ تجهيز {n} عنصرًا',
+        'menu.discardN': 'تجاهل {n} عنصرًا…',
+        'menu.cherryN': 'Cherry-pick لـ {n} إيداع',
+        'menu.deleteLocalN': 'احذف {n} فرعًا محليًا…',
+        'menu.deleteRemoteN': 'احذف {n} فرعًا بعيدًا…',
+        'menu.deleteTagsN': 'احذف {n} وسمًا…',
+        'confirm.deleteRefs': 'حذف المراجع المحددة؟ {b} محلية و{r} بعيدة و{g} وسوم.',
+        'confirm.discardMany': 'تجاهل التغييرات غير المودعة في {n} ملفًا؟',
+        'confirm.discardManyUntracked': '{m} ملفًا غير متتبَّع سيُحذف نهائيًا.',
+        'toast.branchesDeleted': 'تم حذف {n} فرعًا',
         'changes.unstageAll': 'ألغِ تجهيز الكل',
         'changes.groupBy': 'التجميع حسب',
         'changes.groupFlat': 'قائمة مسطّحة',
@@ -5621,6 +5982,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'कमिट करें',
         'changes.amend': 'पिछला कमिट सुधारें',
         'changes.stageAll': 'सभी स्टेज करें',
+        'selection.count': '{n} चयनित',
+        'selection.copied': '{n} आइटम कॉपी किए',
+        'selection.copyPaths': 'पाथ कॉपी करें',
+        'selection.clear': 'चयन हटाएँ',
+        'action.copyName': 'नाम कॉपी करें',
+        'menu.copyNamesN': '{n} नाम कॉपी करें',
+        'menu.copyHashesN': '{n} हैश कॉपी करें',
+        'menu.copyPathsN': '{n} पाथ कॉपी करें',
+        'menu.stageN': '{n} आइटम स्टेज करें',
+        'menu.unstageN': '{n} आइटम अनस्टेज करें',
+        'menu.discardN': '{n} आइटम छोड़ें…',
+        'menu.cherryN': '{n} कमिट चेरी-पिक करें',
+        'menu.deleteLocalN': '{n} लोकल ब्रांच हटाएँ…',
+        'menu.deleteRemoteN': '{n} रिमोट ब्रांच हटाएँ…',
+        'menu.deleteTagsN': '{n} टैग हटाएँ…',
+        'confirm.deleteRefs': 'चयनित रेफ़रेंस हटाएँ? लोकल {b}, रिमोट {r}, टैग {g}।',
+        'confirm.discardMany': '{n} फ़ाइलों के अनकमिटेड बदलाव छोड़ें?',
+        'confirm.discardManyUntracked': 'इनमें {m} अनट्रैक्ड फ़ाइलें स्थायी रूप से हट जाएँगी।',
+        'toast.branchesDeleted': '{n} ब्रांच हटाई गईं',
         'changes.unstageAll': 'सभी अनस्टेज करें',
         'changes.groupBy': 'इसके अनुसार समूह',
         'changes.groupFlat': 'सपाट सूची',
@@ -5910,6 +6290,25 @@ window.__ModuleLoader__.load({
         'changes.commit': 'คอมมิต',
         'changes.amend': 'แก้ไขคอมมิตล่าสุด',
         'changes.stageAll': 'สเตจทั้งหมด',
+        'selection.count': 'เลือก {n} รายการ',
+        'selection.copied': 'คัดลอก {n} รายการแล้ว',
+        'selection.copyPaths': 'คัดลอกพาธ',
+        'selection.clear': 'ล้างการเลือก',
+        'action.copyName': 'คัดลอกชื่อ',
+        'menu.copyNamesN': 'คัดลอกชื่อ {n} รายการ',
+        'menu.copyHashesN': 'คัดลอกแฮช {n} รายการ',
+        'menu.copyPathsN': 'คัดลอกพาธ {n} รายการ',
+        'menu.stageN': 'สเตจ {n} รายการ',
+        'menu.unstageN': 'ยกเลิกสเตจ {n} รายการ',
+        'menu.discardN': 'ทิ้ง {n} รายการ…',
+        'menu.cherryN': 'Cherry-pick {n} คอมมิต',
+        'menu.deleteLocalN': 'ลบแบรนช์ในเครื่อง {n} รายการ…',
+        'menu.deleteRemoteN': 'ลบแบรนช์รีโมต {n} รายการ…',
+        'menu.deleteTagsN': 'ลบแท็ก {n} รายการ…',
+        'confirm.deleteRefs': 'ลบรีเฟอเรนซ์ที่เลือก? ในเครื่อง {b} รีโมต {r} แท็ก {g}',
+        'confirm.discardMany': 'ทิ้งการเปลี่ยนแปลงที่ยังไม่คอมมิตของ {n} ไฟล์?',
+        'confirm.discardManyUntracked': 'ไฟล์ที่ไม่ได้ติดตาม {m} ไฟล์จะถูกลบถาวร',
+        'toast.branchesDeleted': 'ลบแบรนช์ {n} รายการแล้ว',
         'changes.unstageAll': 'ยกเลิกสเตจทั้งหมด',
         'changes.groupBy': 'จัดกลุ่มตาม',
         'changes.groupFlat': 'รายการแบน',
@@ -6225,6 +6624,39 @@ window.__ModuleLoader__.load({
         return value === undefined ? match : String(value)
       })
     }
+
+    /* ---- multi-select shared helpers (selection episode, issue #13) ---- */
+
+    /* Keyboard shortcuts (Ctrl+C / Del / Ctrl+A / Esc) must never hijack the
+       user's own typing or the browser's native copy inside a field. */
+    function isTypingTarget(target) {
+      if (target === null || target === undefined || (target instanceof Element) === false) return false
+      const tag = target.tagName
+      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable === true
+    }
+
+    /* The modifier that toggles selection: Cmd on macOS, Ctrl everywhere else
+       (VS Code's list convention). Plain Shift is always the range modifier. */
+    function isToggleModifier(event) {
+      return event.metaKey === true || event.ctrlKey === true
+    }
+
+    /* A branch entry's selection key: the kind prefix keeps the (rare) case of
+       a branch and a tag sharing one name from colliding inside one Set. */
+    function branchSelKeyOf(entry) {
+      const kind = entry.tag === true ? 'tag' : entry.remote === true ? 'remote' : 'local'
+      return kind + ':' + entry.name
+    }
+
+    /* Join selected values for the clipboard — one per line, the shape a
+       terminal or an editor expects when pasting a list. */
+    function clipboardLines(values) {
+      return values.join('\n')
+    }
+
+    /* Shared frozen-by-convention empty selection: selection Sets are never
+       mutated in place, so one instance is safe to hand around. */
+    const EMPTY_SELECTION = new Set()
 
     /* ============================== api ============================== */
 
@@ -9291,14 +9723,16 @@ window.__ModuleLoader__.load({
       const tone = kind === 'tag' ? 'warn' : kind === 'remote' ? 'violet' : kind === 'head' ? 'success' : 'accent'
       const glyph = kind === 'tag' ? 'tag' : kind === 'remote' ? 'fetch' : kind === 'head' ? 'star' : 'branch'
       const where = entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream
-      // A single click only SELECTS: checking a branch out is a real change of
-      // working tree, and a stray click in a long list must not do that (reported
-      // on v0.3.7). Double-click checks out, right-click has the whole menu.
+      // A single click only SELECTS (now with Shift/Ctrl+click multi-select —
+      // the modifiers are resolved one level up in BranchTree): checking a
+      // branch out is a real change of working tree, and a stray click in a
+      // long list must not do that (reported on v0.3.7). Double-click checks
+      // out, right-click has the whole menu.
       return E('div', {
-        className: 'dig-row dig-row-' + kind + (props.picked === true ? ' dig-row-picked' : ''),
+        className: 'dig-row dig-row-' + kind + (props.selected === true ? ' dig-row-selected' : ''),
         style: { paddingLeft: (BRANCH_INDENT_BASE + (props.depth === undefined ? 0 : props.depth) * BRANCH_INDENT_STEP) + 'px' },
         title: where + ' · ' + t('branches.pickHint'),
-        onClick: () => props.onPick(entry),
+        onClick: (event) => props.onPick(event, entry, props.selKey),
         onDoubleClick: () => props.onCheckout(entry),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
       },
@@ -9319,7 +9753,12 @@ window.__ModuleLoader__.load({
       const t = props.t
       const [filter, setFilter] = useState('')
       const [collapsed, setCollapsed] = useState(() => treeSectionsOf(readTreeState()))
-      const [picked, setPicked] = useState('')
+      /* Multi-select (issue #13): the old single `picked` name becomes a Set of
+         selKeys (`local:name` / `remote:name` / `tag:name` — the prefix keeps a
+         branch and a tag that share a name from colliding). */
+      const [picks, setPicks] = useState(() => new Set())
+      const pickAnchor = useRef(null)
+      const visibleRef = useRef([])
       const [foldedFolders, setFoldedFolders] = useState(() => {
         const stored = readTreeState()
         return stored !== null && typeof stored === 'object' && stored.folders !== null && typeof stored.folders === 'object'
@@ -9342,6 +9781,21 @@ window.__ModuleLoader__.load({
       const remotes = (branches === null ? [] : branches.remote).filter((entry) => match(entry.name))
       const tags = (branches === null ? [] : branches.tags).filter((entry) => match(entry.name))
       const favorites = Array.isArray(props.favorites) ? props.favorites : []
+      /* A refresh that makes a picked ref disappear must not keep it selected. */
+      useEffect(() => {
+        setPicks((previous) => {
+          if (previous.size === 0) return previous
+          const alive = new Set()
+          for (const entry of locals) alive.add(branchSelKeyOf(entry))
+          for (const entry of remotes) alive.add(branchSelKeyOf(entry))
+          for (const entry of tags) alive.add(branchSelKeyOf(entry))
+          const next = new Set()
+          for (const key of previous) {
+            if (alive.has(key) === true) next.add(key)
+          }
+          return next.size === previous.size ? previous : next
+        })
+      }, [branches])
       /**
        * Branch names nest on '/', the way an IDE shows a branch namespace: clicking a
        * row only SELECTS it (checking out rewrites the working tree), so the row
@@ -9362,11 +9816,48 @@ window.__ModuleLoader__.load({
         return root
       }
       const countLeaves = (node) => node.leaves.length + Array.from(node.folders.values()).reduce((sum, child) => sum + countLeaves(child), 0)
+      /* Depth-first flatten in the EXACT order the tree renders them: expanded
+         folders before their leaves. Shift-ranges and Ctrl+A walk this one
+         order; folded folders contribute nothing (their rows are not shown). */
+      const flatLeaves = (node, prefix, depth, out) => {
+        for (const name of Array.from(node.folders.keys()).sort()) {
+          const id = prefix === '' ? name : prefix + '/' + name
+          if (foldedFolders[id] !== true) flatLeaves(node.folders.get(name), id, depth + 1, out)
+        }
+        for (const leaf of node.leaves) out.push({ entry: leaf.entry, label: leaf.label, depth: depth })
+        return out
+      }
+      const handlePick = useCallback((event, entry, selKey) => {
+        const ordered = visibleRef.current.map((leaf) => branchSelKeyOf(leaf.entry))
+        if (event.shiftKey === true && pickAnchor.current !== null) {
+          const from = ordered.indexOf(pickAnchor.current)
+          const to = ordered.indexOf(selKey)
+          if (from >= 0 && to >= 0) {
+            const low = Math.min(from, to)
+            const high = Math.max(from, to)
+            const next = new Set(picks)
+            for (let index = low; index <= high; index += 1) next.add(ordered[index])
+            setPicks(next)
+            return
+          }
+        }
+        if (isToggleModifier(event) === true) {
+          const next = new Set(picks)
+          if (next.has(selKey) === true) next.delete(selKey)
+          else next.add(selKey)
+          pickAnchor.current = selKey
+          setPicks(next)
+          return
+        }
+        pickAnchor.current = selKey
+        setPicks(new Set([selKey]))
+      }, [picks])
       const branchRow = (entry, label, depth) => E(BranchRow, {
-        key: 'row:' + entry.name, entry: entry, label: label, depth: depth, t: t,
-        picked: picked === entry.name,
-        onPick: (target) => setPicked(target.name),
-        onCheckout: props.onCheckout, onMenu: props.onBranchMenu,
+        key: 'row:' + branchSelKeyOf(entry), entry: entry, label: label, depth: depth, t: t,
+        selKey: branchSelKeyOf(entry),
+        selected: picks.has(branchSelKeyOf(entry)) === true,
+        onPick: handlePick,
+        onCheckout: props.onCheckout, onMenu: onRowMenu,
       })
       const rowsOf = (node, prefix, depth) => {
         const out = []
@@ -9401,7 +9892,71 @@ window.__ModuleLoader__.load({
           grouped === true
             ? rowsOf(forestOf(entries.map((entry) => decorate(entry))), '', 0)
             : entries.map((entry) => branchRow(decorate(entry), undefined, 0))))
-      return E('div', { className: 'dig-tree' },
+      /* Render-order mirror for Shift-ranges and Ctrl+A, plus the selKey→entry
+         lookup the right-click menu and the Delete key resolve through. */
+      const visibleLeaves = []
+      if (favorites.length > 0) flatLeaves(forestOf(locals.filter((entry) => favorites.indexOf(entry.name) >= 0)), '', 0, visibleLeaves)
+      flatLeaves(forestOf(locals), '', 0, visibleLeaves)
+      for (const entry of remotes) visibleLeaves.push({ entry: entry, label: undefined, depth: 0 })
+      for (const entry of tags) visibleLeaves.push({ entry: entry, label: undefined, depth: 0 })
+      visibleRef.current = visibleLeaves
+      const entryBySelKey = new Map()
+      for (const entry of locals) entryBySelKey.set(branchSelKeyOf(entry), { selKey: branchSelKeyOf(entry), kind: 'local', name: entry.name, entry: entry })
+      for (const entry of remotes) entryBySelKey.set(branchSelKeyOf(entry), { selKey: branchSelKeyOf(entry), kind: 'remote', name: entry.name, entry: entry })
+      for (const entry of tags) entryBySelKey.set(branchSelKeyOf(entry), { selKey: branchSelKeyOf(entry), kind: 'tag', name: entry.name, entry: entry })
+      const pickedEntries = () => {
+        const entries = []
+        for (const key of picks) {
+          const found = entryBySelKey.get(key)
+          if (found !== undefined) entries.push(found)
+        }
+        return entries
+      }
+      const onRowMenu = (event, entry) => {
+        const selKey = branchSelKeyOf(entry)
+        // Right-clicking a row that is part of a multi-select acts on the WHOLE
+        // selection; anything else collapses to the ordinary single-row menu.
+        if (picks.has(selKey) === true && picks.size > 1 && props.onBranchMenu !== undefined) {
+          props.onBranchMenu(event, entry, pickedEntries())
+          return
+        }
+        props.onBranchMenu(event, entry, null)
+      }
+      /* List-scope keyboard: Ctrl/Cmd+C copies the picked names, Delete asks
+         Panel for a grouped delete (head branches are skipped — git refuses
+         them anyway), Ctrl+A selects every visible row, Esc clears. */
+      const onTreeKeyDown = (event) => {
+        if (isTypingTarget(event.target) === true) return
+        const mod = isToggleModifier(event)
+        if (mod === true && (event.key === 'c' || event.key === 'C')) {
+          if (picks.size === 0 || props.onCopyValues === undefined) return
+          event.preventDefault()
+          props.onCopyValues(pickedEntries().map((item) => item.name))
+          return
+        }
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+          if (picks.size === 0 || props.onDeleteEntries === undefined) return
+          const entries = pickedEntries().filter((item) => item.kind !== 'local' || item.entry.head !== true)
+          if (entries.length === 0) return
+          event.preventDefault()
+          props.onDeleteEntries(entries)
+          return
+        }
+        if (mod === true && (event.key === 'a' || event.key === 'A')) {
+          event.preventDefault()
+          setPicks(new Set(visibleLeaves.map((leaf) => branchSelKeyOf(leaf.entry))))
+          return
+        }
+        if (event.key === 'Escape') setPicks(new Set())
+      }
+      return E('div', {
+        className: 'dig-tree',
+        tabIndex: 0,
+        onKeyDown: onTreeKeyDown,
+        onPointerDownCapture: (event) => {
+          if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
+        },
+      },
         E('div', { className: 'dig-search' },
           E('input', {
             className: 'dig-input dig-input-compact', value: filter, spellCheck: false,
@@ -9435,9 +9990,11 @@ window.__ModuleLoader__.load({
       const readOnly = props.group === 'ignored'
       const status = readOnly ? 'I' : (raw === '' ? 'M' : raw.charAt(0))
       return E('div', {
-        className: 'dig-row dig-row-file',
+        className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : ''),
         title: item.origPath === undefined ? item.path : item.origPath + ' → ' + item.path,
-        onClick: () => props.onDiff(item, props.group),
+        /* The click is handled ONE level up (ChangesPanel): plain click still
+           opens the diff, Shift/Ctrl+click join or toggle the multi-select. */
+        onClick: (event) => props.onRowClick(event, item, props.group),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, item, props.group) },
       },
         FileTypeGlyph({ path: item.path }),
@@ -9452,7 +10009,7 @@ window.__ModuleLoader__.load({
           ? E('button', { type: 'button', className: 'dig-mini', title: t('action.unstage'), onClick: (event) => { event.stopPropagation(); props.onUnstage(item) } }, E(Icon, { name: 'minus', size: 12 }))
           : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 }))),
         readOnly ? null : E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
-    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t)
+    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t && prev.selected === next.selected)
 
     function ChangesPanel(props) {
       const t = props.t
@@ -9489,6 +10046,154 @@ window.__ModuleLoader__.load({
          state directly through props. */
       const foldedDirs = props.foldedDirs === undefined ? {} : props.foldedDirs
       const setFoldedDirs = props.onFoldedDirs
+      /* ---- multi-select (issue #13): the state lives in Panel so the right-click
+         menu and the keyboard shortcuts can act on it; this panel renders it,
+         feeds it from clicks/drag, and mirrors it onto row classes. ---- */
+      const selection = props.selection === undefined ? EMPTY_SELECTION : props.selection
+      const setSelection = props.onSelectionChange
+      const anchorRef = props.anchorRef
+      const changeItemsRef = useRef(null)
+      const changeOffsetsRef = useRef(null)
+      const [marquee, setMarquee] = useState(null)
+      const marqueeFrame = useRef(0)
+      const marqueeState = useRef(null)
+      const marqueeSwallowClick = useRef(false)
+      /* Rows in their RENDER order (the order windowing flattens them into) —
+         Shift-click spans follow what the eye sees, not the git order. */
+      const orderedRowKeys = () => {
+        const items = changeItemsRef.current
+        const keys = []
+        if (items === null) return keys
+        for (const entry of items) {
+          if (entry.kind === 'row' && entry.key.indexOf('ignored:') !== 0) keys.push(entry.key)
+        }
+        return keys
+      }
+      const handleRowClick = useCallback((event, item, group) => {
+        const key = group + ':' + item.path
+        /* Functional updates ONLY: the memoised rows may hold a stale closure
+           of this handler (their memo compares item/group/t/selected, not the
+           callback — same stale-callback trade-off as the stage buttons), so
+           the selection must never be read from it. */
+        if (event.shiftKey === true && anchorRef !== undefined && anchorRef.current !== null) {
+          const ordered = orderedRowKeys()
+          const from = ordered.indexOf(anchorRef.current)
+          const to = ordered.indexOf(key)
+          if (from >= 0 && to >= 0) {
+            const low = Math.min(from, to)
+            const high = Math.max(from, to)
+            setSelection((previous) => {
+              const next = new Set(previous)
+              for (let index = low; index <= high; index += 1) next.add(ordered[index])
+              return next
+            })
+            return
+          }
+        }
+        if (isToggleModifier(event) === true) {
+          anchorRef.current = key
+          setSelection((previous) => {
+            const next = new Set(previous)
+            if (next.has(key) === true) next.delete(key)
+            else next.add(key)
+            return next
+          })
+          return
+        }
+        anchorRef.current = key
+        setSelection((previous) => previous.size === 0 ? previous : new Set())
+        props.onDiff(item, group)
+      }, [setSelection, anchorRef, props.onDiff])
+      /* ---- rubber-band selection over the windowed list: the fixed row
+         heights + the prefix-sum offsets turn a pixel span back into the
+         row-index span (the same windowStart binary search the window uses),
+         so the drag never needs the DOM rows to exist. The marquee box itself
+         is a viewport-anchored absolute div inside .dig-changes (invariant 13:
+         never position:fixed inside the workbench's contain:layout). ---- */
+      const marqueeKeysAt = (contentTop, contentBottom) => {
+        const items = changeItemsRef.current
+        const offsets = changeOffsetsRef.current
+        if (items === null || offsets === null || items.length === 0) return []
+        const first = Math.max(0, windowStart(offsets, contentTop))
+        const last = Math.min(items.length - 1, windowStart(offsets, contentBottom))
+        const keys = []
+        for (let index = first; index <= last; index += 1) {
+          const entry = items[index]
+          if (entry.kind === 'row' && entry.key.indexOf('ignored:') !== 0) keys.push(entry.key)
+        }
+        return keys
+      }
+      const syncMarquee = () => {
+        const state = marqueeState.current
+        const host = changesScrollRef.current
+        if (state === null || host === null) return
+        const rect = host.getBoundingClientRect()
+        const contentY0 = state.startY - rect.top + state.scrollY0
+        const contentY1 = state.clientY - rect.top + host.scrollTop
+        setSelection(new Set(marqueeKeysAt(Math.min(contentY0, contentY1), Math.max(contentY0, contentY1))))
+        setMarquee({
+          x: Math.min(state.startX, state.clientX) - rect.left,
+          y: Math.min(state.startY, state.clientY) - rect.top,
+          w: Math.abs(state.clientX - state.startX),
+          h: Math.abs(state.clientY - state.startY),
+        })
+        /* Auto-scroll when the pointer rides an edge; keep the loop alive while
+           it does so the selection follows the content streaming past. */
+        const EDGE = 28
+        let speed = 0
+        if (state.clientY - rect.top < EDGE) speed = -Math.ceil((EDGE - (state.clientY - rect.top)) / 3)
+        else if (rect.bottom - state.clientY < EDGE) speed = Math.ceil((EDGE - (rect.bottom - state.clientY)) / 3)
+        if (speed !== 0) {
+          host.scrollTop += speed * 2
+          cancelAnimationFrame(marqueeFrame.current)
+          marqueeFrame.current = requestAnimationFrame(syncMarquee)
+        }
+      }
+      const scheduleMarqueeSync = () => {
+        cancelAnimationFrame(marqueeFrame.current)
+        marqueeFrame.current = requestAnimationFrame(syncMarquee)
+      }
+      const onListPointerDown = (event) => {
+        if (event.button !== 0) return
+        const host = changesScrollRef.current
+        if (host === null) return
+        if (event.target instanceof Element && event.target.closest('button, input, textarea, select, a') !== null) return
+        // Keep the browser from starting a text selection under the drag; the
+        // real clicks still fire (only the selection machinery is suppressed).
+        event.preventDefault()
+        const rect = host.getBoundingClientRect()
+        marqueeState.current = {
+          startX: event.clientX,
+          startY: event.clientY,
+          scrollY0: host.scrollTop,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          active: false,
+        }
+        const onMove = (moveEvent) => {
+          const state = marqueeState.current
+          if (state === null) return
+          state.clientX = moveEvent.clientX
+          state.clientY = moveEvent.clientY
+          if (state.active === false && Math.abs(moveEvent.clientX - state.startX) < 4 && Math.abs(moveEvent.clientY - state.startY) < 4) return
+          state.active = true
+          marqueeSwallowClick.current = true
+          scheduleMarqueeSync()
+        }
+        const onUp = () => {
+          window.removeEventListener('pointermove', onMove)
+          window.removeEventListener('pointerup', onUp)
+          cancelAnimationFrame(marqueeFrame.current)
+          const wasActive = marqueeState.current !== null && marqueeState.current.active === true
+          marqueeState.current = null
+          setMarquee(null)
+          // The drag's pointerup is followed by a synthetic click on whatever
+          // row is under it — swallow exactly that one click.
+          if (wasActive === true) setTimeout(() => { marqueeSwallowClick.current = false }, 0)
+        }
+        window.addEventListener('pointermove', onMove)
+        window.addEventListener('pointerup', onUp)
+      }
       const changes = summary === null ? null : summary.changes
       const conflicted = changes === null ? [] : changes.conflicted
       const staged = changes === null ? [] : changes.staged
@@ -9537,6 +10242,8 @@ window.__ModuleLoader__.load({
       }
       const entryRow = (key, item) => E(ChangeRow, {
         key: key + ':' + item.path, item: item, group: key, t: t,
+        selected: selection.has(key + ':' + item.path) === true,
+        onRowClick: handleRowClick,
         onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
       })
       const folderOf = (item) => {
@@ -9604,12 +10311,17 @@ window.__ModuleLoader__.load({
         emitGroup('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)
         emitGroup('ignored', fill(t('counts.ignored'), { n: ignored.length }), ignored)
         return out
-      }, [conflicted, staged, unstaged, untracked, ignored, groupBy, foldedDirs, sortKey, t, props.onUnstageAll, props.onStageAll])
+      }, [conflicted, staged, unstaged, untracked, ignored, groupBy, foldedDirs, sortKey, t, selection, handleRowClick, props.onUnstageAll, props.onStageAll])
       const changeOffsets = useMemo(() => {
         const sums = [0]
         for (const item of changeItems) sums.push(sums[sums.length - 1] + item.h)
         return sums
       }, [changeItems])
+      /* Render-phase mirrors: the drag-select and Shift-range logic read these
+         through refs, so their callbacks keep stable identities (invariant 12:
+         a dep array is evaluated during render — no forward references). */
+      changeItemsRef.current = changeItems
+      changeOffsetsRef.current = changeOffsets
       /* Virtual window, VSCode-style (ListView.getVisibleRange): both ends are
          pixel→index conversions over the same prefix-sum array, so no "row
          count" ever enters the math (issue #12 — the old winLimit computed a
@@ -9707,11 +10419,34 @@ window.__ModuleLoader__.load({
           'data-action': 'more',
           onClick: (event) => props.onMoreMenu(event),
         }, E(Icon, { name: 'more', size: 18 })))
+      /* The selection action bar: visible only while a multi-select exists, so
+         the mouse-only path (no right-click, no keyboard) keeps full power. */
+      const selectionBar = selection.size === 0 ? null : E('div', { className: 'dig-selection-bar' },
+        E('span', { className: 'dig-selection-count' }, fill(t('selection.count'), { n: selection.size })),
+        props.onBulkStage === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onBulkStage() }, t('action.stage')),
+        props.onBulkUnstage === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onBulkUnstage() }, t('action.unstage')),
+        props.onBulkDiscard === undefined ? null : E('button', { type: 'button', className: 'dig-link dig-link-danger', onClick: () => props.onBulkDiscard() }, t('action.discard')),
+        props.onCopySelection === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onCopySelection() }, t('selection.copyPaths')),
+        E('button', { type: 'button', className: 'dig-link', onClick: () => setSelection(new Set()) }, t('selection.clear')))
       return E('div', { className: 'dig-changes' },
         aiConfirmDialog,
         head,
+        selectionBar,
         E('div', { className: 'dig-changes-body' },
-          E('div', { className: 'dig-changes-list', ref: changesScrollRef },
+          E('div', {
+            className: 'dig-changes-list', ref: changesScrollRef,
+            /* Focusable list: the keyboard shortcuts (Ctrl+C / Del / Ctrl+A /
+               Esc) land on whichever list currently holds focus. */
+            tabIndex: 0,
+            onKeyDown: props.onKeyDown,
+            onPointerDownCapture: (event) => {
+              if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
+            },
+            onPointerDown: onListPointerDown,
+            onClickCapture: (event) => {
+              if (marqueeSwallowClick.current === true) { event.preventDefault(); event.stopPropagation() }
+            },
+          },
             collapsed ? null : [
               total === 0 && ignored.length === 0 ? E('div', { className: 'dig-empty', key: 'empty' }, t('changes.empty')) : null,
               /* Windowed slice: spacers above/below stand in for the unmounted
@@ -9720,7 +10455,11 @@ window.__ModuleLoader__.load({
               visibleItems.map((item) => E(Fragment, { key: item.key }, item.node)),
               winLast < changeItems.length ? E('div', { key: 'pad-bottom', style: { height: String(changeOffsets[changeItems.length] - changeOffsets[winLast]) + 'px' } }) : null,
             ]),
-          composer))
+          composer),
+        marquee === null ? null : E('div', {
+          className: 'dig-marquee',
+          style: { left: marquee.x + 'px', top: marquee.y + 'px', width: marquee.w + 'px', height: marquee.h + 'px' },
+        }))
     }
 
     /* ============================== history ============================== */
@@ -9844,7 +10583,9 @@ window.__ModuleLoader__.load({
            graph stroke whose data-lane differs — zero React re-renders. */
         'data-lane': String(props.row.lane),
         className: 'dig-commit' + (props.selected === true ? ' dig-commit-selected' : ''),
-        onClick: () => props.onSelect(commit),
+        /* Modifier handling lives in HistoryList (it owns the rendered row
+           order the Shift-range walks); a plain click still opens the detail. */
+        onClick: (event) => props.onRowClick(event, commit),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
       },
         E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
@@ -9893,6 +10634,7 @@ window.__ModuleLoader__.load({
       const commits = props.commits
       const historyScrollRef = useRef(null)
       const viewport = useViewportBox(historyScrollRef)
+      const pickAnchor = useRef(null)
       const [text, setText] = useState('')
       const [author, setAuthor] = useState('')
       const [refName, setRefName] = useState('')
@@ -9947,6 +10689,59 @@ window.__ModuleLoader__.load({
       }, [commits, text, author, refName, since, order])
 
       const rows = useMemo(() => buildRows(filtered), [filtered])
+      /* Multi-select gestures (issue #13): the rendered row order is what the
+         Shift-range walks, and the range is computed over the FILTERED rows —
+         the same list the eye sees. Plain click keeps opening the detail and
+         collapses the multi-select, exactly like the other two lists. The
+         stale-callback risk is nil: rows change identity with the filters, and
+         every row re-renders whenever its commit reference changes. */
+      const handleRowClick = (event, commit) => {
+        const pickedHashes = props.pickedHashes
+        const setPicks = props.onPicksChange
+        if (setPicks === undefined) { props.onSelect(commit); return }
+        const ordered = rows.map((row) => row.commit.hash)
+        const index = ordered.indexOf(commit.hash)
+        /* Functional updates only — memoised CommitRows may hold a stale
+           closure of this handler (their memo compares commit/row/selected),
+           so the picked set is never read from it. */
+        if (event.shiftKey === true && pickAnchor.current !== null) {
+          const from = ordered.indexOf(pickAnchor.current)
+          if (from >= 0 && index >= 0) {
+            const low = Math.min(from, index)
+            const high = Math.max(from, index)
+            setPicks((previous) => {
+              const next = new Set(previous)
+              for (let at = low; at <= high; at += 1) next.add(ordered[at])
+              return next
+            })
+            return
+          }
+        }
+        if (isToggleModifier(event) === true) {
+          pickAnchor.current = commit.hash
+          setPicks((previous) => {
+            const next = new Set(previous)
+            if (next.has(commit.hash) === true) next.delete(commit.hash)
+            else next.add(commit.hash)
+            return next
+          })
+          return
+        }
+        pickAnchor.current = commit.hash
+        setPicks((previous) => previous.size === 0 ? previous : new Set())
+        props.onSelect(commit)
+      }
+      /* Ctrl+A selects the whole filtered list; everything else (Ctrl+C, Esc)
+         belongs to the Panel-level handler that owns the picked set. */
+      const onListKeyDown = (event) => {
+        if (isTypingTarget(event.target) === true) return
+        if (isToggleModifier(event) === true && (event.key === 'a' || event.key === 'A')) {
+          event.preventDefault()
+          if (props.onSelectAll !== undefined) props.onSelectAll(rows.map((row) => row.commit.hash))
+          return
+        }
+        if (props.onKeyDown !== undefined) props.onKeyDown(event)
+      }
       const dirtyFilter = text !== '' || author !== '' || refName !== '' || since !== '' || (props.pathFilter !== undefined && props.pathFilter !== '')
       const applyPath = (value) => { if (props.onPathFilter !== undefined) props.onPathFilter(value) }
       const clearAll = () => {
@@ -10026,6 +10821,11 @@ window.__ModuleLoader__.load({
         E('div', {
           className: 'dig-history-scroll',
           ref: historyScrollRef,
+          tabIndex: 0,
+          onKeyDown: onListKeyDown,
+          onPointerDownCapture: (event) => {
+            if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
+          },
           /* Lane hover highlight (GitLens-style trace): copy the hovered row's
              lane into data-hover-lane; generated CSS dims every stroke whose
              data-lane differs. Direct DOM dataset writes on purpose — the
@@ -10045,8 +10845,9 @@ window.__ModuleLoader__.load({
           visibleRows.map((row) => E(CommitRow, {
             key: row.commit.hash,
             commit: row.commit, row: row, t: t,
-            selected: props.selectedHash === row.commit.hash,
-            onSelect: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
+            selected: props.selectedHash === row.commit.hash
+              || (props.pickedHashes !== undefined && props.pickedHashes.has(row.commit.hash) === true),
+            onRowClick: handleRowClick, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
           })),
           winEnd < rows.length ? E('div', { key: 'pad-bottom', style: { height: String((rows.length - winEnd) * HISTORY_ROW_H) + 'px' } }) : null,
           props.hasMore === true
@@ -10129,6 +10930,13 @@ window.__ModuleLoader__.load({
          and the selection menu's payload must say which. Cleared everywhere
          the patch is cleared. */
       const [diffContext, setDiffContext] = useState(null)
+      /* ---- multi-select (issue #13): the change list's selection lives here
+         so the right-click menu, the keyboard and the selection bar act on one
+         set; the branch tree and the history keep theirs closer to their rows
+         (BranchTree-internal / pickedCommits below). ---- */
+      const [changeSelection, setChangeSelection] = useState(() => new Set())
+      const changeAnchor = useRef(null)
+      const [pickedCommits, setPickedCommits] = useState(() => new Set())
       const [menu, setMenu] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
@@ -10876,30 +11684,230 @@ window.__ModuleLoader__.load({
         sendToComposer({ text: text, fallback: text })
       }, [t, sendToComposer])
 
-      const branchMenu = useCallback((event, entry) => {
+      /* ---------- multi-select actions (issue #13) ---------- */
+
+      /* Copy with feedback: plain copyText stays silent, which reads as "did
+         nothing" the moment the paste target is in another app. */
+      const copyValues = useCallback((values) => {
+        if (values === null || values === undefined || values.length === 0) return
+        copyText(clipboardLines(values))
+        pushToast({ text: fill(t('selection.copied'), { n: values.length }), icon: 'tag', tone: 'ok', ttl: 2500 })
+      }, [pushToast, t])
+
+      /* Resolve the change selection against the CURRENT summary: paths move
+         between groups on every stage/unstage, so the key ('group:path') is
+         the only stable handle and the entry lookup must be fresh. */
+      const changeSelectionGroups = () => {
+        const changes = summary === null ? null : summary.changes
+        const groups = { staged: [], other: [], tracked: [], untracked: [] }
+        if (changes === null) return groups
+        const byKey = new Map()
+        for (const entry of changes.staged) byKey.set('staged:' + entry.path, entry)
+        for (const entry of changes.unstaged) byKey.set('unstaged:' + entry.path, entry)
+        for (const entry of changes.untracked) byKey.set('untracked:' + entry.path, entry)
+        for (const entry of changes.conflicted) byKey.set('conflicted:' + entry.path, entry)
+        for (const key of changeSelection) {
+          const entry = byKey.get(key)
+          if (entry === undefined) continue
+          if (key.indexOf('staged:') === 0) groups.staged.push(entry.path)
+          else groups.other.push(entry.path)
+          // Conflicted rides the tracked lane, like the single-file discard does.
+          if (key.indexOf('untracked:') === 0) groups.untracked.push(entry.path)
+          else groups.tracked.push(entry.path)
+        }
+        return groups
+      }
+      const bulkStageChanges = () => {
+        const groups = changeSelectionGroups()
+        if (groups.other.length === 0) return
+        void run('stage', { paths: groups.other })
+      }
+      const bulkUnstageChanges = () => {
+        const groups = changeSelectionGroups()
+        if (groups.staged.length === 0) return
+        void run('unstage', { paths: groups.staged })
+      }
+      const openDiscardManyDialog = () => {
+        const groups = changeSelectionGroups()
+        if (groups.tracked.length === 0 && groups.untracked.length === 0) return
+        setDialog({ kind: 'discardMany', tracked: groups.tracked, untracked: groups.untracked })
+      }
+      const copyChangeSelection = () => {
+        const groups = changeSelectionGroups()
+        copyValues(groups.staged.concat(groups.other))
+      }
+      /* A refresh that resolves a selected key away (file staged, discarded,
+         renamed) must not keep it selected. */
+      useEffect(() => {
+        setChangeSelection((previous) => {
+          if (previous.size === 0) return previous
+          const changes = summary === null ? null : summary.changes
+          if (changes === null) return previous
+          const alive = new Set()
+          for (const entry of changes.conflicted) alive.add('conflicted:' + entry.path)
+          for (const entry of changes.staged) alive.add('staged:' + entry.path)
+          for (const entry of changes.unstaged) alive.add('unstaged:' + entry.path)
+          for (const entry of changes.untracked) alive.add('untracked:' + entry.path)
+          const next = new Set()
+          for (const key of previous) {
+            if (alive.has(key) === true) next.add(key)
+          }
+          return next.size === previous.size ? previous : next
+        })
+      }, [summary])
+      /* Changes-list keyboard scope: Ctrl/Cmd+C copies paths, Delete opens the
+         grouped discard confirm, Ctrl+A selects everything but ignored, Esc
+         clears. Typing targets keep their native behaviour. */
+      const onChangesKeyDown = (event) => {
+        if (isTypingTarget(event.target) === true) return
+        const mod = isToggleModifier(event)
+        if (mod === true && (event.key === 'c' || event.key === 'C')) {
+          const groups = changeSelectionGroups()
+          const paths = groups.staged.concat(groups.other)
+          if (paths.length === 0) return
+          event.preventDefault()
+          copyValues(paths)
+          return
+        }
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+          if (changeSelection.size === 0) return
+          event.preventDefault()
+          openDiscardManyDialog()
+          return
+        }
+        if (mod === true && (event.key === 'a' || event.key === 'A')) {
+          const changes = summary === null ? null : summary.changes
+          if (changes === null) return
+          event.preventDefault()
+          const next = new Set()
+          for (const entry of changes.conflicted) next.add('conflicted:' + entry.path)
+          for (const entry of changes.staged) next.add('staged:' + entry.path)
+          for (const entry of changes.unstaged) next.add('unstaged:' + entry.path)
+          for (const entry of changes.untracked) next.add('untracked:' + entry.path)
+          setChangeSelection(next)
+          return
+        }
+        if (event.key === 'Escape') setChangeSelection(new Set())
+      }
+      /* History keyboard scope: Ctrl/Cmd+C copies full hashes, Esc clears.
+         Delete has no commit analogue — deliberately unmapped. */
+      const onHistoryKeyDown = (event) => {
+        if (isTypingTarget(event.target) === true) return
+        if (isToggleModifier(event) === true && (event.key === 'c' || event.key === 'C')) {
+          if (pickedCommits.size === 0) return
+          event.preventDefault()
+          copyValues(Array.from(pickedCommits))
+          return
+        }
+        if (event.key === 'Escape') setPickedCommits(new Set())
+      }
+      /* Branch-tree Delete: group the picked refs by kind and hand them to ONE
+         confirm dialog (head branches never get here — BranchTree filters). */
+      const deleteBranchEntries = (entries) => {
+        const locals = []
+        const remotes = []
+        const tags = []
+        for (const item of entries) {
+          if (item.kind === 'local') locals.push(item.name)
+          else if (item.kind === 'tag') tags.push(item.name)
+          else {
+            const slash = item.name.indexOf('/')
+            remotes.push({
+              remote: slash >= 0 ? item.name.slice(0, slash) : item.name,
+              branch: slash >= 0 ? item.name.slice(slash + 1) : item.name,
+            })
+          }
+        }
+        if (locals.length === 0 && remotes.length === 0 && tags.length === 0) return
+        setDialog({ kind: 'deleteRefs', locals: locals, remotes: remotes, tags: tags })
+      }
+      /* Batch local delete with the same undo toast the single delete has.
+         Plain function on purpose (invariant 12): a useCallback here would
+         evaluate `undoAction` in its dep array — declared further below. */
+      const deleteBranches = async (names) => {
+        const data = await run('branchDelete', { names: names, confirm: true })
+        if (data === undefined) return
+        if (data.undo === undefined) return
+        pushToast({
+          text: fill(t('toast.branchesDeleted'), { n: names.length }),
+          icon: 'trash',
+          tone: 'warn',
+          undoId: data.undo.id,
+          actionLabel: t('toast.undo'),
+          onAction: () => { void undoAction(data.undo.id) },
+        })
+      }
+
+      const branchMenu = useCallback((event, entry, picked) => {
         const current = branches === null ? '' : branches.branch
         const isLocal = entry.remote !== true && entry.tag !== true
         const reason = t('action.unavailable')
+        /* Multi-select menu: the verbs that only make sense for one ref
+           (checkout, merge, rebase, rename…) are dropped, not greyed — the
+           selection itself already says what the user is going for. */
+        if (picked !== null && picked !== undefined && picked.length > 1) {
+          const locals = picked.filter((item) => item.kind === 'local' && item.entry.head !== true)
+          const remotes = picked.filter((item) => item.kind === 'remote')
+          const tags = picked.filter((item) => item.kind === 'tag')
+          openMenuAt(event, [
+            { id: 'copyNames', icon: 'tag', tone: 'secondary', label: fill(t('menu.copyNamesN'), { n: picked.length }), run: () => copyValues(picked.map((item) => item.name)) },
+            null,
+            locals.length > 0 ? { id: 'deleteLocal', icon: 'trash', tone: 'danger', danger: true, label: fill(t('menu.deleteLocalN'), { n: locals.length }), run: () => setDialog({ kind: 'deleteRefs', locals: locals.map((item) => item.name), remotes: [], tags: [] }) } : null,
+            remotes.length > 0 ? { id: 'deleteRemote', icon: 'trash', tone: 'danger', danger: true, label: fill(t('menu.deleteRemoteN'), { n: remotes.length }), run: () => setDialog({ kind: 'deleteRefs', locals: [], remotes: remotes.map((item) => { const slash = item.name.indexOf('/'); return { remote: slash >= 0 ? item.name.slice(0, slash) : item.name, branch: slash >= 0 ? item.name.slice(slash + 1) : item.name } }), tags: [] }) } : null,
+            tags.length > 0 ? { id: 'deleteTags', icon: 'trash', tone: 'danger', danger: true, label: fill(t('menu.deleteTagsN'), { n: tags.length }), run: () => setDialog({ kind: 'deleteRefs', locals: [], remotes: [], tags: tags.map((item) => item.name) }) } : null,
+          ].filter((item) => item !== null))
+          return
+        }
         const items = [
           { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
           isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
           isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
           { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendGitSummaryToChat('send.branchText', { name: entry.name, repo: repoLabel }) },
+          { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyName'), run: () => copyValues([entry.name]) },
           null,
           { id: 'favorite', icon: 'star', tone: 'warn', label: t('action.favorite'), active: favorites.indexOf(entry.name) >= 0, run: () => toggleFavoriteBranch(entry.name) },
           { id: 'newBranch', icon: 'plus', tone: 'success', label: t('action.newBranchFrom'), run: () => setDialog({ kind: 'newBranch', from: entry.name }) },
           isLocal ? { id: 'rename', icon: 'file', tone: 'primary', label: t('action.rename'), run: () => setDialog({ kind: 'renameBranch', from: entry.name }) } : null,
           isLocal ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, disabled: entry.head === true, reason: reason, run: () => setDialog({ kind: 'deleteBranch', name: entry.name }) } : null,
+          entry.tag === true
+            ? { id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true, run: () => setDialog({ kind: 'deleteRefs', locals: [], remotes: [], tags: [entry.name] }) }
+            : (isLocal ? null : {
+                id: 'delete', icon: 'trash', tone: 'danger', label: t('action.delete'), danger: true,
+                run: () => {
+                  const slash = entry.name.indexOf('/')
+                  setDialog({
+                    kind: 'deleteRefs', locals: [], tags: [],
+                    remotes: [{ remote: slash >= 0 ? entry.name.slice(0, slash) : entry.name, branch: entry.name.slice(slash + 1) }],
+                  })
+                },
+              }),
           null,
           { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
           { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
         ].filter((item) => item !== null)
         openMenuAt(event, items)
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel])
+      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues])
 
       const commitMenu = useCallback((event, commit) => {
         const shortHash = commit.hash.slice(0, 7)
+        /* Multi-select: copy every picked hash and cherry-pick them as ONE
+           sequence, oldest first (the graph lists newest first, so the walk
+           order reverses). Verbs that only make sense against one commit
+           (checkout, branch, tag, reset, revert) drop out entirely. */
+        if (pickedCommits.has(commit.hash) === true && pickedCommits.size > 1) {
+          const ordered = []
+          for (const entry of commits) {
+            if (pickedCommits.has(entry.hash) === true) ordered.push(entry.hash)
+          }
+          const oldestFirst = ordered.slice().reverse()
+          openMenuAt(event, [
+            { id: 'copyHashes', icon: 'tag', tone: 'secondary', label: fill(t('menu.copyHashesN'), { n: pickedCommits.size }), run: () => copyValues(Array.from(pickedCommits)) },
+            null,
+            { id: 'cherry', icon: 'commit', tone: 'accent', label: fill(t('menu.cherryN'), { n: pickedCommits.size }), disabled: blocked, reason: t('operation.hint'), run: () => { void run('cherryPick', { hashes: oldestFirst }) } },
+          ])
+          return
+        }
         const items = [
           { id: 'details', icon: 'file', tone: 'primary', label: t('action.details'), run: () => { void selectCommit(commit) } },
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyHash'), run: () => { copyText(commit.hash) } },
@@ -10922,9 +11930,23 @@ window.__ModuleLoader__.load({
           { id: 'resetHard', icon: 'trash', tone: 'danger', label: t('action.resetHard'), danger: true, disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'reset', hash: commit.hash, mode: 'hard' }) },
         ]
         openMenuAt(event, items)
-      }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer, sendGitSummaryToChat, repoLabel])
+      }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer, sendGitSummaryToChat, repoLabel, pickedCommits, commits, copyValues])
 
       const changeMenu = useCallback((event, item, group) => {
+        /* Multi-select: right-clicking a row that belongs to the selection
+           acts on the WHOLE selection (stage N / unstage N / discard N). */
+        if (changeSelection.has(group + ':' + item.path) === true && changeSelection.size > 1) {
+          const groups = changeSelectionGroups()
+          const allPaths = groups.staged.concat(groups.other)
+          openMenuAt(event, [
+            groups.other.length > 0 ? { id: 'stage', icon: 'plus', tone: 'success', label: fill(t('menu.stageN'), { n: groups.other.length }), run: () => { void run('stage', { paths: groups.other }) } } : null,
+            groups.staged.length > 0 ? { id: 'unstage', icon: 'minus', tone: 'warn', label: fill(t('menu.unstageN'), { n: groups.staged.length }), run: () => { void run('unstage', { paths: groups.staged }) } } : null,
+            { id: 'discard', icon: 'undo', tone: 'danger', danger: true, label: fill(t('menu.discardN'), { n: groups.tracked.length + groups.untracked.length }), run: () => openDiscardManyDialog() },
+            null,
+            { id: 'copy', icon: 'tag', tone: 'secondary', label: fill(t('menu.copyPathsN'), { n: allPaths.length }), run: () => copyValues(allPaths) },
+          ].filter((entry) => entry !== null))
+          return
+        }
         const items = [
           { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) } },
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
@@ -10937,7 +11959,7 @@ window.__ModuleLoader__.load({
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
         openMenuAt(event, items)
-      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer])
+      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer, changeSelection, changeSelectionGroups, openDiscardManyDialog, copyValues])
 
       /* The commit-detail file list shares the working-tree row menu, minus the
          staging verbs: a committed file's diff replays against its commit. */
@@ -11225,6 +12247,11 @@ window.__ModuleLoader__.load({
             onSelect: (commit) => { void selectCommit(commit) },
             onMenu: commitMenu,
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
+            /* ---- multi-select (issue #13) ---- */
+            pickedHashes: pickedCommits,
+            onPicksChange: setPickedCommits,
+            onSelectAll: (hashes) => setPickedCommits(new Set(hashes)),
+            onKeyDown: onHistoryKeyDown,
           })
 
       const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
@@ -11489,6 +12516,15 @@ window.__ModuleLoader__.load({
         onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
         onDiff: (item, group) => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) },
         onChangeMenu: changeMenu,
+        /* ---- multi-select (issue #13) ---- */
+        selection: changeSelection,
+        onSelectionChange: setChangeSelection,
+        anchorRef: changeAnchor,
+        onBulkStage: bulkStageChanges,
+        onBulkUnstage: bulkUnstageChanges,
+        onBulkDiscard: openDiscardManyDialog,
+        onCopySelection: copyChangeSelection,
+        onKeyDown: onChangesKeyDown,
       })
 
 
@@ -11691,19 +12727,19 @@ window.__ModuleLoader__.load({
               title: t('toolbar.tree'),
               onClick: () => foldTree(!treeOpen),
             }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
-          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane),
           gutter('changes', 'next'),
           E('div', { className: 'dig-pane dig-pane-changes', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane))
       } else {
         body = E('div', { className: 'dig-body dig-body-stack', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
@@ -11881,6 +12917,60 @@ window.__ModuleLoader__.load({
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => { const ref = dialog.ref; setDialog(null); void dropStash(ref) },
+        }))
+      }
+      /* Multi-select delete (issue #13): local branches / remote branches / tags
+         in ONE confirm — each rides its existing destructive host method, and a
+         protected local branch keeps the type-the-name gate. */
+      if (dialog !== null && dialog.kind === 'deleteRefs') {
+        const guardedName = dialog.locals.find((name) => isProtectedBranch(name) === true)
+        const listed = dialog.locals
+          .concat(dialog.tags)
+          .concat(dialog.remotes.map((item) => item.remote + '/' + item.branch))
+        const listText = listed.length <= 8 ? listed.join('、') : listed.slice(0, 8).join('、') + ' …'
+        overlays.push(E(ConfirmDialog, {
+          key: 'deleteRefs',
+          t: t,
+          title: t('confirm.title'),
+          text: fill(t('confirm.deleteRefs'), { b: dialog.locals.length, r: dialog.remotes.length, g: dialog.tags.length })
+            + (listText === '' ? '' : ' ' + listText),
+          requireText: guardedName === undefined ? undefined : guardedName,
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => {
+            const locals = dialog.locals
+            const tags = dialog.tags
+            const remotes = dialog.remotes
+            setDialog(null)
+            if (locals.length > 0) void deleteBranches(locals)
+            if (tags.length > 0) void run('tagDelete', { names: tags })
+            const byRemote = new Map()
+            for (const item of remotes) {
+              if (byRemote.has(item.remote) === false) byRemote.set(item.remote, [])
+              byRemote.get(item.remote).push(item.branch)
+            }
+            for (const pair of byRemote) void run('branchDeleteRemote', { remote: pair[0], branches: pair[1], confirm: true })
+          },
+        }))
+      }
+      /* Multi-select discard: tracked paths go through `checkout --`, untracked
+         through `clean -fd` — the same two-lane split as Discard All. */
+      if (dialog !== null && dialog.kind === 'discardMany') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'discardMany',
+          t: t,
+          title: t('confirm.title'),
+          text: fill(t('confirm.discardMany'), { n: dialog.tracked.length + dialog.untracked.length })
+            + (dialog.untracked.length > 0 ? ' ' + fill(t('confirm.discardManyUntracked'), { m: dialog.untracked.length }) : ''),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => {
+            const tracked = dialog.tracked
+            const untracked = dialog.untracked
+            setDialog(null)
+            if (tracked.length > 0) void run('discard', { paths: tracked, confirm: true })
+            if (untracked.length > 0) void run('discard', { paths: untracked, untracked: true, confirm: true })
+          },
         }))
       }
       if (dialog !== null && dialog.kind === 'discard') {
@@ -12179,7 +13269,7 @@ window.__ModuleLoader__.load({
       '.dig-row{display:flex;align-items:center;gap:5px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden}',
       '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
+      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
       '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
       '.dig-row-head .dig-row-label{font-weight:600}',
@@ -12217,9 +13307,20 @@ window.__ModuleLoader__.load({
       '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:var(--dsw-radius-sm,8px);border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer}',
       '.dig-load-more:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-empty{padding:14px;text-align:center;color:var(--dsw-alias-label-tertiary);font-weight:500}',
-      '.dig-changes{display:flex;flex-direction:column;min-height:0;flex:1}',
+      '.dig-changes{display:flex;flex-direction:column;min-height:0;flex:1;position:relative}',
       '.dig-changes-body{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-changes-list{flex:1;overflow:auto;min-height:0}',
+      /* Multi-select chrome (issue #13). The marquee box is anchored to the
+         VIEWPORT-space .dig-changes (invariant 13: position:fixed would be
+         captured by the workbench's contain:layout and flung off-panel). */
+      '.dig-marquee{position:absolute;border:1px solid var(--dsw-alias-brand-primary);background:color-mix(in srgb,var(--dsw-alias-brand-primary) 14%,transparent);pointer-events:none;z-index:6}',
+      '.dig-selection-bar{display:flex;align-items:center;gap:12px;padding:3px 10px;font-size:11px;background:var(--dsw-alias-interactive-bg-hover);border-bottom:1px solid var(--dsw-alias-border-subtle,transparent)}',
+      '.dig-selection-bar .dig-link{margin-left:0}',
+      '.dig-selection-bar .dig-link-danger{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-selection-count{color:var(--dsw-alias-label-secondary);white-space:nowrap}',
+      /* Focusable lists keep their own selection highlight as the focus
+         indicator, so the container ring is suppressed. */
+      '.dig-changes-list:focus-visible,.dig-tree:focus-visible,.dig-history-scroll:focus-visible{outline:none}',
       '.dig-group{display:flex;flex-direction:column}',
       '.dig-group-head{display:flex;align-items:center;gap:8px;padding:2px 8px;height:17px;color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:600}',
       '.dig-link{margin-left:auto;border:none;background:transparent;color:var(--dsw-alias-brand-primary);font:inherit;cursor:pointer;padding:0;flex:none}',
