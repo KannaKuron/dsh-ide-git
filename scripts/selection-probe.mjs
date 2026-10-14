@@ -141,14 +141,39 @@ async function enter() {
     return { status: res.status, ok: text.indexOf('"ok":true') >= 0 || text.indexOf('already') >= 0, text: text.slice(0, 160) }
   }, { path: repoPath, title: workspaceTitle })
   console.log('workspace create: ' + JSON.stringify(created))
-  /* Session inside the workspace: the 新会话 menu lists workspaces. */
+  /* Session inside the workspace: on a fresh (message-less) page the composer
+     header has a workspace PICKER BUTTON showing the current workspace. Mind
+     the lookalike: the sidebar workspace group header has the same text but is
+     NOT a button — locator by button role only. The picker menu lists
+     workspaces by their display name = the path basename on a fresh instance
+     (the create-call title is not what the menu shows). If the page restored a
+     conversation instead, click 新会话 first to get the empty state back. */
   let bound = false
   try {
-    await page.locator('button', { hasText: '新会话' }).first().click({ timeout: 6000 })
-    await settle(1200)
-    await page.getByText(workspaceTitle, { exact: true }).last().click({ timeout: 6000 })
-    await settle(3000)
-    bound = true
+    const base = repoPath.split('/').filter(Boolean).pop()
+    let pick = page.locator('button', { hasText: '默认工作区' }).first()
+    if (await pick.count() === 0) {
+      await page.locator('button', { hasText: '新会话' }).first().click({ timeout: 6000 })
+      await settle(1500)
+      pick = page.locator('button', { hasText: '默认工作区' }).first()
+    }
+    if (await pick.count() > 0) {
+      await pick.click({ timeout: 6000 })
+      await settle(1200)
+      for (const candidate of [workspaceTitle, base]) {
+        const item = page.locator('button', { hasText: candidate }).last()
+        if (await item.count() > 0) {
+          await item.click({ timeout: 6000 })
+          await settle(1500)
+          /* Read-back: the picker button must now show the picked workspace. */
+          if (await page.locator('button', { hasText: candidate }).first().count() > 0) {
+            bound = true
+            console.log('workspace picked: ' + candidate)
+            break
+          }
+        }
+      }
+    }
   } catch (error) { void error }
   if (bound === false) {
     console.log('MISS new-session bind (workspace may already be attached)')
@@ -383,6 +408,15 @@ try {
     await settle(400)
     await page.keyboard.press('Escape')
     await settle(300)
+    /* PLAIN click must NOT open the detail (v0.18.4: v0.18.3 updated the
+       comment but left props.onSelect(commit) on the click path, so single
+       clicks kept yanking the pane away — user report). */
+    await commitRows.nth(0).click()
+    await settle(800)
+    check(await page.locator('.dig-detail:visible').count() === 0,
+      'plain click on a commit does NOT open the detail')
+    check(await page.locator('.dig-history-scroll .dig-commit.dig-commit-selected').count() === 1,
+      'plain click single-replaces the picked set')
     /* DOUBLE-click opens the commit detail (v0.18.3 click model). */
     await commitRows.nth(0).dblclick()
     await settle(1200)

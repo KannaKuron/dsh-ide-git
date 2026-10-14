@@ -10747,8 +10747,13 @@ window.__ModuleLoader__.load({
           return
         }
         pickAnchor.current = commit.hash
-        setPicks((previous) => previous.size === 0 ? previous : new Set())
-        props.onSelect(commit)
+        /* Plain click only SELECTS (single-replace, the changes list's
+           model): the detail view moved to DOUBLE-click. v0.18.3 updated the
+           comment but left props.onSelect(commit) on this path, so single
+           clicks kept yanking the pane away (user report) — the call is gone
+           for real now; row highlight comes from the picked set, Enter is the
+           keyboard twin of the double-click. */
+        setPicks((previous) => previous.size === 1 && previous.has(commit.hash) === true ? previous : new Set([commit.hash]))
       }
       /* Ctrl+A selects the whole filtered list; everything else (Ctrl+C, Esc)
          belongs to the Panel-level handler that owns the picked set. */
@@ -11820,6 +11825,15 @@ window.__ModuleLoader__.load({
           event.preventDefault()
           copyValues(Array.from(pickedCommits))
           return
+        }
+        /* Enter = the keyboard twin of the double-click: open the picked
+           commit's detail. Exactly one pick — with several, the intent is
+           ambiguous, so Enter does nothing. */
+        if (event.key === 'Enter' && pickedCommits.size === 1) {
+          event.preventDefault()
+          const hash = pickedCommits.values().next().value
+          const commit = commits.find((entry) => entry.hash === hash)
+          if (commit !== undefined) { void selectCommit(commit); return }
         }
         if (event.key === 'Escape') setPickedCommits(new Set())
       }
