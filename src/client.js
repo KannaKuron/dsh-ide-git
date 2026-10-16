@@ -7762,6 +7762,55 @@ window.__ModuleLoader__.load({
       return index < 0 ? '' : filePath.slice(0, index)
     }
 
+    /* A REAL directory tree for the "by directory" grouping (v0.18.6): files
+       are inserted by path segments, then a folder that has no direct files
+       and exactly one child is COMPRESSED into that child ("a/b/c" as one
+       node, VS Code source-control style) — the flat per-directory heads the
+       user rejected rendered every folder of a chain side by side, so
+       `pkg/service` and `pkg/service/impl` looked like unrelated siblings.
+       Returns the compressed roots (sorted), every foldable node id (for
+       fold-all), the files sitting at the group root, and the two recursive
+       helpers the renderer needs. */
+    function buildDirForest(items, groupKey) {
+      const root = { dirs: new Map(), files: [], path: [] }
+      for (const item of items) {
+        const dir = dirName(item.path)
+        const parts = dir === '' ? [] : dir.split('/')
+        let node = root
+        for (const part of parts) {
+          let child = node.dirs.get(part)
+          if (child === undefined) {
+            child = { dirs: new Map(), files: [], path: node.path.concat([part]) }
+            node.dirs.set(part, child)
+          }
+          node = child
+        }
+        node.files.push(item)
+      }
+      const compress = (node) => {
+        let merged = node
+        while (merged.files.length === 0 && merged.dirs.size === 1) {
+          const only = merged.dirs.values().next().value
+          merged = { dirs: only.dirs, files: only.files, path: only.path }
+        }
+        return merged
+      }
+      const countOf = (node) => {
+        let total = node.files.length
+        for (const child of node.dirs.values()) total += countOf(child)
+        return total
+      }
+      const sortedChildren = (node) => Array.from(node.dirs.values()).sort((a, b) => a.path[a.path.length - 1].localeCompare(b.path[b.path.length - 1]))
+      const ids = []
+      const collect = (node) => {
+        ids.push(groupKey + '|' + node.path.join('/'))
+        for (const child of sortedChildren(node)) collect(child)
+      }
+      const roots = sortedChildren(root).map((child) => compress(child))
+      for (const node of roots) collect(node)
+      return { roots: roots, rootFiles: root.files, ids: ids, countOf: countOf, sortedChildren: sortedChildren }
+    }
+
     /* ============================== commit graph ============================== */
 
     function buildRows(commits) {
@@ -10155,8 +10204,12 @@ window.__ModuleLoader__.load({
       // stage/discard buttons below would silently do nothing (git needs -f).
       const readOnly = props.group === 'ignored'
       const status = readOnly ? 'I' : (raw === '' ? 'M' : raw.charAt(0))
+      /* Tree depth in dir-grouped mode (-1 = flat): every level under a
+         folder head indents one 12px step past the base 26px. */
+      const depth = typeof props.depth === 'number' ? props.depth : -1
       return E('div', {
-        className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : '') + (props.nested === true ? ' dig-row-nested' : ''),
+        className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : '') + (depth >= 0 ? ' dig-row-nested' : ''),
+        style: depth >= 0 ? { paddingLeft: (26 + depth * 12) + 'px' } : undefined,
         title: item.origPath === undefined ? item.path : item.origPath + ' → ' + item.path,
         /* The click is handled ONE level up (ChangesPanel): plain click only
            selects, DOUBLE-click opens the diff (v0.18.3 — one interaction model
@@ -10173,14 +10226,14 @@ window.__ModuleLoader__.load({
         // In dir-grouped mode the folder head already names the directory —
         // repeating the full path at the end of every nested row is what made
         // the tree read as a flat list (v0.18.5). Flat modes keep it.
-        props.nested === true ? null : E('span', { className: 'dig-row-sub dig-row-dir' }, item.path.slice(-1) === '/' ? '' : dirName(item.path)),
+        depth >= 0 ? null : E('span', { className: 'dig-row-sub dig-row-dir' }, item.path.slice(-1) === '/' ? '' : dirName(item.path)),
         item.additions > 0 ? E('span', { className: 'dig-stat-add' }, '+' + item.additions) : null,
         item.deletions > 0 ? E('span', { className: 'dig-stat-del' }, '-' + item.deletions) : null,
         readOnly ? null : (props.group === 'staged'
           ? E('button', { type: 'button', className: 'dig-mini', title: t('action.unstage'), onClick: (event) => { event.stopPropagation(); props.onUnstage(item) } }, E(Icon, { name: 'minus', size: 12 }))
           : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 }))),
         readOnly ? null : E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
-    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t && prev.selected === next.selected && prev.nested === next.nested)
+    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t && prev.selected === next.selected && prev.depth === next.depth)
 
     function ChangesPanel(props) {
       const t = props.t
@@ -10416,18 +10469,14 @@ window.__ModuleLoader__.load({
         setAmend(false)
         return true
       }
-      const entryRow = (key, item, nested) => E(ChangeRow, {
+      const entryRow = (key, item, depth) => E(ChangeRow, {
         key: key + ':' + item.path, item: item, group: key, t: t,
-        nested: nested === true,
+        depth: typeof depth === 'number' ? depth : -1,
         selected: selection.has(key + ':' + item.path) === true,
         onRowClick: handleRowClick,
         onDblClick: props.onDiff,
         onStage: props.onStage, onUnstage: props.onUnstage, onDiscard: props.onDiscard, onDiff: props.onDiff, onMenu: props.onChangeMenu,
       })
-      const folderOf = (item) => {
-        const dir = dirName(item.path)
-        return dir === '' ? t('changes.rootDir') : dir
-      }
       /* The "..." menu's sort orders (v0.15). 'git' keeps git's own status
          order; the others are pure client-side sorts of already-loaded
          entries — no extra git calls, no re-fetch. */
@@ -10455,29 +10504,48 @@ window.__ModuleLoader__.load({
             for (const item of sorted) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item) })
             return
           }
-          const folders = new Map()
-          for (const item of sorted) {
-            const name = folderOf(item)
-            if (folders.has(name) === false) folders.set(name, [])
-            folders.get(name).push(item)
-          }
-          for (const name of Array.from(folders.keys()).sort()) {
-            const id = key + '|' + name
+          const forest = buildDirForest(sorted, key)
+          const renderFolder = (node, depth) => {
+            const id = key + '|' + node.path.join('/')
             const open = foldedDirs[id] !== true
-            const list = folders.get(name)
             out.push({
               kind: 'folder', key: 'folder:' + id, h: ITEM_HEIGHTS.folder,
               node: E('button', {
                 type: 'button', className: 'dig-folder-head',
+                style: { paddingLeft: (4 + depth * 12) + 'px' },
                 onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
               },
                 E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
                 E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
-                E('span', { className: 'dig-folder-name' }, name),
-                E('span', { className: 'dig-count' }, String(list.length))),
+                E('span', { className: 'dig-folder-name' }, node.path.join('/')),
+                E('span', { className: 'dig-count' }, String(forest.countOf(node)))),
             })
-            if (open === true) for (const item of list) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item, true) })
+            if (open === true) {
+              /* VS Code order inside a folder: subfolders first (recursively,
+                 each indented one more level), then this folder's own files. */
+              for (const child of forest.sortedChildren(node)) renderFolder(child, depth + 1)
+              for (const item of sortedOf(node.files)) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item, depth) })
+            }
           }
+          /* Files sitting at the group ROOT get their own (root) head, sorted
+             first — the flat grouping used to give them a localized head too. */
+          if (forest.rootFiles.length > 0) {
+            const rootId = key + '|/'
+            const rootOpen = foldedDirs[rootId] !== true
+            out.push({
+              kind: 'folder', key: 'folder:' + rootId, h: ITEM_HEIGHTS.folder,
+              node: E('button', {
+                type: 'button', className: 'dig-folder-head',
+                onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [rootId]: previous[rootId] !== true })),
+              },
+                E('span', { className: 'dig-chevron' + (rootOpen ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+                E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
+                E('span', { className: 'dig-folder-name' }, t('changes.rootDir')),
+                E('span', { className: 'dig-count' }, String(forest.rootFiles.length))),
+            })
+            if (rootOpen === true) for (const item of sortedOf(forest.rootFiles)) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item, 0) })
+          }
+          for (const node of forest.roots) renderFolder(node, 0)
         }
         const emitGroup = (key, title, entries) => {
           if (entries.length === 0) return
@@ -12600,10 +12668,12 @@ window.__ModuleLoader__.load({
               if (changes !== null) {
                 const groups = [['conflicted', changes.conflicted], ['staged', changes.staged], ['unstaged', changes.unstaged], ['untracked', changes.untracked], ['ignored', changes.ignored === undefined ? [] : changes.ignored]]
                 for (const pair of groups) {
-                  for (const item of pair[1]) {
-                    const dir = dirName(item.path)
-                    next[pair[0] + '|' + (dir === '' ? t('changes.rootDir') : dir)] = true
-                  }
+                  /* Fold every node of the compressed tree — the ids come from
+                     the same builder the renderer uses, so single-chain nodes
+                     ("a/b/c") fold exactly where they render (v0.18.6). */
+                  const forest = buildDirForest(pair[1], pair[0])
+                  if (forest.rootFiles.length > 0) next[pair[0] + '|/'] = true
+                  for (const id of forest.ids) next[id] = true
                 }
               }
               setFoldedDirs(next)
@@ -13598,7 +13668,8 @@ window.__ModuleLoader__.load({
       '.dig-star-filled svg path{fill:currentColor}',
       // Rows nested under a dir-group folder head are indented and drop the
       // trailing directory repeat, so the grouping reads as a tree.
-      '.dig-row-nested{padding-left:26px}',
+      /* Nested rows indent inline (26px base + 12px per tree depth) — the CSS
+         class only marks them for tests/probes. */
       '.dig-graph{flex:none}',
       '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;width:54px;font-variant-numeric:tabular-nums;font-weight:500}',
       '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;width:96px;overflow:hidden;text-overflow:ellipsis;font-weight:500}',

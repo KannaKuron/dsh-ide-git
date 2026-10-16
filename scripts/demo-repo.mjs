@@ -207,6 +207,12 @@ git(['add', 'src/ui/toolbar.js'])
 appendFileSync(join(target, 'src/ui/list.js'), '\nexport function emptyState() {\n  return "还没有笔记"\n}\n')
 write('notes/scratch.md', '- 想一想要不要支持双链\n')
 write('docs/todo.md', '- [ ] 同步冲突提示\n')
+// 深层单链目录(v0.18.6 树形断言):lib/deep 都无直接文件且只有一个子目录,
+// dir 分组必须把它们压缩进一个 "lib/deep/nested" 组头,而不是三个并列头。
+write('lib/deep/nested/leaf.js', 'export const leaf = true\n')
+// 分叉目录(v0.18.6):docs 既有直接文件又有子目录,必须保持两层树
+// (docs → docs/guide),让嵌套行出现两种缩进。
+write('docs/guide/intro.md', '# 指南\n\n从这里开始。\n')
 
 // 6) 一个被忽略的目录与文件：「显示忽略的文件」要有东西可显示,而
 //    ls-files --directory 会把整个 dist/ 收成一条,不会淹没列表。

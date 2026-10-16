@@ -475,9 +475,10 @@ try {
   await page.keyboard.press('Escape')
   await settle(300)
 
-  /* ---- 9d. dir grouping reads as a tree (v0.18.5) ----
-     Rows under a folder head are indented (dig-row-nested) and no longer
-     repeat the directory at the end of every row. */
+  /* ---- 9d. dir grouping reads as a REAL tree (v0.18.6) ----
+     Rows under a folder head are indented, no longer repeat the directory,
+     heads nest (src → src/ui), and a single chain with no direct files
+     compresses into ONE head. */
   const moreBtn = page.locator('.dig-changes-head button[data-action="more"]')
   await moreBtn.click({ timeout: 4000 })
   await settle(500)
@@ -487,6 +488,18 @@ try {
     await settle(900)
     const nested = await page.locator('.dig-changes-list .dig-row-nested').count()
     check(nested >= 1, 'dir grouping nests rows under folder heads (saw ' + nested + ')')
+    const headNames = await page.locator('.dig-changes-list .dig-folder-head .dig-folder-name').allTextContents()
+    /* "src" only ever holds a subfolder in the demo repo, so it compresses
+       into "src/ui" (single-chain rule); "docs" has a direct file AND a child
+       and must keep BOTH levels. */
+    check(headNames.indexOf('src/ui') >= 0 && headNames.indexOf('src') < 0,
+      'file-less single-child folders compress (src → src/ui; saw ' + JSON.stringify(headNames) + ')')
+    check(headNames.indexOf('docs') >= 0 && headNames.indexOf('docs/guide') >= 0,
+      'forked folders keep both tree levels (docs → docs/guide; saw ' + JSON.stringify(headNames) + ')')
+    check(headNames.indexOf('lib/deep/nested') >= 0 && headNames.indexOf('lib') < 0 && headNames.indexOf('deep') < 0,
+      'single-chain folders compress into one head (saw ' + JSON.stringify(headNames) + ')')
+    const indents = await page.locator('.dig-changes-list .dig-row-nested').evaluateAll((rows) => Array.from(new Set(rows.map((el) => getComputedStyle(el).paddingLeft))))
+    check(indents.length >= 2, 'tree rows indent by depth (saw ' + JSON.stringify(indents) + ')')
     await moreBtn.click({ timeout: 4000 })
     await settle(500)
     await page.getByRole('button', { name: /平铺|Flat list/ }).first().click({ timeout: 4000 })
