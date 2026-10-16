@@ -1130,9 +1130,16 @@ async function fetch(payload) {
   const root = await repoRootOf(cwd, payload)
   const args = ['fetch']
   if (typeof payload.remote === 'string' && payload.remote.trim() !== '') args.push(requireRef(payload.remote, 'remote'))
+  // A refspec (`main:main`) fast-forwards a NON-checked-out branch in place —
+  // this is how "pull a branch that is not HEAD" works without switching to
+  // it (git pull would merge into HEAD instead). git refuses a non-ff update
+  // here, which is exactly the safety we want.
+  if (typeof payload.branch === 'string' && payload.branch.trim() !== '') args.push(requireRef(payload.branch, 'refspec'))
   if (payload.all === true) args.push('--all')
-  if (payload.prune !== false) args.push('--prune')
-  args.push('--tags')
+  // prune/--tags serve the repo-wide fetch; a refspec fetch is deliberately
+  // narrow and must not drag every tag over the wire.
+  if (payload.branch === undefined && payload.prune !== false) args.push('--prune')
+  if (payload.branch === undefined) args.push('--tags')
   const out = await git(root, args, { timeoutMs: NETWORK_TIMEOUT_MS })
   return { output: (out + '\n').trim() }
 }

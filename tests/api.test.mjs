@@ -361,6 +361,41 @@ test('multi-select batch: cherry-pick expands hashes to one git call', async () 
   assert.equal(injected.body.error.code, 'bad-request')
 })
 
+test('fetch accepts a refspec and fast-forwards a NON-checked-out branch (v0.18.5)', async () => {
+  // A bare throwaway origin makes "pull a branch that is not HEAD" testable:
+  // git pull would merge into HEAD, so the rail's batch pull uses
+  // `fetch origin dev:dev` to fast-forward the local branch in place.
+  const originRoot = mkdtempSync(join(tmpdir(), 'dsh-ide-git-origin-'))
+  const originPath = join(originRoot, 'origin.git')
+  execFileSync('git', ['init', '-q', '--bare', '-b', 'main', originPath])
+  execFileSync('git', ['remote', 'add', 'origin', originPath], { cwd: repo })
+  git('push', '-q', 'origin', 'main')
+  git('branch', 'pullme', 'HEAD')
+  git('push', '-q', 'origin', 'pullme')
+  const stale = git('rev-parse', 'pullme').trim()
+  // Advance origin/pullme past the local branch; HEAD stays on main.
+  git('commit', '-q', '--allow-empty', '-m', 'ahead on origin')
+  git('push', '-q', 'origin', 'main:pullme')
+  assert.notEqual(git('rev-parse', 'origin/pullme').trim(), stale)
+  const fetched = await call('fetch', { cwd: repo, remote: 'origin', branch: 'pullme:pullme' })
+  assert.equal(fetched.status, 200)
+  assert.equal(git('rev-parse', 'pullme').trim(), git('rev-parse', 'origin/pullme').trim())
+  // A NON-fast-forward target is refused by git (surfaces as git-failed) —
+  // that refusal is the safety property the rail's batch pull relies on.
+  const tree = git('rev-parse', 'HEAD^{tree}').trim()
+  const diverged = execFileSync('git', ['commit-tree', tree, '-m', 'diverged'], { cwd: repo, encoding: 'utf8' }).trim()
+  execFileSync('git', ['update-ref', 'refs/heads/pullme', diverged], { cwd: repo })
+  const rejected = await call('fetch', { cwd: repo, remote: 'origin', branch: 'pullme:pullme' })
+  assert.equal(rejected.status, 409)
+  assert.equal(rejected.body.error.code, 'git-failed')
+  // Injection through the refspec hits the same guard as every other ref.
+  const injected = await call('fetch', { cwd: repo, remote: 'origin', branch: 'main; rm -rf /' })
+  assert.equal(injected.body.error.code, 'bad-request')
+  execFileSync('git', ['branch', '-q', '-D', 'pullme'], { cwd: repo })
+  execFileSync('git', ['remote', 'remove', 'origin'], { cwd: repo })
+  rmSync(originRoot, { recursive: true, force: true })
+})
+
 test('the checked-out branch and protected branches are guarded', async () => {
   const current = await call('branchDelete', { cwd: repo, name: 'main', confirm: true })
   assert.equal(current.status, 409)

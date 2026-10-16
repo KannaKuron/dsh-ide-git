@@ -426,6 +426,76 @@ try {
     await settle(800)
     check(await page.locator('.dig-detail:visible').count() === 0, 'detail closes back to history')
   }
+
+  /* ---- 9b. selection-aware rail actions + favorite star (v0.18.5) ----
+     Picking a branch flips the rail buttons onto THE PICKED ref ("拉取选中的
+     1 个分支"), and the favorite button stars that branch in BOTH its home
+     section and the favorites section (solid amber star). */
+  const treeRows = page.locator('.dig-tree .dig-row-local:not(.dig-row-head)')
+  const treeCount = await treeRows.count()
+  if (treeCount >= 1) {
+    await treeRows.nth(0).click({ modifiers: ['Meta'] })
+    await settle(500)
+    const pullTitle = await page.locator('button[data-action="pull"]').getAttribute('title')
+    check(pullTitle !== null && /选中的 1 个分支|picked branch/.test(pullTitle) === true,
+      'picked branch re-targets the rail pull button (' + pullTitle + ')')
+    const delTitle = await page.locator('button[data-action="delete"]').getAttribute('title')
+    check(delTitle !== null && /选中的 1 个引用|picked ref/.test(delTitle) === true,
+      'picked branch re-targets the rail delete button (' + delTitle + ')')
+    /* Favorite the picked branch: amber solid star in the home section AND
+       the favorites section (that was the user complaint — the row kept its
+       hollow kind star and only a new section appeared). */
+    await page.locator('button[data-action="favorite"]').click({ timeout: 4000 })
+    await settle(1200)
+    const starred = await page.locator('.dig-tree .dig-star-filled').count()
+    check(starred >= 2, 'favorite rail action stars the picked branch in BOTH sections (saw ' + starred + ')')
+    /* Toggle it back off (also keeps repeated probe runs idempotent). */
+    await page.locator('button[data-action="favorite"]').click({ timeout: 4000 })
+    await settle(1200)
+    check(await page.locator('.dig-tree .dig-star-filled').count() === 0, 'favorite rail action toggles back off')
+    await page.locator('.dig-tree').focus()
+    await page.keyboard.press('Escape')
+    await settle(400)
+    const pullReset = await page.locator('button[data-action="pull"]').getAttribute('title')
+    check(pullReset !== null && /选中的/.test(pullReset) === false,
+      'clearing the selection restores the HEAD-oriented rail labels (' + pullReset + ')')
+  } else {
+    check(false, 'tree offers a local branch for the rail-selection assertions')
+  }
+
+  /* ---- 9c. selected rows are actually visible (v0.18.5) ----
+     The old selected background equalled the hover background — invisible.
+     The accent edge (inset box-shadow) must now differ from plain rows. */
+  await changeRows().nth(0).click()
+  await settle(400)
+  const selShadow = await page.locator('.dig-changes-list .dig-row-file.dig-row-selected').first()
+    .evaluate((el) => getComputedStyle(el).boxShadow)
+  check(selShadow !== 'none' && selShadow !== '', 'selected change row wears the accent edge (' + selShadow + ')')
+  await page.locator('.dig-changes-list').focus()
+  await page.keyboard.press('Escape')
+  await settle(300)
+
+  /* ---- 9d. dir grouping reads as a tree (v0.18.5) ----
+     Rows under a folder head are indented (dig-row-nested) and no longer
+     repeat the directory at the end of every row. */
+  const moreBtn = page.locator('.dig-changes-head button[data-action="more"]')
+  await moreBtn.click({ timeout: 4000 })
+  await settle(500)
+  const toDir = page.getByRole('button', { name: /按目录|By directory/ }).first()
+  if (await toDir.count() > 0) {
+    await toDir.click({ timeout: 4000 })
+    await settle(900)
+    const nested = await page.locator('.dig-changes-list .dig-row-nested').count()
+    check(nested >= 1, 'dir grouping nests rows under folder heads (saw ' + nested + ')')
+    await moreBtn.click({ timeout: 4000 })
+    await settle(500)
+    await page.getByRole('button', { name: /平铺|Flat list/ }).first().click({ timeout: 4000 })
+    await settle(900)
+    check(await page.locator('.dig-changes-list .dig-row-nested').count() === 0, 'flat grouping drops the nesting')
+  } else {
+    check(false, 'group-by menu offers the dir toggle')
+  }
+
   /* ---- 10. DOUBLE-click opens the diff (v0.18.3 click model) ----
      The diff lands in the external better-sidebar preview tab when the base
      offers the seat channel (the modern reality), or the in-panel diff pane

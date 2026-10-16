@@ -100,6 +100,7 @@ window.__ModuleLoader__.load({
       'branches.tags': '标签',
       'branches.head': 'HEAD(当前分支)',
       'branches.favorites': '收藏',
+      'branches.starHint': "已收藏",
       'branches.pickHint': '单击选中,双击签出',
       'branches.worktree': '已在另一工作区检出',
       'action.stash': '贮藏',
@@ -273,6 +274,11 @@ window.__ModuleLoader__.load({
       'toolbar.newBranch': '新建分支',
       'toolbar.fetch': '抓取(Fetch)',
       'toolbar.pull': '拉取(Pull)',
+      'toolbar.pullPicked': "拉取选中的 {n} 个分支",
+      'toolbar.fetchPicked': "抓取选中的 {n} 个引用",
+      'toolbar.pushPicked': "推送选中的 {n} 个分支",
+      'toolbar.checkoutPicked': "签出选中的分支",
+      'toolbar.deletePicked': "删除选中的 {n} 个引用",
       'toolbar.push': '推送(Push)',
       'toolbar.tree': '分支栏',
       'rail.more': '更多操作',
@@ -383,6 +389,7 @@ window.__ModuleLoader__.load({
       'counts.untracked': '未跟踪 {n}',
       'counts.conflicted': '冲突 {n}',
       'push.confirm': '将 {branch} 推送到 {upstream}?',
+      'push.confirmMany': "将推送 {n} 个分支:{names}。确定?",
       'delete.confirm': '删除分支 {name}?删除后浮窗里可以撤回(未合并的分支 git 会拒绝删除)。',
       'discard.confirm': '丢弃 {path} 的更改?工作区内容会被覆盖,丢弃后浮窗里可以撤回。',
       'resetHard.confirm': '硬重置到 {hash}?未提交的更改会丢失。',
@@ -408,6 +415,7 @@ window.__ModuleLoader__.load({
       'branches.tags': 'Tags',
       'branches.head': 'HEAD (current branch)',
       'branches.favorites': 'Favorites',
+      'branches.starHint': "Favorited",
       'branches.pickHint': 'Click to select, double-click to check out',
       'branches.worktree': 'Checked out in another working tree',
       'action.stash': 'Stash',
@@ -581,6 +589,11 @@ window.__ModuleLoader__.load({
       'toolbar.newBranch': 'New branch',
       'toolbar.fetch': 'Fetch',
       'toolbar.pull': 'Pull',
+      'toolbar.pullPicked': "Pull {n} picked branch(es)",
+      'toolbar.fetchPicked': "Fetch {n} picked ref(s)",
+      'toolbar.pushPicked': "Push {n} picked branch(es)",
+      'toolbar.checkoutPicked': "Check out the picked branch",
+      'toolbar.deletePicked': "Delete {n} picked ref(s)",
       'toolbar.push': 'Push',
       'toolbar.tree': 'Branch pane',
       'rail.more': 'More actions',
@@ -691,6 +704,7 @@ window.__ModuleLoader__.load({
       'counts.untracked': 'Untracked {n}',
       'counts.conflicted': 'Conflicts {n}',
       'push.confirm': 'Push {branch} to {upstream}?',
+      'push.confirmMany': "Push {n} branch(es): {names}?",
       'delete.confirm': 'Delete branch {name}? A toast will offer to bring it back (git still refuses unmerged branches).',
       'discard.confirm': 'Discard changes in {path}? The working-tree content is overwritten — a toast will offer to bring it back.',
       'resetHard.confirm': 'Hard reset to {hash}? Uncommitted changes are lost.',
@@ -724,6 +738,7 @@ window.__ModuleLoader__.load({
         'branches.tags': '標籤',
         'branches.head': 'HEAD(當前分支)',
         'branches.favorites': '我的最愛',
+        'branches.starHint': "已收藏",
         'branches.pickHint': '單擊選取,雙擊簽出',
         'branches.worktree': '已喺另一個工作區簽出',
         'action.stash': '貯藏',
@@ -897,6 +912,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
+        'toolbar.pullPicked': "拉取選中的 {n} 個分支",
+        'toolbar.fetchPicked': "抓取選中的 {n} 個引用",
+        'toolbar.pushPicked': "推送選中的 {n} 個分支",
+        'toolbar.checkoutPicked': "簽出選中的分支",
+        'toolbar.deletePicked': "刪除選中的 {n} 個引用",
         'toolbar.push': '推送',
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
@@ -1007,6 +1027,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': '未追蹤 {n}',
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
+        'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
         'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(git 仍然會拒絕未合併嘅分支)。',
         'discard.confirm': '丟棄 {path} 嘅變更?工作區內容會被覆寫 —— 之後可以喺提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
@@ -1032,6 +1053,7 @@ window.__ModuleLoader__.load({
         'branches.tags': '標籤',
         'branches.head': 'HEAD(目前分支)',
         'branches.favorites': '我的最愛',
+        'branches.starHint': "已收藏",
         'branches.pickHint': '單擊選取,雙擊簽出',
         'branches.worktree': '已在另一個工作區簽出',
         'action.stash': '暫存擱置',
@@ -1205,6 +1227,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
+        'toolbar.pullPicked': "拉取選中的 {n} 個分支",
+        'toolbar.fetchPicked': "抓取選中的 {n} 個引用",
+        'toolbar.pushPicked': "推送選中的 {n} 個分支",
+        'toolbar.checkoutPicked': "簽出選中的分支",
+        'toolbar.deletePicked': "刪除選中的 {n} 個引用",
         'toolbar.push': '推送',
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
@@ -1315,6 +1342,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': '未追蹤 {n}',
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
+        'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
         'delete.confirm': '刪除分支 {name}?之後可從提示條撤回(git 仍會拒絕未合併的分支)。',
         'discard.confirm': '丟棄 {path} 的變更?工作區內容會被覆寫 —— 之後可從提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交的變更會遺失。',
@@ -1340,6 +1368,7 @@ window.__ModuleLoader__.load({
         'branches.tags': '標籤',
         'branches.head': 'HEAD(當前分支)',
         'branches.favorites': '我的最愛',
+        'branches.starHint': "已收藏",
         'branches.pickHint': '單擊選取,雙擊簽出',
         'branches.worktree': '已喺另一個工作區簽出',
         'action.stash': '貯藏',
@@ -1513,6 +1542,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': '新建分支',
         'toolbar.fetch': '抓取',
         'toolbar.pull': '拉取',
+        'toolbar.pullPicked': "拉取選中的 {n} 個分支",
+        'toolbar.fetchPicked': "抓取選中的 {n} 個引用",
+        'toolbar.pushPicked': "推送選中的 {n} 個分支",
+        'toolbar.checkoutPicked': "簽出選中的分支",
+        'toolbar.deletePicked': "刪除選中的 {n} 個引用",
         'toolbar.push': '推送',
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
@@ -1623,6 +1657,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': '未追蹤 {n}',
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
+        'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
         'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(git 仍然會拒絕未合併嘅分支)。',
         'discard.confirm': '丟棄 {path} 嘅變更?工作區內容會被覆寫 —— 之後可以喺提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
@@ -1648,6 +1683,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'タグ',
         'branches.head': 'HEAD(現在のブランチ)',
         'branches.favorites': 'お気に入り',
+        'branches.starHint': "お気に入り済み",
         'branches.pickHint': 'クリックで選択、ダブルクリックでチェックアウト',
         'branches.worktree': '別のワークツリーでチェックアウト済み',
         'action.stash': 'スタッシュ',
@@ -1821,6 +1857,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': '新しいブランチ',
         'toolbar.fetch': 'フェッチ',
         'toolbar.pull': 'プル',
+        'toolbar.pullPicked': "選択した {n} 個のブランチをプル",
+        'toolbar.fetchPicked': "選択した {n} 個の参照をフェッチ",
+        'toolbar.pushPicked': "選択した {n} 個のブランチをプッシュ",
+        'toolbar.checkoutPicked': "選択したブランチをチェックアウト",
+        'toolbar.deletePicked': "選択した {n} 個の参照を削除",
         'toolbar.push': 'プッシュ',
         'toolbar.tree': 'ブランチペイン',
         'rail.more': 'その他の操作',
@@ -1931,6 +1972,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': '未追跡 {n}',
         'counts.conflicted': '競合 {n}',
         'push.confirm': '{branch} を {upstream} にプッシュしますか?',
+        'push.confirmMany': "{n} 個のブランチをプッシュします:{names}。よろしいですか?",
         'delete.confirm': 'ブランチ {name} を削除しますか?その後トーストから復元できます(git は未マージのブランチを引き続き拒否します)。',
         'discard.confirm': '{path} の変更を破棄しますか?ワークツリーの内容が上書きされます —— その後トーストから復元できます。',
         'resetHard.confirm': '{hash} にハードリセットしますか?未コミットの変更は失われます。',
@@ -1956,6 +1998,7 @@ window.__ModuleLoader__.load({
         'branches.tags': '태그',
         'branches.head': 'HEAD(현재 브랜치)',
         'branches.favorites': '즐겨찾기',
+        'branches.starHint': "즐겨찾기",
         'branches.pickHint': '클릭하여 선택, 더블클릭하여 체크아웃',
         'branches.worktree': '다른 워크트리에서 체크아웃됨',
         'action.stash': '스태시',
@@ -2129,6 +2172,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': '새 브랜치',
         'toolbar.fetch': '페치',
         'toolbar.pull': '풀',
+        'toolbar.pullPicked': "선택한 {n}개 브랜치 가져오기",
+        'toolbar.fetchPicked': "선택한 {n}개 레퍼런스 페치",
+        'toolbar.pushPicked': "선택한 {n}개 브랜치 푸시",
+        'toolbar.checkoutPicked': "선택한 브랜치 체크아웃",
+        'toolbar.deletePicked': "선택한 {n}개 레퍼런스 삭제",
         'toolbar.push': '푸시',
         'toolbar.tree': '브랜치 창',
         'rail.more': '추가 작업',
@@ -2239,6 +2287,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': '추적되지 않음 {n}',
         'counts.conflicted': '충돌 {n}',
         'push.confirm': '{branch}을(를) {upstream}에 푸시할까요?',
+        'push.confirmMany': "{n}개 브랜치를 푸시합니다: {names}. 확입니까?",
         'delete.confirm': '브랜치 {name}을(를) 삭제할까요? 이후 토스트에서 복원할 수 있습니다(git은 병합되지 않은 브랜치를 계속 거부합니다).',
         'discard.confirm': '{path}의 변경 사항을 버릴까요? 워크트리 내용이 덮어써집니다 —— 이후 토스트에서 복원할 수 있습니다.',
         'resetHard.confirm': '{hash}로 하드 리셋할까요? 커밋하지 않은 변경 사항은 사라집니다.',
@@ -2264,6 +2313,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tags',
         'branches.head': 'HEAD (aktueller Branch)',
         'branches.favorites': 'Favoriten',
+        'branches.starHint': "Favorit",
         'branches.pickHint': 'Klicken zum Auswählen, doppelklicken zum Auschecken',
         'branches.worktree': 'In einem anderen Arbeitsbaum ausgecheckt',
         'action.stash': 'Stash',
@@ -2437,6 +2487,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Neuer Branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "{n} ausgewählte Branch(es) pullen",
+        'toolbar.fetchPicked': "{n} ausgewählte Ref(s) fetchen",
+        'toolbar.pushPicked': "{n} ausgewählte Branch(es) pushen",
+        'toolbar.checkoutPicked': "Ausgewählten Branch auschecken",
+        'toolbar.deletePicked': "{n} ausgewählte Ref(s) löschen",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Branch-Bereich',
         'rail.more': 'Weitere Aktionen',
@@ -2547,6 +2602,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Nicht verfolgt {n}',
         'counts.conflicted': 'Konflikte {n}',
         'push.confirm': '{branch} nach {upstream} pushen?',
+        'push.confirmMany': "{n} Branch(es) pushen: {names}?",
         'delete.confirm': 'Branch {name} löschen? Ein Hinweis kann ihn danach zurückholen (git verweigert weiterhin nicht gemergte Branches).',
         'discard.confirm': 'Änderungen in {path} verwerfen? Der Arbeitsbaum wird überschrieben —— ein Hinweis kann sie danach zurückholen.',
         'resetHard.confirm': 'Hart auf {hash} zurücksetzen? Nicht committete Änderungen gehen verloren.',
@@ -2572,6 +2628,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Étiquettes',
         'branches.head': 'HEAD (branche courante)',
         'branches.favorites': 'Favoris',
+        'branches.starHint': "Favori",
         'branches.pickHint': 'Cliquer pour sélectionner, double-cliquer pour extraire',
         'branches.worktree': 'Extraite dans un autre arbre de travail',
         'action.stash': 'Remisage',
@@ -2745,6 +2802,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nouvelle branche',
         'toolbar.fetch': 'Récupérer',
         'toolbar.pull': 'Tirer',
+        'toolbar.pullPicked': "Tirer {n} branche(s) sélectionnée(s)",
+        'toolbar.fetchPicked': "Récupérer {n} réf(s) sélectionnée(s)",
+        'toolbar.pushPicked': "Pousser {n} branche(s) sélectionnée(s)",
+        'toolbar.checkoutPicked': "Extraire la branche sélectionnée",
+        'toolbar.deletePicked': "Supprimer {n} réf(s) sélectionnée(s)",
         'toolbar.push': 'Pousser',
         'toolbar.tree': 'Volet des branches',
         'rail.more': 'Plus d\'actions',
@@ -2855,6 +2917,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Non suivi {n}',
         'counts.conflicted': 'Conflits {n}',
         'push.confirm': 'Pousser {branch} vers {upstream} ?',
+        'push.confirmMany': "Pousser {n} branche(s) : {names} ?",
         'delete.confirm': 'Supprimer la branche {name} ? Une notification peut ensuite la rétablir (git refuse toujours les branches non fusionnées).',
         'discard.confirm': 'Abandonner les modifications de {path} ? Le contenu de l’arbre de travail est écrasé —— une notification peut ensuite le rétablir.',
         'resetHard.confirm': 'Réinitialisation dure sur {hash} ? Les modifications non validées sont perdues.',
@@ -2880,6 +2943,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Теги',
         'branches.head': 'HEAD (текущая ветка)',
         'branches.favorites': 'Избранное',
+        'branches.starHint': "В избранном",
         'branches.pickHint': 'Щёлкните для выбора, двойной щелчок — переключение',
         'branches.worktree': 'Уже развёрнута в другом рабочем дереве',
         'action.stash': 'Отложить',
@@ -3053,6 +3117,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Новая ветка',
         'toolbar.fetch': 'Получить',
         'toolbar.pull': 'Забрать',
+        'toolbar.pullPicked': "Забрать выбранные ветки ({n})",
+        'toolbar.fetchPicked': "Подтянуть выбранные ссылки ({n})",
+        'toolbar.pushPicked': "Отправить выбранные ветки ({n})",
+        'toolbar.checkoutPicked': "Перейти на выбранную ветку",
+        'toolbar.deletePicked': "Удалить выбранные ссылки ({n})",
         'toolbar.push': 'Отправить',
         'toolbar.tree': 'Панель веток',
         'rail.more': 'Другие действия',
@@ -3163,6 +3232,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Не отслеживается {n}',
         'counts.conflicted': 'Конфликты {n}',
         'push.confirm': 'Отправить {branch} в {upstream}?',
+        'push.confirmMany': "Отправить ветки ({n}): {names}?",
         'delete.confirm': 'Удалить ветку {name}? Уведомление затем сможет её вернуть (git по-прежнему откажет для несмёрженных веток).',
         'discard.confirm': 'Отменить изменения в {path}? Содержимое рабочего дерева будет перезаписано —— уведомление затем сможет его вернуть.',
         'resetHard.confirm': 'Жёсткий сброс на {hash}? Незакоммиченные изменения будут потеряны.',
@@ -3188,6 +3258,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tags',
         'branches.head': 'HEAD (branch atual)',
         'branches.favorites': 'Favoritas',
+        'branches.starHint': "Favorito",
         'branches.pickHint': 'Clique para selecionar, clique duplo para fazer checkout',
         'branches.worktree': 'Já em checkout em outra árvore de trabalho',
         'action.stash': 'Stash',
@@ -3361,6 +3432,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nova branch',
         'toolbar.fetch': 'Buscar',
         'toolbar.pull': 'Puxar',
+        'toolbar.pullPicked': "Puxar {n} branch(es) selecionado(s)",
+        'toolbar.fetchPicked': "Buscar {n} ref(s) selecionada(s)",
+        'toolbar.pushPicked': "Enviar {n} branch(es) selecionado(s)",
+        'toolbar.checkoutPicked': "Checkout do branch selecionado",
+        'toolbar.deletePicked': "Excluir {n} ref(s) selecionada(s)",
         'toolbar.push': 'Enviar',
         'toolbar.tree': 'Painel de branches',
         'rail.more': 'Mais ações',
@@ -3471,6 +3547,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Não rastreado {n}',
         'counts.conflicted': 'Conflitos {n}',
         'push.confirm': 'Enviar {branch} para {upstream}?',
+        'push.confirmMany': "Enviar {n} branch(es): {names}?",
         'delete.confirm': 'Excluir a branch {name}? Um aviso ainda poderá trazê-la de volta (o git continua recusando branches não mescladas).',
         'discard.confirm': 'Descartar as alterações em {path}? O conteúdo da árvore de trabalho será sobrescrito —— um aviso ainda poderá trazê-lo de volta.',
         'resetHard.confirm': 'Redefinição forçada para {hash}? Alterações não commitadas serão perdidas.',
@@ -3496,6 +3573,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tag',
         'branches.head': 'HEAD (branch corrente)',
         'branches.favorites': 'Preferiti',
+        'branches.starHint': "Preferito",
         'branches.pickHint': 'Clic per selezionare, doppio clic per fare checkout',
         'branches.worktree': 'Già in checkout in un altro albero di lavoro',
         'action.stash': 'Stash',
@@ -3669,6 +3747,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nuovo branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Esegui pull di {n} branch selezionati",
+        'toolbar.fetchPicked': "Esegui fetch di {n} ref selezionati",
+        'toolbar.pushPicked': "Esegui push di {n} branch selezionati",
+        'toolbar.checkoutPicked': "Checkout del branch selezionato",
+        'toolbar.deletePicked': "Elimina {n} ref selezionati",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Riquadro dei branch',
         'rail.more': 'Altre azioni',
@@ -3779,6 +3862,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Non tracciati {n}',
         'counts.conflicted': 'Conflitti {n}',
         'push.confirm': 'Inviare {branch} a {upstream}?',
+        'push.confirmMany': "Eseguire il push di {n} branch: {names}?",
         'delete.confirm': 'Eliminare il branch {name}? Un avviso potrà comunque riportarlo indietro (git continua a rifiutare i branch non uniti).',
         'discard.confirm': 'Scartare le modifiche in {path}? Il contenuto dell’albero di lavoro viene sovrascritto —— un avviso potrà comunque riportarlo indietro.',
         'resetHard.confirm': 'Reset forzato a {hash}? Le modifiche non committate andranno perse.',
@@ -3804,6 +3888,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tags',
         'branches.head': 'HEAD (huidige branch)',
         'branches.favorites': 'Favorieten',
+        'branches.starHint': "Favoriet",
         'branches.pickHint': 'Klik om te selecteren, dubbelklik om uit te checken',
         'branches.worktree': 'Al uitgecheckt in een andere werkboom',
         'action.stash': 'Stash',
@@ -3977,6 +4062,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nieuwe branch',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "{n} geselecteerde branch(es) pullen",
+        'toolbar.fetchPicked': "{n} geselecteerde ref(s) fetchen",
+        'toolbar.pushPicked': "{n} geselecteerde branch(es) pushen",
+        'toolbar.checkoutPicked': "Geselecteerde branch uitchecken",
+        'toolbar.deletePicked': "{n} geselecteerde ref(s) verwijderen",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Branchpaneel',
         'rail.more': 'Meer acties',
@@ -4087,6 +4177,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Niet gevolgd {n}',
         'counts.conflicted': 'Conflicten {n}',
         'push.confirm': '{branch} naar {upstream} pushen?',
+        'push.confirmMany': "{n} branch(es) pushen: {names}?",
         'delete.confirm': 'Branch {name} verwijderen? Een melding kan hem daarna nog terugbrengen (git weigert nog steeds niet-samengevoegde branches).',
         'discard.confirm': 'Wijzigingen in {path} weggooien? De inhoud van de werkboom wordt overschreven —— een melding kan die daarna nog terugbrengen.',
         'resetHard.confirm': 'Hard resetten naar {hash}? Niet-gecommitte wijzigingen gaan verloren.',
@@ -4112,6 +4203,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tagi',
         'branches.head': 'HEAD (bieżąca gałąź)',
         'branches.favorites': 'Ulubione',
+        'branches.starHint': "Ulubione",
         'branches.pickHint': 'Kliknij, aby wybrać; kliknij dwukrotnie, aby przełączyć',
         'branches.worktree': 'Już wybrana w innym drzewie roboczym',
         'action.stash': 'Schowek',
@@ -4285,6 +4377,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nowa gałąź',
         'toolbar.fetch': 'Pobierz',
         'toolbar.pull': 'Ściągnij',
+        'toolbar.pullPicked': "Pobierz wybrane gałęzie ({n})",
+        'toolbar.fetchPicked': "Ściągnij wybrane referencje ({n})",
+        'toolbar.pushPicked': "Wyślij wybrane gałęzie ({n})",
+        'toolbar.checkoutPicked': "Przełącz na wybraną gałąź",
+        'toolbar.deletePicked': "Usuń wybrane referencje ({n})",
         'toolbar.push': 'Wypchnij',
         'toolbar.tree': 'Panel gałęzi',
         'rail.more': 'Więcej działań',
@@ -4395,6 +4492,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Nieśledzone {n}',
         'counts.conflicted': 'Konflikty {n}',
         'push.confirm': 'Wypchnąć {branch} do {upstream}?',
+        'push.confirmMany': "Wysłać gałęzie ({n}): {names}?",
         'delete.confirm': 'Usunąć gałąź {name}? Powiadomienie może ją potem przywrócić (git nadal odmawia dla niescalonych gałęzi).',
         'discard.confirm': 'Odrzucić zmiany w {path}? Zawartość drzewa roboczego zostanie nadpisana —— powiadomienie może ją potem przywrócić.',
         'resetHard.confirm': 'Twarde przywrócenie do {hash}? Niezapisane zmiany przepadną.',
@@ -4420,6 +4518,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Taggar',
         'branches.head': 'HEAD (aktuell gren)',
         'branches.favorites': 'Favoriter',
+        'branches.starHint': "Favorit",
         'branches.pickHint': 'Klicka för att välja, dubbelklicka för att checka ut',
         'branches.worktree': 'Redan utcheckad i ett annat arbetsträd',
         'action.stash': 'Stash',
@@ -4593,6 +4692,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Ny gren',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Pulla {n} valda grenar",
+        'toolbar.fetchPicked': "Fetcha {n} valda referenser",
+        'toolbar.pushPicked': "Pusha {n} valda grenar",
+        'toolbar.checkoutPicked': "Checka ut vald gren",
+        'toolbar.deletePicked': "Ta bort {n} valda referenser",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Grenpanel',
         'rail.more': 'Fler åtgärder',
@@ -4703,6 +4807,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Ospårade {n}',
         'counts.conflicted': 'Konflikter {n}',
         'push.confirm': 'Pusha {branch} till {upstream}?',
+        'push.confirmMany': "Pusha {n} gren(ar): {names}?",
         'delete.confirm': 'Ta bort grenen {name}? En avisering kan sedan fortfarande återställa den (git nekar fortfarande till ej sammanfogade grenar).',
         'discard.confirm': 'Förkasta ändringar i {path}? Arbetsträdets innehåll skrivs över —— en avisering kan sedan fortfarande återställa det.',
         'resetHard.confirm': 'Hård återställning till {hash}? Ej committade ändringar går förlorade.',
@@ -4728,6 +4833,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Etiketler',
         'branches.head': 'HEAD (geçerli dal)',
         'branches.favorites': 'Sık kullanılanlar',
+        'branches.starHint': "Favori",
         'branches.pickHint': 'Seçmek için tıklayın, çıkarmak için çift tıklayın',
         'branches.worktree': 'Başka bir çalışma ağacında çıkarılmış',
         'action.stash': 'Saklama',
@@ -4901,6 +5007,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Yeni dal',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Seçilen {n} dalı çek",
+        'toolbar.fetchPicked': "Seçilen {n} referansı getir",
+        'toolbar.pushPicked': "Seçilen {n} dalı gönder",
+        'toolbar.checkoutPicked': "Seçilen dala geç",
+        'toolbar.deletePicked': "Seçilen {n} referansı sil",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Dal paneli',
         'rail.more': 'Diğer eylemler',
@@ -5011,6 +5122,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'İzlenmeyen {n}',
         'counts.conflicted': 'Çakışmalar {n}',
         'push.confirm': '{branch} dalı {upstream} deposuna gönderilsin mi?',
+        'push.confirmMany': "{n} dal gönderilecek: {names}. Emin misiniz?",
         'delete.confirm': '{name} dalı silinsin mi? Ardından bir bildirim onu geri getirebilir (git birleştirilmemiş dalları yine de reddeder).',
         'discard.confirm': '{path} içindeki değişiklikler atılsın mı? Çalışma ağacının içeriği üzerine yazılır —— ardından bir bildirim onu geri getirebilir.',
         'resetHard.confirm': '{hash} sürümüne zorla sıfırlansın mı? Commit’lenmemiş değişiklikler kaybolur.',
@@ -5036,6 +5148,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Tag',
         'branches.head': 'HEAD (branch saat ini)',
         'branches.favorites': 'Favorit',
+        'branches.starHint': "Favorit",
         'branches.pickHint': 'Klik untuk memilih, klik ganda untuk checkout',
         'branches.worktree': 'Sudah di-checkout di worktree lain',
         'action.stash': 'Stash',
@@ -5209,6 +5322,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Branch baru',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Pull {n} branch terpilih",
+        'toolbar.fetchPicked': "Fetch {n} referensi terpilih",
+        'toolbar.pushPicked': "Push {n} branch terpilih",
+        'toolbar.checkoutPicked': "Checkout branch terpilih",
+        'toolbar.deletePicked': "Hapus {n} referensi terpilih",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Panel branch',
         'rail.more': 'Tindakan lain',
@@ -5319,6 +5437,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Tidak terlacak {n}',
         'counts.conflicted': 'Konflik {n}',
         'push.confirm': 'Push {branch} ke {upstream}?',
+        'push.confirmMany': "Push {n} branch: {names}?",
         'delete.confirm': 'Hapus branch {name}? Notifikasi masih bisa mengembalikannya (git tetap menolak branch yang belum digabung).',
         'discard.confirm': 'Buang perubahan di {path}? Isi worktree ditimpa —— notifikasi masih bisa mengembalikannya.',
         'resetHard.confirm': 'Reset keras ke {hash}? Perubahan yang belum di-commit akan hilang.',
@@ -5344,6 +5463,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'Thẻ',
         'branches.head': 'HEAD (nhánh hiện tại)',
         'branches.favorites': 'Yêu thích',
+        'branches.starHint': "Đã yêu thích",
         'branches.pickHint': 'Nhấp để chọn, nhấp đôi để checkout',
         'branches.worktree': 'Đã được checkout ở một worktree khác',
         'action.stash': 'Tạm cất',
@@ -5517,6 +5637,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'Nhánh mới',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Pull {n} nhánh đã chọn",
+        'toolbar.fetchPicked': "Fetch {n} tham chiếu đã chọn",
+        'toolbar.pushPicked': "Push {n} nhánh đã chọn",
+        'toolbar.checkoutPicked': "Checkout nhánh đã chọn",
+        'toolbar.deletePicked': "Xóa {n} tham chiếu đã chọn",
         'toolbar.push': 'Push',
         'toolbar.tree': 'Bảng nhánh',
         'rail.more': 'Thao tác khác',
@@ -5627,6 +5752,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'Chưa theo dõi {n}',
         'counts.conflicted': 'Xung đột {n}',
         'push.confirm': 'Push {branch} lên {upstream}?',
+        'push.confirmMany': "Push {n} nhánh: {names}?",
         'delete.confirm': 'Xoá nhánh {name}? Thông báo sau đó vẫn có thể khôi phục (git vẫn từ chối nhánh chưa hợp nhất).',
         'discard.confirm': 'Bỏ thay đổi trong {path}? Nội dung worktree sẽ bị ghi đè —— thông báo sau đó vẫn có thể khôi phục.',
         'resetHard.confirm': 'Đặt lại cứng về {hash}? Thay đổi chưa commit sẽ mất.',
@@ -5652,6 +5778,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'الوسوم',
         'branches.head': 'HEAD (الفرع الحالي)',
         'branches.favorites': 'المفضلة',
+        'branches.starHint': "مفضل",
         'branches.pickHint': 'انقر للتحديد، وانقر نقرًا مزدوجًا للتبديل',
         'branches.worktree': 'مُستخرَج بالفعل في شجرة عمل أخرى',
         'action.stash': 'التخزين المؤقت',
@@ -5825,6 +5952,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'فرع جديد',
         'toolbar.fetch': 'جلب',
         'toolbar.pull': 'سحب',
+        'toolbar.pullPicked': "سحب {n} فروع مختارة",
+        'toolbar.fetchPicked': "جلب {n} مراجع مختارة",
+        'toolbar.pushPicked': "دفع {n} فروع مختارة",
+        'toolbar.checkoutPicked': "التبديل إلى الفرع المختار",
+        'toolbar.deletePicked': "حذف {n} مراجع مختارة",
         'toolbar.push': 'دفع',
         'toolbar.tree': 'لوحة الفروع',
         'rail.more': 'مزيد من الإجراءات',
@@ -5935,6 +6067,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'غير متعقَّب {n}',
         'counts.conflicted': 'التعارضات {n}',
         'push.confirm': 'دفع {branch} إلى {upstream}?',
+        'push.confirmMany': "دفع {n} فروع: {names}؟",
         'delete.confirm': 'حذف الفرع {name}? يمكن لإشعار بعد ذلك أن يعيده (سيظل git يرفض الفروع غير المدمجة).',
         'discard.confirm': 'تجاهل التغييرات في {path}? سيُستبدل محتوى شجرة العمل —— ويمكن لإشعار بعد ذلك أن يعيده.',
         'resetHard.confirm': 'إعادة تعيين قسرية إلى {hash}? ستفقد التغييرات غير الملتزَم بها.',
@@ -5960,6 +6093,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'टैग',
         'branches.head': 'HEAD (वर्तमान शाखा)',
         'branches.favorites': 'पसंदीदा',
+        'branches.starHint': "पसंदीदा",
         'branches.pickHint': 'चुनने के लिए क्लिक करें, चेकआउट के लिए डबल-क्लिक करें',
         'branches.worktree': 'पहले से किसी अन्य वर्कट्री में चेकआउट है',
         'action.stash': 'स्टैश',
@@ -6133,6 +6267,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'नई शाखा',
         'toolbar.fetch': 'फ़ेच',
         'toolbar.pull': 'पुल',
+        'toolbar.pullPicked': "{n} चुनी हुई शाखाएँ पुल करें",
+        'toolbar.fetchPicked': "{n} चुने हुए रेफ़रेंस फ़ेच करें",
+        'toolbar.pushPicked': "{n} चुनी हुई शाखाएँ पुश करें",
+        'toolbar.checkoutPicked': "चुनी हुई शाखा पर स्विच करें",
+        'toolbar.deletePicked': "{n} चुने हुए रेफ़रेंस हटाएँ",
         'toolbar.push': 'पुश',
         'toolbar.tree': 'शाखा पैनल',
         'rail.more': 'अधिक क्रियाएँ',
@@ -6243,6 +6382,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'अनट्रैक्ड {n}',
         'counts.conflicted': 'टकराव {n}',
         'push.confirm': '{branch} को {upstream} पर पुश करें?',
+        'push.confirmMany': "{n} शाखाएँ पुश करें: {names}?",
         'delete.confirm': 'शाखा {name} हटाएँ? बाद में एक सूचना इसे वापस ला सकती है (git अब भी अनमर्ज्ड शाखाओं से इनकार करता है)।',
         'discard.confirm': '{path} में परिवर्तन छोड़ें? वर्कट्री की सामग्री अधिलेखित हो जाएगी —— बाद में एक सूचना इसे वापस ला सकती है।',
         'resetHard.confirm': '{hash} पर हार्ड रीसेट करें? बिना कमिट किए परिवर्तन खो जाएँगे।',
@@ -6268,6 +6408,7 @@ window.__ModuleLoader__.load({
         'branches.tags': 'แท็ก',
         'branches.head': 'HEAD (แบรนช์ปัจจุบัน)',
         'branches.favorites': 'รายการโปรด',
+        'branches.starHint': "รายการโปรด",
         'branches.pickHint': 'คลิกเพื่อเลือก ดับเบิลคลิกเพื่อเช็กเอาต์',
         'branches.worktree': 'เช็กเอาต์อยู่ในเวิร์กทรีอื่นแล้ว',
         'action.stash': 'สแตช',
@@ -6441,6 +6582,11 @@ window.__ModuleLoader__.load({
         'toolbar.newBranch': 'แบรนช์ใหม่',
         'toolbar.fetch': 'Fetch',
         'toolbar.pull': 'Pull',
+        'toolbar.pullPicked': "Pull {n} สาขาที่เลือก",
+        'toolbar.fetchPicked': "Fetch {n} รีเฟอเรนซ์ที่เลือก",
+        'toolbar.pushPicked': "Push {n} สาขาที่เลือก",
+        'toolbar.checkoutPicked': "เปลี่ยนไปยังสาขาที่เลือก",
+        'toolbar.deletePicked': "ลบ {n} รีเฟอเรนซ์ที่เลือก",
         'toolbar.push': 'Push',
         'toolbar.tree': 'แผงแบรนช์',
         'rail.more': 'การทำงานเพิ่มเติม',
@@ -6551,6 +6697,7 @@ window.__ModuleLoader__.load({
         'counts.untracked': 'ไม่ถูกติดตาม {n}',
         'counts.conflicted': 'ความขัดแย้ง {n}',
         'push.confirm': 'พุช {branch} ไปที่ {upstream}?',
+        'push.confirmMany': "จะ Push {n} สาขา: {names} ใช่หรือไม่?",
         'delete.confirm': 'ลบแบรนช์ {name}? จากนั้นยังกู้คืนได้ผ่านการแจ้งเตือน (git ยังคงปฏิเสธแบรนช์ที่ยังไม่รวม)',
         'discard.confirm': 'ทิ้งการเปลี่ยนแปลงใน {path}? เนื้อหาของเวิร์กทรีจะถูกเขียนทับ —— จากนั้นยังกู้คืนได้ผ่านการแจ้งเตือน',
         'resetHard.confirm': 'ฮาร์ดรีเซ็ตไปที่ {hash}? การเปลี่ยนแปลงที่ยังไม่คอมมิตจะหายไป',
@@ -9720,7 +9867,11 @@ window.__ModuleLoader__.load({
       const entry = props.entry
       const isHead = entry.head === true
       const kind = entry.tag === true ? 'tag' : entry.remote === true ? 'remote' : isHead ? 'head' : 'local'
-      const tone = kind === 'tag' ? 'warn' : kind === 'remote' ? 'violet' : kind === 'head' ? 'success' : 'accent'
+      // A favorited branch wears a SOLID amber star everywhere it appears
+      // (favorites section AND its home section) — before this the row kept
+      // its plain kind glyph, so a starred branch read as "not favorited".
+      const starred = props.starred === true
+      const tone = starred ? 'warn' : kind === 'tag' ? 'warn' : kind === 'remote' ? 'violet' : kind === 'head' ? 'success' : 'accent'
       const glyph = kind === 'tag' ? 'tag' : kind === 'remote' ? 'fetch' : kind === 'head' ? 'star' : 'branch'
       const where = entry.upstream === null || entry.upstream === undefined ? entry.name : entry.name + ' → ' + entry.upstream
       // A single click only SELECTS (now with Shift/Ctrl+click multi-select —
@@ -9736,7 +9887,7 @@ window.__ModuleLoader__.load({
         onDoubleClick: () => props.onCheckout(entry),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
       },
-        E('span', { className: 'dig-row-icon dig-tone-' + tone }, E(Icon, { name: glyph, size: 12 })),
+        E('span', { className: 'dig-row-icon dig-tone-' + tone + (starred === true ? ' dig-star-filled' : '') }, E(Icon, { name: glyph, size: 12 })),
         E('span', { className: 'dig-row-label' }, props.label === undefined ? entry.name : props.label),
         // A bare 'W' told nobody anything (reported right after the section counts):
         // it means this branch is checked out in ANOTHER working tree, which is why
@@ -9777,10 +9928,14 @@ window.__ModuleLoader__.load({
       const branches = props.branches
       const needle = filter.trim().toLowerCase()
       const match = (name) => needle === '' || String(name).toLowerCase().indexOf(needle) >= 0
-      const locals = (branches === null ? [] : branches.local).filter((entry) => match(entry.name))
       const remotes = (branches === null ? [] : branches.remote).filter((entry) => match(entry.name))
       const tags = (branches === null ? [] : branches.tags).filter((entry) => match(entry.name))
       const favorites = Array.isArray(props.favorites) ? props.favorites : []
+      // Favorited branches float to the top of the local list; the stable sort
+      // keeps the alphabetical order inside each of the two groups, so both the
+      // favorites section and the local tree show the starred rows first.
+      const locals = (branches === null ? [] : branches.local).filter((entry) => match(entry.name))
+        .sort((a, b) => (favorites.indexOf(a.name) >= 0 ? 0 : 1) - (favorites.indexOf(b.name) >= 0 ? 0 : 1))
       /* A refresh that makes a picked ref disappear must not keep it selected. */
       useEffect(() => {
         setPicks((previous) => {
@@ -9796,6 +9951,12 @@ window.__ModuleLoader__.load({
           return next.size === previous.size ? previous : next
         })
       }, [branches])
+      /* Report the picks up to the Panel on every change (a plain effect — a
+         render-time call would trip the hooks rules): the rail reads them so
+         its buttons can act on the selection instead of only on HEAD. */
+      useEffect(() => {
+        if (props.onPicksChange !== undefined) props.onPicksChange(picks)
+      }, [picks])
       /**
        * Branch names nest on '/', the way an IDE shows a branch namespace: clicking a
        * row only SELECTS it (checking out rewrites the working tree), so the row
@@ -9860,6 +10021,7 @@ window.__ModuleLoader__.load({
         key: 'row:' + branchSelKeyOf(entry), entry: entry, label: label, depth: depth, t: t,
         selKey: branchSelKeyOf(entry),
         selected: picks.has(branchSelKeyOf(entry)) === true,
+        starred: entry.tag !== true && entry.remote !== true && favorites.indexOf(entry.name) >= 0,
         onPick: handlePick,
         onCheckout: props.onCheckout, onMenu: onRowMenu,
       })
@@ -9994,7 +10156,7 @@ window.__ModuleLoader__.load({
       const readOnly = props.group === 'ignored'
       const status = readOnly ? 'I' : (raw === '' ? 'M' : raw.charAt(0))
       return E('div', {
-        className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : ''),
+        className: 'dig-row dig-row-file' + (props.selected === true ? ' dig-row-selected' : '') + (props.nested === true ? ' dig-row-nested' : ''),
         title: item.origPath === undefined ? item.path : item.origPath + ' → ' + item.path,
         /* The click is handled ONE level up (ChangesPanel): plain click only
            selects, DOUBLE-click opens the diff (v0.18.3 — one interaction model
@@ -10008,14 +10170,17 @@ window.__ModuleLoader__.load({
         // An ignored DIRECTORY comes back as "dist/" (ls-files --directory), whose
         // basename is empty — show the whole path instead of a blank label.
         E('span', { className: 'dig-row-label' }, item.path.slice(-1) === '/' ? item.path : baseName(item.path)),
-        E('span', { className: 'dig-row-sub dig-row-dir' }, item.path.slice(-1) === '/' ? '' : dirName(item.path)),
+        // In dir-grouped mode the folder head already names the directory —
+        // repeating the full path at the end of every nested row is what made
+        // the tree read as a flat list (v0.18.5). Flat modes keep it.
+        props.nested === true ? null : E('span', { className: 'dig-row-sub dig-row-dir' }, item.path.slice(-1) === '/' ? '' : dirName(item.path)),
         item.additions > 0 ? E('span', { className: 'dig-stat-add' }, '+' + item.additions) : null,
         item.deletions > 0 ? E('span', { className: 'dig-stat-del' }, '-' + item.deletions) : null,
         readOnly ? null : (props.group === 'staged'
           ? E('button', { type: 'button', className: 'dig-mini', title: t('action.unstage'), onClick: (event) => { event.stopPropagation(); props.onUnstage(item) } }, E(Icon, { name: 'minus', size: 12 }))
           : E('button', { type: 'button', className: 'dig-mini', title: t('action.stage'), onClick: (event) => { event.stopPropagation(); props.onStage(item) } }, E(Icon, { name: 'plus', size: 12 }))),
         readOnly ? null : E('button', { type: 'button', className: 'dig-mini', title: t('action.discard'), onClick: (event) => { event.stopPropagation(); props.onDiscard(item, props.group) } }, E(Icon, { name: 'undo', size: 12 })))
-    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t && prev.selected === next.selected)
+    }, (prev, next) => prev.item === next.item && prev.group === next.group && prev.t === next.t && prev.selected === next.selected && prev.nested === next.nested)
 
     function ChangesPanel(props) {
       const t = props.t
@@ -10251,8 +10416,9 @@ window.__ModuleLoader__.load({
         setAmend(false)
         return true
       }
-      const entryRow = (key, item) => E(ChangeRow, {
+      const entryRow = (key, item, nested) => E(ChangeRow, {
         key: key + ':' + item.path, item: item, group: key, t: t,
+        nested: nested === true,
         selected: selection.has(key + ':' + item.path) === true,
         onRowClick: handleRowClick,
         onDblClick: props.onDiff,
@@ -10306,10 +10472,11 @@ window.__ModuleLoader__.load({
                 onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
               },
                 E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+                E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
                 E('span', { className: 'dig-folder-name' }, name),
                 E('span', { className: 'dig-count' }, String(list.length))),
             })
-            if (open === true) for (const item of list) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item) })
+            if (open === true) for (const item of list) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item, true) })
           }
         }
         const emitGroup = (key, title, entries) => {
@@ -10964,6 +11131,9 @@ window.__ModuleLoader__.load({
       const [changeSelection, setChangeSelection] = useState(() => new Set())
       const changeAnchor = useRef(null)
       const [pickedCommits, setPickedCommits] = useState(() => new Set())
+      /* The branch tree reports its picks up (onPicksChange) so the rail can act
+         on the selection: "select main, press pull" must pull main, not HEAD. */
+      const [branchPicks, setBranchPicks] = useState(() => new Set())
       const [menu, setMenu] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
@@ -12567,6 +12737,53 @@ window.__ModuleLoader__.load({
         onKeyDown: onChangesKeyDown,
       })
 
+      /* --- Rail acts on the branch-tree selection (v0.18.5) -------------------
+         The tree reports its picks up; the rail resolves them back to live
+         entries so "select main, press pull" pulls MAIN, not HEAD. With no
+         selection every button keeps its old HEAD-oriented behaviour. */
+      const pickedBranchEntries = () => {
+        const out = []
+        if (branches === null || branchPicks.size === 0) return out
+        for (const key of branchPicks) {
+          const colon = key.indexOf(':')
+          const kind = key.slice(0, colon)
+          const name = key.slice(colon + 1)
+          if (kind === 'local') { const entry = branches.local.find((x) => x.name === name); if (entry !== undefined) out.push({ kind: 'local', name: name, entry: entry }) }
+          else if (kind === 'remote') { const entry = branches.remote.find((x) => x.name === name); if (entry !== undefined) out.push({ kind: 'remote', name: name, entry: entry }) }
+          else { const entry = branches.tags.find((x) => x.name === name); if (entry !== undefined) out.push({ kind: 'tag', name: name, entry: entry }) }
+        }
+        return out
+      }
+      /* "Pull" a branch that is NOT checked out: git pull would merge into
+         HEAD, so a non-HEAD branch is fast-forwarded in place via a refspec
+         fetch (`git fetch origin name:name` — git refuses a non-ff update,
+         which is exactly the safety we want). run() never throws (the guard
+         turns failures into the error banner), so one bad branch does not
+         abort the rest of the batch. */
+      const pullPickedBranches = async (picked) => {
+        for (const item of picked) {
+          if (item.kind !== 'local') continue
+          if (item.entry.head === true) { await run('pull', { mode: 'ff-only' }); continue }
+          const upstream = item.entry.upstream
+          if (upstream === null || upstream === undefined || upstream === '') continue
+          const slash = upstream.indexOf('/')
+          const remote = slash >= 0 ? upstream.slice(0, slash) : upstream
+          await run('fetch', { remote: remote, branch: item.name + ':' + item.name })
+        }
+      }
+      const fetchPickedRefs = async (picked) => {
+        for (const item of picked) {
+          if (item.kind === 'remote') { await run('fetch', { remote: item.name, prune: true }); continue }
+          if (item.kind !== 'local') continue
+          const upstream = item.entry.upstream
+          if (upstream === null || upstream === undefined || upstream === '') continue
+          const slash = upstream.indexOf('/')
+          const remote = slash >= 0 ? upstream.slice(0, slash) : upstream
+          await run('fetch', { remote: remote, branch: item.name + ':' + item.name })
+        }
+      }
+      const railPicked = pickedBranchEntries()
+      const railPickedLocals = railPicked.filter((item) => item.kind === 'local')
 
       /* One descriptor per action, with the availability IDEA would use: delete /
          checkout / compare need another local branch, fetch and push need a remote,
@@ -12576,16 +12793,41 @@ window.__ModuleLoader__.load({
         const entry = { id: spec.id, icon: spec.icon, tone: spec.tone, label: t(spec.key), disabled: false, active: false, run: () => {} }
         if (spec.id === 'refresh') { entry.disabled = refreshSpinning === true; entry.spinning = refreshSpinning === true; entry.run = () => { void refresh({ fetchRemote: true }) } }
         else if (spec.id === 'newBranch') entry.run = () => setDialog({ kind: 'newBranch' })
-        else if (spec.id === 'checkout') { entry.disabled = otherBranches.length === 0 || blocked; entry.run = (event) => pickBranchMenu(event, 'checkout') }
-        else if (spec.id === 'delete') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'delete') }
+        else if (spec.id === 'checkout') {
+          // Exactly one picked ref → check THAT out directly (same call the
+          // double-click uses); otherwise keep the picker menu.
+          if (railPicked.length === 1) { entry.label = t('toolbar.checkoutPicked'); entry.disabled = blocked; entry.run = () => checkout(railPicked[0].entry) }
+          else { entry.disabled = otherBranches.length === 0 || blocked; entry.run = (event) => pickBranchMenu(event, 'checkout') }
+        }
+        else if (spec.id === 'delete') {
+          if (railPicked.length > 0) { entry.label = fill(t('toolbar.deletePicked'), { n: railPicked.length }); entry.disabled = blocked; entry.run = () => deleteBranchEntries(railPicked) }
+          else { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'delete') }
+        }
         else if (spec.id === 'compare') { entry.disabled = otherBranches.length === 0; entry.run = (event) => pickBranchMenu(event, 'compare') }
         else if (spec.id === 'diff') { entry.disabled = dirty === 0; entry.run = () => showWorkingDiff() }
         else if (spec.id === 'stash') { entry.disabled = dirty === 0 && stashCount === 0; entry.run = (event) => stashMenu(event) }
         else if (spec.id === 'tag') { entry.disabled = commits.length === 0; entry.run = () => setDialog({ kind: 'newTag' }) }
-        else if (spec.id === 'favorite') { entry.disabled = headBranch === ''; entry.active = favorites.indexOf(headBranch) >= 0; entry.run = () => toggleFavoriteBranch(headBranch) }
-        else if (spec.id === 'fetch') { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
-        else if (spec.id === 'pull') { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
-        else if (spec.id === 'push') { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
+        else if (spec.id === 'favorite') {
+          // One picked LOCAL branch stars/unstars THAT branch; with no selection
+          // it keeps starring the current one. Multi-select stays disabled —
+          // favorites are per-branch and the toggle model does not batch well.
+          const target = railPickedLocals.length === 1 ? railPickedLocals[0].name : headBranch
+          entry.disabled = target === ''
+          entry.active = favorites.indexOf(target) >= 0
+          entry.run = () => toggleFavoriteBranch(target)
+        }
+        else if (spec.id === 'fetch') {
+          if (railPicked.length > 0) { entry.label = fill(t('toolbar.fetchPicked'), { n: railPicked.length }); entry.disabled = blocked; entry.run = () => { void fetchPickedRefs(railPicked) } }
+          else { entry.disabled = remoteReady !== true; entry.run = () => { void run('fetch', { prune: true }) } }
+        }
+        else if (spec.id === 'pull') {
+          if (railPickedLocals.length > 0) { entry.label = fill(t('toolbar.pullPicked'), { n: railPickedLocals.length }); entry.disabled = blocked; entry.run = () => { void pullPickedBranches(railPickedLocals) } }
+          else { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
+        }
+        else if (spec.id === 'push') {
+          if (railPickedLocals.length > 0) { entry.label = fill(t('toolbar.pushPicked'), { n: railPickedLocals.length }); entry.disabled = blocked; entry.run = () => setDialog({ kind: 'pushMany', items: railPickedLocals.map((item) => ({ name: item.name, upstream: item.entry.upstream })) }) }
+          else { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
+        }
         else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
         else if (spec.id === 'float') {
           // Label AND icon follow where the panel actually is: floating panels get
@@ -12767,19 +13009,19 @@ window.__ModuleLoader__.load({
               title: t('toolbar.tree'),
               onClick: () => foldTree(!treeOpen),
             }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
-          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
+          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane),
           gutter('changes', 'next'),
           E('div', { className: 'dig-pane dig-pane-changes', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane))
       } else {
         body = E('div', { className: 'dig-body dig-body-stack', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
@@ -13064,6 +13306,25 @@ window.__ModuleLoader__.load({
           },
         }))
       }
+      // Batch push of the picked local branches — one confirmation naming every
+      // branch, then a plain `git push origin name` per branch (each sets its
+      // own upstream when it does not track one yet).
+      if (dialog !== null && dialog.kind === 'pushMany') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'pushMany', t: t,
+          title: t('confirm.title'), text: fill(t('push.confirmMany'), { n: dialog.items.length, names: dialog.items.map((item) => item.name).join(', ') }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => {
+            setDialog(null)
+            void (async () => {
+              for (const item of dialog.items) {
+                await run('push', { branch: item.name, confirm: true, setUpstream: item.upstream === null || item.upstream === undefined })
+              }
+            })()
+          },
+        }))
+      }
 
       // Wide chromes (the bottom workbench) get the vertical IDE rail on the left;
       // narrow ones (the native right sidebar) get the same actions as one
@@ -13299,7 +13560,7 @@ window.__ModuleLoader__.load({
       '.dig-section-toggle{display:flex;align-items:center;gap:4px;flex:1;min-width:0;padding:0;border:none;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer;text-align:left}',
       '.dig-folder{display:flex;flex-direction:column}',
       '.dig-branch-folder{display:flex;flex-direction:column}',
-      '.dig-row-picked{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
+      '.dig-row-picked{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
       '.dig-folder-head{display:flex;align-items:center;gap:6px;width:100%;padding:1px 8px 1px 4px;height:14px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;cursor:pointer;text-align:left}',
       '.dig-folder-head:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
@@ -13309,7 +13570,7 @@ window.__ModuleLoader__.load({
       '.dig-row{display:flex;align-items:center;gap:5px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden}',
       '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
+      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
       '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
       '.dig-row-head .dig-row-label{font-weight:600}',
@@ -13330,7 +13591,14 @@ window.__ModuleLoader__.load({
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.dig-commit-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover))}',
+      '.dig-commit-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      // A favorited branch renders its star SOLID (BranchRow adds this class
+      // and flips the tone to warn) — the hollow green HEAD star read as
+      // "not favorited" (v0.18.5).
+      '.dig-star-filled svg path{fill:currentColor}',
+      // Rows nested under a dir-group folder head are indented and drop the
+      // trailing directory repeat, so the grouping reads as a tree.
+      '.dig-row-nested{padding-left:26px}',
       '.dig-graph{flex:none}',
       '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;width:54px;font-variant-numeric:tabular-nums;font-weight:500}',
       '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;width:96px;overflow:hidden;text-overflow:ellipsis;font-weight:500}',
