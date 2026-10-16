@@ -97,6 +97,10 @@ test('summary classifies staged / unstaged / untracked with diffstats', async ()
   assert.deepEqual(body.data.changes.untracked.map((file) => file.path), ['untracked.txt'])
   assert.ok(Array.isArray(body.data.worktrees))
   assert.equal(body.data.worktrees.length, 1)
+  // v0.18.7: HEAD hash — the client's poll diffs it to notice OUTSIDE
+  // commits/checkouts and re-pull branches + history on its own.
+  assert.match(body.data.head, /^[0-9a-f]{40}$/)
+  assert.equal(body.data.head, git('rev-parse', 'HEAD').trim())
 })
 
 test('summary with stats: false defers the diffstats, stats delivers phase two (issue #11)', async () => {

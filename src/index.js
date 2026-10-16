@@ -614,7 +614,7 @@ async function summary(payload) {
      large `status` scan no longer serialises behind five cheap calls
      (issue #11: the sum of ~ten sequential commands became the max of two
      chains). */
-  const [branchInfo, statusOut, unstagedStat, stagedStat, ignored, stashCount, worktrees, operation] = await Promise.all([
+  const [branchInfo, statusOut, unstagedStat, stagedStat, ignored, stashCount, worktrees, operation, head] = await Promise.all([
     (async () => {
       const branch = await currentBranchOf(root)
       const detached = branch === 'HEAD'
@@ -629,6 +629,10 @@ async function summary(payload) {
     stashCountOf(root),
     worktreesOf(root),
     operationOf(root),
+    /* HEAD hash (v0.18.7): lets the client's poll notice OUTSIDE commits and
+       checkouts — the panel's own actions already refresh everything, but
+       nothing else watches the repo. Empty string on an unborn branch. */
+    git(root, ['rev-parse', 'HEAD']).then((out) => out.trim()).catch(() => ''),
   ])
   const groups = classify(parsePorcelain(statusOut))
   return {
@@ -639,6 +643,7 @@ async function summary(payload) {
     upstream: branchInfo.upstream,
     ahead: branchInfo.tracking.ahead,
     behind: branchInfo.tracking.behind,
+    head: head,
     changes: {
       staged: decorate(groups.staged, stagedStat),
       unstaged: decorate(groups.unstaged, unstagedStat),

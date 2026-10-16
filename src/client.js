@@ -11612,6 +11612,10 @@ window.__ModuleLoader__.load({
          ⋯ menu's 展开全部/折叠全部 entries drive the same map the folder
          headers toggle. */
       const [foldedDirs, setFoldedDirs] = useState({})
+      /* Last-seen "HEAD hash|branch" signature, from the poll summaries
+         (v0.18.7). A ref, not state: a change triggers a data reload, not a
+         render. null until the first poll tick records the baseline. */
+      const headRef = useRef(null)
       const refresh = useCallback(async (opts) => {
         if (repoRoot === null) return
         const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReady === true
@@ -11622,6 +11626,12 @@ window.__ModuleLoader__.load({
               try { await request('fetch', Object.assign({}, base, { prune: true })) } catch (error) { void error }
             }
             const [summaryData, branchesData, page] = await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
+            /* Keep the poll's HEAD signature in step (v0.18.7): after an
+               in-panel commit/checkout the next tick must not re-pull
+               branches + history all over again. */
+            if (summaryData !== null && typeof summaryData === 'object' && typeof summaryData.head === 'string') {
+              headRef.current = summaryData.head + '|' + (summaryData.branch === undefined ? '' : summaryData.branch)
+            }
             /* The write side of the first-paint cache: exactly the FIRST page
                (a paged fetch never reaches this path), replaced on every
                refresh — the auto-refresh included — so a session switch through
@@ -11666,11 +11676,29 @@ window.__ModuleLoader__.load({
           if (inFlight === true) return
           inFlight = true
           void (async () => {
-            try { await loadSummary() } catch (error) { void error } finally { inFlight = false }
+            try {
+              const data = await loadSummary()
+              /* v0.18.7: the poll used to be summary-only, so commits and
+                 checkouts made OUTSIDE the panel (terminal, another tool)
+                 never reached the history and branch lists until a manual
+                 refresh. Each summary now carries HEAD + branch; when that
+                 signature moves, re-pull branches + history. The panel's own
+                 actions already refresh everything through run() → refresh()
+                 (which also re-records the signature), so this stays quiet
+                 for in-panel work. The null baseline (first tick) only
+                 records — the mount refresh already pulled everything. */
+              const sig = data !== null && typeof data === 'object' && typeof data.head === 'string'
+                ? data.head + '|' + (data.branch === undefined ? '' : data.branch)
+                : null
+              if (sig !== null && headRef.current !== null && sig !== headRef.current) {
+                await Promise.all([loadBranches(), loadCommits(0)])
+              }
+              if (sig !== null) headRef.current = sig
+            } catch (error) { void error } finally { inFlight = false }
           })()
         }, AUTO_REFRESH_MS)
         return () => clearInterval(timer)
-      }, [props.visible, repoRoot, loadSummary])
+      }, [props.visible, repoRoot, loadSummary, loadBranches, loadCommits])
 
       const run = useCallback(async (method, payload) => {
         const result = await guard(() => request(method, Object.assign({}, base, payload)))
@@ -11684,6 +11712,10 @@ window.__ModuleLoader__.load({
         setSummary(null)
         setBranches(null)
         setCommits([])
+        /* The signature is per-repo: force a fresh baseline for the new one
+           so the first poll tick doesn't mistake the repo switch for an
+           outside HEAD move. */
+        headRef.current = null
         setDetail(null)
         setSelectedHash(null)
         setPatch('')

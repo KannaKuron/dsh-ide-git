@@ -509,6 +509,30 @@ try {
     check(false, 'group-by menu offers the dir toggle')
   }
 
+  /* ---- 9e. OUTSIDE commits reach the history on their own (v0.18.7) ----
+     The 12s poll used to be summary-only: a commit made in a terminal never
+     showed up until a manual refresh. Every summary now carries HEAD, and
+     when that signature moves the panel re-pulls branches + history by
+     itself. An empty external commit proves exactly that path. */
+  {
+    const historyRows = page.locator('.dig-history-scroll .dig-commit')
+    const beforeFirst = await historyRows.first().textContent().catch(() => '')
+    execFileSync('git', ['-C', repoPath, 'commit', '-q', '--allow-empty', '-m', 'probe: outside commit (v0.18.7)'], {
+      env: Object.assign({}, process.env, {
+        GIT_AUTHOR_NAME: 'Probe', GIT_AUTHOR_EMAIL: 'probe@example.com',
+        GIT_COMMITTER_NAME: 'Probe', GIT_COMMITTER_EMAIL: 'probe@example.com',
+      }),
+      stdio: 'pipe',
+    })
+    let seen = false
+    for (let i = 0; i < 11; i++) {
+      await settle(2000)
+      const first = await historyRows.first().textContent().catch(() => '')
+      if (first !== null && first !== beforeFirst && first.indexOf('outside commit') >= 0) { seen = true; break }
+    }
+    check(seen, 'an OUTSIDE terminal commit appears in the history by itself (≤22s poll)')
+  }
+
   /* ---- 10. DOUBLE-click opens the diff (v0.18.3 click model) ----
      The diff lands in the external better-sidebar preview tab when the base
      offers the seat channel (the modern reality), or the in-panel diff pane
