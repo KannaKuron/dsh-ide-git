@@ -14454,14 +14454,18 @@ window.__ModuleLoader__.load({
       '.dig-head-branch{cursor:pointer;transition:background .12s}',
       '.dig-head-branch:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      /* v0.19.4: the flat alias background read as "barely selected" over the
-         translucency/frost surfaces the any-background plugin produces. Mixing
-         the token with the row's own TEXT color keeps the theme hues (light
-         theme darkens, dark theme lightens — both gain contrast), and because
-         the text color is near-opaque the mix carries an alpha FLOOR (~42%):
-         the token's own translucency still dominates the look (58%), so the
-         selection follows the plugin's transparency while staying readable. */
-      '.dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)))) 58%,currentColor 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      /* v0.19.5: the v0.19.4 mix folded the row's own TEXT color in, and on
+         the dark theme that text is near-white — 42% of it whitewashed the
+         fill over bright wallpapers (user report). Keep the mix SHAPE (58%
+         alias tint + 42% OPAQUE gray = the >=.42 alpha floor that keeps the
+         pick readable through any-background's transparency/frost) but mix a
+         THEME-AWARE NEUTRAL GRAY instead of the text color: light theme mixes
+         the host's pale highlight gray (bluish-75 — the light hover-solid
+         tone), dark theme mixes charcoal (bluish-800 — the dark hover-solid
+         tone) via the host's body[data-ds-dark-theme] switch. Selection reads
+         as gray on both themes, wallpaper/frost stays visible, never white. */
+      '.dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-75,var(--dsw-alias-bg-layer-3)) 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      'body[data-ds-dark-theme] .dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-800,var(--dsw-alias-bg-layer-3)) 42%)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
       '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
       '.dig-row-head .dig-row-label{font-weight:600}',
@@ -14485,8 +14489,9 @@ window.__ModuleLoader__.load({
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      /* Same floor + tint mix as .dig-row-selected (see it). */
-      '.dig-commit-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)))) 58%,currentColor 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      /* Same theme-aware gray mix as .dig-row-selected (see it). */
+      '.dig-commit-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-75,var(--dsw-alias-bg-layer-3)) 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      'body[data-ds-dark-theme] .dig-commit-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-800,var(--dsw-alias-bg-layer-3)) 42%)}',
       // A favorited branch renders its star SOLID (BranchRow adds this class
       // and flips the tone to warn) — the hollow green HEAD star read as
       // "not favorited" (v0.18.5).
