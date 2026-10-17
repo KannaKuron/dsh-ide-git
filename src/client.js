@@ -288,6 +288,16 @@ window.__ModuleLoader__.load({
       'settings.card.desc': '面板放置、动作条按钮与 AI 提交信息',
       'settings.placement.title': '面板放置',
       'settings.placement.tab': '在主对话区显示 Git 标签页',
+      'settings.composer.title': '输入框 Git 状态',
+      'settings.composer.hint': '在输入框工具条显示仓库与分支(可点击切换,与 Git 面板联动);关闭后输入框不再显示。',
+      'composer.repoHint': '切换仓库',
+      'composer.branchHint': '切换分支',
+      'composer.detached': 'HEAD(游离)',
+      'composer.changesHint': '未提交变更数',
+      'composer.behindHint': '远程新提交(可拉取)',
+      'composer.aheadHint': '本地待推送提交',
+      'composer.inWorktree': '已被其他工作树签出',
+      'composer.busy': 'Git 操作进行中…',
       'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
       'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
       'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
@@ -603,6 +613,16 @@ window.__ModuleLoader__.load({
       'settings.card.desc': 'Placement, action rail buttons and AI commit message',
       'settings.placement.title': 'Placement',
       'settings.placement.tab': 'Show the Git tab in the conversation area',
+      'settings.composer.title': 'Git status in the input bar',
+      'settings.composer.hint': 'Show repository and branch beside the composer tool row — click to switch, synced with the Git panel. Off, the input bar stays clean.',
+      'composer.repoHint': 'Switch repository',
+      'composer.branchHint': 'Switch branch',
+      'composer.detached': 'HEAD (detached)',
+      'composer.changesHint': 'Uncommitted changes',
+      'composer.behindHint': 'New upstream commits (pullable)',
+      'composer.aheadHint': 'Local commits waiting to push',
+      'composer.inWorktree': 'Checked out in another worktree',
+      'composer.busy': 'Git operation in progress…',
       'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
       'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
       'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
@@ -926,6 +946,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '喺主對話區顯示 Git 分頁',
+      'settings.composer.title': '輸入框 Git 狀態',
+      'settings.composer.hint': '喺輸入框工具列顯示儲存庫同分支(可以點擊切換,同 Git 面板聯動);關閉之後輸入框就唔會再顯示。',
+      'composer.repoHint': '切換儲存庫',
+      'composer.branchHint': '切換分支',
+      'composer.detached': 'HEAD(游離)',
+      'composer.changesHint': '未提交變更數',
+      'composer.behindHint': '遠端新提交(可以拉取)',
+      'composer.aheadHint': '本地等待推送提交',
+      'composer.inWorktree': '已經喺其他工作樹簽出',
+      'composer.busy': 'Git 操作進行中…',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
@@ -1241,6 +1271,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '在主對話區顯示 Git 分頁',
+      'settings.composer.title': '輸入框 Git 狀態',
+      'settings.composer.hint': '在輸入框工具列顯示儲存庫與分支(可點擊切換,並與 Git 面板連動);關閉後輸入框不再顯示。',
+      'composer.repoHint': '切換儲存庫',
+      'composer.branchHint': '切換分支',
+      'composer.detached': 'HEAD(分離)',
+      'composer.changesHint': '未提交變更數',
+      'composer.behindHint': '遠端新提交(可拉取)',
+      'composer.aheadHint': '本地待推送提交',
+      'composer.inWorktree': '已被其他工作樹簽出',
+      'composer.busy': 'Git 操作進行中…',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
@@ -1556,6 +1596,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
         'settings.placement.tab': '喺主對話區顯示 Git 分頁',
+      'settings.composer.title': '輸入框 Git 狀態',
+      'settings.composer.hint': '喺輸入框工具列顯示儲存庫同分支(可以點擊切換,同 Git 面板聯動);關閉之後輸入框就唔會再顯示。',
+      'composer.repoHint': '切換儲存庫',
+      'composer.branchHint': '切換分支',
+      'composer.detached': 'HEAD(游離)',
+      'composer.changesHint': '未提交變更數',
+      'composer.behindHint': '遠端新提交(可以拉取)',
+      'composer.aheadHint': '本地等待推送提交',
+      'composer.inWorktree': '已經喺其他工作樹簽出',
+      'composer.busy': 'Git 操作進行中…',
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
@@ -1871,6 +1921,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'パネル配置、アクションレールのボタンと AI コミットメッセージ',
         'settings.placement.title': 'パネル配置',
         'settings.placement.tab': '会話エリアに Git タブを表示',
+      'settings.composer.title': '入力欄の Git ステータス',
+      'settings.composer.hint': '入力欄ツールバーにリポジトリとブランチを表示します(クリックで切り替え、Git パネルと連動)。オフにすると入力欄には表示されません。',
+      'composer.repoHint': 'リポジトリを切り替え',
+      'composer.branchHint': 'ブランチを切り替え',
+      'composer.detached': 'HEAD(切断)',
+      'composer.changesHint': '未コミットの変更数',
+      'composer.behindHint': 'リモートの新規コミット(取得可能)',
+      'composer.aheadHint': 'プッシュ待ちのローカルコミット',
+      'composer.inWorktree': '別のワークツリーでチェックアウト中',
+      'composer.busy': 'Git 操作を実行中…',
         'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
         'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
         'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
@@ -2186,6 +2246,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': '패널 배치, 액션 레일 버튼 및 AI 커밋 메시지',
         'settings.placement.title': '패널 배치',
         'settings.placement.tab': '대화 영역에 Git 탭 표시',
+      'settings.composer.title': '입력창 Git 상태',
+      'settings.composer.hint': '입력창 도구 모음에 저장소와 브랜치를 표시합니다(클릭하여 전환, Git 패널과 연동). 끄면 입력창에 표시되지 않습니다.',
+      'composer.repoHint': '저장소 전환',
+      'composer.branchHint': '브랜치 전환',
+      'composer.detached': 'HEAD(분리됨)',
+      'composer.changesHint': '커밋되지 않은 변경 수',
+      'composer.behindHint': '원격 새 커밋(가져오기 가능)',
+      'composer.aheadHint': '푸시 대기 중인 로컬 커밋',
+      'composer.inWorktree': '다른 작업 트리에서 체크아웃됨',
+      'composer.busy': 'Git 작업 진행 중…',
         'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
         'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
         'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
@@ -2501,6 +2571,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Panel-Platzierung, Aktionsleisten-Schaltflächen und KI-Commit-Nachricht',
         'settings.placement.title': 'Panel-Platzierung',
         'settings.placement.tab': 'Git-Tab im Gesprächsbereich anzeigen',
+      'settings.composer.title': 'Git-Status in der Eingabeleiste',
+      'settings.composer.hint': 'Repository und Zweig neben der Eingabeleiste zeigen — anklickbar zum Wechseln, mit dem Git-Panel synchron. Aus schaltet die Anzeige ab.',
+      'composer.repoHint': 'Repository wechseln',
+      'composer.branchHint': 'Zweig wechseln',
+      'composer.detached': 'HEAD (detached)',
+      'composer.changesHint': 'Uncommittete Änderungen',
+      'composer.behindHint': 'Neue Upstream-Commits (abrufbar)',
+      'composer.aheadHint': 'Lokale Commits zum Pushen',
+      'composer.inWorktree': 'In anderem Worktree ausgecheckt',
+      'composer.busy': 'Git-Aktion läuft…',
         'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
         'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
         'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
@@ -2816,6 +2896,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Placement du panneau, boutons de la barre d’actions et message de commit par IA',
         'settings.placement.title': 'Placement du panneau',
         'settings.placement.tab': 'Afficher l’onglet Git dans la zone de conversation',
+      'settings.composer.title': 'Statut Git dans la barre de saisie',
+      'settings.composer.hint': 'Affiche le dépôt et la branche à côté de la barre de saisie — cliquables pour basculer, synchronisés avec le panneau Git. Désactivé, la barre reste épurée.',
+      'composer.repoHint': 'Changer de dépôt',
+      'composer.branchHint': 'Changer de branche',
+      'composer.detached': 'HEAD (détaché)',
+      'composer.changesHint': 'Modifications non commitées',
+      'composer.behindHint': 'Nouveaux commits amont (récupérables)',
+      'composer.aheadHint': 'Commits locaux en attente d’envoi',
+      'composer.inWorktree': 'Extrait dans un autre arbre de travail',
+      'composer.busy': 'Opération Git en cours…',
         'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
         'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
         'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
@@ -3131,6 +3221,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Размещение панели, кнопки панели действий и сообщение коммита от ИИ',
         'settings.placement.title': 'Размещение панели',
         'settings.placement.tab': 'Показывать вкладку Git в области диалога',
+      'settings.composer.title': 'Статус Git в строке ввода',
+      'settings.composer.hint': 'Показывает репозиторий и ветку рядом с панелью ввода — клик переключает, синхронно с панелью Git. Выключено — строка ввода остаётся чистой.',
+      'composer.repoHint': 'Сменить репозиторий',
+      'composer.branchHint': 'Сменить ветку',
+      'composer.detached': 'HEAD (отделён)',
+      'composer.changesHint': 'Незакоммиченные изменения',
+      'composer.behindHint': 'Новые коммиты upstream (можно забрать)',
+      'composer.aheadHint': 'Локальные коммиты, ожидающие отправки',
+      'composer.inWorktree': 'Выверен в другом worktree',
+      'composer.busy': 'Операция Git выполняется…',
         'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
         'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
         'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
@@ -3446,6 +3546,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Posição do painel, botões da barra de ações e mensagem de commit por IA',
         'settings.placement.title': 'Posição do painel',
         'settings.placement.tab': 'Mostrar a aba Git na área de conversa',
+      'settings.composer.title': 'Status do Git na barra de entrada',
+      'settings.composer.hint': 'Mostra repositório e branch ao lado da barra de entrada — clique para alternar, em sincronia com o painel Git. Desligado, a barra fica limpa.',
+      'composer.repoHint': 'Trocar repositório',
+      'composer.branchHint': 'Trocar branch',
+      'composer.detached': 'HEAD (destacado)',
+      'composer.changesHint': 'Alterações não commitadas',
+      'composer.behindHint': 'Novos commits remotos (para pull)',
+      'composer.aheadHint': 'Commits locais aguardando push',
+      'composer.inWorktree': 'Em checkout em outra worktree',
+      'composer.busy': 'Operação Git em andamento…',
         'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
         'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
         'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
@@ -3761,6 +3871,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Posizione del pannello, pulsanti della barra azioni e messaggio di commit con IA',
         'settings.placement.title': 'Posizione del pannello',
         'settings.placement.tab': 'Mostra la scheda Git nell’area conversazione',
+      'settings.composer.title': 'Stato Git nella barra di inserimento',
+      'settings.composer.hint': 'Mostra repository e ramo accanto alla barra di inserimento — cliccabili per cambiare, sincronizzati con il pannello Git. Disattivato, la barra resta pulita.',
+      'composer.repoHint': 'Cambia repository',
+      'composer.branchHint': 'Cambia ramo',
+      'composer.detached': 'HEAD (staccato)',
+      'composer.changesHint': 'Modifiche non ancora committate',
+      'composer.behindHint': 'Nuovi commit upstream (scaricabili)',
+      'composer.aheadHint': 'Commit locali in attesa di push',
+      'composer.inWorktree': 'Estratto in un altro worktree',
+      'composer.busy': 'Operazione Git in corso…',
         'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
         'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
         'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
@@ -4076,6 +4196,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Paneelplaatsing, knoppen van de actiebalk en AI-commitbericht',
         'settings.placement.title': 'Paneelplaatsing',
         'settings.placement.tab': 'Git-tabblad in het gespreksgebied tonen',
+      'settings.composer.title': 'Git-status in de invoerbalk',
+      'settings.composer.hint': 'Toont repository en branch naast de invoerbalk — klikbaar om te wisselen, gesynchroniseerd met het Git-paneel. Uit houdt de balk schoon.',
+      'composer.repoHint': 'Repository wisselen',
+      'composer.branchHint': 'Branch wisselen',
+      'composer.detached': 'HEAD (los)',
+      'composer.changesHint': 'Ongecommitte wijzigingen',
+      'composer.behindHint': 'Nieuwe upstream-commits (op te halen)',
+      'composer.aheadHint': 'Lokale commits die wachten op push',
+      'composer.inWorktree': 'Uitgecheckt in een andere worktree',
+      'composer.busy': 'Git-actie gaande…',
         'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
         'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
         'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
@@ -4391,6 +4521,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Rozmieszczenie panelu, przyciski paska akcji i wiadomość commita od AI',
         'settings.placement.title': 'Rozmieszczenie panelu',
         'settings.placement.tab': 'Pokazuj kartę Git w obszarze rozmowy',
+      'settings.composer.title': 'Status Git w pasku wprowadzania',
+      'settings.composer.hint': 'Pokazuje repozytorium i gałąź obok paska wprowadzania — kliknij, aby przełączyć; synchronizacja z panelem Git. Wyłączone — pasek pozostaje czysty.',
+      'composer.repoHint': 'Przełącz repozytorium',
+      'composer.branchHint': 'Przełącz gałąź',
+      'composer.detached': 'HEAD (odłączony)',
+      'composer.changesHint': 'Niezatwierdzone zmiany',
+      'composer.behindHint': 'Nowe commity upstream (do pobrania)',
+      'composer.aheadHint': 'Lokalne commity oczekujące na wysłanie',
+      'composer.inWorktree': 'Wybrane w innym drzewie roboczym',
+      'composer.busy': 'Operacja Git w toku…',
         'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
         'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
         'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
@@ -4706,6 +4846,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Panelplacering, knappar i åtgärdsfältet och AI-commitmeddelande',
         'settings.placement.title': 'Panelplacering',
         'settings.placement.tab': 'Visa Git-fliken i konversationsytan',
+      'settings.composer.title': 'Git-status i inmatningsfältet',
+      'settings.composer.hint': 'Visar repo och gren bredvid inmatningsfältet — klicka för att växla, synkat med Git-panelen. Av stänger av visningen.',
+      'composer.repoHint': 'Byt repo',
+      'composer.branchHint': 'Byt gren',
+      'composer.detached': 'HEAD (frånkopplad)',
+      'composer.changesHint': 'Ocommittade ändringar',
+      'composer.behindHint': 'Nya upstream-commits (hämtbara)',
+      'composer.aheadHint': 'Lokala commits som väntar på push',
+      'composer.inWorktree': 'Utcheckad i ett annat arbetsträd',
+      'composer.busy': 'Git-åtgärd pågår…',
         'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
         'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
         'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
@@ -5021,6 +5171,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Panel yerleşimi, eylem çubuğu düğmeleri ve AI commit mesajı',
         'settings.placement.title': 'Panel yerleşimi',
         'settings.placement.tab': 'Konuşma alanında Git sekmesini göster',
+      'settings.composer.title': 'Giriş çubuğunda Git durumu',
+      'settings.composer.hint': 'Giriş çubuğu yanında depo ve dal gösterir — geçiş için tıklayın, Git paneliyle eşitlenir. Kapalıyken giriş çubuğu temiz kalır.',
+      'composer.repoHint': 'Depo değiştir',
+      'composer.branchHint': 'Dal değiştir',
+      'composer.detached': 'HEAD (ayrık)',
+      'composer.changesHint': 'Commitlenmemiş değişiklikler',
+      'composer.behindHint': 'Yeni upstream commitleri (çekilebilir)',
+      'composer.aheadHint': 'Push bekleyen yerel commitler',
+      'composer.inWorktree': 'Başka bir worktree’da checkout yapılmış',
+      'composer.busy': 'Git işlemi sürüyor…',
         'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
         'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
         'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
@@ -5336,6 +5496,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Penempatan panel, tombol bilah aksi dan pesan commit AI',
         'settings.placement.title': 'Penempatan panel',
         'settings.placement.tab': 'Tampilkan tab Git di area percakapan',
+      'settings.composer.title': 'Status Git di bilah masukan',
+      'settings.composer.hint': 'Menampilkan repositori dan cabang di samping bilah masukan — klik untuk beralih, tersinkron dengan panel Git. Matikan untuk menyembunyikannya.',
+      'composer.repoHint': 'Ganti repositori',
+      'composer.branchHint': 'Ganti cabang',
+      'composer.detached': 'HEAD (lepas)',
+      'composer.changesHint': 'Perubahan yang belum di-commit',
+      'composer.behindHint': 'Commit upstream baru (bisa ditarik)',
+      'composer.aheadHint': 'Commit lokal menunggu push',
+      'composer.inWorktree': 'Sudah di-checkout di worktree lain',
+      'composer.busy': 'Operasi Git sedang berjalan…',
         'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
         'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
         'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
@@ -5651,6 +5821,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'Vị trí bảng, nút thanh tác vụ và thông điệp commit do AI viết',
         'settings.placement.title': 'Vị trí bảng',
         'settings.placement.tab': 'Hiện thẻ Git trong vùng hội thoại',
+      'settings.composer.title': 'Trạng thái Git trên thanh nhập',
+      'settings.composer.hint': 'Hiện kho và nhánh bên cạnh thanh nhập — bấm để chuyển đổi, đồng bộ với bảng Git. Tắt để ẩn đi.',
+      'composer.repoHint': 'Chuyển kho',
+      'composer.branchHint': 'Chuyển nhánh',
+      'composer.detached': 'HEAD (tách rời)',
+      'composer.changesHint': 'Thay đổi chưa commit',
+      'composer.behindHint': 'Commit mới từ xa (có thể kéo về)',
+      'composer.aheadHint': 'Commit cục bộ chờ đẩy lên',
+      'composer.inWorktree': 'Đã được checkout ở worktree khác',
+      'composer.busy': 'Đang chạy tác vụ Git…',
         'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
         'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
         'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
@@ -5966,6 +6146,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'موضع اللوحة، أزرار شريط الإجراءات ورسالة إيداع بالذكاء الاصطناعي',
         'settings.placement.title': 'موضع اللوحة',
         'settings.placement.tab': 'إظهار تبويب Git في منطقة المحادثة',
+      'settings.composer.title': 'حالة Git في شريط الإدخال',
+      'settings.composer.hint': 'يعرض المستودع والفرز بجانب شريط الإدخال — انقر للتبديل، ومتزامن مع لوحة Git. عند الإيقاف يبقى الشريط نظيفًا.',
+      'composer.repoHint': 'تبديل المستودع',
+      'composer.branchHint': 'تبديل الفرع',
+      'composer.detached': 'HEAD (منفصل)',
+      'composer.changesHint': 'تغييرات غير ملتزَم بها',
+      'composer.behindHint': 'التزامات جديدة في المستودع البعيد (قابلة للسحب)',
+      'composer.aheadHint': 'التزامات محلية بانتظار الدفع',
+      'composer.inWorktree': 'مسحوب في شجرة عمل أخرى',
+      'composer.busy': 'عملية Git جارية…',
         'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
         'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
         'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
@@ -6281,6 +6471,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'पैनल प्लेसमेंट, एक्शन रेल बटन और AI कमिट संदेश',
         'settings.placement.title': 'पैनल प्लेसमेंट',
         'settings.placement.tab': 'संवाद क्षेत्र में Git टैब दिखाएँ',
+      'settings.composer.title': 'इनपुट बार में Git स्थिति',
+      'settings.composer.hint': 'इनपुट बार के बगल में रिपॉज़िटरी और शाखा दिखाता है — बदलने के लिए क्लिक करें, Git पैनल के साथ सिंक। बंद करने पर इनपुट बार साफ़ रहती है।',
+      'composer.repoHint': 'रिपॉज़िटरी बदलें',
+      'composer.branchHint': 'शाखा बदलें',
+      'composer.detached': 'HEAD (पृथक)',
+      'composer.changesHint': 'बिना कमिट बदलाव',
+      'composer.behindHint': 'अपस्ट्रीम के नए कमिट (खींचने योग्य)',
+      'composer.aheadHint': 'पुश के लिए प्रतीक्षारत स्थानीय कमिट',
+      'composer.inWorktree': 'दूसरे वर्कट्री में चेकआउट',
+      'composer.busy': 'Git कार्य चल रहा है…',
         'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
         'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
         'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
@@ -6596,6 +6796,16 @@ window.__ModuleLoader__.load({
         'settings.card.desc': 'ตำแหน่งแผง, ปุ่มแถบการทำงานและข้อความคอมมิตโดย AI',
         'settings.placement.title': 'ตำแหน่งแผง',
         'settings.placement.tab': 'แสดงแท็บ Git ในพื้นที่บทสนทนา',
+      'settings.composer.title': 'สถานะ Git ในแถบป้อนข้อความ',
+      'settings.composer.hint': 'แสดงที่เก็บและแบรนช์ข้างแถบป้อนข้อความ — คลิกเพื่อสลับ และซิงก์กับแผง Git ปิดแล้วแถบจะสะอาด',
+      'composer.repoHint': 'สลับที่เก็บ',
+      'composer.branchHint': 'สลับแบรนช์',
+      'composer.detached': 'HEAD (แยกขาด)',
+      'composer.changesHint': 'การเปลี่ยนแปลงที่ยังไม่คอมมิต',
+      'composer.behindHint': 'คอมมิตใหม่จากรีโมต (ดึงได้)',
+      'composer.aheadHint': 'คอมมิตในเครื่องรอพุช',
+      'composer.inWorktree': 'ถูกเช็คเอาต์ในเวิร์กทรีอื่น',
+      'composer.busy': 'กำลังดำเนินการ Git…',
         'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
         'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
         'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
@@ -7015,6 +7225,120 @@ window.__ModuleLoader__.load({
 
     function readPaintRoot(cwd) {
       return paintRoot.get(cwd)
+    }
+
+    /* ============================== session-switch prewarm ============================== */
+
+    /* Everything above only fills when a PANEL MOUNTS. A session whose
+       workspace the panel has never seen still paid the full cold start
+       (repos discovery + summary + branches + first log page) the moment the
+       user opened the Git tab from the rail or the right sidebar. The
+       prewarmer closes that gap: it watches the session list — the same store
+       and the same main-view criterion (retainedBy.mainView) the host itself
+       uses to decide the active session — and whenever the active session's
+       workspace changes, it runs exactly the READS the panel's first paint
+       would run and writes them into the same cache. Opening the panel
+       afterwards seeds from the warm cache and paints instantly; the mount
+       refresh re-proves every field, exactly as before. Read routes only,
+       always silent: any failure just means that panel opens cold, never an
+       error surface. Hosts without the sessions service never arm it. */
+
+    const PREWARM_DEBOUNCE_MS = 300
+    let prewarmTimer = null
+    let prewarmGeneration = 0
+
+    /* The panel's own repo pick order (see the repos effect in Panel): the
+       session's remembered repo, the workspace's last-viewed root, the
+       workspace itself when it is a repository, then the first row. Picking
+       identically is what makes the warmed page THE page the panel shows. */
+    function prewarmPickOf(sessionId, cwd, data) {
+      const paths = data.repos.map((repo) => repo.path)
+      const remembered = readRememberedRepo(sessionId)
+      if (remembered !== undefined && paths.indexOf(remembered) >= 0) return remembered
+      const painted = readPaintRoot(cwd)
+      if (painted !== undefined && paths.indexOf(painted) >= 0) return painted
+      if (data.isRepo === true) return data.cwd
+      if (paths.length > 0) return paths[0]
+      return null
+    }
+
+    async function prewarmWorkspace(sessionId, cwd) {
+      const generation = ++prewarmGeneration
+      try {
+        let data = readPaintRepos(cwd)
+        if (data === undefined) {
+          data = await request('repos', { cwd: cwd })
+          /* A newer switch arrived while this scan ran: drop the stale
+             result on the floor instead of writing and fetching on. */
+          if (generation !== prewarmGeneration) return
+          writePaintRepos(cwd, data)
+        }
+        const pick = prewarmPickOf(sessionId, cwd, data)
+        if (pick === null || readPaintPage(pick) !== undefined) return
+        const base = { cwd: cwd, repoRoot: pick }
+        const pages = await Promise.all([
+          request('summary', Object.assign({}, base, { ignored: false, stats: false })),
+          request('branches', base),
+          request('log', Object.assign({}, base, { skip: 0, limit: 120 })),
+        ])
+        if (generation !== prewarmGeneration) return
+        writePaintPage(pick, { summary: pages[0], branches: pages[1], commits: pages[2].commits, hasMore: pages[2].hasMore })
+      } catch (error) { void error }
+    }
+
+    /* The active session, by the host's own rule: whoever the main view
+       retains (retainedBy.mainView > 0). A switch can briefly retain BOTH
+       sides; the freshest updatedAt wins. Null when no session is active. */
+    /* The LIVE counts come from retainInfo(id).getSnapshot(), not from the
+       list row: the row's retainedBy field only refreshes with the next host
+       list sync, so right after a click it still names the PREVIOUS session
+       (the same reason the host's own ui-session reads retainInfo in its
+       publishMain). cwd and updatedAt still come from the row. */
+    function activeSessionOf(ctx) {
+      try {
+        const sessions = ctx.get('sessions')
+        const list = sessions !== undefined && sessions !== null ? sessions.list : undefined
+        if (list === undefined || typeof list.getSnapshot !== 'function') return null
+        if (typeof sessions.retainInfo !== 'function') return null
+        const snapshot = list.getSnapshot()
+        if (snapshot === null || typeof snapshot !== 'object' || snapshot.byId === undefined || snapshot.byId === null) return null
+        let active = null
+        for (const key of Object.keys(snapshot.byId)) {
+          const entry = snapshot.byId[key]
+          if (entry === null || typeof entry !== 'object') continue
+          let main = 0
+          try {
+            const info = sessions.retainInfo(key)
+            const counted = info !== undefined && info !== null && typeof info.getSnapshot === 'function' ? info.getSnapshot() : null
+            const retained = counted !== null && typeof counted === 'object' ? counted.retainedBy : null
+            main = retained !== undefined && retained !== null && typeof retained === 'object'
+              ? (typeof retained.mainView === 'number' ? retained.mainView : 0)
+              : 0
+          } catch (error) { void error }
+          if (main <= 0) continue
+          if (active === null || entry.updatedAt > active.updatedAt) active = entry
+        }
+        return active
+      } catch (error) { void error; return null }
+    }
+
+    function schedulePrewarm(ctx) {
+      if (prewarmTimer !== null) clearTimeout(prewarmTimer)
+      prewarmTimer = setTimeout(() => {
+        prewarmTimer = null
+        const active = activeSessionOf(ctx)
+        if (active === null) return
+        if (typeof active.cwd !== 'string' || active.cwd === '') return
+        const sessionId = typeof active.id === 'string' ? active.id : 'default'
+        /* Skip everything when BOTH cache layers already cover what the panel
+           would paint: repos fresh AND the pick's page kept warm. */
+        const cachedRepos = readPaintRepos(active.cwd)
+        if (cachedRepos !== undefined) {
+          const pick = prewarmPickOf(sessionId, active.cwd, cachedRepos)
+          if (pick !== null && readPaintPage(pick) !== undefined) return
+        }
+        void prewarmWorkspace(sessionId, active.cwd)
+      }, PREWARM_DEBOUNCE_MS)
     }
 
     /* ============================== storage ============================== */
@@ -9523,6 +9847,49 @@ window.__ModuleLoader__.load({
               E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'commit', size: 13 })),
               E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.placement.immersive'))),
             E('div', { className: 'dig-settings-subnote' }, t('settings.placement.immersiveHint')))
+        })(),
+        (() => {
+          /* Composer status pill (issue: status in the input bar). Same
+             optimistic-write contract as the two rows above; the pill reads
+             composerStatus through composerStatusEnabled() and appears or
+             disappears live. Default ON. */
+          const field = 'composerStatus'
+          const inputId = 'dig-placement-' + field
+          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
+            ? intent.current[field] === true
+            : values[field] !== false
+          const toggle = (event) => {
+            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+            const fromControl = event !== undefined && event !== null && event.target !== null
+              && event.target !== undefined && typeof event.target.checked === 'boolean'
+              ? event.target.checked
+              : null
+            const wanted = fromControl !== null
+              ? fromControl
+              : (Object.prototype.hasOwnProperty.call(intent.current, field)
+                ? intent.current[field] !== true
+                : values[field] !== false) !== true
+            intent.current[field] = wanted
+            dirty.current.set(field, wanted)
+            setPending((now) => Object.assign({}, now, { [field]: wanted }))
+            setNote('')
+            bump()
+            scheduleFlush()
+          }
+          return E('div', { key: field },
+            E('div', { className: 'dig-settings-row', 'data-placement-row': field },
+              E('input', {
+                id: inputId,
+                type: 'checkbox',
+                className: 'dig-settings-check',
+                'aria-labelledby': inputId + '-label',
+                checked: shown,
+                disabled: readOnly === true,
+                onChange: toggle,
+              }),
+              E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'branch', size: 13 })),
+              E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.composer.title'))),
+            E('div', { className: 'dig-settings-subnote' }, t('settings.composer.hint')))
         })()),
         /* Section 3 — the AI commit message (issue #6): model, reasoning and the
            prompt template. */
@@ -11708,7 +12075,9 @@ window.__ModuleLoader__.load({
 
       const pickRepo = useCallback((path) => {
         setRepoRoot(path)
-        rememberRepo(sessionId, path)
+        /* Shared write: the composer status pill watches this store and
+           follows, so both seats always name the same repository. */
+        rememberRepoShared(sessionId, path)
         setSummary(null)
         setBranches(null)
         setCommits([])
@@ -11723,6 +12092,29 @@ window.__ModuleLoader__.load({
         setView('history')
         setPathFilter('')
       }, [sessionId])
+
+      /* The composer status pill and this panel are separate trees; when the
+         pill (or any other seat) switches the repository or the branch, this
+         subscription lands the same selection here — pickRepo for a repo move
+         (full state reset, same as an in-panel pick), refresh() for a branch
+         move (the panel's own post-action path). Declared AFTER pickRepo and
+         refresh: hooks dependency arrays evaluate during render (invariant 12). */
+      useEffect(() => {
+        const onRepo = (sid, root) => {
+          if (sid !== sessionId || typeof root !== 'string' || root === '') return
+          setRepoRoot((current) => (current === root ? current : pickRepo(root)))
+        }
+        const onBranch = () => {
+          if (repoRoot === null) return
+          void refresh()
+        }
+        composerRepoWatchers.add(onRepo)
+        composerBranchWatchers.add(onBranch)
+        return () => {
+          composerRepoWatchers.delete(onRepo)
+          composerBranchWatchers.delete(onBranch)
+        }
+      }, [sessionId, repoRoot, pickRepo, refresh])
 
       const openDiff = useCallback(async (seed) => {
         setPatchLoading(true)
@@ -13926,6 +14318,32 @@ window.__ModuleLoader__.load({
       '.dig-lf-tool svg{width:15px;height:15px}',
       '.dig-lf-tool:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-lf-tool[aria-pressed=true] .dig-lf-compareIcon{transform:rotate(90deg)}',
+      /* ---- composer git status pill (input-bar, issue: status beside the
+         tool row). Colors follow the host's own state language: warn for
+         uncommitted changes, business(blue) for pulls, success(green) for
+         pushes — the same three tones the panel and DSH toasts use. ---- */
+      '.dig-cs-root{position:relative;display:inline-flex;align-items:center;gap:2px;min-width:0;flex:none}',
+      '.dig-cs-pill{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:var(--dsh-content-font-size-secondary,13px);line-height:20px;white-space:nowrap;cursor:pointer}',
+      '.dig-cs-pill:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-cs-pill:disabled{cursor:default}',
+      '.dig-cs-name{overflow:hidden;text-overflow:ellipsis;max-width:150px}',
+      '.dig-cs-pill svg{flex:none}',
+      '.dig-cs-badge{display:inline-flex;align-items:center;font-size:12px;line-height:20px;font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 3px;font-weight:500}',
+      '.dig-cs-changes{color:var(--dsw-alias-state-warn-primary)}',
+      '.dig-cs-behind{color:var(--dsw-alias-state-business-primary)}',
+      '.dig-cs-ahead{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-cs-error{display:inline-flex;align-items:center;color:var(--dsw-alias-state-error-primary);font-size:12px;padding:0 3px;cursor:help}',
+      '.dig-cs-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));backdrop-filter:var(--dsw-menu-backdrop-filter,blur(20px));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
+      '.dig-cs-item{display:flex;align-items:center;gap:8px;width:100%;padding:5px 10px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-primary);font-family:inherit;font-size:13px;line-height:20px;cursor:pointer;text-align:left}',
+      '.dig-cs-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-cs-item:disabled{opacity:.5;cursor:default}',
+      '.dig-cs-item[data-current=true]{color:var(--dsw-alias-brand-primary)}',
+      '.dig-cs-item svg{flex:none}',
+      '.dig-cs-item-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-cs-item-path{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));font-size:11px;max-width:140px}',
+      '.dig-cs-item-note{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none}',
+      '.dig-cs-item-counts{display:inline-flex;gap:5px;margin-left:auto;flex:none;font-variant-numeric:tabular-nums;font-size:11px}',
+      '.dig-cs-static{color:var(--dsw-alias-label-tertiary);cursor:default}',
     ].concat(LANE_TRACE_RULES).join('\n')
 
     /* ============================== plugin ============================== */
@@ -14020,6 +14438,280 @@ window.__ModuleLoader__.load({
         if (entry !== undefined && typeof entry.cwd === 'string' && entry.cwd !== '') return entry.cwd
       } catch (error) { void error }
       return undefined
+    }
+
+    /* ============================== composer git status ============================== */
+
+    /* The input-bar Git pill (status beside the composer's tool row):
+       repository + branch with change/pull/push counters, living in the host's
+       'conversation.input.left' slot — the gap right of the permission chip.
+       The pill and the panel are SEPARATE React trees, so cross-seat selection
+       travels through this tiny module store; rememberRepo() keeps the choice
+       across reloads and is the first thing the panel reads on mount, which is
+       what makes "switch in the composer, open the panel later" land on the
+       right repository without any extra wiring. */
+
+    const composerRepoWatchers = new Set()   /* (sessionId, repoRoot) */
+    const composerBranchWatchers = new Set() /* (sessionId, repoRoot) */
+
+    function rememberRepoShared(sessionId, repoRoot) {
+      rememberRepo(sessionId, repoRoot)
+      for (const watcher of composerRepoWatchers) {
+        try { watcher(sessionId, repoRoot) } catch (error) { void error }
+      }
+    }
+
+    function notifyBranchSwitched(sessionId, repoRoot) {
+      for (const watcher of composerBranchWatchers) {
+        try { watcher(sessionId, repoRoot) } catch (error) { void error }
+      }
+    }
+
+    /* The pill's own on/off switch: the same read the conversation tab's
+       placement switch uses — row Config when the host serves it, always-on
+       before it answers (default ON per the request). */
+    function composerStatusEnabled() {
+      const ready = railFormReady()
+      if (ready === null) return true
+      const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.composerStatus : undefined
+      return value !== false
+    }
+
+    const COMPOSER_POLL_MS = 30000
+    const COMPOSER_ERROR_TTL_MS = 6000
+
+    function ComposerGitStatus(props) {
+      const ctx = props.ctx
+      const t = props.t
+      const sessionId = typeof props.sessionId === 'string' && props.sessionId !== '' ? props.sessionId : 'default'
+      const [enabled, setEnabled] = useState(() => composerStatusEnabled())
+      const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
+      const [repoState, setRepoState] = useState(null)
+      const [repoRoot, setRepoRoot] = useState(null)
+      const [summary, setSummary] = useState(null)
+      const [menu, setMenu] = useState(null)
+      const [branchList, setBranchList] = useState(null)
+      const [branchLoading, setBranchLoading] = useState(false)
+      const [checkingOut, setCheckingOut] = useState('')
+      const [error, setError] = useState('')
+      const [tick, setTick] = useState(0)
+      const rootRef = useRef(null)
+
+      /* The switch flips live through the same rail-config notify walk the
+         settings card and the conversation tab ride. */
+      useEffect(() => {
+        const sync = () => setEnabled(composerStatusEnabled())
+        sync()
+        return subscribeRailConfig(sync)
+      }, [])
+
+      /* cwd follows the session list, exactly like ConversationPanel. */
+      useEffect(() => {
+        let alive = true
+        const sync = () => { if (alive === true) setCwd(sessionCwdOf(ctx, sessionId)) }
+        sync()
+        let unsubscribe
+        try {
+          const sessions = ctx.get('sessions')
+          const list = sessions !== undefined && sessions !== null ? sessions.list : undefined
+          if (list !== undefined && list !== null && typeof list.subscribe === 'function') unsubscribe = list.subscribe(sync)
+        } catch (error) { void error }
+        return () => {
+          alive = false
+          if (typeof unsubscribe === 'function') { try { unsubscribe() } catch (error) { void error } }
+        }
+      }, [ctx, sessionId])
+
+      /* Discovery per workspace; the pick order matches the panel's (remembered
+         repo → workspace root when it is a repository → first row). */
+      useEffect(() => {
+        if (cwd === undefined || enabled !== true) { setRepoState(null); setRepoRoot(null); setSummary(null); return undefined }
+        let cancelled = false
+        void (async () => {
+          try {
+            const data = await request('repos', { cwd: cwd })
+            if (cancelled === true) return
+            setRepoState(data)
+            const remembered = readRememberedRepo(sessionId)
+            const paths = data.repos.map((repo) => repo.path)
+            let pick = null
+            if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
+            else if (data.isRepo === true) pick = data.cwd
+            else if (paths.length > 0) pick = paths[0]
+            setRepoRoot(pick)
+          } catch (error) { void error; if (cancelled !== true) setRepoState({ repos: [], isRepo: false }) }
+        })()
+        return () => { cancelled = true }
+      }, [cwd, sessionId, enabled])
+
+      /* Summary on a slow poll: branch, ahead/behind and the change counters.
+         The panel keeps its own 12s poll for its bigger surface; 30s here is
+         only the ambient state, never a correctness dependency. */
+      useEffect(() => {
+        if (repoRoot === null || enabled !== true) { setSummary(null); return undefined }
+        let cancelled = false
+        const load = async () => {
+          try {
+            const data = await request('summary', { cwd: cwd, repoRoot: repoRoot, stats: false })
+            if (cancelled === true) return
+            setSummary(data)
+          } catch (error) { void error }
+        }
+        void load()
+        const timer = setInterval(() => { void load() }, COMPOSER_POLL_MS)
+        return () => { cancelled = true; clearInterval(timer) }
+      }, [cwd, repoRoot, enabled, tick])
+
+      /* The panel picking a repo (or this pill picking one in another seat)
+         lands here: follow it so both seats always show the same repository. */
+      useEffect(() => {
+        const watcher = (sid, root) => {
+          if (sid !== sessionId || typeof root !== 'string' || root === '') return
+          setRepoRoot((current) => (current === root ? current : root))
+          setSummary(null)
+          setBranchList(null)
+          setTick((value) => value + 1)
+        }
+        composerRepoWatchers.add(watcher)
+        return () => { composerRepoWatchers.delete(watcher) }
+      }, [sessionId])
+
+      /* A branch switched in the panel (or here) refreshes the summary now
+         instead of at the next poll tick. */
+      useEffect(() => {
+        const watcher = () => { setTick((value) => value + 1) }
+        composerBranchWatchers.add(watcher)
+        return () => { composerBranchWatchers.delete(watcher) }
+      }, [sessionId])
+
+      /* Click-away closes the dropdown; nothing here is anchored to a panel
+         (.dig-root) — the pill lives in the host's composer DOM, so the menu
+         is positioned inside this relative root. */
+      useEffect(() => {
+        if (menu === null) return undefined
+        const close = (event) => {
+          const el = rootRef.current
+          if (el !== null && el !== undefined && event.target !== null && event.target !== undefined
+            && typeof Node === 'function' && event.target instanceof Node === true && el.contains(event.target) === true) return
+          setMenu(null)
+        }
+        document.addEventListener('mousedown', close)
+        return () => document.removeEventListener('mousedown', close)
+      }, [menu])
+
+      useEffect(() => {
+        if (error === '') return undefined
+        const timer = setTimeout(() => { setError('') }, COMPOSER_ERROR_TTL_MS)
+        return () => clearTimeout(timer)
+      }, [error])
+
+      if (enabled !== true) return null
+      const data = repoState
+      if (data === null || (data.isRepo !== true && (data.repos === undefined || data.repos.length === 0))) return null
+      const repoPaths = data.repos.map((repo) => repo.path)
+      const singleRepo = repoPaths.length <= 1
+      const repoName = repoRoot === null ? '' : (repoRoot.split('/').filter((segment) => segment !== '').pop() || repoRoot)
+      const branchName = summary !== null && typeof summary.branch === 'string' && summary.branch !== '' ? summary.branch : null
+      const detached = summary !== null && summary.detached === true
+      const ahead = summary !== null && typeof summary.ahead === 'number' ? summary.ahead : 0
+      const behind = summary !== null && typeof summary.behind === 'number' ? summary.behind : 0
+      const changesCount = summary !== null && summary.changes !== null && typeof summary.changes === 'object'
+        ? summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length
+        : null
+
+      const openBranchMenu = async () => {
+        setMenu('branch')
+        setBranchList(null)
+        setBranchLoading(true)
+        try {
+          const branchesData = await request('branches', { cwd: cwd, repoRoot: repoRoot })
+          setBranchList(branchesData)
+        } catch (caught) { void caught; setBranchList(null) } finally { setBranchLoading(false) }
+      }
+      const checkoutBranch = async (name) => {
+        if (repoRoot === null || checkingOut !== '') return
+        setCheckingOut(name)
+        try {
+          await request('checkout', { cwd: cwd, repoRoot: repoRoot, branch: name, confirm: true })
+          setMenu(null)
+          setTick((value) => value + 1)
+          notifyBranchSwitched(sessionId, repoRoot)
+        } catch (caught) {
+          setMenu(null)
+          setError(caught instanceof Error ? caught.message : String(caught))
+        } finally { setCheckingOut('') }
+      }
+      const pickRepoRoot = (path) => {
+        setMenu(null)
+        setRepoRoot(path)
+        setSummary(null)
+        setBranchList(null)
+        setTick((value) => value + 1)
+        rememberRepoShared(sessionId, path)
+      }
+
+      return E('div', { ref: rootRef, className: 'dig-cs-root', 'data-dsh-ide-git-status': '' },
+        E('button', {
+          type: 'button',
+          className: 'dig-cs-pill',
+          title: singleRepo === true ? undefined : t('composer.repoHint'),
+          disabled: singleRepo === true,
+          onClick: singleRepo === true ? undefined : () => { setMenu(menu === 'repo' ? null : 'repo') },
+        },
+          E(Icon, { name: 'commit', size: 13 }),
+          E('span', { className: 'dig-cs-name' }, repoName),
+          singleRepo === true ? null : E(Icon, { name: 'chevron', size: 10 })),
+        branchName !== null ? E('button', {
+          type: 'button',
+          className: 'dig-cs-pill',
+          title: t('composer.branchHint'),
+          onClick: () => { if (menu !== 'branch') void openBranchMenu(); else setMenu(null) },
+        },
+          E(Icon, { name: 'branch', size: 13 }),
+          E('span', { className: 'dig-cs-name' }, detached === true ? t('composer.detached') : branchName),
+          E(Icon, { name: 'chevron', size: 10 })) : null,
+        changesCount !== null && changesCount > 0
+          ? E('span', { className: 'dig-cs-badge dig-cs-changes', title: t('composer.changesHint') }, '±' + String(changesCount))
+          : null,
+        behind > 0 ? E('span', { className: 'dig-cs-badge dig-cs-behind', title: t('composer.behindHint') }, '↓' + String(behind)) : null,
+        ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,
+        error !== '' ? E('span', { className: 'dig-cs-error', title: error }, '×') : null,
+        menu === 'repo' ? E('div', { className: 'dig-cs-menu' },
+          repoPaths.map((path) => E('button', {
+            key: path,
+            type: 'button',
+            className: 'dig-cs-item',
+            'data-current': path === repoRoot ? 'true' : 'false',
+            title: path,
+            onClick: () => pickRepoRoot(path),
+          },
+            E(Icon, { name: 'commit', size: 11 }),
+            E('span', { className: 'dig-cs-item-name' }, path.split('/').filter((segment) => segment !== '').pop() || path),
+            E('span', { className: 'dig-cs-item-path' }, path))))
+          : null,
+        menu === 'branch' ? (branchLoading === true || branchList === null
+          ? E('div', { className: 'dig-cs-menu' }, E('div', { className: 'dig-cs-item dig-cs-static' }, '…'))
+          : E('div', { className: 'dig-cs-menu' },
+            branchList.local.map((entry) => E('button', {
+              key: entry.name,
+              type: 'button',
+              className: 'dig-cs-item',
+              'data-current': entry.head === true ? 'true' : 'false',
+              disabled: entry.worktree !== null || checkingOut !== '',
+              title: entry.worktree !== null ? t('composer.inWorktree') : (checkingOut !== '' ? t('composer.busy') : entry.name),
+              onClick: () => { void checkoutBranch(entry.name) },
+            },
+              E(Icon, { name: 'branch', size: 11 }),
+              E('span', { className: 'dig-cs-item-name' }, entry.name),
+              entry.worktree !== null ? E('span', { className: 'dig-cs-item-note' }, t('composer.inWorktree')) : null,
+              checkingOut === entry.name ? E('span', { className: 'dig-cs-item-note' }, '…') : null,
+              entry.ahead > 0 || entry.behind > 0
+                ? E('span', { className: 'dig-cs-item-counts' },
+                  entry.ahead > 0 ? E('span', { className: 'dig-cs-ahead' }, '↑' + String(entry.ahead)) : null,
+                  entry.behind > 0 ? E('span', { className: 'dig-cs-behind' }, '↓' + String(entry.behind)) : null)
+                : null))))
+          : null,
+      )
     }
 
     /* The conversation shell re-renders on EVERY keystroke (the composer owns
@@ -14516,6 +15208,77 @@ window.__ModuleLoader__.load({
             }
           }
         }, 'dsh-ide-git: conversation view tab')
+      })
+
+      /* ---- door 4: the composer status pill (issue: status in the input bar) ---- */
+      /* A tiny repo/branch/change readout inside the host composer's tool row,
+         in the 'conversation.input.left' gap right of the permission chip. It
+         shares the first-paint cache's read paths (read-only routes only) and
+         syncs repository/branch selection with the panel through the module
+         store above. The slot is a plain list; a host without ui-conversation
+         never mounts it and nothing throws. */
+      ctx.inject(['slots'], (pillCtx) => {
+        const pillSlots = pillCtx.get('slots')
+        if (pillSlots === undefined || pillSlots === null || typeof pillSlots.inject !== 'function') return
+        pillCtx.effect(() => {
+          const offPill = pillSlots.inject('conversation.input.left', () => pillSlots.register(
+            { name: 'conversation.input.left', id: 'dsh-ide-git:status', order: 20, locale: LOCALE_NS },
+            (pillProps) => E(ComposerGitStatus, Object.assign({}, pillProps, { t: t, ctx: ctx })),
+          ))
+          return () => {
+            try { offPill() } catch (error) { void error }
+          }
+        }, 'dsh-ide-git: composer status pill')
+      })
+
+      /* ---- session-switch prewarm ---- */
+      /* Warm the first-paint cache the moment a workspace session becomes
+         active — before any Git tab exists. ctx.inject keeps this optional:
+         a host without the sessions service simply never arms it. */
+      ctx.inject(['sessions'], (sessionCtx) => {
+        const sessions = sessionCtx.get('sessions')
+        if (sessions === undefined || sessions === null || sessions.list === undefined
+          || sessions.list === null || typeof sessions.list.subscribe !== 'function'
+          || typeof sessions.retainInfo !== 'function') return
+        sessionCtx.effect(() => {
+          /* Becoming the main view is a LOCAL retain event: the host's own
+             ui-session subscribes retainInfo(id) per session for exactly this
+             (a plain list subscription never fires on it). Mirror that shape —
+             the list feeds membership, retainInfo per listed session feeds the
+             main-view transitions. */
+          const armed = new Map()
+          const armAll = () => {
+            let snapshot = null
+            try { snapshot = sessions.list.getSnapshot() } catch (error) { void error; return }
+            const ids = snapshot !== null && typeof snapshot === 'object' && Array.isArray(snapshot.ids) ? snapshot.ids : []
+            const wanted = new Set(ids.map((id) => String(id)))
+            for (const [id, dispose] of armed) {
+              if (wanted.has(id) === true) continue
+              armed.delete(id)
+              try { dispose() } catch (error) { void error }
+            }
+            for (const raw of ids) {
+              const id = String(raw)
+              if (armed.has(id) === true) continue
+              let info = null
+              try { info = sessions.retainInfo(raw) } catch (error) { void error; continue }
+              if (info === undefined || info === null || typeof info.subscribe !== 'function') continue
+              armed.set(id, info.subscribe(() => { schedulePrewarm(ctx) }))
+            }
+          }
+          const unsubscribe = sessions.list.subscribe(armAll)
+          armAll()
+          /* The page may already hold an active session (first load, or this
+             plugin applied late): warm it without waiting for a switch. */
+          schedulePrewarm(ctx)
+          return () => {
+            if (prewarmTimer !== null) { clearTimeout(prewarmTimer); prewarmTimer = null }
+            prewarmGeneration += 1
+            try { unsubscribe() } catch (error) { void error }
+            for (const dispose of armed.values()) { try { dispose() } catch (error) { void error } }
+            armed.clear()
+          }
+        }, 'dsh-ide-git: session-switch prewarm')
       })
 
       /* ---- settings: the row Config is the rail's source of truth ---- */
