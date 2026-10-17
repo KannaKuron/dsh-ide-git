@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.19.6 — 2026-10-18
+
+**类型**:fix(diff 正文与提交流水字号跟随宿主字体设置)
+
+- **代码内容面接官方 code delta**:diff 正文 `.dig-diff`、宿主 DiffBlock 容器 `.dig-diff-card`(均 12px 基准)、git 命令输出 `.dig-gitlog-pre`(11px 基准)、变更列表 ± 计数 `.dig-lf-itemCounts/.dig-lf-counts`(12px 基准,等宽 `--ds-font-family-code`)接 `--dsh-code-font-delta`(官方变量 = 代码字号设置值 − 11px)——用户调大「设置 → 字体大小 → 代码」后同步放大。
+- **meta 面接 secondary delta**:提交时间 `.dig-gitlog-at`(11px 基准)接 `--dsh-content-font-delta-secondary`(官方派生变量 = 正文设置 − 1px 再钳制),跟随正文字号而非代码字号。
+- **其余固定字号不动**(文件树、badge、右键菜单、设置卡 chrome 的 10–13px):与官方 ui-deliverables(ReviewTab/FileDiff/ChangedFiles/PresentRow)固定字号零 delta 的现状一致,保持「IDE 面板固定、内容面跟随」的边界;此前 `.dig-cs-pill`(v0.19.3)已是先例。
+- 验证:113 项测试全绿(smoke + api + graph + repos);CSS_TEXT 内 calc 字号引用 5 处(code ×4、secondary ×1)、半像素残留 0;真机双端验证待用户复验(改后默认字号设置下视觉无变化,调大后生效)。
+
 ## v0.19.5 — 2026-10-18
 
 **类型**:fix(选中与悬浮高亮按亮暗主题分别给中性灰,透明壁纸上不再发白)

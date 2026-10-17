@@ -14595,7 +14595,7 @@ window.__ModuleLoader__.load({
       '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-border-l2)}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
       '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
-      '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;font-weight:500;min-height:0}',
+      '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:calc(12px + var(--dsh-code-font-delta, 0px));line-height:1.5;font-weight:500;min-height:0}',
       '.dig-diff-line{display:flex;gap:8px;padding:0 6px;white-space:pre}',
       '.dig-diff-gutter{width:32px;flex:none;text-align:right;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));user-select:none}',
       '.dig-diff-text{white-space:pre-wrap;word-break:break-word;flex:1;min-width:0}',
@@ -14607,7 +14607,7 @@ window.__ModuleLoader__.load({
          pane's scroll contract (everything renders, the pane scrolls), and the
          card's own 16px vertical margin is tightened to the panel rhythm. */
       '.dig-diff-host{flex:1;overflow:auto;min-height:0}',
-      '.dig-diff-card{margin:4px 6px 8px;font-size:12px}',
+      '.dig-diff-card{margin:4px 6px 8px;font-size:calc(12px + var(--dsh-code-font-delta, 0px))}',
       /* File-type glyphs lead every change row (v0.14); a transparent-theme
          host still tints them through the component's own category colors. */
       '.dig-file-icon{flex:none;opacity:.95}',
@@ -14625,9 +14625,9 @@ window.__ModuleLoader__.load({
       '.dig-gitlog-meta{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}',
       '.dig-gitlog-code{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
       '.dig-gitlog-ms{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
-      '.dig-gitlog-at{color:var(--dsw-alias-label-tertiary);font-size:11px}',
+      '.dig-gitlog-at{color:var(--dsw-alias-label-tertiary);font-size:calc(11px + var(--dsh-content-font-delta-secondary, 0px))}',
       '.dig-gitlog-argv{font-weight:600;word-break:break-all}',
-      '.dig-gitlog-pre{margin:4px 0 0;padding:6px 8px;border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-3,var(--dsw-alias-bg-layer-2));overflow:auto;max-height:160px;white-space:pre-wrap;word-break:break-all;font-size:11px}',
+      '.dig-gitlog-pre{margin:4px 0 0;padding:6px 8px;border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-3,var(--dsw-alias-bg-layer-2));overflow:auto;max-height:160px;white-space:pre-wrap;word-break:break-all;font-size:calc(11px + var(--dsh-code-font-delta, 0px))}',
       '.dig-dialog-wide{min-width:min(360px,92%)}',
       '.dig-dialog-title{font-weight:600}',
       '.dig-dialog-text{color:var(--dsw-alias-label-secondary);white-space:pre-wrap}',
@@ -14728,7 +14728,7 @@ window.__ModuleLoader__.load({
       '.dig-lf-selectorButton svg{display:block;flex:none}',
       '.dig-lf-item{display:flex;gap:12px;align-items:center;justify-content:space-between;min-width:0}',
       '.dig-lf-itemPath{min-width:0;overflow:hidden;line-height:20px;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-lf-itemCounts,.dig-lf-counts{display:inline-flex;flex:none;gap:6px;align-items:center;font-family:var(--ds-font-family-code);font-size:12px;line-height:20px;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-lf-itemCounts,.dig-lf-counts{display:inline-flex;flex:none;gap:6px;align-items:center;font-family:var(--ds-font-family-code);font-size:calc(12px + var(--dsh-code-font-delta, 0px));line-height:20px;color:var(--dsw-alias-label-tertiary)}',
       '.dig-lf-counts{min-width:0;margin-right:auto}',
       '.dig-lf-added{color:var(--dsw-alias-state-success-primary)}',
       '.dig-lf-deleted{color:var(--dsw-alias-state-error-primary)}',
