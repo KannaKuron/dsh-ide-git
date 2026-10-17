@@ -10375,6 +10375,24 @@ window.__ModuleLoader__.load({
          selKeys (`local:name` / `remote:name` / `tag:name` — the prefix keeps a
          branch and a tag that share a name from colliding). */
       const [picks, setPicks] = useState(() => new Set())
+      /* v0.19.4: the Panel bumps clearSignal when ANOTHER list gains the
+         selection (or a blank click clears everywhere) — drop ours. Monotonic
+         epochs start at 0, so the mount pass never clears. */
+      const treeClearSignal = props.clearSignal === undefined ? 0 : props.clearSignal
+      const seenTreeClear = useRef(treeClearSignal)
+      /* v0.19.4 echo guard: only USER gestures may flow up to the Panel — the
+         mirror effect below reports picks exactly once per gesture. Reactive
+         setPicks calls (the clear-signal effect above, the survival filter)
+         must NOT re-enter the forwarder, or the epoch it bumps clears the
+         selection the OTHER list just made (the T1b echo bug). */
+      const reportGestureRef = useRef(false)
+      useEffect(() => {
+        if (seenTreeClear.current !== treeClearSignal) {
+          seenTreeClear.current = treeClearSignal
+          reportGestureRef.current = false
+          setPicks(new Set())
+        }
+      }, [treeClearSignal])
       const pickAnchor = useRef(null)
       const visibleRef = useRef([])
       const [foldedFolders, setFoldedFolders] = useState(() => {
@@ -10409,6 +10427,7 @@ window.__ModuleLoader__.load({
       const headEntry = locals.find((entry) => entry.head === true) || null
       /* A refresh that makes a picked ref disappear must not keep it selected. */
       useEffect(() => {
+        reportGestureRef.current = false
         setPicks((previous) => {
           if (previous.size === 0) return previous
           const alive = new Set()
@@ -10426,6 +10445,8 @@ window.__ModuleLoader__.load({
          render-time call would trip the hooks rules): the rail reads them so
          its buttons can act on the selection instead of only on HEAD. */
       useEffect(() => {
+        if (reportGestureRef.current !== true) return
+        reportGestureRef.current = false
         if (props.onPicksChange !== undefined) props.onPicksChange(picks)
       }, [picks])
       /**
@@ -10460,6 +10481,7 @@ window.__ModuleLoader__.load({
         return out
       }
       const handlePick = useCallback((event, entry, selKey) => {
+        reportGestureRef.current = true
         const ordered = visibleRef.current.map((leaf) => branchSelKeyOf(leaf.entry))
         if (event.shiftKey === true) {
           /* No anchor yet (fresh tree, nothing clicked): VS Code semantics —
@@ -10581,7 +10603,7 @@ window.__ModuleLoader__.load({
           })
           return rects
         },
-        onPick: (keys) => setPicks(new Set(keys)),
+        onPick: (keys) => { reportGestureRef.current = true; setPicks(new Set(keys)) },
       })
       /* List-scope keyboard: Ctrl/Cmd+C copies the picked names, Delete asks
          Panel for a grouped delete (head branches are skipped — git refuses
@@ -10630,7 +10652,16 @@ window.__ModuleLoader__.load({
           ref: treeScrollRef,
           onPointerDown: treeMarquee.onPointerDown,
           onClickCapture: (event) => {
-            if (treeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
+            if (treeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation(); return }
+            /* v0.19.4: a blank click (not on a branch row or a control) clears
+               the picks here AND everywhere else — "selection follows the last
+               gesture". The Set goes up through the same forwarder a row click
+               uses, so the other two lists reset as well. */
+            const target = event.target
+            if (target instanceof Element && target.closest('[data-mkey],button,input,textarea,select,a') === null) {
+              reportGestureRef.current = true
+              setPicks(new Set())
+            }
           },
         },
           headEntry === null ? E('div', { className: 'dig-section-head dig-section-head-static' }, t('branches.head')) : E('div', {
@@ -11082,7 +11113,11 @@ window.__ModuleLoader__.load({
             },
             onPointerDown: changeMarquee.onPointerDown,
             onClickCapture: (event) => {
-              if (changeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
+              if (changeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation(); return }
+              /* v0.19.4: blank click clears — the wrapped setter also bumps the
+                 other lists' epochs, so this is a clear-everywhere gesture. */
+              const target = event.target
+              if (target instanceof Element && target.closest('.dig-row,.dig-group-head,button,input,textarea,select,a') === null) setSelection(new Set())
             },
           },
             collapsed ? null : [
@@ -11723,7 +11758,12 @@ window.__ModuleLoader__.load({
           onKeyDown: onListKeyDown,
           onPointerDown: historyMarquee.onPointerDown,
           onClickCapture: (event) => {
-            if (historyMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
+            if (historyMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation(); return }
+            /* v0.19.4: blank click clears — see the changes/tree twins. */
+            const target = event.target
+            if (target instanceof Element && target.closest('.dig-commit,button,input,textarea,select,a') === null) {
+              if (props.onPicksChange !== undefined) props.onPicksChange(new Set())
+            }
           },
           onPointerDownCapture: (event) => {
             if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
@@ -11845,6 +11885,28 @@ window.__ModuleLoader__.load({
       /* The branch tree reports its picks up (onPicksChange) so the rail can act
          on the selection: "select main, press pull" must pull main, not HEAD. */
       const [branchPicks, setBranchPicks] = useState(() => new Set())
+      /* v0.19.4: the three lists' selections are mutually exclusive — a pick in
+         one list (row click or rubber band) clears the other two, and a blank
+         click inside a list clears everything too. Each interaction bumps the
+         OTHER lists' epoch counters; the effects below (and a clearSignal prop
+         into BranchTree, whose picks live inside it) reset on change. Epochs
+         are monotonic and start at 0, so the mount pass clears nothing. */
+      const [pickEpochs, setPickEpochs] = useState(() => ({ changes: 0, history: 0, tree: 0 }))
+      const clearPicksExcept = useCallback((owner) => {
+        setPickEpochs((previous) => ({
+          changes: owner === 'changes' ? previous.changes : previous.changes + 1,
+          history: owner === 'history' ? previous.history : previous.history + 1,
+          tree: owner === 'tree' ? previous.tree : previous.tree + 1,
+        }))
+      }, [])
+      useEffect(() => { if (pickEpochs.changes > 0) setChangeSelection(new Set()) }, [pickEpochs.changes])
+      useEffect(() => { if (pickEpochs.history > 0) setPickedCommits(new Set()) }, [pickEpochs.history])
+      /* Forwarders: the raw setters wrapped so EVERY selection gesture reports
+         an owner. The updates arrive either as a Set or as a functional
+         updater (the memoised rows hold stale closures) — forwarded as-is. */
+      const onBranchPicks = useCallback((update) => { setBranchPicks(update); clearPicksExcept('tree') }, [clearPicksExcept])
+      const onChangeSelection = useCallback((update) => { setChangeSelection(update); clearPicksExcept('changes') }, [clearPicksExcept])
+      const onCommitPicks = useCallback((update) => { setPickedCommits(update); clearPicksExcept('history') }, [clearPicksExcept])
       const [menu, setMenu] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
@@ -13269,8 +13331,8 @@ window.__ModuleLoader__.load({
             onLoadMore: () => { void guard(() => loadCommits(commits.length)) },
             /* ---- multi-select (issue #13) ---- */
             pickedHashes: pickedCommits,
-            onPicksChange: setPickedCommits,
-            onSelectAll: (hashes) => setPickedCommits(new Set(hashes)),
+            onPicksChange: onCommitPicks,
+            onSelectAll: (hashes) => onCommitPicks(new Set(hashes)),
             onKeyDown: onHistoryKeyDown,
             mergeAnchor: mergeAnchor,
             base: base,
@@ -13543,7 +13605,7 @@ window.__ModuleLoader__.load({
         onChangeMenu: changeMenu,
         /* ---- multi-select (issue #13) ---- */
         selection: changeSelection,
-        onSelectionChange: setChangeSelection,
+        onSelectionChange: onChangeSelection,
         anchorRef: changeAnchor,
         onBulkStage: bulkStageChanges,
         onBulkUnstage: bulkUnstageChanges,
@@ -13824,19 +13886,19 @@ window.__ModuleLoader__.load({
               title: t('toolbar.tree'),
               onClick: () => foldTree(!treeOpen),
             }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
-          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane),
           gutter('changes', 'next'),
           E('div', { className: 'dig-pane dig-pane-changes', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane))
       } else {
         body = E('div', { className: 'dig-body dig-body-stack', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
@@ -14392,7 +14454,14 @@ window.__ModuleLoader__.load({
       '.dig-head-branch{cursor:pointer;transition:background .12s}',
       '.dig-head-branch:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
-      '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      /* v0.19.4: the flat alias background read as "barely selected" over the
+         translucency/frost surfaces the any-background plugin produces. Mixing
+         the token with the row's own TEXT color keeps the theme hues (light
+         theme darkens, dark theme lightens — both gain contrast), and because
+         the text color is near-opaque the mix carries an alpha FLOOR (~42%):
+         the token's own translucency still dominates the look (58%), so the
+         selection follows the plugin's transparency while staying readable. */
+      '.dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)))) 58%,currentColor 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
       '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
       '.dig-row-head .dig-row-label{font-weight:600}',
@@ -14416,7 +14485,8 @@ window.__ModuleLoader__.load({
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.dig-commit-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
+      /* Same floor + tint mix as .dig-row-selected (see it). */
+      '.dig-commit-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)))) 58%,currentColor 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
       // A favorited branch renders its star SOLID (BranchRow adds this class
       // and flips the tone to warn) — the hollow green HEAD star read as
       // "not favorited" (v0.18.5).
