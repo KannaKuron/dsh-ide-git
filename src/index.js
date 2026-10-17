@@ -778,6 +778,40 @@ async function log(payload) {
   const hasMore = all.length > limit
   return { repoRoot: root, commits: hasMore ? all.slice(0, limit) : all, hasMore, skip, limit }
 }
+/* The merge that carried `from` INTO `to`, newest first — the anchor the
+   branch tree's double-click-to-browse lands on (IDEA-style: double-click
+   branch 2, then branch 1, and 1's list opens scrolled to the merge commit
+   where 2 was merged in, so "2 has been merged here" is visible at a
+   glance even though 1 kept moving. No merge relationship -> null, and the
+   caller just opens the list at the top. Pure rev arithmetic, no network. */
+/* Who am I here: git config resolves user.name/email through its usual
+   cascade (repo-local overrides global), so the answer is per repository.
+   The client caches it per repo root for the whole panel lifetime — a git
+   identity rarely changes mid-session — and pins it to the top of the
+   author filter (v0.19.3), even when this branch has no commits by me:
+   picking it and seeing an empty list IS the answer ("I never committed
+   here"). Empty strings mean no identity is configured. */
+async function me(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const name = await runGit(root, ['config', 'user.name'])
+  const email = await runGit(root, ['config', 'user.email'])
+  return {
+    repoRoot: root,
+    name: name.code === 0 ? name.stdout.trim() : '',
+    email: email.code === 0 ? email.stdout.trim() : '',
+  }
+}
+
+async function mergePoint(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const from = requireRef(payload.from, 'from')
+  const to = requireRef(payload.to, 'to')
+  const out = await git(root, ['rev-list', '--merges', '--ancestry-path', '--max-count=1', from + '..' + to])
+  const hash = out.trim().split('\n')[0] || ''
+  return { repoRoot: root, hash: hash === '' ? null : hash }
+}
 
 async function commitDetail(payload) {
   const cwd = cwdOf(payload)
@@ -1939,6 +1973,8 @@ const METHODS = {
   stats,
   branches,
   log,
+  me,
+  'merge-point': mergePoint,
   commitDetail,
   diff,
   compare,

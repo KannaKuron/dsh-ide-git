@@ -101,7 +101,8 @@ window.__ModuleLoader__.load({
       'branches.head': 'HEAD(当前分支)',
       'branches.favorites': '收藏',
       'branches.starHint': "已收藏",
-      'branches.pickHint': '单击选中,双击签出',
+      'branches.pickHint': '单击选中,双击查看提交历史',
+      'branches.headHint': '双击查看当前分支的提交历史',
       'branches.worktree': '已在另一工作区检出',
       'action.stash': '贮藏',
       'action.favorite': '收藏/取消收藏当前分支',
@@ -347,6 +348,7 @@ window.__ModuleLoader__.load({
       'action.unavailable': '当前状态不可用',
       'filter.branch': '分支',
       'filter.user': '用户',
+      'history.me': '我',
       'filter.date': '日期',
       'filter.path': '路径',
       'filter.all': '全部',
@@ -426,7 +428,8 @@ window.__ModuleLoader__.load({
       'branches.head': 'HEAD (current branch)',
       'branches.favorites': 'Favorites',
       'branches.starHint': "Favorited",
-      'branches.pickHint': 'Click to select, double-click to check out',
+      'branches.pickHint': 'Click to select, double-click to browse its history',
+      'branches.headHint': 'Double-click to browse the current branch\'s history',
       'branches.worktree': 'Checked out in another working tree',
       'action.stash': 'Stash',
       'action.favorite': 'Favorite / unfavorite current branch',
@@ -672,6 +675,7 @@ window.__ModuleLoader__.load({
       'action.unavailable': 'Not available in the current state',
       'filter.branch': 'Branch',
       'filter.user': 'User',
+      'history.me': 'Me',
       'filter.date': 'Date',
       'filter.path': 'Path',
       'filter.all': 'All',
@@ -759,7 +763,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD(當前分支)',
         'branches.favorites': '我的最愛',
         'branches.starHint': "已收藏",
-        'branches.pickHint': '單擊選取,雙擊簽出',
+        'branches.pickHint': '單擊選中,雙擊查看提交歷史',
+        'branches.headHint': '雙擊查看當前分支的提交歷史',
         'branches.worktree': '已喺另一個工作區簽出',
         'action.stash': '貯藏',
         'action.favorite': '加入/取消我的最愛',
@@ -1005,6 +1010,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': '當前狀態下唔可用',
         'filter.branch': '分支',
         'filter.user': '提交者',
+        'history.me': '我',
         'filter.date': '日期',
         'filter.path': '路徑',
         'filter.all': '全部',
@@ -1084,7 +1090,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD(目前分支)',
         'branches.favorites': '我的最愛',
         'branches.starHint': "已收藏",
-        'branches.pickHint': '單擊選取,雙擊簽出',
+        'branches.pickHint': '單擊選取,雙擊檢視提交歷史',
+        'branches.headHint': '雙擊檢視目前分支的提交歷史',
         'branches.worktree': '已在另一個工作區簽出',
         'action.stash': '暫存擱置',
         'action.favorite': '加入/移除我的最愛',
@@ -1330,6 +1337,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': '目前狀態下無法使用',
         'filter.branch': '分支',
         'filter.user': '提交者',
+        'history.me': '我',
         'filter.date': '日期',
         'filter.path': '路徑',
         'filter.all': '全部',
@@ -1409,7 +1417,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD(當前分支)',
         'branches.favorites': '我的最愛',
         'branches.starHint': "已收藏",
-        'branches.pickHint': '單擊選取,雙擊簽出',
+        'branches.pickHint': '單擊選中,雙擊查看提交歷史',
+        'branches.headHint': '雙擊查看當前分支的提交歷史',
         'branches.worktree': '已喺另一個工作區簽出',
         'action.stash': '貯藏',
         'action.favorite': '加入/取消我的最愛',
@@ -1655,6 +1664,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': '當前狀態下唔可用',
         'filter.branch': '分支',
         'filter.user': '提交者',
+        'history.me': '我',
         'filter.date': '日期',
         'filter.path': '路徑',
         'filter.all': '全部',
@@ -1734,7 +1744,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD(現在のブランチ)',
         'branches.favorites': 'お気に入り',
         'branches.starHint': "お気に入り済み",
-        'branches.pickHint': 'クリックで選択、ダブルクリックでチェックアウト',
+        'branches.pickHint': 'クリックで選択、ダブルクリックで履歴を表示',
+        'branches.headHint': 'ダブルクリックで現在のブランチの履歴を表示',
         'branches.worktree': '別のワークツリーでチェックアウト済み',
         'action.stash': 'スタッシュ',
         'action.favorite': '現在のブランチをお気に入りに追加/解除',
@@ -1980,6 +1991,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': '現在の状態では使用できません',
         'filter.branch': 'ブランチ',
         'filter.user': 'コミット者',
+        'history.me': '自分',
         'filter.date': '日付',
         'filter.path': 'パス',
         'filter.all': 'すべて',
@@ -2059,7 +2071,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD(현재 브랜치)',
         'branches.favorites': '즐겨찾기',
         'branches.starHint': "즐겨찾기",
-        'branches.pickHint': '클릭하여 선택, 더블클릭하여 체크아웃',
+        'branches.pickHint': '클릭하여 선택, 더블클릭으로 커밋 히스토리 보기',
+        'branches.headHint': '더블클릭으로 현재 브랜치의 히스토리 보기',
         'branches.worktree': '다른 워크트리에서 체크아웃됨',
         'action.stash': '스태시',
         'action.favorite': '현재 브랜치 즐겨찾기 추가/해제',
@@ -2305,6 +2318,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': '현재 상태에서는 사용할 수 없습니다',
         'filter.branch': '브랜치',
         'filter.user': '작성자',
+        'history.me': '나',
         'filter.date': '날짜',
         'filter.path': '경로',
         'filter.all': '전체',
@@ -2384,7 +2398,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (aktueller Branch)',
         'branches.favorites': 'Favoriten',
         'branches.starHint': "Favorit",
-        'branches.pickHint': 'Klicken zum Auswählen, doppelklicken zum Auschecken',
+        'branches.pickHint': 'Klicken zum Auswählen, Doppelklick zeigt den Verlauf',
+        'branches.headHint': 'Doppelklick zeigt den Verlauf des aktuellen Branches',
         'branches.worktree': 'In einem anderen Arbeitsbaum ausgecheckt',
         'action.stash': 'Stash',
         'action.favorite': 'Aktuellen Branch als Favorit setzen/entfernen',
@@ -2630,6 +2645,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Im aktuellen Zustand nicht verfügbar',
         'filter.branch': 'Branch',
         'filter.user': 'Autor',
+        'history.me': 'Ich',
         'filter.date': 'Datum',
         'filter.path': 'Pfad',
         'filter.all': 'Alle',
@@ -2709,7 +2725,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (branche courante)',
         'branches.favorites': 'Favoris',
         'branches.starHint': "Favori",
-        'branches.pickHint': 'Cliquer pour sélectionner, double-cliquer pour extraire',
+        'branches.pickHint': 'Clic pour sélectionner, double-clic pour ouvrir l\'historique',
+        'branches.headHint': 'Double-clic pour l\'historique de la branche courante',
         'branches.worktree': 'Extraite dans un autre arbre de travail',
         'action.stash': 'Remisage',
         'action.favorite': 'Ajouter/retirer la branche courante des favoris',
@@ -2955,6 +2972,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Indisponible dans l\'état actuel',
         'filter.branch': 'Branche',
         'filter.user': 'Auteur',
+        'history.me': 'Moi',
         'filter.date': 'Date',
         'filter.path': 'Chemin',
         'filter.all': 'Tout',
@@ -3034,7 +3052,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (текущая ветка)',
         'branches.favorites': 'Избранное',
         'branches.starHint': "В избранном",
-        'branches.pickHint': 'Щёлкните для выбора, двойной щелчок — переключение',
+        'branches.pickHint': 'Клик — выбор, двойной клик — история коммитов',
+        'branches.headHint': 'Двойной клик — история текущей ветки',
         'branches.worktree': 'Уже развёрнута в другом рабочем дереве',
         'action.stash': 'Отложить',
         'action.favorite': 'Добавить/убрать текущую ветку из избранного',
@@ -3280,6 +3299,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Недоступно в текущем состоянии',
         'filter.branch': 'Ветка',
         'filter.user': 'Автор',
+        'history.me': 'Я',
         'filter.date': 'Дата',
         'filter.path': 'Путь',
         'filter.all': 'Все',
@@ -3359,7 +3379,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (branch atual)',
         'branches.favorites': 'Favoritas',
         'branches.starHint': "Favorito",
-        'branches.pickHint': 'Clique para selecionar, clique duplo para fazer checkout',
+        'branches.pickHint': 'Clique para selecionar, duplo clique abre o histórico',
+        'branches.headHint': 'Duplo clique abre o histórico do branch atual',
         'branches.worktree': 'Já em checkout em outra árvore de trabalho',
         'action.stash': 'Stash',
         'action.favorite': 'Adicionar/remover a branch atual dos favoritos',
@@ -3605,6 +3626,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Indisponível no estado atual',
         'filter.branch': 'Branch',
         'filter.user': 'Autor',
+        'history.me': 'Eu',
         'filter.date': 'Data',
         'filter.path': 'Caminho',
         'filter.all': 'Tudo',
@@ -3684,7 +3706,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (branch corrente)',
         'branches.favorites': 'Preferiti',
         'branches.starHint': "Preferito",
-        'branches.pickHint': 'Clic per selezionare, doppio clic per fare checkout',
+        'branches.pickHint': 'Clic per selezionare, doppio clic apre la cronologia',
+        'branches.headHint': 'Doppio clic apre la cronologia del branch corrente',
         'branches.worktree': 'Già in checkout in un altro albero di lavoro',
         'action.stash': 'Stash',
         'action.favorite': 'Aggiungi/rimuovi il branch corrente dai preferiti',
@@ -3930,6 +3953,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Non disponibile nello stato attuale',
         'filter.branch': 'Branch',
         'filter.user': 'Autore',
+        'history.me': 'Io',
         'filter.date': 'Data',
         'filter.path': 'Percorso',
         'filter.all': 'Tutti',
@@ -4009,7 +4033,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (huidige branch)',
         'branches.favorites': 'Favorieten',
         'branches.starHint': "Favoriet",
-        'branches.pickHint': 'Klik om te selecteren, dubbelklik om uit te checken',
+        'branches.pickHint': 'Klik om te selecteren, dubbelklik opent de geschiedenis',
+        'branches.headHint': 'Dubbelklik opent de geschiedenis van de huidige branch',
         'branches.worktree': 'Al uitgecheckt in een andere werkboom',
         'action.stash': 'Stash',
         'action.favorite': 'Huidige branch aan favorieten toevoegen/onttrekken',
@@ -4255,6 +4280,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Niet beschikbaar in de huidige staat',
         'filter.branch': 'Branch',
         'filter.user': 'Auteur',
+        'history.me': 'Ik',
         'filter.date': 'Datum',
         'filter.path': 'Pad',
         'filter.all': 'Alles',
@@ -4334,7 +4360,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (bieżąca gałąź)',
         'branches.favorites': 'Ulubione',
         'branches.starHint': "Ulubione",
-        'branches.pickHint': 'Kliknij, aby wybrać; kliknij dwukrotnie, aby przełączyć',
+        'branches.pickHint': 'Kliknij, aby zaznaczyć, dwuklik otwiera historię',
+        'branches.headHint': 'Dwuklik otwiera historię bieżącej gałęzi',
         'branches.worktree': 'Już wybrana w innym drzewie roboczym',
         'action.stash': 'Schowek',
         'action.favorite': 'Dodaj/usuń bieżącą gałąź z ulubionych',
@@ -4580,6 +4607,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Niedostępne w bieżącym stanie',
         'filter.branch': 'Gałąź',
         'filter.user': 'Autor',
+        'history.me': 'Ja',
         'filter.date': 'Data',
         'filter.path': 'Ścieżka',
         'filter.all': 'Wszystkie',
@@ -4659,7 +4687,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (aktuell gren)',
         'branches.favorites': 'Favoriter',
         'branches.starHint': "Favorit",
-        'branches.pickHint': 'Klicka för att välja, dubbelklicka för att checka ut',
+        'branches.pickHint': 'Klicka för att välja, dubbelklick visar historiken',
+        'branches.headHint': 'Dubbelklick visar historiken för aktuell gren',
         'branches.worktree': 'Redan utcheckad i ett annat arbetsträd',
         'action.stash': 'Stash',
         'action.favorite': 'Lägg till/ta bort aktuell gren som favorit',
@@ -4905,6 +4934,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Inte tillgängligt i aktuellt läge',
         'filter.branch': 'Gren',
         'filter.user': 'Författare',
+        'history.me': 'Jag',
         'filter.date': 'Datum',
         'filter.path': 'Sökväg',
         'filter.all': 'Alla',
@@ -4984,7 +5014,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (geçerli dal)',
         'branches.favorites': 'Sık kullanılanlar',
         'branches.starHint': "Favori",
-        'branches.pickHint': 'Seçmek için tıklayın, çıkarmak için çift tıklayın',
+        'branches.pickHint': 'Seçmek için tek tık, geçmişi görmek için çift tık',
+        'branches.headHint': 'Çift tık, geçerli dalın geçmişini açar',
         'branches.worktree': 'Başka bir çalışma ağacında çıkarılmış',
         'action.stash': 'Saklama',
         'action.favorite': 'Geçerli dalı sık kullanılanlara ekle/çıkar',
@@ -5230,6 +5261,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Geçerli durumda kullanılamaz',
         'filter.branch': 'Dal',
         'filter.user': 'Yazar',
+        'history.me': 'Ben',
         'filter.date': 'Tarih',
         'filter.path': 'Yol',
         'filter.all': 'Tümü',
@@ -5309,7 +5341,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (branch saat ini)',
         'branches.favorites': 'Favorit',
         'branches.starHint': "Favorit",
-        'branches.pickHint': 'Klik untuk memilih, klik ganda untuk checkout',
+        'branches.pickHint': 'Klik untuk memilih, klik ganda membuka riwayat',
+        'branches.headHint': 'Klik ganda membuka riwayat branch saat ini',
         'branches.worktree': 'Sudah di-checkout di worktree lain',
         'action.stash': 'Stash',
         'action.favorite': 'Tambah/hapus branch saat ini dari favorit',
@@ -5555,6 +5588,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Tidak tersedia pada keadaan saat ini',
         'filter.branch': 'Branch',
         'filter.user': 'Penulis',
+        'history.me': 'Saya',
         'filter.date': 'Tanggal',
         'filter.path': 'Jalur',
         'filter.all': 'Semua',
@@ -5634,7 +5668,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (nhánh hiện tại)',
         'branches.favorites': 'Yêu thích',
         'branches.starHint': "Đã yêu thích",
-        'branches.pickHint': 'Nhấp để chọn, nhấp đôi để checkout',
+        'branches.pickHint': 'Bấm để chọn, nhấp đúp mở lịch sử commit',
+        'branches.headHint': 'Nhấp đúp mở lịch sử của nhánh hiện tại',
         'branches.worktree': 'Đã được checkout ở một worktree khác',
         'action.stash': 'Tạm cất',
         'action.favorite': 'Thêm/bỏ nhánh hiện tại khỏi yêu thích',
@@ -5880,6 +5915,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'Không dùng được ở trạng thái hiện tại',
         'filter.branch': 'Nhánh',
         'filter.user': 'Tác giả',
+        'history.me': 'Tôi',
         'filter.date': 'Ngày',
         'filter.path': 'Đường dẫn',
         'filter.all': 'Tất cả',
@@ -5959,7 +5995,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (الفرع الحالي)',
         'branches.favorites': 'المفضلة',
         'branches.starHint': "مفضل",
-        'branches.pickHint': 'انقر للتحديد، وانقر نقرًا مزدوجًا للتبديل',
+        'branches.pickHint': 'انقر للتحديد، ونقرتان مزدوجتان لعرض السجل',
+        'branches.headHint': 'نقرتان مزدوجتان لعرض سجل الفرع الحالي',
         'branches.worktree': 'مُستخرَج بالفعل في شجرة عمل أخرى',
         'action.stash': 'التخزين المؤقت',
         'action.favorite': 'إضافة الفرع الحالي إلى المفضلة أو إزالته',
@@ -6205,6 +6242,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'غير متاح في الحالة الحالية',
         'filter.branch': 'الفرع',
         'filter.user': 'المؤلف',
+        'history.me': 'أنا',
         'filter.date': 'التاريخ',
         'filter.path': 'المسار',
         'filter.all': 'الكل',
@@ -6284,7 +6322,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (वर्तमान शाखा)',
         'branches.favorites': 'पसंदीदा',
         'branches.starHint': "पसंदीदा",
-        'branches.pickHint': 'चुनने के लिए क्लिक करें, चेकआउट के लिए डबल-क्लिक करें',
+        'branches.pickHint': 'चुनने के लिए क्लिक करें, इतिहास देखने के लिए डबल-क्लिक',
+        'branches.headHint': 'डबल-क्लिक से वर्तमान ब्रांच का इतिहास देखें',
         'branches.worktree': 'पहले से किसी अन्य वर्कट्री में चेकआउट है',
         'action.stash': 'स्टैश',
         'action.favorite': 'वर्तमान शाखा को पसंदीदा में जोड़ें/हटाएँ',
@@ -6530,6 +6569,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'वर्तमान स्थिति में उपलब्ध नहीं',
         'filter.branch': 'शाखा',
         'filter.user': 'लेखक',
+        'history.me': 'मैं',
         'filter.date': 'दिनांक',
         'filter.path': 'पथ',
         'filter.all': 'सभी',
@@ -6609,7 +6649,8 @@ window.__ModuleLoader__.load({
         'branches.head': 'HEAD (แบรนช์ปัจจุบัน)',
         'branches.favorites': 'รายการโปรด',
         'branches.starHint': "รายการโปรด",
-        'branches.pickHint': 'คลิกเพื่อเลือก ดับเบิลคลิกเพื่อเช็กเอาต์',
+        'branches.pickHint': 'คลิกเพื่อเลือก ดับเบิลคลิกเพื่อดูประวัติคอมมิต',
+        'branches.headHint': 'ดับเบิลคลิกเพื่อดูประวัติของแบรนช์ปัจจุบัน',
         'branches.worktree': 'เช็กเอาต์อยู่ในเวิร์กทรีอื่นแล้ว',
         'action.stash': 'สแตช',
         'action.favorite': 'เพิ่ม/移除แบรนช์ปัจจุบันในรายการโปรด',
@@ -6855,6 +6896,7 @@ window.__ModuleLoader__.load({
         'action.unavailable': 'ใช้ไม่ได้ในสถานะปัจจุบัน',
         'filter.branch': 'แบรนช์',
         'filter.user': 'ผู้เขียน',
+        'history.me': 'ฉัน',
         'filter.date': 'วันที่',
         'filter.path': 'พาธ',
         'filter.all': 'ทั้งหมด',
@@ -9302,11 +9344,16 @@ window.__ModuleLoader__.load({
           closeRef.current()
         }
         const onKey = (event) => { if (event.key === 'Escape') closeRef.current() }
-        const timer = setTimeout(() => document.addEventListener('mousedown', onDown, true), 0)
+        /* pointerdown, not mousedown: the list pointer-down handlers call
+           preventDefault(), which suppresses the COMPATIBILITY mouse events
+           (mousedown included) — a capture-phase mousedown listener then never
+           fires and the menu stayed open when the next press landed on a list
+           blank (user report). pointerdown always dispatches. */
+        const timer = setTimeout(() => document.addEventListener('pointerdown', onDown, true), 0)
         document.addEventListener('keydown', onKey)
         return () => {
           clearTimeout(timer)
-          document.removeEventListener('mousedown', onDown, true)
+          document.removeEventListener('pointerdown', onDown, true)
           document.removeEventListener('keydown', onKey)
         }
       }, [])
@@ -10293,14 +10340,18 @@ window.__ModuleLoader__.load({
       // A single click only SELECTS (now with Shift/Ctrl+click multi-select —
       // the modifiers are resolved one level up in BranchTree): checking a
       // branch out is a real change of working tree, and a stray click in a
-      // long list must not do that (reported on v0.3.7). Double-click checks
-      // out, right-click has the whole menu.
+      // long list must not do that (reported on v0.3.7). Since v0.19.3 a
+      // double-click BROWSES that branch's commit history (checkout moved into
+      // the right-click menu), right-click has the whole menu.
       return E('div', {
         className: 'dig-row dig-row-' + kind + (props.selected === true ? ' dig-row-selected' : ''),
         style: { paddingLeft: (BRANCH_INDENT_BASE + (props.depth === undefined ? 0 : props.depth) * BRANCH_INDENT_STEP) + 'px' },
+        /* Rubber-band anchor: the marquee intersects [data-mkey] rows to
+           rebuild the picked set (selKey = local:/remote:/tag: prefixed). */
+        'data-mkey': props.selKey,
         title: where + ' · ' + t('branches.pickHint'),
         onClick: (event) => props.onPick(event, entry, props.selKey),
-        onDoubleClick: () => props.onCheckout(entry),
+        onDoubleClick: () => { if (props.onBrowse !== undefined) props.onBrowse(entry) },
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, entry) },
       },
         E('span', { className: 'dig-row-icon dig-tone-' + tone + (starred === true ? ' dig-star-filled' : '') }, E(Icon, { name: glyph, size: 12 })),
@@ -10352,6 +10403,10 @@ window.__ModuleLoader__.load({
       // favorites section and the local tree show the starred rows first.
       const locals = (branches === null ? [] : branches.local).filter((entry) => match(entry.name))
         .sort((a, b) => (favorites.indexOf(a.name) >= 0 ? 0 : 1) - (favorites.indexOf(b.name) >= 0 ? 0 : 1))
+      /* The HEAD row acts like a branch row since v0.19.3: click selects,
+         double-click browses the current branch's history, right-click opens
+         the same row menu (quick jump back to HEAD lives there). */
+      const headEntry = locals.find((entry) => entry.head === true) || null
       /* A refresh that makes a picked ref disappear must not keep it selected. */
       useEffect(() => {
         setPicks((previous) => {
@@ -10439,7 +10494,7 @@ window.__ModuleLoader__.load({
         selected: picks.has(branchSelKeyOf(entry)) === true,
         starred: entry.tag !== true && entry.remote !== true && favorites.indexOf(entry.name) >= 0,
         onPick: handlePick,
-        onCheckout: props.onCheckout, onMenu: onRowMenu,
+        onBrowse: props.onBrowse, onMenu: onRowMenu,
       })
       const rowsOf = (node, prefix, depth) => {
         const out = []
@@ -10504,6 +10559,30 @@ window.__ModuleLoader__.load({
         }
         props.onBranchMenu(event, entry, null)
       }
+      /* v0.19.3: the tree rubber-bands like the other two lists (shared hook).
+         Tree rows have no fixed height and render unfolded-only, so the row
+         rects are a LIVE DOM measure over the [data-mkey] rows BranchRow
+         carries; section/folder headers are buttons and never start a drag.
+         Favorited branches render twice (favorites + local sections) — both
+         map to one selKey, so a Set dedupes them for free. */
+      const treeHostRef = useRef(null)
+      const treeScrollRef = useRef(null)
+      const treeMarquee = useRubberBand({
+        scrollRef: treeScrollRef,
+        drawRef: treeHostRef,
+        rectsOf: () => {
+          const host = treeScrollRef.current
+          if (host === null) return []
+          const hostRect = host.getBoundingClientRect()
+          const rects = []
+          host.querySelectorAll('[data-mkey]').forEach((row) => {
+            const rect = row.getBoundingClientRect()
+            rects.push({ key: row.getAttribute('data-mkey'), top: rect.top - hostRect.top + host.scrollTop, bottom: rect.bottom - hostRect.top + host.scrollTop })
+          })
+          return rects
+        },
+        onPick: (keys) => setPicks(new Set(keys)),
+      })
       /* List-scope keyboard: Ctrl/Cmd+C copies the picked names, Delete asks
          Panel for a grouped delete (head branches are skipped — git refuses
          them anyway), Ctrl+A selects every visible row, Esc clears. */
@@ -10533,6 +10612,7 @@ window.__ModuleLoader__.load({
       }
       return E('div', {
         className: 'dig-tree',
+        ref: treeHostRef,
         tabIndex: 0,
         onKeyDown: onTreeKeyDown,
         onPointerDownCapture: (event) => {
@@ -10545,12 +10625,26 @@ window.__ModuleLoader__.load({
             placeholder: t('branches.filter'),
             onChange: (event) => setFilter(event.target.value),
           })),
-        E('div', { className: 'dig-tree-scroll' },
-          E('div', { className: 'dig-section-head dig-section-head-static' }, t('branches.head')),
+        E('div', {
+          className: 'dig-tree-scroll',
+          ref: treeScrollRef,
+          onPointerDown: treeMarquee.onPointerDown,
+          onClickCapture: (event) => {
+            if (treeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
+          },
+        },
+          headEntry === null ? E('div', { className: 'dig-section-head dig-section-head-static' }, t('branches.head')) : E('div', {
+            className: 'dig-section-head dig-section-head-static dig-head-branch',
+            title: headEntry.name + ' · ' + t('branches.headHint'),
+            onClick: (event) => { event.stopPropagation(); handlePick(event, headEntry, branchSelKeyOf(headEntry)) },
+            onDoubleClick: () => { if (props.onBrowse !== undefined) props.onBrowse(headEntry) },
+            onContextMenu: (event) => { event.preventDefault(); onRowMenu(event, headEntry) },
+          }, t('branches.head')),
           favorites.length === 0 ? null : section('favorites', t('branches.favorites'), locals.filter((entry) => favorites.indexOf(entry.name) >= 0), (entry) => entry),
           section('local', t('branches.local'), locals, (entry) => entry, true),
           section('remote', t('branches.remote'), remotes, (entry) => Object.assign({}, entry, { remote: true })),
-          section('tags', t('branches.tags'), tags, (entry) => Object.assign({}, entry, { tag: true }))))
+          section('tags', t('branches.tags'), tags, (entry) => Object.assign({}, entry, { tag: true }))),
+        E(MarqueeBox, { box: treeMarquee.box }))
     }
 
     /* ============================== changes ============================== */
@@ -10645,10 +10739,11 @@ window.__ModuleLoader__.load({
       const anchorRef = props.anchorRef
       const changeItemsRef = useRef(null)
       const changeOffsetsRef = useRef(null)
-      const [marquee, setMarquee] = useState(null)
-      const marqueeFrame = useRef(0)
-      const marqueeState = useRef(null)
-      const marqueeSwallowClick = useRef(false)
+      /* The marquee lives in the shared useRubberBand hook (v0.19.3: history
+         and the branch tree drag the same way). changesHostRef is the DRAW
+         host — the hook comment explains why the paint rect must be the list
+         wrapper's, not the scroll container's (v0.19.2 offset report). */
+      const changesHostRef = useRef(null)
       /* Rows in their RENDER order (the order windowing flattens them into) —
          Shift-click spans follow what the eye sees, not the git order. */
       const orderedRowKeys = () => {
@@ -10700,96 +10795,10 @@ window.__ModuleLoader__.load({
            not yank the pane away (v0.18.3). */
         setSelection((previous) => previous.size === 1 && previous.has(key) === true ? previous : new Set([key]))
       }, [setSelection, anchorRef, props.onDiff])
-      /* ---- rubber-band selection over the windowed list: the fixed row
-         heights + the prefix-sum offsets turn a pixel span back into the
-         row-index span (the same windowStart binary search the window uses),
-         so the drag never needs the DOM rows to exist. The marquee box itself
-         is a viewport-anchored absolute div inside .dig-changes (invariant 13:
-         never position:fixed inside the workbench's contain:layout). ---- */
-      const marqueeKeysAt = (contentTop, contentBottom) => {
-        const items = changeItemsRef.current
-        const offsets = changeOffsetsRef.current
-        if (items === null || offsets === null || items.length === 0) return []
-        const first = Math.max(0, windowStart(offsets, contentTop))
-        const last = Math.min(items.length - 1, windowStart(offsets, contentBottom))
-        const keys = []
-        for (let index = first; index <= last; index += 1) {
-          const entry = items[index]
-          if (entry.kind === 'row' && entry.key.indexOf('ignored:') !== 0) keys.push(entry.key)
-        }
-        return keys
-      }
-      const syncMarquee = () => {
-        const state = marqueeState.current
-        const host = changesScrollRef.current
-        if (state === null || host === null) return
-        const rect = host.getBoundingClientRect()
-        const contentY0 = state.startY - rect.top + state.scrollY0
-        const contentY1 = state.clientY - rect.top + host.scrollTop
-        setSelection(new Set(marqueeKeysAt(Math.min(contentY0, contentY1), Math.max(contentY0, contentY1))))
-        setMarquee({
-          x: Math.min(state.startX, state.clientX) - rect.left,
-          y: Math.min(state.startY, state.clientY) - rect.top,
-          w: Math.abs(state.clientX - state.startX),
-          h: Math.abs(state.clientY - state.startY),
-        })
-        /* Auto-scroll when the pointer rides an edge; keep the loop alive while
-           it does so the selection follows the content streaming past. */
-        const EDGE = 28
-        let speed = 0
-        if (state.clientY - rect.top < EDGE) speed = -Math.ceil((EDGE - (state.clientY - rect.top)) / 3)
-        else if (rect.bottom - state.clientY < EDGE) speed = Math.ceil((EDGE - (rect.bottom - state.clientY)) / 3)
-        if (speed !== 0) {
-          host.scrollTop += speed * 2
-          cancelAnimationFrame(marqueeFrame.current)
-          marqueeFrame.current = requestAnimationFrame(syncMarquee)
-        }
-      }
-      const scheduleMarqueeSync = () => {
-        cancelAnimationFrame(marqueeFrame.current)
-        marqueeFrame.current = requestAnimationFrame(syncMarquee)
-      }
-      const onListPointerDown = (event) => {
-        if (event.button !== 0) return
-        const host = changesScrollRef.current
-        if (host === null) return
-        if (event.target instanceof Element && event.target.closest('button, input, textarea, select, a') !== null) return
-        // Keep the browser from starting a text selection under the drag; the
-        // real clicks still fire (only the selection machinery is suppressed).
-        event.preventDefault()
-        const rect = host.getBoundingClientRect()
-        marqueeState.current = {
-          startX: event.clientX,
-          startY: event.clientY,
-          scrollY0: host.scrollTop,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          active: false,
-        }
-        const onMove = (moveEvent) => {
-          const state = marqueeState.current
-          if (state === null) return
-          state.clientX = moveEvent.clientX
-          state.clientY = moveEvent.clientY
-          if (state.active === false && Math.abs(moveEvent.clientX - state.startX) < 4 && Math.abs(moveEvent.clientY - state.startY) < 4) return
-          state.active = true
-          marqueeSwallowClick.current = true
-          scheduleMarqueeSync()
-        }
-        const onUp = () => {
-          window.removeEventListener('pointermove', onMove)
-          window.removeEventListener('pointerup', onUp)
-          cancelAnimationFrame(marqueeFrame.current)
-          const wasActive = marqueeState.current !== null && marqueeState.current.active === true
-          marqueeState.current = null
-          setMarquee(null)
-          // The drag's pointerup is followed by a synthetic click on whatever
-          // row is under it — swallow exactly that one click.
-          if (wasActive === true) setTimeout(() => { marqueeSwallowClick.current = false }, 0)
-        }
-        window.addEventListener('pointermove', onMove)
-        window.addEventListener('pointerup', onUp)
-      }
+      /* Rubber-band selection now comes from the shared useRubberBand hook
+         (see its comment): the fixed row heights + the prefix-sum offsets
+         still turn a pixel span back into row keys without any DOM rows —
+         the rectsOf below is the exact former marqueeKeysAt, reshaped. */
       const changes = summary === null ? null : summary.changes
       const conflicted = changes === null ? [] : changes.conflicted
       const staged = changes === null ? [] : changes.staged
@@ -10859,6 +10868,22 @@ window.__ModuleLoader__.load({
          mounted. A tree with thousands of files scrolls at frame rate. */
       const changesScrollRef = useRef(null)
       const changesViewport = useViewportBox(changesScrollRef)
+      const changeMarquee = useRubberBand({
+        scrollRef: changesScrollRef,
+        drawRef: changesHostRef,
+        rectsOf: () => {
+          const items = changeItemsRef.current
+          const offsets = changeOffsetsRef.current
+          if (items === null || offsets === null || items.length === 0) return []
+          const rects = []
+          for (let index = 0; index < items.length; index += 1) {
+            const entry = items[index]
+            if (entry.kind === 'row' && entry.key.indexOf('ignored:') !== 0) rects.push({ key: entry.key, top: offsets[index], bottom: offsets[index + 1] })
+          }
+          return rects
+        },
+        onPick: (keys) => setSelection(new Set(keys)),
+      })
       const changeItems = useMemo(() => {
         const out = []
         const groupHead = (key, title, entries) => E('div', { className: 'dig-group-head' },
@@ -11042,7 +11067,7 @@ window.__ModuleLoader__.load({
         props.onBulkDiscard === undefined ? null : E('button', { type: 'button', className: 'dig-link dig-link-danger', onClick: () => props.onBulkDiscard() }, t('action.discard')),
         props.onCopySelection === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onCopySelection() }, t('selection.copyPaths')),
         E('button', { type: 'button', className: 'dig-link', onClick: () => setSelection(new Set()) }, t('selection.clear')))
-      return E('div', { className: 'dig-changes' },
+      return E('div', { className: 'dig-changes', ref: changesHostRef },
         aiConfirmDialog,
         head,
         E('div', { className: 'dig-changes-body' },
@@ -11055,9 +11080,9 @@ window.__ModuleLoader__.load({
             onPointerDownCapture: (event) => {
               if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
             },
-            onPointerDown: onListPointerDown,
+            onPointerDown: changeMarquee.onPointerDown,
             onClickCapture: (event) => {
-              if (marqueeSwallowClick.current === true) { event.preventDefault(); event.stopPropagation() }
+              if (changeMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
             },
           },
             collapsed ? null : [
@@ -11074,10 +11099,7 @@ window.__ModuleLoader__.load({
              and nothing on the list (group head, rows) is ever covered. */
           selectionBar,
           composer),
-        marquee === null ? null : E('div', {
-          className: 'dig-marquee',
-          style: { left: marquee.x + 'px', top: marquee.y + 'px', width: marquee.w + 'px', height: marquee.h + 'px' },
-        }))
+        E(MarqueeBox, { box: changeMarquee.box }))
     }
 
     /* ============================== history ============================== */
@@ -11141,6 +11163,122 @@ window.__ModuleLoader__.load({
         }
       }, [scrollRef])
       return { scrollTop: scrollTop, viewH: viewH }
+    }
+
+    /* ---- rubber-band (marquee) selection, shared by all three lists ----
+       One hook, three wiring sites (changes, history, branch tree). The
+       contract: `scrollRef` is the scrolling container the SELECTION math
+       runs against, `drawRef` is the element the marquee box is PAINTED in
+       (its own rect — v0.18.x painted from the scroll container's rect while
+       the box lived inside the list wrapper, so the toolbar height above the
+       list shifted every box visually upward; reported v0.19.2), `rectsOf`
+       returns {key,top,bottom} rows in scroll-content coordinates (exact
+       prefix-sums for the windowed lists, a live DOM measure for the
+       variable-height tree), and `onPick` receives the intersecting keys.
+       A 4px threshold keeps plain clicks clicky; pointerdown is preventDefault-ed
+       so drags never start a native text selection; edge auto-scroll and the
+       rAF-throttled sync carry over unchanged from v0.18.x. */
+    function useRubberBand(options) {
+      const [box, setBox] = useState(null)
+      const stateRef = useRef(null)
+      const frameRef = useRef(0)
+      const swallowRef = useRef(false)
+      const optionsRef = useRef(options)
+      optionsRef.current = options
+      const sync = () => {
+        const opts = optionsRef.current
+        const state = stateRef.current
+        const host = opts.scrollRef.current
+        const draw = opts.drawRef.current
+        if (state === null || host === null || draw === null) return
+        const hostRect = host.getBoundingClientRect()
+        const drawRect = draw.getBoundingClientRect()
+        const y0 = state.startY - hostRect.top + state.scrollY0
+        const y1 = state.clientY - hostRect.top + host.scrollTop
+        const low = Math.min(y0, y1)
+        const high = Math.max(y0, y1)
+        const keys = []
+        for (const rect of opts.rectsOf()) {
+          if (rect.top < high && rect.bottom > low) keys.push(rect.key)
+        }
+        opts.onPick(keys)
+        setBox({
+          x: Math.min(state.startX, state.clientX) - drawRect.left,
+          y: Math.min(state.startY, state.clientY) - drawRect.top,
+          w: Math.abs(state.clientX - state.startX),
+          h: Math.abs(state.clientY - state.startY),
+        })
+        /* Auto-scroll when the pointer rides an edge; keep the loop alive while
+           it does so the selection follows the content streaming past. */
+        const EDGE = 28
+        let speed = 0
+        if (state.clientY - hostRect.top < EDGE) speed = -Math.ceil((EDGE - (state.clientY - hostRect.top)) / 3)
+        else if (hostRect.bottom - state.clientY < EDGE) speed = Math.ceil((EDGE - (hostRect.bottom - state.clientY)) / 3)
+        if (speed !== 0) {
+          host.scrollTop += speed * 2
+          cancelAnimationFrame(frameRef.current)
+          frameRef.current = requestAnimationFrame(sync)
+        }
+      }
+      const schedule = () => {
+        cancelAnimationFrame(frameRef.current)
+        frameRef.current = requestAnimationFrame(sync)
+      }
+      useEffect(() => () => cancelAnimationFrame(frameRef.current), [])
+      const onPointerDown = (event) => {
+        if (event.button !== 0) return
+        const opts = optionsRef.current
+        const host = opts.scrollRef.current
+        if (host === null) return
+        if (event.target instanceof Element && event.target.closest('button, input, textarea, select, a') !== null) return
+        // Keep the browser from starting a text selection under the drag (the
+        // history/tree lists dragged out blue text before); the real clicks
+        // still fire — only the selection machinery is suppressed.
+        event.preventDefault()
+        stateRef.current = {
+          startX: event.clientX,
+          startY: event.clientY,
+          scrollY0: host.scrollTop,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          active: false,
+        }
+        const onMove = (moveEvent) => {
+          const state = stateRef.current
+          if (state === null) return
+          state.clientX = moveEvent.clientX
+          state.clientY = moveEvent.clientY
+          if (state.active === false && Math.abs(moveEvent.clientX - state.startX) < 4 && Math.abs(moveEvent.clientY - state.startY) < 4) return
+          state.active = true
+          swallowRef.current = true
+          schedule()
+        }
+        const onUp = () => {
+          window.removeEventListener('pointermove', onMove)
+          window.removeEventListener('pointerup', onUp)
+          cancelAnimationFrame(frameRef.current)
+          const wasActive = stateRef.current !== null && stateRef.current.active === true
+          stateRef.current = null
+          setBox(null)
+          // The drag's pointerup is followed by a synthetic click on whatever
+          // row is under it — swallow exactly that one click.
+          if (wasActive === true) setTimeout(() => { swallowRef.current = false }, 0)
+        }
+        window.addEventListener('pointermove', onMove)
+        window.addEventListener('pointerup', onUp)
+      }
+      return { box: box, onPointerDown: onPointerDown, swallowRef: swallowRef }
+    }
+
+    /* The marquee box itself: a viewport-anchored absolute div inside the
+       draw host (invariant 13: never position:fixed inside the workbench's
+       contain:layout). */
+    function MarqueeBox(props) {
+      if (props.box === null) return null
+      return E('div', {
+        className: 'dig-marquee',
+        style: { left: props.box.x + 'px', top: props.box.y + 'px', width: props.box.w + 'px', height: props.box.h + 'px' },
+      })
     }
 
     /* First index whose cumulative offset exceeds `at` (binary search over the
@@ -11249,11 +11387,44 @@ window.__ModuleLoader__.load({
       return 0
     }
 
+    /* The author filter pins "me (name)" to the top (v0.19.3). The identity
+       is resolved once per repo root and kept for the panel lifetime — git
+       identities don't churn within a session — so re-opening the Git tab or
+       hopping sessions never re-runs `git config`. */
+    const gitMeCache = new Map()
+
     function HistoryList(props) {
       const t = props.t
       const commits = props.commits
       const historyScrollRef = useRef(null)
+      const [me, setMe] = useState(() => (props.base !== undefined && gitMeCache.has(props.base.repoRoot) === true ? gitMeCache.get(props.base.repoRoot) : null))
+      useEffect(() => {
+        const base = props.base
+        if (base === undefined || base.repoRoot === undefined) return
+        if (gitMeCache.has(base.repoRoot) === true) { setMe(gitMeCache.get(base.repoRoot)); return }
+        let alive = true
+        props.request('me', Object.assign({}, base)).then((data) => {
+          const who = data !== null && typeof data === 'object' && typeof data.name === 'string' && data.name !== ''
+            ? { name: data.name, email: typeof data.email === 'string' ? data.email : '' }
+            : null
+          gitMeCache.set(base.repoRoot, who)
+          if (alive === true) setMe(who)
+        }).catch((error) => { void error })
+        return () => { alive = false }
+      }, [props.base])
       const viewport = useViewportBox(historyScrollRef)
+      /* v0.19.3: the commit log rubber-bands exactly like the changes list —
+         same hook, same gestures. Fixed HISTORY_ROW_H rows make the rects a
+         pure index map, so even a windowed (mostly unmounted) list drags
+         perfectly; picks land in the SAME pickedHashes set the Shift/Ctrl
+         clicks and the commit context menu already share. */
+      const historyHostRef = useRef(null)
+      const historyMarquee = useRubberBand({
+        scrollRef: historyScrollRef,
+        drawRef: historyHostRef,
+        rectsOf: () => rows.map((row, index) => ({ key: row.commit.hash, top: index * HISTORY_ROW_H, bottom: (index + 1) * HISTORY_ROW_H })),
+        onPick: (keys) => { if (props.onPicksChange !== undefined) props.onPicksChange(new Set(keys)) },
+      })
       const pickAnchor = useRef(null)
       const [text, setText] = useState('')
       const [author, setAuthor] = useState('')
@@ -11309,6 +11480,92 @@ window.__ModuleLoader__.load({
       }, [commits, text, author, refName, since, order])
 
       const rows = useMemo(() => buildRows(filtered), [filtered])
+
+      /* Weibo-style infinite scroll (v0.19.3): descending lists auto-load when
+         the user scrolls near the bottom edge, ascending ones near the top
+         edge — wheel and scrollbar drags both surface as scroll events, no
+         extra clicks. The button stays as the visible affordance. The guard
+         keeps one request in flight; it resets when busy settles. */
+      const infiniteGuardRef = useRef(false)
+      const growAnchorRef = useRef(null)
+      const mergeLocatedRef = useRef(false)
+      const requestMore = () => {
+        if (props.hasMore !== true || props.busy === true || infiniteGuardRef.current === true) return
+        const host = historyScrollRef.current
+        growAnchorRef.current = { length: rows.length, height: host === null ? 0 : host.scrollHeight }
+        infiniteGuardRef.current = true
+        props.onLoadMore()
+      }
+      /* The button itself is the trigger (weibo-style, v0.19.3): an
+         IntersectionObserver on the load-more button fires wherever it sits —
+         bottom while descending, top while ascending — covering wheel,
+         scrollbar drags, first paint, and short pages alike. Re-created per
+         page so a settled load re-evaluates: if the button is STILL visible
+         (huge viewport / tiny page) the next page follows automatically. */
+      const loadMoreRef = useRef(null)
+      /* A scroll that lands on the button WHILE a guarded load is still in
+         flight loses its one IO callback to the busy bail-out, and the
+         observer is not re-created when that load finishes with the same
+         page size (mount refresh). Re-check the button's geometry when busy
+         settles: still within the rootMargin window → continue loading. */
+      useEffect(() => {
+        if (props.busy !== false) return
+        infiniteGuardRef.current = false
+        const node = loadMoreRef.current
+        const root = historyScrollRef.current
+        if (node === null || root === null || props.hasMore !== true) return
+        const rect = node.getBoundingClientRect()
+        const box = root.getBoundingClientRect()
+        if (rect.bottom >= box.top - 240 && rect.top <= box.bottom + 240) requestMore()
+      }, [props.busy])
+      useEffect(() => {
+        const node = loadMoreRef.current
+        const root = historyScrollRef.current
+        if (node === null || root === null || props.hasMore !== true) return
+        let frame = 0
+        const io = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting === true) === false) return
+          if (frame === 0) {
+            frame = requestAnimationFrame(() => { frame = 0; requestMore() })
+          }
+        }, { root: root, rootMargin: '240px 0px' })
+        io.observe(node)
+        return () => { if (frame !== 0) cancelAnimationFrame(frame); io.disconnect() }
+      }, [props.hasMore, order, rows.length])
+      /* Ascending growth inserts rows above the viewport: re-anchor by the
+         height delta so the rows the user was reading stay put. */
+      useEffect(() => {
+        const anchor = growAnchorRef.current
+        if (anchor === null || rows.length <= anchor.length) return
+        growAnchorRef.current = null
+        const host = historyScrollRef.current
+        if (order !== 'asc' || host === null) return
+        host.scrollTop = host.scrollTop + (host.scrollHeight - anchor.height)
+      }, [rows.length, order])
+      /* v0.19.3 IDEA-style merge memory: when a browsed branch has a merge
+         relationship with the PREVIOUSLY browsed one, its list opens scrolled
+         to that merge commit ('merge-point' resolved it) — the "2 was merged
+         here" moment is on screen immediately, while 1's newer commits stay
+         one wheel-scroll away. Fires only on anchor CHANGE; null = no
+         relationship (or first hop), leave the top alone. */
+      useEffect(() => {
+        const anchor = props.mergeAnchor
+        if (anchor === undefined || anchor === null) { mergeLocatedRef.current = false; return }
+        const index = rows.findIndex((row) => row.commit.hash === anchor)
+        if (index < 0) {
+          /* The merge point can sit below the first page on a long branch
+             (real repos easily outrun LIMIT). Keep auto-loading — the same
+             weibo path as the edge trigger — until it surfaces or the log
+             is exhausted; one location per anchor, so later 'load more'
+             never yanks the view back. */
+          if (mergeLocatedRef.current === false && props.hasMore === true && props.busy !== true) requestMore()
+          return
+        }
+        if (mergeLocatedRef.current === true) return
+        mergeLocatedRef.current = true
+        const host = historyScrollRef.current
+        if (host !== null) host.scrollTop = Math.max(0, index * HISTORY_ROW_H - 8)
+      }, [props.mergeAnchor, rows.length, props.busy])
       /* Multi-select gestures (issue #13): the rendered row order is what the
          Shift-range walks, and the range is computed over the FILTERED rows —
          the same list the eye sees. A plain click only SELECTS (single-replace,
@@ -11410,7 +11667,12 @@ window.__ModuleLoader__.load({
         }),
         E(FilterSelect, {
           label: t('filter.user'), value: author, hint: t('filter.user'),
-          options: [allOption].concat(authors.map((name) => ({ value: name, label: name }))),
+          /* "Me" first (v0.19.3): resolved from git config and offered even
+             when this branch has no commits of mine — selecting it over an
+             empty list is the answer "I never committed here". */
+          options: [allOption]
+            .concat(me !== null && me.name !== '' ? [{ value: me.name, label: t('history.me') + ' (' + me.name + ')' }] : [])
+            .concat(authors.map((name) => ({ value: name, label: name }))),
           onOpenMenu: (event, options) => openFilterMenu(event, options, author, setAuthor),
         }),
         E(FilterSelect, {
@@ -11447,12 +11709,22 @@ window.__ModuleLoader__.load({
       const winEnd = Math.min(rows.length, winStart + Math.ceil(viewport.viewH / HISTORY_ROW_H) + WINDOW_OVERSCAN * 2)
       const visibleRows = rows.slice(winStart, winEnd)
 
-      return E('div', { className: 'dig-history' }, filterBar,
+      /* Ascending renders oldest-first, so load-more (older commits) lives
+         at the TOP; descending keeps it at the bottom where it always was. */
+      const loadMoreButton = props.hasMore === true
+        ? E('button', { ref: loadMoreRef, type: 'button', className: 'dig-load-more', disabled: props.busy === true, onClick: requestMore }, t('history.loadMore'))
+        : null
+
+      return E('div', { className: 'dig-history', ref: historyHostRef }, filterBar,
         E('div', {
           className: 'dig-history-scroll',
           ref: historyScrollRef,
           tabIndex: 0,
           onKeyDown: onListKeyDown,
+          onPointerDown: historyMarquee.onPointerDown,
+          onClickCapture: (event) => {
+            if (historyMarquee.swallowRef.current === true) { event.preventDefault(); event.stopPropagation() }
+          },
           onPointerDownCapture: (event) => {
             if (isTypingTarget(event.target) === false) event.currentTarget.focus({ preventScroll: true })
           },
@@ -11471,6 +11743,7 @@ window.__ModuleLoader__.load({
           onMouseLeave: (event) => event.currentTarget.removeAttribute('data-hover-lane'),
         },
           rows.length === 0 ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : t('history.empty')) : null,
+          order === 'asc' ? loadMoreButton : null,
           winStart > 0 ? E('div', { key: 'pad-top', style: { height: String(winStart * HISTORY_ROW_H) + 'px' } }) : null,
           visibleRows.map((row) => E(CommitRow, {
             key: row.commit.hash,
@@ -11480,9 +11753,8 @@ window.__ModuleLoader__.load({
             onRowClick: handleRowClick, onOpenDetail: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
           })),
           winEnd < rows.length ? E('div', { key: 'pad-bottom', style: { height: String((rows.length - winEnd) * HISTORY_ROW_H) + 'px' } }) : null,
-          props.hasMore === true
-            ? E('button', { type: 'button', className: 'dig-load-more', disabled: props.busy === true, onClick: props.onLoadMore }, t('history.loadMore'))
-            : null))
+          order === 'desc' ? loadMoreButton : null),
+        E(MarqueeBox, { box: historyMarquee.box }))
     }
 
     function CommitDetail(props) {
@@ -11956,15 +12228,25 @@ window.__ModuleLoader__.load({
         return data
       }, [base])
 
+      /* ---- branch browsing (v0.19.3, IDEA-style) ----
+         Double-clicking a tree branch no longer checks it out: it walks THAT
+         branch's log (browseRev = '' keeps the HEAD view). The LAST browsed
+         branch is remembered, so 2-then-1 lands 1's list on the merge commit
+         that carried 2 into 1 ('merge-point') — 1's newer commits stay one
+         wheel-scroll away, nothing is truncated. */
+      const [browseRev, setBrowseRev] = useState('')
+      const [mergeAnchor, setMergeAnchor] = useState(null)
+      const lastBrowseRef = useRef(null)
       const loadCommits = useCallback(async (skip, overridePath) => {
         const activePath = overridePath === undefined ? pathFilter : overridePath
         const payload = Object.assign({}, base, { skip: skip === undefined ? 0 : skip, limit: 120 })
+        if (browseRev !== '') payload.rev = browseRev
         if (activePath !== undefined && activePath !== '') payload.path = activePath
         const data = await request('log', payload)
         setCommits((previous) => (skip === undefined || skip === 0 ? data.commits : previous.concat(data.commits)))
         setHasMore(data.hasMore)
         return data
-      }, [base, pathFilter])
+      }, [base, pathFilter, browseRev])
 
       /* `fetchRemote` turns the refresh into what the rail button means: "see
          whether the remote has anything new to pull" — a `git fetch --prune`
@@ -12007,13 +12289,40 @@ window.__ModuleLoader__.load({
                (a paged fetch never reaches this path), replaced on every
                refresh — the auto-refresh included — so a session switch through
                the same workspace seeds fresh data, not the mount-time
-               snapshot. */
-            writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
+               snapshot. A branch-browsing page (browseRev) must not evict the
+               HEAD page: the next mount opens on HEAD and would otherwise be
+               seeded with another branch's log. */
+            if (browseRev === '') writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
           })
         } finally {
           if (withFetch === true) setRefreshSpinning(false)
         }
-      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base])
+      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base, browseRev])
+
+      /* Double-click a branch (or the HEAD row): browse its history. The merge
+         anchor comes from the PREVIOUSLY browsed branch — 'merge-point' finds
+         the newest merge that carried it into the one now opened, and the
+         history list scrolls there once (null = no relationship, top). */
+      const browseBranch = useCallback(async (entry) => {
+        const name = String(entry.name)
+        const previous = lastBrowseRef.current
+        if (previous === name) return
+        lastBrowseRef.current = name
+        setMergeAnchor(null)
+        setBrowseRev(name)
+        if (previous !== null) {
+          try {
+            const data = await request('merge-point', Object.assign({}, base, { from: previous, to: name }))
+            if (data !== null && typeof data === 'object' && typeof data.hash === 'string' && data.hash !== '') setMergeAnchor(data.hash)
+          } catch (error) { void error }
+        }
+      }, [base, request])
+      /* A repository switch forgets the browsing context entirely. */
+      useEffect(() => {
+        lastBrowseRef.current = null
+        setBrowseRev('')
+        setMergeAnchor(null)
+      }, [repoRoot])
 
       useEffect(() => {
         if (repoRoot === null) return undefined
@@ -12963,6 +13272,9 @@ window.__ModuleLoader__.load({
             onPicksChange: setPickedCommits,
             onSelectAll: (hashes) => setPickedCommits(new Set(hashes)),
             onKeyDown: onHistoryKeyDown,
+            mergeAnchor: mergeAnchor,
+            base: base,
+            request: request,
           })
 
       const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
@@ -13512,19 +13824,19 @@ window.__ModuleLoader__.load({
               title: t('toolbar.tree'),
               onClick: () => foldTree(!treeOpen),
             }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
-          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane),
           gutter('changes', 'next'),
           E('div', { className: 'dig-pane dig-pane-changes', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane))
       } else {
         body = E('div', { className: 'dig-body dig-body-stack', ref: bodyRef },
-          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
+          treeOpen ? E('div', { className: 'dig-pane dig-pane-tree-stack', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: setBranchPicks })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
@@ -14049,7 +14361,10 @@ window.__ModuleLoader__.load({
       '.dig-picker-name{flex:none;font-weight:600}',
       '.dig-picker-kind{color:var(--dsw-alias-label-tertiary);flex:none}',
       '.dig-picker-path{color:var(--dsw-alias-label-tertiary);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}',
-      '.dig-tree{display:flex;flex-direction:column;min-height:0;flex:1}',
+      /* position:relative: the marquee box paints against this wrapper (the
+         scroll container is offset by the search field — same rule as
+         .dig-history above). */
+      '.dig-tree{display:flex;flex-direction:column;min-height:0;flex:1;position:relative}',
       '.dig-tree-scroll{flex:1;overflow:auto;padding-bottom:6px}',
       '.dig-section{display:flex;flex-direction:column}',
       '.dig-section-head{display:flex;align-items:center;gap:4px;width:100%;padding:3px 8px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:600;cursor:pointer;text-align:left}',
@@ -14072,6 +14387,10 @@ window.__ModuleLoader__.load({
       '.dig-chevron-open{transform:rotate(0deg)}',
       '.dig-row{display:flex;align-items:center;gap:5px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden}',
       '.dig-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      /* v0.19.3: the HEAD section row behaves like a branch row (click
+         selects, double-click browses, right-click menus) — same hover cue. */
+      '.dig-head-branch{cursor:pointer;transition:background .12s}',
+      '.dig-head-branch:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-row-head{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
       '.dig-row-selected{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
@@ -14090,7 +14409,10 @@ window.__ModuleLoader__.load({
       '.dig-badge.dig-badge-ahead,.dig-badge.dig-badge-behind{padding:0 6px}',
       '.dig-badge-muted{opacity:.8}',
       '.dig-badge-worktree{padding:0 3px;display:inline-flex;align-items:center;height:14px}',
-      '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1}',
+      /* position:relative: the marquee box (rubber-band selection) paints
+         against this wrapper — the scroll container below is offset by the
+         filter bar, and painting from the wrong rect was the v0.19.2 drift. */
+      '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1;position:relative}',
       '.dig-history-scroll{flex:1;overflow:auto}',
       '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
