@@ -1434,6 +1434,12 @@ function repoRow(root, submodulePath, kind) {
     name: submodulePath === undefined ? path.basename(root) : submodulePath,
     label: submodulePath === undefined ? path.basename(root) : submodulePath.split('/').pop(),
     branch: null,
+    /** The checkout's own repository name, cut from its origin URL (v0.19.2):
+     *  the picker shows this first and falls back to the directory name, with
+     *  the directory name as the small sub line whenever the two differ — so
+     *  two clones of one repository stay tellable apart. Filled in by the
+     *  scan below (an origin-less checkout keeps the empty string). */
+    origin: '',
     kind,
     ...(submodulePath === undefined ? {} : { submodulePath }),
   }
@@ -1540,6 +1546,11 @@ async function scanRepos(cwd) {
   const capped = rows.slice(0, REPO_LIST_LIMIT).map((row) => ({ ...row }))
   const branches = await Promise.all(capped.map((row) => branchOrNull(row.path)))
   for (let index = 0; index < capped.length; index += 1) capped[index].branch = branches[index]
+  /* Origin names ride the same one-call-per-row pass as the branches: a local
+     `git remote get-url` read, cheap, and the 15s cache means repeated picker
+     opens pay for it once. */
+  const origins = await Promise.all(capped.map((row) => originNameOf(row.path)))
+  for (let index = 0; index < capped.length; index += 1) capped[index].origin = origins[index]
   repoScanCache.set(cwd, { at: Date.now(), rows: capped })
   return { cached: false, rows: capped.map((row) => ({ ...row })) }
 }

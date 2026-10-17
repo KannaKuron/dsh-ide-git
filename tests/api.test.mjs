@@ -954,6 +954,7 @@ test('repos serves a warm cache entry as-is and marks the answer cached', async 
 test('an expired entry forces a real scan, and the scan repopulates the cache', async () => {
   const stale = { path: '/ghost/stale', name: 'stale', label: 'stale', branch: null, kind: 'nested' }
   repoScanCache.set(repo, { at: Date.now() - REPOS_CACHE_TTL_MS - 1, rows: [stale] })
+  execFileSync('git', ['remote', 'add', 'origin', '/somewhere/renamed-away.git'], { cwd: repo })
   try {
     const first = await call('repos', { cwd: repo })
     assert.equal(first.body.ok, true)
@@ -962,11 +963,16 @@ test('an expired entry forces a real scan, and the scan repopulates the cache', 
     const self = first.body.data.repos.find((row) => row.kind === 'workspace')
     assert.ok(self !== undefined, 'the fixture repository itself is discovered')
     assert.equal(first.body.data.isRepo, true)
+    // v0.19.2: the scan also carries the origin-derived repository name, so the
+    // picker can lead with it (a clone whose folder was renamed still shows the
+    // repository's own name) — here the URL leaf, without the .git tail.
+    assert.equal(self.origin, 'renamed-away', 'the row carries the origin URL basename as its repository name')
     // The fresh scan was written back: the immediate next call hits the cache.
     const second = await call('repos', { cwd: repo })
     assert.equal(second.body.data.cached, true, 'the repopulated entry serves the next call')
     assert.deepEqual(second.body.data.repos.map((row) => row.path), first.body.data.repos.map((row) => row.path))
   } finally {
+    execFileSync('git', ['remote', 'remove', 'origin'], { cwd: repo })
     repoScanCache.delete(repo)
   }
 })

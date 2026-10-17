@@ -14372,7 +14372,8 @@ window.__ModuleLoader__.load({
       '.dig-cs-item[data-current=true]{color:var(--dsw-alias-brand-primary)}',
       '.dig-cs-item svg{flex:none}',
       '.dig-cs-item-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-cs-item-path{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:11px;max-width:140px}',
+      '.dig-cs-item-main{display:flex;flex-direction:column;min-width:0;flex:1}',
+      '.dig-cs-item-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:12px}',
       '.dig-cs-item-note{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none}',
       '.dig-cs-item-counts{display:inline-flex;gap:5px;margin-left:auto;flex:none;font-variant-numeric:tabular-nums;font-size:11px}',
       '.dig-cs-static{color:var(--dsw-alias-label-tertiary);cursor:default}',
@@ -14793,17 +14794,27 @@ window.__ModuleLoader__.load({
         ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,
         error !== '' ? E('span', { className: 'dig-cs-error', title: error }, '×') : null,
         menu === 'repo' ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' },
-          repoPaths.map((path) => E('button', {
-            key: path,
-            type: 'button',
-            className: 'dig-cs-item',
-            'data-current': path === repoRoot ? 'true' : 'false',
-            title: path,
-            onClick: () => pickRepoRoot(path),
-          },
-            E(Icon, { name: 'commit', size: 11 }),
-            E('span', { className: 'dig-cs-item-name' }, baseNameOf(path)),
-            E('span', { className: 'dig-cs-item-path' }, path))))
+          /* v0.19.2: one row per checkout — the repository's own name first
+             (origin URL basename, falling back to the directory name), and the
+             single-level directory name as a small sub line only when the two
+             differ (two clones of one repository stay tellable apart). The
+             full path lives in the tooltip, not in the row. */
+          data.repos.map((row) => {
+            const dirName = baseNameOf(row.path)
+            const displayName = row.origin !== undefined && row.origin !== '' ? row.origin : dirName
+            return E('button', {
+              key: row.path,
+              type: 'button',
+              className: 'dig-cs-item',
+              'data-current': row.path === repoRoot ? 'true' : 'false',
+              title: row.path,
+              onClick: () => pickRepoRoot(row.path),
+            },
+              E(Icon, { name: 'commit', size: 11 }),
+              E('span', { className: 'dig-cs-item-main' },
+                E('span', { className: 'dig-cs-item-name' }, displayName),
+                dirName !== displayName ? E('span', { className: 'dig-cs-item-sub' }, dirName) : null))
+          }))
           : null,
         menu === 'branch' ? (branchLoading === true || branchList === null
           ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' }, E('div', { className: 'dig-cs-item dig-cs-static' }, '…'))
