@@ -600,6 +600,35 @@ async function operationOf(root) {
 
 /* ============================== methods ============================== */
 
+/* The repository's own name, cut from its origin URL — a cloned folder that
+   was renamed on disk still reports the name the remote gave it (the leaf of
+   the URL, minus a trailing .git). scp-style (user@host:path), URL-style and
+   plain local paths all cut on the last slash or colon. */
+function repoNameFromUrl(url) {
+  if (typeof url !== 'string' || url.trim() === '') return ''
+  const tail = url.trim().replace(/\/+$/, '').replace(/\.git$/i, '')
+  const segments = tail.split(/[\\/:]/).filter((segment) => segment !== '')
+  return segments.length > 0 ? segments[segments.length - 1] : ''
+}
+/* origin first, then the first configured remote, then '' — the client
+   falls back to the folder basename when this is empty. Both reads are
+   local config reads, never network. */
+async function originNameOf(root) {
+  try {
+    const origin = await git(root, ['remote', 'get-url', 'origin'])
+    const name = repoNameFromUrl(origin)
+    if (name !== '') return name
+  } catch (error) { void error }
+  try {
+    const remotesOut = await runGit(root, ['remote'])
+    if (remotesOut.code !== 0) return ''
+    const first = remotesOut.stdout.split('\n').map((line) => line.trim()).filter((line) => line !== '')[0]
+    if (first === undefined) return ''
+    const urlOut = await runGit(root, ['remote', 'get-url', first])
+    return urlOut.code === 0 ? repoNameFromUrl(urlOut.stdout.trim()) : ''
+  } catch (error) { void error; return '' }
+}
+
 async function summary(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
@@ -614,7 +643,7 @@ async function summary(payload) {
      large `status` scan no longer serialises behind five cheap calls
      (issue #11: the sum of ~ten sequential commands became the max of two
      chains). */
-  const [branchInfo, statusOut, unstagedStat, stagedStat, ignored, stashCount, worktrees, operation, head] = await Promise.all([
+  const [branchInfo, statusOut, unstagedStat, stagedStat, ignored, stashCount, worktrees, operation, head, originName] = await Promise.all([
     (async () => {
       const branch = await currentBranchOf(root)
       const detached = branch === 'HEAD'
@@ -633,6 +662,7 @@ async function summary(payload) {
        checkouts — the panel's own actions already refresh everything, but
        nothing else watches the repo. Empty string on an unborn branch. */
     git(root, ['rev-parse', 'HEAD']).then((out) => out.trim()).catch(() => ''),
+    originNameOf(root),
   ])
   const groups = classify(parsePorcelain(statusOut))
   return {
@@ -644,6 +674,9 @@ async function summary(payload) {
     ahead: branchInfo.tracking.ahead,
     behind: branchInfo.tracking.behind,
     head: head,
+    /* The repository's own name (v0.19.1): the origin URL's leaf, so a
+       renamed clone still shows the real repo name, not the folder's. */
+    origin: originName,
     changes: {
       staged: decorate(groups.staged, stagedStat),
       unstaged: decorate(groups.unstaged, unstagedStat),

@@ -11035,7 +11035,7 @@ window.__ModuleLoader__.load({
         }, E(Icon, { name: 'more', size: 18 })))
       /* The selection action bar: visible only while a multi-select exists, so
          the mouse-only path (no right-click, no keyboard) keeps full power. */
-      const selectionBar = selection.size === 0 ? null : E('div', { className: 'dig-selection-bar' },
+      const selectionBar = selection.size === 0 ? null : E('div', { className: 'dig-selection-bar', 'data-cordis-panel': '' },
         E('span', { className: 'dig-selection-count' }, fill(t('selection.count'), { n: selection.size })),
         props.onBulkStage === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onBulkStage() }, t('action.stage')),
         props.onBulkUnstage === undefined ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onBulkUnstage() }, t('action.unstage')),
@@ -11068,8 +11068,12 @@ window.__ModuleLoader__.load({
               visibleItems.map((item) => E(Fragment, { key: item.key }, item.node)),
               winLast < changeItems.length ? E('div', { key: 'pad-bottom', style: { height: String(changeOffsets[changeItems.length] - changeOffsets[winLast]) + 'px' } }) : null,
             ]),
+          /* In-flow BETWEEN the list and the composer: a first selection
+             shrinks the viewport bottom edge without moving the list content
+             (scrollTop untouched), so the v0.18.3 dblclick precision holds —
+             and nothing on the list (group head, rows) is ever covered. */
+          selectionBar,
           composer),
-        selectionBar,
         marquee === null ? null : E('div', {
           className: 'dig-marquee',
           style: { left: marquee.x + 'px', top: marquee.y + 'px', width: marquee.w + 'px', height: marquee.h + 'px' },
@@ -12021,9 +12025,14 @@ window.__ModuleLoader__.load({
            roll live state back to a stale snapshot. */
         const cachedPage = readPaintPage(repoRoot)
         if (cachedPage !== undefined) {
-          if (summary === null) setSummary(cachedPage.summary)
-          if (branches === null) setBranches(cachedPage.branches)
-          if (commits.length === 0) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore) }
+          /* Field-wise: a pill may have painted only its summary (the pill
+             merges its own two fields alone), so branches/commits can be
+             absent from the page. Seeding undefined into state would crash
+             the branch-tree render (undefined.remotes) — skip that field
+             and let refresh() fetch it as usual. */
+          if (summary === null && cachedPage.summary !== undefined) setSummary(cachedPage.summary)
+          if (branches === null && cachedPage.branches !== undefined) setBranches(cachedPage.branches)
+          if (commits.length === 0 && Array.isArray(cachedPage.commits)) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore === true) }
         }
         void refresh()
         return undefined
@@ -13005,7 +13014,7 @@ window.__ModuleLoader__.load({
       }
 
       /* Remotes themselves, for "pull from" / "push to" style entries. */
-      const remoteNames = branches === null ? [] : branches.remotes.map((entry) => entry.name === undefined ? String(entry) : entry.name)
+      const remoteNames = branches == null ? [] : branches.remotes.map((entry) => entry.name === undefined ? String(entry) : entry.name)
 
       const showWorkingDiff = () => {
         const changes = summary === null ? null : summary.changes
@@ -14123,12 +14132,26 @@ window.__ModuleLoader__.load({
          VIEWPORT-space .dig-changes (invariant 13: position:fixed would be
          captured by the workbench's contain:layout and flung off-panel). */
       '.dig-marquee{position:absolute;border:1px solid var(--dsw-alias-brand-primary);background:color-mix(in srgb,var(--dsw-alias-brand-primary) 14%,transparent);pointer-events:none;z-index:6}',
-      /* The selection bar FLOATS over the top of the list (absolute, solid
-         surface): as an in-flow bar it shoved the whole list down one row on
-         the first selection — the second click of every double-click then
-         landed on the shifted group head and the dblclick died (v0.18.3). */
-      '.dig-selection-bar{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:12px;padding:3px 10px;font-size:11px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));border-bottom:1px solid var(--dsw-alias-border-subtle,transparent);box-shadow:var(--dsw-elevation-prominent,0 4px 14px rgba(0,0,0,.3))}',
-      '.dig-selection-bar .dig-link{margin-left:0}',
+      /* The selection action bar (v0.19.1 redesign). It used to FLOAT over the
+         top of the list (absolute, v0.18.3): that covered the group head and
+         the first rows, and on transparency skins (dsh-any-background) its
+         background went see-through, so its own text blended into the rows
+         underneath — unreadable. Now it is an IN-FLOW island between the list
+         and the composer: nothing is covered, and a first selection only
+         shrinks the viewport bottom edge (scrollTop untouched), which keeps
+         the v0.18.3 dblclick precision. The surface rides the official menu
+         token; data-cordis-panel (set at the render site) lets transparency
+         skins sync it exactly like the official menus. */
+      /* Local alias restore: dsh-any-background re-declares --dsw-alias-bg-layer-1/2/3
+         on [data-conversation-composer-overlay] (the session seat) as its trajectory
+         vars, which are absent when that feature is off — the seat inherits
+         guaranteed-invalid values, and var() fallbacks do NOT rescue IVCT, so the
+         whole background chain below resolves to transparent. Re-declaring the two
+         aliases from the official static token (the exact source the light theme's
+         own alias defs point at, theme-correct in dark too) makes the chain valid
+         again regardless of any-bg's injection state. */
+      '.dig-selection-bar{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-00,#fff);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-00,#fff);display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:5px 10px;margin:6px 0;font-size:11px;line-height:16px;border-radius:var(--dsw-radius-sm,8px);background:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2));border:1px solid var(--dsw-alias-border-l2,var(--dsw-alias-border-subtle,transparent));box-shadow:var(--dsw-elevation-prominent,0 4px 14px rgba(0,0,0,.25))}',
+      '.dig-selection-bar .dig-link{margin-left:0;padding:2px 0}',
       '.dig-selection-bar .dig-link-danger{color:var(--dsw-alias-state-error-primary)}',
       '.dig-selection-count{color:var(--dsw-alias-label-secondary);white-space:nowrap}',
       /* Focusable lists keep their own selection highlight as the focus
@@ -14333,14 +14356,23 @@ window.__ModuleLoader__.load({
       '.dig-cs-behind{color:var(--dsw-alias-state-business-primary)}',
       '.dig-cs-ahead{color:var(--dsw-alias-state-success-primary)}',
       '.dig-cs-error{display:inline-flex;align-items:center;color:var(--dsw-alias-state-error-primary);font-size:12px;padding:0 3px;cursor:help}',
-      '.dig-cs-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));backdrop-filter:var(--dsw-menu-backdrop-filter,blur(20px));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
+      // .dig-cs-menu opens upward (the composer sits at the bottom of the UI). The surface
+      // carries no backdrop-filter of its own: the data-cordis-panel attribute opts the popover
+      // into dsh-any-background's input-surface channel (--dsw-specific-menu remapped to
+      // var(--dsh-any-op-menu-cordis) on body — see the .dig-selection-bar note:
+      // leading with the op var keeps the fill valid even when the plugin's
+      // surface sampling misses and that remap would otherwise IVCT to transparent).
+      // --dsh-any-op-menu-cordis at the input opacity tier, plus its input blur rule), so fill
+      // opacity and frost follow the composer card exactly. Without that plugin the
+      // theme-owned menu material applies.
+      '.dig-cs-menu{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-00,#fff);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-00,#fff);position:absolute;bottom:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
       '.dig-cs-item{display:flex;align-items:center;gap:8px;width:100%;padding:5px 10px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-primary);font-family:inherit;font-size:13px;line-height:20px;cursor:pointer;text-align:left}',
       '.dig-cs-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-cs-item:disabled{opacity:.5;cursor:default}',
       '.dig-cs-item[data-current=true]{color:var(--dsw-alias-brand-primary)}',
       '.dig-cs-item svg{flex:none}',
       '.dig-cs-item-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.dig-cs-item-path{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));font-size:11px;max-width:140px}',
+      '.dig-cs-item-path{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:11px;max-width:140px}',
       '.dig-cs-item-note{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none}',
       '.dig-cs-item-counts{display:inline-flex;gap:5px;margin-left:auto;flex:none;font-variant-numeric:tabular-nums;font-size:11px}',
       '.dig-cs-static{color:var(--dsw-alias-label-tertiary);cursor:default}',
@@ -14480,14 +14512,68 @@ window.__ModuleLoader__.load({
     const COMPOSER_POLL_MS = 30000
     const COMPOSER_ERROR_TTL_MS = 6000
 
+    /* Windows paths ride backslashes, so both pill labels cut the leaf with
+       this slash-aware split instead of a bare forward-slash split — a drive
+       path must read as the leaf name, not the whole path. */
+    function baseNameOf(path) {
+      if (typeof path !== 'string' || path === '') return ''
+      const segments = path.split(/[\\/]/).filter((segment) => segment !== '')
+      return segments.length > 0 ? segments[segments.length - 1] : path
+    }
+
+    /* The pill feeds the SAME keep-warm cache the panel and the prewarmer
+       use (paintRepos / paintPage): a workspace the user has visited — by
+       panel, by pill, or by the session-switch prewarm — re-paints the pill
+       on mount with zero round trips, so switching sessions swaps the text
+       instead of tearing the whole component down and back. The pill only
+       ever MERGES its two fields into an existing page; a panel page with
+       commits must not lose them to a pill poll. */
+    function mergePaintPage(repoRoot, patch) {
+      const entry = readPaintPage(repoRoot)
+      const page = {}
+      if (entry !== undefined) {
+        if (entry.summary !== undefined) page.summary = entry.summary
+        if (entry.branches !== undefined) page.branches = entry.branches
+        if (entry.commits !== undefined) page.commits = entry.commits
+        if (entry.hasMore !== undefined) page.hasMore = entry.hasMore
+      }
+      Object.assign(page, patch)
+      writePaintPage(repoRoot, page)
+    }
+
+    /* The pill's repo pick order (remembered → workspace root when it is a
+       repository → first row), factored out so the cached seed and the fresh
+       discovery apply identically. */
+    function composerPickRepoOf(sessionId, data) {
+      const remembered = readRememberedRepo(sessionId)
+      const paths = data.repos.map((repo) => repo.path)
+      if (remembered !== undefined && paths.indexOf(remembered) >= 0) return remembered
+      if (data.isRepo === true) return data.cwd
+      if (paths.length > 0) return paths[0]
+      return null
+    }
+
     function ComposerGitStatus(props) {
       const ctx = props.ctx
       const t = props.t
       const sessionId = typeof props.sessionId === 'string' && props.sessionId !== '' ? props.sessionId : 'default'
       const [enabled, setEnabled] = useState(() => composerStatusEnabled())
       const [cwd, setCwd] = useState(() => sessionCwdOf(ctx, sessionId))
-      const [repoState, setRepoState] = useState(null)
-      const [repoRoot, setRepoRoot] = useState(null)
+      /* Warm first paint: a workspace the panel, the pill or the prewarmer
+         has already visited starts from the keep-warm cache, so a session
+         switch swaps text instead of flashing through an empty pill. */
+      const [repoState, setRepoState] = useState(() => {
+        const cwd0 = sessionCwdOf(ctx, sessionId)
+        if (cwd0 === undefined) return null
+        const cached = readPaintRepos(cwd0)
+        return cached === undefined ? null : cached
+      })
+      const [repoRoot, setRepoRoot] = useState(() => {
+        const cwd0 = sessionCwdOf(ctx, sessionId)
+        if (cwd0 === undefined) return null
+        const cached = readPaintRepos(cwd0)
+        return cached === undefined ? null : composerPickRepoOf(sessionId, cached)
+      })
       const [summary, setSummary] = useState(null)
       const [menu, setMenu] = useState(null)
       const [branchList, setBranchList] = useState(null)
@@ -14527,19 +14613,24 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         if (cwd === undefined || enabled !== true) { setRepoState(null); setRepoRoot(null); setSummary(null); return undefined }
         let cancelled = false
+        const applyRepos = (data) => {
+          setRepoState(data)
+          setRepoRoot(composerPickRepoOf(sessionId, data))
+        }
+        /* Warm seed first: a workspace the panel, the pill or the prewarmer
+           already visited paints its labels this tick; the request below
+           silently re-proves them. A failed refresh must not evict a good
+           seed — only fall back to the empty state when nothing is on
+           screen. */
+        const seeded = readPaintRepos(cwd)
+        if (seeded !== undefined) applyRepos(seeded)
         void (async () => {
           try {
             const data = await request('repos', { cwd: cwd })
             if (cancelled === true) return
-            setRepoState(data)
-            const remembered = readRememberedRepo(sessionId)
-            const paths = data.repos.map((repo) => repo.path)
-            let pick = null
-            if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
-            else if (data.isRepo === true) pick = data.cwd
-            else if (paths.length > 0) pick = paths[0]
-            setRepoRoot(pick)
-          } catch (error) { void error; if (cancelled !== true) setRepoState({ repos: [], isRepo: false }) }
+            writePaintRepos(cwd, data)
+            applyRepos(data)
+          } catch (error) { void error; if (cancelled !== true && seeded === undefined) setRepoState({ repos: [], isRepo: false }) }
         })()
         return () => { cancelled = true }
       }, [cwd, sessionId, enabled])
@@ -14555,8 +14646,15 @@ window.__ModuleLoader__.load({
             const data = await request('summary', { cwd: cwd, repoRoot: repoRoot, stats: false })
             if (cancelled === true) return
             setSummary(data)
+            /* Stale-while-revalidate both ways: our poll keeps the warm page
+               (panel / prewarm / seed) fresh, and a warm page seeds the NEXT
+               mount with zero round trips. Merge only our field — a panel
+               page keeps its commits. */
+            mergePaintPage(repoRoot, { summary: data })
           } catch (error) { void error }
         }
+        const seed = readPaintPage(repoRoot)
+        if (seed !== undefined && seed.summary !== undefined && seed.summary !== null) setSummary(seed.summary)
         void load()
         const timer = setInterval(() => { void load() }, COMPOSER_POLL_MS)
         return () => { cancelled = true; clearInterval(timer) }
@@ -14568,7 +14666,7 @@ window.__ModuleLoader__.load({
         const watcher = (sid, root) => {
           if (sid !== sessionId || typeof root !== 'string' || root === '') return
           setRepoRoot((current) => (current === root ? current : root))
-          setSummary(null)
+          setSummary(seedSummaryOf(root))
           setBranchList(null)
           setTick((value) => value + 1)
         }
@@ -14610,7 +14708,12 @@ window.__ModuleLoader__.load({
       if (data === null || (data.isRepo !== true && (data.repos === undefined || data.repos.length === 0))) return null
       const repoPaths = data.repos.map((repo) => repo.path)
       const singleRepo = repoPaths.length <= 1
-      const repoName = repoRoot === null ? '' : (repoRoot.split('/').filter((segment) => segment !== '').pop() || repoRoot)
+      /* The pill shows the repository's OWN name — the origin URL's leaf
+         (summary.origin) — so a clone renamed on disk still reads as the
+         repo it came from; the folder basename is only the fallback for
+         repos without any remote. */
+      const originName = summary !== null && typeof summary.origin === 'string' && summary.origin !== '' ? summary.origin : ''
+      const repoName = originName !== '' ? originName : baseNameOf(repoRoot)
       const branchName = summary !== null && typeof summary.branch === 'string' && summary.branch !== '' ? summary.branch : null
       const detached = summary !== null && summary.detached === true
       const ahead = summary !== null && typeof summary.ahead === 'number' ? summary.ahead : 0
@@ -14621,12 +14724,17 @@ window.__ModuleLoader__.load({
 
       const openBranchMenu = async () => {
         setMenu('branch')
-        setBranchList(null)
-        setBranchLoading(true)
+        /* A warm page (panel or prewarm) fills the list this tick; the fetch
+           below re-proves it. On failure keep whatever is showing. */
+        const seed = readPaintPage(repoRoot)
+        const seeded = seed !== undefined && seed.branches !== undefined && seed.branches !== null ? seed.branches : null
+        setBranchList(seeded)
+        setBranchLoading(seeded === null)
         try {
           const branchesData = await request('branches', { cwd: cwd, repoRoot: repoRoot })
           setBranchList(branchesData)
-        } catch (caught) { void caught; setBranchList(null) } finally { setBranchLoading(false) }
+          mergePaintPage(repoRoot, { branches: branchesData })
+        } catch (caught) { void caught } finally { setBranchLoading(false) }
       }
       const checkoutBranch = async (name) => {
         if (repoRoot === null || checkingOut !== '') return
@@ -14641,10 +14749,18 @@ window.__ModuleLoader__.load({
           setError(caught instanceof Error ? caught.message : String(caught))
         } finally { setCheckingOut('') }
       }
+      /* Swap to a warm summary synchronously when one exists — the null gap
+         between pick and effect would paint one empty frame. */
+      const seedSummaryOf = (root) => {
+        if (typeof root !== 'string' || root === '') return null
+        const seed = readPaintPage(root)
+        return seed !== undefined && seed.summary !== undefined && seed.summary !== null ? seed.summary : null
+      }
+
       const pickRepoRoot = (path) => {
         setMenu(null)
         setRepoRoot(path)
-        setSummary(null)
+        setSummary(seedSummaryOf(path))
         setBranchList(null)
         setTick((value) => value + 1)
         rememberRepoShared(sessionId, path)
@@ -14676,7 +14792,7 @@ window.__ModuleLoader__.load({
         behind > 0 ? E('span', { className: 'dig-cs-badge dig-cs-behind', title: t('composer.behindHint') }, '↓' + String(behind)) : null,
         ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,
         error !== '' ? E('span', { className: 'dig-cs-error', title: error }, '×') : null,
-        menu === 'repo' ? E('div', { className: 'dig-cs-menu' },
+        menu === 'repo' ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' },
           repoPaths.map((path) => E('button', {
             key: path,
             type: 'button',
@@ -14686,12 +14802,12 @@ window.__ModuleLoader__.load({
             onClick: () => pickRepoRoot(path),
           },
             E(Icon, { name: 'commit', size: 11 }),
-            E('span', { className: 'dig-cs-item-name' }, path.split('/').filter((segment) => segment !== '').pop() || path),
+            E('span', { className: 'dig-cs-item-name' }, baseNameOf(path)),
             E('span', { className: 'dig-cs-item-path' }, path))))
           : null,
         menu === 'branch' ? (branchLoading === true || branchList === null
-          ? E('div', { className: 'dig-cs-menu' }, E('div', { className: 'dig-cs-item dig-cs-static' }, '…'))
-          : E('div', { className: 'dig-cs-menu' },
+          ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' }, E('div', { className: 'dig-cs-item dig-cs-static' }, '…'))
+          : E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' },
             branchList.local.map((entry) => E('button', {
               key: entry.name,
               type: 'button',

@@ -1598,9 +1598,9 @@ test('the first-paint cache seeds session switches inside one workspace (v0.13.1
   // The seeding effect only fills COLD state (null summary / empty commits) and
   // never rolls live state back to the stale snapshot.
   const panel = client.slice(client.indexOf('const cachedPage = readPaintPage(repoRoot)'), client.indexOf('void refresh()'))
-  assert.match(panel, /if \(summary === null\) setSummary\(/, 'summary only seeds when cold')
-  assert.match(panel, /if \(branches === null\) setBranches\(/, 'branches only seed when cold')
-  assert.match(panel, /if \(commits\.length === 0\) \{ setCommits\(/, 'commits only seed when cold')
+  assert.match(panel, /if \(summary === null && cachedPage\.summary !== undefined\) setSummary\(/, 'summary only seeds when cold and present')
+  assert.match(panel, /if \(branches === null && cachedPage\.branches !== undefined\) setBranches\(/, 'branches only seed when cold and present')
+  assert.match(panel, /if \(commits\.length === 0 && Array\.isArray\(cachedPage\.commits\)\) \{ setCommits\(/, 'commits only seed when cold and present')
   // The write side records exactly the FIRST page, from refresh() itself — a
   // paged fetch (skip > 0) must never poison the seed with a concatenated list.
   const refreshFn = client.slice(client.indexOf('const refresh = useCallback'), client.indexOf('], [guard, loadSummary, loadBranches, loadCommits, repoRoot])'))
