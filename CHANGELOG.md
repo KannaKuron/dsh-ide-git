@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## Unreleased
+
+**类型**:fix(「输入框 Git 状态」开关写不进去)
+
+- **问题**:设置 → Git 工具窗口 → 面板放置,取消勾选「输入框 Git 状态」后提示「设置没写进去,已退回原状态;请重试」,开关弹回。
+- **原因**:v0.19.0 只加了客户端开关,没有在宿主 `railConfigSchema` 里声明 `composerStatus`。宿主拒绝写入未声明为 volatile 的行配置字段(`Config field "composerStatus" is not volatile`),客户端收到 `accepted === false` 便回滚。
+- **修复**:宿主补上 `shape.composerStatus = live(schema.boolean().default(true))`,与 `conversationTab` / `immersive` 同一契约;顺带修正面板放置三行开关点文字标签不生效的取反错误。
+- **验证**:113 项测试全绿;宿主 schema 离线确认该字段已声明且 volatile。
+
 ## v0.19.6 — 2026-10-18
 
 **类型**:fix(diff 正文与提交流水字号跟随宿主字体设置)

@@ -77,6 +77,13 @@ function railConfigSchema(schema) {
      does not mark volatile ("Config field … is not volatile"), and the settings
      switch then rolls back silently. */
   shape.immersive = live(schema.boolean().default(true))
+  /* Composer status pill (v0.19.0): the settings card's "输入框 Git 状态" switch
+     and the pill itself read this field. v0.19.0-v0.19.6 shipped the switch and
+     the reader WITHOUT this declaration, so the Host rejected every write with
+     `Config field "composerStatus" is not volatile` — the card rolled the switch
+     back and said "设置没写进去". Any new row-Config field the client writes MUST
+     be declared (and volatile) here, or the write is refused before it lands. */
+  shape.composerStatus = live(schema.boolean().default(true))
   return schema.object(shape)
 }
 

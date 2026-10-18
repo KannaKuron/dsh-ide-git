@@ -932,7 +932,17 @@ test('every shipped dictionary carries the same key set as zh', () => {
 })
 
 test('changelog tracks the current version', () => {
-  assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
+  // A release bumps the version and adds its dated heading; an unreleased change
+  // (a pull request on someone else's fork) keeps the released version and parks
+  // its entry under `## Unreleased`, so the PR never claims a version the
+  // maintainer has not published. Either way the newest entry is on top.
+  const first = changelog.slice(changelog.indexOf('\n## ') + 1).split('\n')[0]
+  if (first === '## Unreleased') {
+    assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'),
+      'the released version keeps its dated heading below the unreleased one')
+  } else {
+    assert.match(changelog, new RegExp('^## v' + pkg.version.replace(/\./g, '\\.') + ' — \\d{4}-\\d{2}-\\d{2}$', 'm'))
+  }
   assert.ok(exists('README.md') && exists('README_EN.md') && exists('AGENTS.md'))
 })
 
@@ -1236,6 +1246,41 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   assert.match(card, /const field = 'immersive'/, 'the immersive switch is backed by its own row-Config field')
   assert.match(host, /shape\.immersive = live\(schema\.boolean\(\)\.default\(true\)\)/,
     'the host schema declares the immersive field with default true')
+  // The composer-status switch (v0.19.0) shipped WITHOUT its host field and the
+  // Host refused every write: the card rolled the switch back and said "设置没写
+  // 进去" (v0.19.7 user report). It is the same contract as the two above.
+  assert.match(card, /const field = 'composerStatus'/, 'the composer pill switch is backed by its own row-Config field')
+  assert.match(host, /shape\.composerStatus = live\(schema\.boolean\(\)\.default\(true\)\)/,
+    'the host schema declares the composerStatus field with default true')
+  // Generic guard, so the NEXT field cannot repeat the v0.19.7 bug: every
+  // row-Config field the card writes must be declared volatile in the host
+  // schema. Rail fields are covered by the RAIL_CONFIG_IDS parity test above.
+  const writtenFields = new Set()
+  for (const match of card.matchAll(/const field = '([A-Za-z]+)'/g)) writtenFields.add(match[1])
+  for (const match of card.matchAll(/(?:textRow|selectRow)\('([A-Za-z]+)'/g)) writtenFields.add(match[1])
+  assert.ok(writtenFields.size >= 5, 'the card should still write the placement and commit fields')
+  for (const field of writtenFields) {
+    assert.match(host, new RegExp('shape\\.' + field + ' = live\\(schema\\.'),
+      'the host schema must declare the row-Config field the card writes: ' + field)
+  }
+  // The label click must INVERT what is on screen. The old spelling of the
+  // fallback (`cond ? a : values[field] !== false) !== true`) parses as
+  // `cond ? a : (values[field] !== false)` and then negates only the last
+  // operand, so a label click recomputed the CURRENT value and wrote it back —
+  // a silent no-op. One shared helper keeps the inversion on the whole value.
+  assert.match(card, /const placementTarget = \(field, fromControl\) => \{/,
+    'the placement target rule lives in one helper')
+  assert.match(card, /return current !== true/, 'the fallback target is the inverse of what is on screen')
+  // Check CODE, not the comment that quotes the old spelling.
+  const cardCode = card.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.doesNotMatch(cardCode, /values\[field\] !== false\) !== true/,
+    'the precedence trap must not come back: parenthesize the whole fallback')
+  for (const field of ['conversationTab', 'immersive', 'composerStatus']) {
+    assert.match(card, new RegExp("const field = '" + field + "'\\n\\s+const inputId = 'dig-placement-' \\+ field\\n\\s+const shown = placementShown\\(field\\)"),
+      field + ' must read its switch state through placementShown')
+  }
+  assert.match(card, /const wanted = placementTarget\(field, fromControl\)/,
+    'every placement toggle derives its target from the shared helper')
   for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint',
     'settings.placement.immersive', 'settings.placement.immersiveHint']) {
     const occurrences = client.split("'" + key + "'").length - 1
@@ -1500,6 +1545,23 @@ test('the rail settings live in the row Config, with localStorage only as the le
     'every action is a volatile boolean defaulting to shown')
   assert.match(host, /export const Config = Schema === null \? undefined : railConfigSchema\(Schema\)/,
     'an unresolvable schema module must only disable the surface, never the row')
+
+  // The host schema must declare EVERY field the client's settings card writes,
+  // each one volatile (the Host refuses a write to a path that is not
+  // volatile: `Config field "x" is not volatile`). v0.19.0-v0.19.6 wrote
+  // `composerStatus` with no declaration at all, so the Host refused the write,
+  // the card rolled the switch back and showed "设置没写进去" (v0.19.7 user
+  // report). This list is the write surface; adding a card field without the
+  // matching host line must turn this test red.
+  const cardSource = client.slice(client.indexOf('function RailSettingsCard('), client.indexOf('function RailSettings('))
+  const cardFields = new Set()
+  for (const match of cardSource.matchAll(/const field = '([A-Za-z]+)'/g)) cardFields.add(match[1])
+  for (const match of cardSource.matchAll(/(?:textRow|selectRow)\('([A-Za-z]+)'/g)) cardFields.add(match[1])
+  for (const field of cardFields) {
+    assert.match(host, new RegExp('shape\\.' + field + ' = live\\(schema\\.(?:boolean|string)\\(\\)'),
+      'the host row Config must declare the field the settings card writes: ' + field)
+  }
+  assert.ok(cardFields.has('composerStatus'), 'the composer pill switch is part of the write surface')
 
   // Invariant 2, amended: the host half still imports only node: builtins; the
   // single non-node module it may REACH (lazily, guarded) is the host-provided
