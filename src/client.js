@@ -14544,10 +14544,15 @@ window.__ModuleLoader__.load({
          vars, which are absent when that feature is off — the seat inherits
          guaranteed-invalid values, and var() fallbacks do NOT rescue IVCT, so the
          whole background chain below resolves to transparent. Re-declaring the two
-         aliases from the official static token (the exact source the light theme's
-         own alias defs point at, theme-correct in dark too) makes the chain valid
-         again regardless of any-bg's injection state. */
+         aliases from the official static token — the exact source the LIGHT
+         theme's own alias defs point at — makes the chain valid again regardless
+         of any-bg's injection state. static never varies by theme, so this only
+         reproduces the LIGHT surface; the dark override right below re-pins the
+         same aliases to the dark theme's own sources (layer-1→bluish-875,
+         layer-2→bluish-850). Without that override every dark theme renders
+         white surfaces under light text here (issue #15, 1.13:1). */
       '.dig-selection-bar{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-00,#fff);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-00,#fff);display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:5px 10px;margin:6px 0;font-size:11px;line-height:16px;border-radius:var(--dsw-radius-sm,8px);background:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2));border:1px solid var(--dsw-alias-border-l2,var(--dsw-alias-border-subtle,transparent));box-shadow:var(--dsw-elevation-prominent,0 4px 14px rgba(0,0,0,.25))}',
+      'body[data-ds-dark-theme] .dig-selection-bar{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-875,#232324);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-850,#2c2c2e)}',
       '.dig-selection-bar .dig-link{margin-left:0;padding:2px 0}',
       '.dig-selection-bar .dig-link-danger{color:var(--dsw-alias-state-error-primary)}',
       '.dig-selection-count{color:var(--dsw-alias-label-secondary);white-space:nowrap}',
@@ -14761,8 +14766,12 @@ window.__ModuleLoader__.load({
       // surface sampling misses and that remap would otherwise IVCT to transparent).
       // --dsh-any-op-menu-cordis at the input opacity tier, plus its input blur rule), so fill
       // opacity and frost follow the composer card exactly. Without that plugin the
-      // theme-owned menu material applies.
+      // theme-owned menu material applies. The light re-declaration on the rule below
+      // pins the LIGHT static surface (see the .dig-selection-bar note); dark themes
+      // need the matching override right after it, or the menu renders white under
+      // light text (issue #15).
       '.dig-cs-menu{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-00,#fff);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-00,#fff);position:absolute;bottom:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
+      'body[data-ds-dark-theme] .dig-cs-menu{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-875,#232324);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-850,#2c2c2e)}',
       '.dig-cs-item{display:flex;align-items:center;gap:8px;width:100%;padding:5px 10px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-primary);font-family:inherit;font-size:13px;line-height:20px;cursor:pointer;text-align:left}',
       '.dig-cs-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-cs-item:disabled{opacity:.5;cursor:default}',

@@ -3,17 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
-## Unreleased
+## v0.19.7 — 2026-10-18
 
-**类型**:fix(「输入框 Git 状态」开关写不进去)
+**类型**:fix(两个社区贡献:设置开关写不进去 + 暗色主题弹层白底)
 
-- **问题**:设置 → Git 工具窗口 → 面板放置,取消勾选「输入框 Git 状态」后提示「设置没写进去,已退回原状态;请重试」,开关弹回。
-- **原因**:v0.19.0 只加了客户端开关,没有在宿主 `railConfigSchema` 里声明 `composerStatus`。宿主拒绝写入未声明为 volatile 的行配置字段(`Config field "composerStatus" is not volatile`),客户端收到 `accepted === false` 便回滚。
-- **修复**:宿主补上 `shape.composerStatus = live(schema.boolean().default(true))`,与 `conversationTab` / `immersive` 同一契约;顺带修正面板放置三行开关点文字标签不生效的取反错误。
-- **验证**:113 项测试全绿;宿主 schema 离线确认该字段已声明且 volatile。
-
-## v0.19.6 — 2026-10-18
-
+- **fix 「输入框 Git 状态」开关写不进去**(合入 [@jiangchengbei 的 #14](https://github.com/KannaKuron/dsh-ide-git/pull/14)):设置 → Git 工具窗口 → 面板放置,取消勾选「输入框 Git 状态」后提示「设置没写进去,已退回原状态;请重试」,开关弹回。原因是 v0.19.0 只加了客户端开关,没有在宿主 railConfigSchema 里声明 composerStatus,宿主拒绝写入未声明为 volatile 的行配置字段(Config field "composerStatus" is not volatile)。修复与 conversationTab / immersive 同一契约;并新增测试守卫:设置卡片写的每个字段都必须在宿主 schema 声明,防止再犯。
+- **fix 面板放置三行开关点文字标签失效**(同 #14):三行开关的取反表达式把取反放在了最后一个操作数上((cond ? a : b) !== true 的写法在 intent 已有值时变成双重取反),点开关本体有效、点文字标签会静默写回原值。现统一收敛到 placementTarget 一个 helper,取反作用在整个值上;测试断言该优先级陷阱不得回归。
+- **fix 暗色主题下弹层白底浅字**(修复 [#15](https://github.com/KannaKuron/dsh-ide-git/issues/15) by @SherUnlocked-4869):输入框 Git 胶囊的分支弹层与文件选择动作条在暗色主题下白底浅字、对比度仅 1.13:1。根因是 v0.19.1 为透明主题防击穿把浮层背景别名钉死到了「亮色 static 白」——static 色阶不随主题变,暗色的正确实色本该是官方暗色块的来源(bluish-875/850)。现在亮色保持原状,暗色由 body[data-ds-dark-theme] 覆盖规则改钉暗色实色;透明主题(any-background)的磨砂通道 --dsh-any-op-menu-cordis 优先级不变,壁纸环境观感零变化。实测对比度:亮 18.90:1(不变)、暗 13.34:1(原 1.13:1)、any-bg 半透明通道照常。
+- **验证**:113 项测试全绿 + SSR 4 项全过;PR #14 在独立 worktree 实测 113+SSR 全绿后合入;暗色弹层用「官方 design-platform.css + 插件规则」实测对比度验证。
 **类型**:fix(diff 正文与提交流水字号跟随宿主字体设置)
 
 - **代码内容面接官方 code delta**:diff 正文 `.dig-diff`、宿主 DiffBlock 容器 `.dig-diff-card`(均 12px 基准)、git 命令输出 `.dig-gitlog-pre`(11px 基准)、变更列表 ± 计数 `.dig-lf-itemCounts/.dig-lf-counts`(12px 基准,等宽 `--ds-font-family-code`)接 `--dsh-code-font-delta`(官方变量 = 代码字号设置值 − 11px)——用户调大「设置 → 字体大小 → 代码」后同步放大。
