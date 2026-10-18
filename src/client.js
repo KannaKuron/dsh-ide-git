@@ -9751,6 +9751,24 @@ window.__ModuleLoader__.load({
       /* A host that serves the document but refuses writes gets disabled switches
          and a sentence, not controls that silently do nothing. */
       const readOnly = snapshot.writable !== true
+      /* The three placement switches (conversation tab / immersive / composer
+         pill) share one target rule: the control's own answer wins; otherwise
+         the target is the INVERSE of what is on screen — the synchronous intent
+         when the user already touched the field, the accepted document
+         otherwise. The parentheses are load-bearing: `cond ? a : b !== false`
+         parses as `cond ? a : (b !== false)`, so the old spelling of the
+         fallback (`: values[field] !== false) !== true`) made a label click a
+         silent no-op — it recomputed the CURRENT value and wrote it back
+         unchanged (v0.19.6 user report, fixed in v0.19.7). Keep the inversion
+         on the whole expression, never on its last operand. */
+      const placementShown = (field) => (Object.prototype.hasOwnProperty.call(intent.current, field)
+        ? intent.current[field] === true
+        : values[field] !== false)
+      const placementTarget = (field, fromControl) => {
+        if (fromControl !== null) return fromControl
+        const current = placementShown(field)
+        return current !== true
+      }
       return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': status, 'data-settings-readonly': readOnly === true ? 'true' : 'false' },
         E('div', { className: readOnly === true ? 'dig-settings-note' : 'dig-settings-note dig-settings-note-hidden', 'data-settings-readonly-note': '' }, t('settings.rail.readonly')),
         note === '' ? null : E('div', { className: 'dig-settings-error', 'data-settings-error': '' }, note),
@@ -9815,20 +9833,14 @@ window.__ModuleLoader__.load({
         (() => {
           const field = 'conversationTab'
           const inputId = 'dig-placement-' + field
-          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
-            ? intent.current[field] === true
-            : values[field] !== false
+          const shown = placementShown(field)
           const toggle = (event) => {
             if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
             const fromControl = event !== undefined && event !== null && event.target !== null
               && event.target !== undefined && typeof event.target.checked === 'boolean'
               ? event.target.checked
               : null
-            const wanted = fromControl !== null
-              ? fromControl
-              : (Object.prototype.hasOwnProperty.call(intent.current, field)
-                ? intent.current[field] !== true
-                : values[field] !== false) !== true
+            const wanted = placementTarget(field, fromControl)
             intent.current[field] = wanted
             dirty.current.set(field, wanted)
             setPending((now) => Object.assign({}, now, { [field]: wanted }))
@@ -9859,20 +9871,14 @@ window.__ModuleLoader__.load({
              same config). */
           const field = 'immersive'
           const inputId = 'dig-placement-' + field
-          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
-            ? intent.current[field] === true
-            : values[field] !== false
+          const shown = placementShown(field)
           const toggle = (event) => {
             if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
             const fromControl = event !== undefined && event !== null && event.target !== null
               && event.target !== undefined && typeof event.target.checked === 'boolean'
               ? event.target.checked
               : null
-            const wanted = fromControl !== null
-              ? fromControl
-              : (Object.prototype.hasOwnProperty.call(intent.current, field)
-                ? intent.current[field] !== true
-                : values[field] !== false) !== true
+            const wanted = placementTarget(field, fromControl)
             intent.current[field] = wanted
             dirty.current.set(field, wanted)
             setPending((now) => Object.assign({}, now, { [field]: wanted }))
@@ -9902,20 +9908,14 @@ window.__ModuleLoader__.load({
              disappears live. Default ON. */
           const field = 'composerStatus'
           const inputId = 'dig-placement-' + field
-          const shown = Object.prototype.hasOwnProperty.call(intent.current, field)
-            ? intent.current[field] === true
-            : values[field] !== false
+          const shown = placementShown(field)
           const toggle = (event) => {
             if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
             const fromControl = event !== undefined && event !== null && event.target !== null
               && event.target !== undefined && typeof event.target.checked === 'boolean'
               ? event.target.checked
               : null
-            const wanted = fromControl !== null
-              ? fromControl
-              : (Object.prototype.hasOwnProperty.call(intent.current, field)
-                ? intent.current[field] !== true
-                : values[field] !== false) !== true
+            const wanted = placementTarget(field, fromControl)
             intent.current[field] = wanted
             dirty.current.set(field, wanted)
             setPending((now) => Object.assign({}, now, { [field]: wanted }))
