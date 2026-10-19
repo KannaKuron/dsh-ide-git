@@ -10263,6 +10263,22 @@ window.__ModuleLoader__.load({
         return props.vertical === true ? rect.width : rect.height
       }
       const sign = props.side === 'next' ? -1 : 1
+      /* Pointermove arrives faster than frames can paint, and every dragPane
+       * does a forced reflow (measurePanes) plus two setStates — handling each
+       * event is layout thrashing, and the report (#16 follow-up) is exactly
+       * that: a drag starts smooth, then feels glued to the cursor. The latest
+       * px parks in a ref and ONE rAF per frame hands it to the clamp; pointerup
+       * flushes the parked value first so a gesture never ends on a stale size. */
+      const frameRef = useRef(0)
+      const pendingRef = useRef(null)
+      const flushRef = useRef(null)
+      useEffect(() => () => { if (frameRef.current !== 0) cancelAnimationFrame(frameRef.current) }, [])
+      flushRef.current = () => {
+        if (frameRef.current !== 0) { cancelAnimationFrame(frameRef.current); frameRef.current = 0 }
+        const value = pendingRef.current
+        pendingRef.current = null
+        if (value !== null) props.onDrag(value)
+      }
       const onPointerDown = (event) => {
         if (event.button !== undefined && event.button !== 0) return
         dragRef.current = {
@@ -10278,11 +10294,13 @@ window.__ModuleLoader__.load({
         const drag = dragRef.current
         if (drag === null || drag.id !== event.pointerId) return
         const at = props.vertical === true ? event.clientX : event.clientY
-        props.onDrag(drag.size + sign * (at - drag.at))
+        pendingRef.current = drag.size + sign * (at - drag.at)
+        if (frameRef.current === 0) frameRef.current = requestAnimationFrame(() => flushRef.current())
       }
       const onPointerUp = () => {
         if (dragRef.current === null) return
         dragRef.current = null
+        if (frameRef.current !== 0) flushRef.current()
         props.onEnd()
       }
       const onKeyDown = (event) => {
@@ -12118,7 +12136,15 @@ window.__ModuleLoader__.load({
          re-clamps a stored size has to see the same numbers the drag did — a drag
          allowed further than the render allows snaps back under the cursor. The
          bail-out comparison is what keeps this from looping. */
-      useEffect(() => {
+      /* A LAYOUT effect: on mount this runs before the first paint, so the
+         fallback layout (paneGeometry's stylesheet/literal defaults) is
+         replaced by the live one inside the same frame instead of being
+         painted and then jumped a frame later. Painting both is the "height
+         animation" on tab switches from issue #16 — two visible layouts ~80px
+         apart read as a smooth resize in a low-fps screen recording. Later
+         runs still track content arrival; the layout-phase cost is one
+         querySelectorAll over the 3-4 panes the post-paint run already paid. */
+      useMeasureLayoutEffect(() => {
         const found = measurePanes()
         setPaneSizes((current) => (samePaneSizes(current, found) ? current : found))
       })
