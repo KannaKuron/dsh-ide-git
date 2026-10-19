@@ -1747,3 +1747,37 @@ test('split + wrap rows share one source, and the preview carries a render bound
     'the preview body renders LineDiff inside the boundary with a localized fallback')
   assert.match(cssRule('.dig-preview-boundary'), /var\(--dsw-alias-label-secondary\)/, 'the fallback line stays quiet, not alarm-red')
 })
+
+test('the remote branch tree folds by path like the local one (v0.19.9)', () => {
+  // The strip is module-level and pure: a single remote name strips its
+  // "<remote>/" prefix so the tree groups feature/…, fix/… directly; mixed
+  // remotes, a bare name beside prefixed ones, or an empty list keep full
+  // names (grouping under one folder named after the remote is noise).
+  const start = client.indexOf('function remoteTreeStripOf(')
+  assert.ok(start >= 0, 'remoteTreeStripOf must exist at module level')
+  const end = client.indexOf('\n    function ', start + 10)
+  assert.ok(end > start, 'remoteTreeStripOf must be followed by a sibling function')
+  const strip = new Function(client.slice(start, end) + '; return remoteTreeStripOf')()
+  assert.equal(strip(['origin/feature/a', 'origin/feature/b', 'origin/main', 'origin/fix/c']), 'origin/')
+  assert.equal(strip(['origin/a', 'upstream/b']), '', 'mixed remotes keep full names')
+  assert.equal(strip(['origin/main', 'main']), '', 'a bare name beside prefixed ones keeps full names')
+  assert.equal(strip([]), '')
+  // Wiring: the remote section joins the grouped renderer under its own fold
+  // namespace (its folder state stays independent of the local one), and the
+  // visible-leaves mirror walks the SAME tree so Shift-ranges and Ctrl+A
+  // follow the rendered order exactly.
+  assert.match(client, /section\('remote', t\('branches\.remote'\), remotes, \(entry\) => Object\.assign\(\{\}, entry, \{ remote: true \}\), true, 'remote', remoteNameOf\)/,
+    'the remote section renders through the grouped tree under the remote namespace')
+  assert.match(client, /flatLeaves\(forestOf\(remotes\.map\(\(entry\) => Object\.assign\(\{\}, entry, \{ remote: true \}\)\), remoteNameOf\), 'remote', 0, visibleLeaves\)/,
+    'the selection mirror walks the same namespaced tree')
+  assert.match(client, /const forestOf = \(entries, nameOf\) =>/, 'forestOf accepts a name override')
+  assert.match(client, /rowsOf\(forestOf\(entries\.map\(\(entry\) => decorate\(entry\)\), nameOf\), ns \|\| '', 0\)/,
+    'the grouped renderer threads ns and nameOf through')
+  // The remote HEAD symbolic ref arrives from git as a BARE "<remote>" name
+  // (%(refname:short) of refs/remotes/<remote>/HEAD collapses that way); the
+  // host drops it before it ever becomes a row — otherwise it pollutes the
+  // tree AND defeats the single-remote prefix strip above.
+  const host = read('src/index.js')
+  assert.match(host, /\/\^refs\\\/remotes\\\/\[\^\/\]\+\\\/HEAD\$\/\.test\(parts\[0\]\) === false\) remote\.push\(entry\)/,
+    'the host filters <remote>/HEAD before listing remote branches')
+})

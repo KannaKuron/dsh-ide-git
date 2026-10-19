@@ -755,7 +755,14 @@ async function branches(payload) {
       behind: 0,
     }
     if (parts[0].startsWith('refs/heads/')) local.push(entry)
-    else if (parts[0].startsWith('refs/remotes/')) remote.push(entry)
+    else if (parts[0].startsWith('refs/remotes/')) {
+      /* "<remote>/HEAD" is the symbolic pointer at a remote's default branch —
+         its %(refname:short) collapses to the BARE remote name, so it is not a
+         branch anyone can check out. It never becomes a row (the stray
+         "<remote>" entry used to pollute the remote tree and, grouped, it also
+         defeated the tree's single-remote prefix strip). */
+      if (/^refs\/remotes\/[^/]+\/HEAD$/.test(parts[0]) === false) remote.push(entry)
+    }
     else if (parts[0].startsWith('refs/tags/')) tags.push({ name: entry.name, hash: entry.hash, shortHash: entry.shortHash, date: entry.date, subject: entry.subject })
   }
   for (const entry of local) {

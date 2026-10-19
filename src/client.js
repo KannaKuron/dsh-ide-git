@@ -7068,6 +7068,20 @@ window.__ModuleLoader__.load({
       return kind + ':' + entry.name
     }
 
+    /* v0.19.9: the REMOTE section folds by path exactly like the local one. In
+       the common single-remote repo every row starts with the same "<remote>/"
+       prefix, which would nest every tree under one folder named after the
+       remote — noise, not grouping — so the strip applies only when EVERY name
+       shares that first segment AND carries it (a bare "main" beside
+       "origin/main" means mixed shapes and keeps full names). */
+    function remoteTreeStripOf(names) {
+      if (names.length === 0) return ''
+      const first = names.map((name) => String(name).split('/')[0])
+      if (new Set(first).size !== 1) return ''
+      const prefix = first[0] + '/'
+      return names.every((name) => String(name).startsWith(prefix) === true) ? prefix : ''
+    }
+
     /* Join selected values for the clipboard — one per line, the shape a
        terminal or an editor expects when pasting a list. */
     function clipboardLines(values) {
@@ -10478,6 +10492,13 @@ window.__ModuleLoader__.load({
          double-click browses the current branch's history, right-click opens
          the same row menu (quick jump back to HEAD lives there). */
       const headEntry = locals.find((entry) => entry.head === true) || null
+      /* v0.19.9: remote rows group by their path BELOW the "<remote>/" prefix;
+         the full name still drives every selKey/menu/checkout path. */
+      const remoteStrip = remoteTreeStripOf(remotes.map((entry) => entry.name))
+      const remoteNameOf = (entry) => {
+        const name = String(entry.name)
+        return remoteStrip !== '' && name.startsWith(remoteStrip) === true ? name.slice(remoteStrip.length) : name
+      }
       /* A refresh that makes a picked ref disappear must not keep it selected. */
       useEffect(() => {
         reportGestureRef.current = false
@@ -10507,10 +10528,14 @@ window.__ModuleLoader__.load({
        * row only SELECTS it (checking out rewrites the working tree), so the row
        * carries the selection and a double-click does the checkout.
        */
-      const forestOf = (entries) => {
+      /* nameOf (v0.19.9) lets the remote section group by its name WITHOUT the
+         "<remote>/" prefix (see remoteTreeStripOf) while every row keeps its
+         full entry.name for selection, menus and checkout. */
+      const forestOf = (entries, nameOf) => {
+        const labelOf = nameOf === undefined ? (entry) => entry.name : nameOf
         const root = { folders: new Map(), leaves: [] }
         for (const entry of entries) {
-          const parts = String(entry.name).split('/')
+          const parts = String(labelOf(entry)).split('/')
           let node = root
           for (let index = 0; index < parts.length - 1; index += 1) {
             const key = parts[index]
@@ -10591,7 +10616,9 @@ window.__ModuleLoader__.load({
         for (const leaf of node.leaves) out.push(branchRow(leaf.entry, leaf.label, depth))
         return out
       }
-      const section = (key, title, entries, decorate, grouped) => E('div', { className: 'dig-section', key: key },
+      /* ns (v0.19.9) namespaces the fold ids of a grouped section ("remote/…")
+         so its folders remember their state independently of the local ones. */
+      const section = (key, title, entries, decorate, grouped, ns, nameOf) => E('div', { className: 'dig-section', key: key },
         E('button', {
           type: 'button', className: 'dig-section-head',
           onClick: () => setCollapsed((previous) => Object.assign({}, previous, { [key]: !previous[key] })),
@@ -10602,14 +10629,16 @@ window.__ModuleLoader__.load({
           E('span', null, title)),
         collapsed[key] === true ? null : E('div', { className: 'dig-section-body' },
           grouped === true
-            ? rowsOf(forestOf(entries.map((entry) => decorate(entry))), '', 0)
+            ? rowsOf(forestOf(entries.map((entry) => decorate(entry)), nameOf), ns || '', 0)
             : entries.map((entry) => branchRow(decorate(entry), undefined, 0))))
       /* Render-order mirror for Shift-ranges and Ctrl+A, plus the selKey→entry
          lookup the right-click menu and the Delete key resolve through. */
       const visibleLeaves = []
       if (favorites.length > 0) flatLeaves(forestOf(locals.filter((entry) => favorites.indexOf(entry.name) >= 0)), '', 0, visibleLeaves)
       flatLeaves(forestOf(locals), '', 0, visibleLeaves)
-      for (const entry of remotes) visibleLeaves.push({ entry: entry, label: undefined, depth: 0 })
+      /* Same tree, same prefix namespace the section renders with — Shift-ranges
+         and Ctrl+A must walk the EXACT order rows are shown in. */
+      flatLeaves(forestOf(remotes.map((entry) => Object.assign({}, entry, { remote: true })), remoteNameOf), 'remote', 0, visibleLeaves)
       for (const entry of tags) visibleLeaves.push({ entry: entry, label: undefined, depth: 0 })
       visibleRef.current = visibleLeaves
       const entryBySelKey = new Map()
@@ -10726,7 +10755,7 @@ window.__ModuleLoader__.load({
           }, t('branches.head')),
           favorites.length === 0 ? null : section('favorites', t('branches.favorites'), locals.filter((entry) => favorites.indexOf(entry.name) >= 0), (entry) => entry),
           section('local', t('branches.local'), locals, (entry) => entry, true),
-          section('remote', t('branches.remote'), remotes, (entry) => Object.assign({}, entry, { remote: true })),
+          section('remote', t('branches.remote'), remotes, (entry) => Object.assign({}, entry, { remote: true }), true, 'remote', remoteNameOf),
           section('tags', t('branches.tags'), tags, (entry) => Object.assign({}, entry, { tag: true }))),
         E(MarqueeBox, { box: treeMarquee.box }))
     }
