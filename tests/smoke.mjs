@@ -1700,3 +1700,50 @@ test('the AI commit message carries the picked repository (multi-repo workspace)
   const pane = client.slice(client.indexOf('E(ChangesPanel, {'), client.indexOf('onCommit:'))
   assert.match(pane, /base: base,/, 'Panel hands the repo identity down to ChangesPanel')
 })
+
+test('split + wrap rows share one source, and the preview carries a render boundary (issue #16)', () => {
+  // The wrapped branch iterated hunkRows (per line: N dels + M adds + context)
+  // but indexed into splitRows' output (paired runs: max(dels, adds) per run).
+  // Any hunk where a del/add pair compresses - e.g. one deletion followed by
+  // one addition - left paired[at] undefined past the run, SplitLine read
+  // row.left on it, and the throw unmounted the whole preview tab (nothing
+  // above the panel catches). v0.19.8: the wrapped branch iterates the SAME
+  // list it indexes, chosen by split; and a class-based RenderBoundary keeps
+  // a future throw to one explanatory line instead of a blank pane.
+  assert.ok(client.includes('split === true && wrap !== true'), 'the split/wrap branch must exist')
+  assert.match(client, /const rows = split === true \? paired : hunkRows\(hunk\)/,
+    'the wrapped branch derives its row list from the same switch it renders with')
+  const tail = client.slice(client.indexOf('const rows = split === true ? paired : hunkRows(hunk)'), client.indexOf('E(UnifiedLine, { key: at, row: row'))
+  assert.ok(tail.length > 0, 'the derived-rows block must sit before the unified row render')
+  assert.match(tail, /rows\.map\(\(row, at\) => split === true/, 'the mapped list is the derived one')
+  assert.doesNotMatch(tail, /paired\[at\]/, 'paired is never indexed by a foreign index again')
+
+  // The pairing claim behind the fix, proven on the real functions: one del +
+  // one add compresses to a single split row while hunkRows keeps two lines.
+  // Each function is lifted on its own (module-level, four-space indent) so
+  // the slice cannot drag in neighbours that need host-side globals.
+  const liftFn = (name) => {
+    const start = client.indexOf('function ' + name + '(hunk)')
+    assert.ok(start >= 0, name + ' must exist at module level')
+    const end = client.indexOf('\n    function ', start + 10)
+    assert.ok(end > start, name + ' must be followed by a sibling function')
+    return client.slice(start, end)
+  }
+  const rowsFns = liftFn('hunkRows') + '\n' + liftFn('splitRows')
+  const built = new Function(rowsFns + '; return { hunkRows, splitRows }')()
+  const perLine = built.hunkRows({ oldStart: 1, newStart: 1, lines: ['-a', '+b'] })
+  const paired = built.splitRows({ oldStart: 1, newStart: 1, lines: ['-a', '+b'] })
+  assert.equal(perLine.length, 2, 'per-line counting keeps both rows')
+  assert.equal(paired.length, 1, 'pairing compresses the run - the old index-overflow trigger')
+  assert.ok('left' in paired[0] && 'right' in paired[0], 'each paired row already carries { left, right } for SplitLine')
+
+  // The boundary: module-level class, silent diagnostics, one-line fallback,
+  // wrapped around exactly the preview body that renders LineDiff.
+  assert.match(client, /class RenderBoundary extends React\.Component/, 'the boundary is a real error boundary (classes only)')
+  const boundary = client.slice(client.indexOf('class RenderBoundary extends React.Component'), client.indexOf('function LineDiff(props)'))
+  assert.match(boundary, /getDerivedStateFromError/, 'it flips to the fallback on a child throw')
+  assert.match(boundary, /componentDidCatch\(error\) \{\s*try \{ console\.error/, 'diagnostics are logged and can never rethrow')
+  assert.match(client, /E\(RenderBoundary, \{ message: t\('preview\.boundary'\) \}, E\(LineDiff, \{/,
+    'the preview body renders LineDiff inside the boundary with a localized fallback')
+  assert.match(cssRule('.dig-preview-boundary'), /var\(--dsw-alias-label-secondary\)/, 'the fallback line stays quiet, not alarm-red')
+})

@@ -3,6 +3,13 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.19.8 — 2026-10-19
+
+**类型**:fix(「Git 预览」split + wrap 同开白屏)
+
+- **fix 左右对比与自动换行同时开启后预览整块空白**(修复 [#16](https://github.com/KannaKuron/dsh-ide-git/issues/16) by @huangmiuXyz):换行分支用逐行计数(hunkRows)的行数迭代,却拿配对压缩后(splitRows)的数组去索引——只要 hunk 里有任意一对删除/新增被并排配对(1 删 1 增、4 删 4 增都会),索引必然越界,SplitLine 读到 undefined 抛 TypeError;预览外层没有错误边界,异常冒到宿主把整个「Git 预览」页签卸载成白板,而 split/wrap 偏好存在 localStorage 里,重开页面还是同一个崩法。现在换行分支的行源与渲染走同一个 switch 派生(split 渲染配对行本身,unified 渲染逐行),不再跨数组索引;另给预览正文包了一层模块级 RenderBoundary——今后任何渲染异常都收敛为一行本地化提示与控制台诊断,不再整块无响应。
+- **验证**:114 项测试全绿(新增防回归:换行分支行源必须与迭代同源、用真实 hunkRows/splitRows 在 1删1增 上复现旧越界场景、RenderBoundary 存在且包住 LineDiff、21 门词典 preview.boundary 键集对齐);隔离实例真机 split+wrap 叠加渲染见仓库记录。
+
 ## v0.19.7 — 2026-10-18
 
 **类型**:fix(两个社区贡献:设置开关写不进去 + 暗色主题弹层白底)

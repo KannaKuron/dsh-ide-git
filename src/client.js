@@ -315,6 +315,7 @@ window.__ModuleLoader__.load({
       'lf.truncated': '只显示前 {count} 行',
       'preview.title': 'Git 预览',
       'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
+      'preview.boundary': '预览渲染出错——请重载页面,或反馈这个问题。',
       'settings.rail.title': '动作条',
       'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
@@ -642,6 +643,7 @@ window.__ModuleLoader__.load({
       'lf.truncated': 'Showing the first {count} lines',
       'preview.title': 'Git Preview',
       'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
+      'preview.boundary': 'The preview failed to render — reload the page, or report an issue.',
       'settings.rail.title': 'Action rail',
       'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
@@ -977,6 +979,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
+        'preview.boundary': '預覽渲染出錯——請重新載入頁面,或者回報呢個問題。',
         'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1304,6 +1307,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
+        'preview.boundary': '預覽算繪出錯——請重新載入頁面,或回報這個問題。',
         'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1631,6 +1635,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '只顯示前 {count} 行',
         'preview.title': 'Git 預覽',
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
+        'preview.boundary': '預覽渲染出錯——請重新載入頁面,或者回報呢個問題。',
         'settings.rail.title': '動作列',
         'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
@@ -1958,6 +1963,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '先頭 {count} 行のみ表示',
         'preview.title': 'Git プレビュー',
         'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
+        'preview.boundary': 'プレビューの描画に失敗しました——ページを再読み込みするか、問題を報告してください。',
         'settings.rail.title': 'レール',
         'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
@@ -2285,6 +2291,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': '처음 {count}줄만 표시',
         'preview.title': 'Git 미리보기',
         'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
+        'preview.boundary': '미리보기 렌더링에 실패했습니다 — 페이지를 새로고침하거나 문제를 보고해 주세요.',
         'settings.rail.title': '레일',
         'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
@@ -2612,6 +2619,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Nur die ersten {count} Zeilen',
         'preview.title': 'Git-Vorschau',
         'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
+        'preview.boundary': 'Die Vorschau konnte nicht gerendert werden – Seite neu laden oder das Problem melden.',
         'settings.rail.title': 'Aktionsleiste',
         'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
@@ -2939,6 +2947,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Affichage des {count} premières lignes',
         'preview.title': 'Aperçu Git',
         'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
+        'preview.boundary': 'L\'aperçu n\'a pas pu être affiché — rechargez la page ou signalez le problème.',
         'settings.rail.title': 'Barre d’actions',
         'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
@@ -3266,6 +3275,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Показаны первые {count} строк',
         'preview.title': 'Git-предпросмотр',
         'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
+        'preview.boundary': 'Не удалось отобразить предпросмотр — перезагрузите страницу или сообщите о проблеме.',
         'settings.rail.title': 'Панель действий',
         'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
@@ -3593,6 +3603,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Mostrando as primeiras {count} linhas',
         'preview.title': 'Pré-visualização do Git',
         'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
+        'preview.boundary': 'Falha ao renderizar a pré-visualização — recarregue a página ou relate o problema.',
         'settings.rail.title': 'Barra de ações',
         'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
@@ -3920,6 +3931,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Mostrate le prime {count} righe',
         'preview.title': 'Anteprima Git',
         'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
+        'preview.boundary': 'Impossibile visualizzare l\'anteprima — ricarica la pagina o segnala il problema.',
         'settings.rail.title': 'Barra delle azioni',
         'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
@@ -4247,6 +4259,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Eerste {count} regels worden weergegeven',
         'preview.title': 'Git-voorbeeld',
         'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
+        'preview.boundary': 'De voorvertoning kon niet worden weergegeven — herlaad de pagina of meld het probleem.',
         'settings.rail.title': 'Actiebalk',
         'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
@@ -4574,6 +4587,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Pokazano pierwsze {count} wierszy',
         'preview.title': 'Podgląd Git',
         'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
+        'preview.boundary': 'Nie udało się wyświetlić podglądu — odśwież stronę lub zgłoś problem.',
         'settings.rail.title': 'Pasek akcji',
         'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
@@ -4901,6 +4915,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Visar de första {count} raderna',
         'preview.title': 'Git-förhandsvisning',
         'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
+        'preview.boundary': 'Förhandsvisningen kunde inte visas — ladda om sidan eller rapportera problemet.',
         'settings.rail.title': 'Åtgärdsfältet',
         'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
@@ -5228,6 +5243,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Yalnızca ilk {count} satır gösteriliyor',
         'preview.title': 'Git Önizlemesi',
         'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
+        'preview.boundary': 'Önizleme işlenemedi — sayfayı yeniden yükleyin veya sorunu bildirin.',
         'settings.rail.title': 'Eylem çubuğu',
         'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
@@ -5555,6 +5571,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Menampilkan {count} baris pertama',
         'preview.title': 'Pratinjau Git',
         'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
+        'preview.boundary': 'Pratinjau gagal dirender — muat ulang halaman atau laporkan masalahnya.',
         'settings.rail.title': 'Bilah aksi',
         'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
@@ -5882,6 +5899,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'Chỉ hiện {count} dòng đầu',
         'preview.title': 'Xem trước Git',
         'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
+        'preview.boundary': 'Không thể hiển thị bản xem trước — hãy tải lại trang hoặc báo cáo sự cố.',
         'settings.rail.title': 'Thanh tác vụ',
         'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
@@ -6209,6 +6227,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'عرض أول {count} سطرًا فقط',
         'preview.title': 'معاينة Git',
         'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
+        'preview.boundary': 'تعذّر عرض المعاينة — أعد تحميل الصفحة أو أبلغ عن المشكلة.',
         'settings.rail.title': 'شريط الإجراءات',
         'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
@@ -6536,6 +6555,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'केवल पहली {count} पंक्तियाँ दिखाई जा रही हैं',
         'preview.title': 'Git पूर्वावलोकन',
         'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
+        'preview.boundary': 'पूर्वावलोकन रेंडर नहीं हो सका — पृष्ठ पुनः लोड करें या समस्या की रिपोर्ट करें।',
         'settings.rail.title': 'क्रिया रेल',
         'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
@@ -6863,6 +6883,7 @@ window.__ModuleLoader__.load({
         'lf.truncated': 'แสดงเฉพาะ {count} บรรทัดแรก',
         'preview.title': 'ดูตัวอย่าง Git',
         'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
+        'preview.boundary': 'แสดงผลตัวอย่างไม่สำเร็จ — โหลดหน้าซ้ำหรือรายงานปัญหา',
         'settings.rail.title': 'แถบการทำงาน',
         'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
@@ -9095,6 +9116,30 @@ window.__ModuleLoader__.load({
       return E(SeedTooltip, { label: props.label, side: 'bottom', delayMs: 500 }, inner)
     }
 
+    /* Render boundary around the preview body (issue #16): a throw inside the
+       diff rows used to bubble past every plugin component into the host's
+       slot boundary, which unmounts the whole tab — the user sees a silently
+       blank "Git 预览" pane. With the boundary the panel keeps its chrome and
+       shows one line of explanation instead. React only supports error
+       boundaries as classes; this stays a module-level pure class (no hooks,
+       no context) so the no-build client rules are untouched. */
+    class RenderBoundary extends React.Component {
+      constructor(props) {
+        super(props)
+        this.state = { failed: false }
+      }
+      static getDerivedStateFromError() {
+        return { failed: true }
+      }
+      componentDidCatch(error) {
+        try { console.error('[dsh-ide-git] preview render failed:', error) } catch (_) { /* diagnostics must never rethrow */ }
+      }
+      render() {
+        if (this.state.failed === true) return E('div', { className: 'dig-preview-boundary' }, this.props.message)
+        return this.props.children
+      }
+    }
+
     /* The external preview's diff view: the official review's header (file
        selector + counts + split/wrap/open tools) over the official row
        anatomy, fed by the plugin's own patch text instead of the host's
@@ -9200,10 +9245,18 @@ window.__ModuleLoader__.load({
                 ? E(SplitColumns, { hunks: cut.hunks, highlights: cut.maps })
                 : cut.hunks.map((hunk, position) => {
                     const paired = split === true ? splitRows(hunk) : null
+                    // The wrapped branch must iterate the SAME row list it indexes
+                    // (issue #16): splitRows pairs del/add runs, so its length is
+                    // max(dels, adds) per run — strictly less than hunkRows'
+                    // per-line count whenever anything pairs. Indexing paired with
+                    // hunkRows' indices handed SplitLine an undefined row and took
+                    // the whole panel down (no boundary above it). Each paired
+                    // entry is already { left, right } — exactly SplitLine's shape.
+                    const rows = split === true ? paired : hunkRows(hunk)
                     return E('section', { key: position, className: 'dig-lf-hunk' },
                       E('div', { className: 'dig-lf-hunkHeader', 'data-diff-hunk-header': '' }, hunkHeader(hunk)),
-                      hunkRows(hunk).map((row, at) => split === true
-                        ? E(SplitLine, { key: at, row: paired[at], spans: cut.maps[position] })
+                      rows.map((row, at) => split === true
+                        ? E(SplitLine, { key: at, row: row, spans: cut.maps[position] })
                         : E(UnifiedLine, { key: at, row: row, spans: cut.maps[position] })))
                   })))
     }
@@ -14699,6 +14752,7 @@ window.__ModuleLoader__.load({
       '.dig-lf-root{--diff-empty-fill:color-mix(in srgb,var(--dsw-alias-interactive-bg-hover) 50%,transparent);display:flex;flex-direction:column;box-sizing:border-box;width:100%;min-height:0;color:var(--dsw-alias-label-primary)}',
       '.dig-lf-header{display:flex;flex:0 0 auto;gap:6px;align-items:center;box-sizing:border-box;min-height:38px;padding:0 6px 0 8px;border-bottom:0.5px solid var(--dsw-alias-border-l3)}',
       '.dig-lf-status{display:flex;gap:12px;align-items:center;margin:0;padding:16px;font-size:13px;color:var(--dsw-alias-label-secondary)}',
+      '.dig-preview-boundary{display:flex;align-items:center;justify-content:center;margin:0;padding:24px 16px;font-size:13px;color:var(--dsw-alias-label-secondary);text-align:center}',
       '.dig-lf-body{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:auto;padding:8px 0 16px;font:var(--dsw-font-markdown-code-block)}',
       '.dig-lf-columns{display:grid;flex:1 1 auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:0}',
       '.dig-lf-column,.dig-lf-body[data-review-view=unified]:not([data-review-wrap]){display:grid;grid-template-columns:minmax(max-content,100%);align-content:start}',
@@ -15539,14 +15593,14 @@ window.__ModuleLoader__.load({
           ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, t('preview.hint')))
           : state.error !== null
             ? E('div', { className: 'dig-preview-body' }, E('div', { className: 'dig-empty' }, state.error))
-            : E('div', { className: 'dig-preview-body' }, E(LineDiff, {
+            : E('div', { className: 'dig-preview-body' }, E(RenderBoundary, { message: t('preview.boundary') }, E(LineDiff, {
                 patch: state.patch,
                 loading: state.loading,
                 t: t,
                 /* worktree seeds carry the file path: the review's open-file
                    tool jumps to the host's whole-file preview. */
                 onOpenFile: seed.path !== undefined && seed.path !== null && seed.path !== '' ? openInFilePreview : undefined,
-              })))
+              }))))
     }
 
     function apply(ctx) {
