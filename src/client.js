@@ -12075,6 +12075,7 @@ window.__ModuleLoader__.load({
       useMeasureLayoutEffect(() => {
         const node = hostRef.current
         const holder = node === null || typeof node.closest !== 'function' ? null : node.closest('.dig-conversation-seat[data-immersive="1"]')
+        if (gateNestedLoop() === false) return
         setImmersiveSeat(holder !== null)
       })
       const compact = size.width > 0 && size.width < COMPACT_MAX_WIDTH
@@ -12144,14 +12145,40 @@ window.__ModuleLoader__.load({
          apart read as a smooth resize in a low-fps screen recording. Later
          runs still track content arrival; the layout-phase cost is one
          querySelectorAll over the 3-4 panes the post-paint run already paid. */
+      /* ---------- measurement loop fuse (issue #17) ---------- */
+
+      /* Every effect below runs on EVERY render and feeds a state update.
+         In a steady UI the bail-out comparisons stop the chain, but when the
+         realized layout disagrees with the just-measured one — a float pane
+         being created/resized on the desktop client hit exactly this — each
+         render re-measures a DIFFERENT box, the update nests synchronously
+         and React aborts at depth 50 with #185, leaving the pane white
+         behind the host's slot boundary. The gate detects that nesting
+         directly: runs are counted in a 40 ms window and a nested render
+         loop (50 commits inside one task) trips it long before React's
+         limit, while legitimate per-event work (a pointermove drag renders
+         at most twice in 40 ms) never comes close. Skipping a measurement
+         during a pathological burst only freezes the affected number until
+         the next window — degraded ratios for a frame, never a white pane. */
+      const measureGate = useRef({ n: 0, at: 0 })
+      const gateNestedLoop = () => {
+        const slot = measureGate.current
+        const now = Date.now()
+        if (now - slot.at > 40) { slot.at = now; slot.n = 0 }
+        slot.n += 1
+        return slot.n <= 6
+      }
+
       useMeasureLayoutEffect(() => {
         const found = measurePanes()
+        if (gateNestedLoop() === false) return
         setPaneSizes((current) => (samePaneSizes(current, found) ? current : found))
       })
       useEffect(() => {
         const node = hostRef.current
         const holder = node === null || typeof node.closest !== 'function' ? null : node.closest('[data-dockkit-float]')
         const next = holder === null ? null : holder.getAttribute('data-dockkit-float')
+        if (gateNestedLoop() === false) return
         setFloatPaneId((current) => (current === next ? current : next))
       })
       const dock = props.dock === undefined ? null : props.dock
