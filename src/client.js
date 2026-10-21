@@ -8201,13 +8201,19 @@ window.__ModuleLoader__.load({
         for (const child of node.dirs.values()) total += countOf(child)
         return total
       }
-      const sortedChildren = (node) => Array.from(node.dirs.values()).sort((a, b) => a.path[a.path.length - 1].localeCompare(b.path[b.path.length - 1]))
+      /* Compress at EVERY level, not just the roots (issue #18): the roots
+         were condensed into "a/b/c" chains, but renderFolder's recursion and
+         the fold-all id walk both read this function — which used to hand
+         back the raw single-child chains below the first level, so a deep
+         package path repeated its full prefix on every row. Each returned
+         child is the deepest node of its single-child, file-less chain. */
+      const sortedChildren = (node) => Array.from(node.dirs.values()).map(compress).sort((a, b) => a.path[a.path.length - 1].localeCompare(b.path[b.path.length - 1]))
       const ids = []
       const collect = (node) => {
         ids.push(groupKey + '|' + node.path.join('/'))
         for (const child of sortedChildren(node)) collect(child)
       }
-      const roots = sortedChildren(root).map((child) => compress(child))
+      const roots = sortedChildren(root)
       for (const node of roots) collect(node)
       return { roots: roots, rootFiles: root.files, ids: ids, countOf: countOf, sortedChildren: sortedChildren }
     }
@@ -11028,7 +11034,11 @@ window.__ModuleLoader__.load({
             return
           }
           const forest = buildDirForest(sorted, key)
-          const renderFolder = (node, depth) => {
+          /* The label is the chain THIS node adds below its parent (issue
+             #18): a compressed "java/cn/com/pxwk/base" node repeats only the
+             segments below "…/src/main", not the full path from the group
+             root — same convention as the IDE commit tree. */
+          const renderFolder = (node, depth, parentLen) => {
             const id = key + '|' + node.path.join('/')
             const open = foldedDirs[id] !== true
             out.push({
@@ -11040,13 +11050,13 @@ window.__ModuleLoader__.load({
               },
                 E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
                 E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
-                E('span', { className: 'dig-folder-name' }, node.path.join('/')),
+                E('span', { className: 'dig-folder-name' }, node.path.slice(typeof parentLen === 'number' ? parentLen : 0).join('/')),
                 E('span', { className: 'dig-count' }, String(forest.countOf(node)))),
             })
             if (open === true) {
               /* VS Code order inside a folder: subfolders first (recursively,
                  each indented one more level), then this folder's own files. */
-              for (const child of forest.sortedChildren(node)) renderFolder(child, depth + 1)
+              for (const child of forest.sortedChildren(node)) renderFolder(child, depth + 1, node.path.length)
               for (const item of sortedOf(node.files)) out.push({ kind: 'row', key: key + ':' + item.path, h: ITEM_HEIGHTS.row, node: entryRow(key, item, depth) })
             }
           }

@@ -1781,3 +1781,45 @@ test('the remote branch tree folds by path like the local one (v0.19.9)', () => 
   assert.match(host, /\/\^refs\\\/remotes\\\/\[\^\/\]\+\\\/HEAD\$\/\.test\(parts\[0\]\) === false\) remote\.push\(entry\)/,
     'the host filters <remote>/HEAD before listing remote branches')
 })
+
+test('the changes tree condenses single-dir chains at every level with relative labels (issue #18)', () => {
+  // buildDirForest always had a compress() pass, but it only ever ran on the
+  // TOP-level roots: the recursion below level one handed back raw
+  // single-child chains, so a deep package path repeated its full prefix on
+  // every row (the reporter's walk-manager-modules/.../controller stack).
+  const start = client.indexOf('function buildDirForest(')
+  assert.ok(start >= 0, 'buildDirForest must exist at module level')
+  const end = client.indexOf('\n    /* ==============================', start + 10)
+  assert.ok(end > start, 'buildDirForest must precede the commit-graph section')
+  // dirName is a module-level sibling helper the forest builder leans on.
+  const helper = client.slice(client.indexOf('function dirName('), client.indexOf('\n    }', client.indexOf('function dirName(')) + 6)
+  const build = new Function(helper + '\n' + client.slice(start, end) + '; return buildDirForest')()
+  const item = (path) => ({ path: path })
+  // JetBrains shape: chains of single-child, file-less directories merge into
+  // one node (path = the whole chain); any branch point stays its own level.
+  const forest = build([
+    item('walk-main/java/cn/com/pxwk/base/controller/Todo.java'),
+    item('walk-main/java/cn/com/pxwk/base/domain/vo/A.java'),
+    item('walk-main/java/cn/com/pxwk/base/domain/vo/B.java'),
+    item('walk-main/java/cn/com/pxwk/base/enums/E.java'),
+    item('walk-main/resources/mapper/base/M.xml'),
+  ], 'untracked')
+  assert.equal(forest.roots.length, 1, 'the top chain stops at the java/resources branch')
+  assert.equal(forest.roots[0].path.join('/'), 'walk-main')
+  const kids = forest.sortedChildren(forest.roots[0])
+  assert.deepEqual(kids.map((n) => n.path.join('/')).sort(), ['walk-main/java/cn/com/pxwk/base', 'walk-main/resources/mapper/base'].sort(), 'chains below the branch condense into one node each')
+  assert.equal(forest.countOf(kids.map((n) => n.path.join('/').endsWith('mapper/base') ? n : n) && kids[1] !== undefined ? kids[0] : kids[0]), 4, 'the count walks the condensed subtree (1+2+1)')
+  const base = kids.map((n) => n.path.join('/')).indexOf('walk-main/java/cn/com/pxwk/base')
+  const baseKids = forest.sortedChildren(kids[base])
+  assert.deepEqual(baseKids.map((n) => n.path.join('/')).sort(), ['walk-main/java/cn/com/pxwk/base/controller', 'walk-main/java/cn/com/pxwk/base/domain/vo', 'walk-main/java/cn/com/pxwk/base/enums'].sort(), 'grandchildren compress their own chains (domain/vo merges)')
+  // The renderer prints the chain RELATIVE to the parent (fold ids stay the
+  // full path, so expanded/collapsed state survives the relabeling).
+  assert.match(client, /renderFolder = \(node, depth, parentLen\) =>/, 'renderFolder takes the parent chain length')
+  assert.match(client, /node\.path\.slice\(typeof parentLen === 'number' \? parentLen : 0\)\.join\('\/'\)/, 'the folder label is the chain below the parent')
+  assert.match(client, /renderFolder\(child, depth \+ 1, node\.path\.length\)/, 'the recursion threads the parent chain length')
+  // Fold-all walks exactly the nodes the renderer shows.
+  const ids = []
+  const walk = (nodes) => { for (const n of nodes) { ids.push('untracked|' + n.path.join('/')); walk(forest.sortedChildren(n)) } }
+  walk(forest.roots)
+  assert.deepEqual(forest.ids, ids, 'collect() enumerates the same compressed tree the renderer shows')
+})
