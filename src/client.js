@@ -295,6 +295,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': '切换分支',
       'composer.detached': 'HEAD(游离)',
       'composer.changesHint': '未提交变更数',
+      'composer.fileHint': '新增 {a} · 删除 {d} 个文件',
+      'composer.linesHint': '+{ins} −{del} 行',
       'composer.behindHint': '远程新提交(可拉取)',
       'composer.aheadHint': '本地待推送提交',
       'composer.inWorktree': '已被其他工作树签出',
@@ -623,6 +625,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Switch branch',
       'composer.detached': 'HEAD (detached)',
       'composer.changesHint': 'Uncommitted changes',
+      'composer.fileHint': '{a} added · {d} deleted files',
+      'composer.linesHint': '+{ins} −{del} lines',
       'composer.behindHint': 'New upstream commits (pullable)',
       'composer.aheadHint': 'Local commits waiting to push',
       'composer.inWorktree': 'Checked out in another worktree',
@@ -959,6 +963,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': '切換分支',
       'composer.detached': 'HEAD(游離)',
       'composer.changesHint': '未提交變更數',
+      'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
+      'composer.linesHint': '+{ins} −{del} 行',
       'composer.behindHint': '遠端新提交(可以拉取)',
       'composer.aheadHint': '本地等待推送提交',
       'composer.inWorktree': '已經喺其他工作樹簽出',
@@ -1287,6 +1293,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': '切換分支',
       'composer.detached': 'HEAD(分離)',
       'composer.changesHint': '未提交變更數',
+      'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
+      'composer.linesHint': '+{ins} −{del} 行',
       'composer.behindHint': '遠端新提交(可拉取)',
       'composer.aheadHint': '本地待推送提交',
       'composer.inWorktree': '已被其他工作樹簽出',
@@ -1615,6 +1623,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': '切換分支',
       'composer.detached': 'HEAD(游離)',
       'composer.changesHint': '未提交變更數',
+      'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
+      'composer.linesHint': '+{ins} −{del} 行',
       'composer.behindHint': '遠端新提交(可以拉取)',
       'composer.aheadHint': '本地等待推送提交',
       'composer.inWorktree': '已經喺其他工作樹簽出',
@@ -1943,6 +1953,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'ブランチを切り替え',
       'composer.detached': 'HEAD(切断)',
       'composer.changesHint': '未コミットの変更数',
+      'composer.fileHint': '追加 {a} · 削除 {d} ファイル',
+      'composer.linesHint': '+{ins} −{del} 行',
       'composer.behindHint': 'リモートの新規コミット(取得可能)',
       'composer.aheadHint': 'プッシュ待ちのローカルコミット',
       'composer.inWorktree': '別のワークツリーでチェックアウト中',
@@ -2271,6 +2283,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': '브랜치 전환',
       'composer.detached': 'HEAD(분리됨)',
       'composer.changesHint': '커밋되지 않은 변경 수',
+      'composer.fileHint': '추가 {a} · 삭제 {d}개 파일',
+      'composer.linesHint': '+{ins} −{del}줄',
       'composer.behindHint': '원격 새 커밋(가져오기 가능)',
       'composer.aheadHint': '푸시 대기 중인 로컬 커밋',
       'composer.inWorktree': '다른 작업 트리에서 체크아웃됨',
@@ -2599,6 +2613,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Zweig wechseln',
       'composer.detached': 'HEAD (detached)',
       'composer.changesHint': 'Uncommittete Änderungen',
+      'composer.fileHint': '{a} hinzugefügt · {d} gelöscht',
+      'composer.linesHint': '+{ins} −{del} Zeilen',
       'composer.behindHint': 'Neue Upstream-Commits (abrufbar)',
       'composer.aheadHint': 'Lokale Commits zum Pushen',
       'composer.inWorktree': 'In anderem Worktree ausgecheckt',
@@ -2927,6 +2943,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Changer de branche',
       'composer.detached': 'HEAD (détaché)',
       'composer.changesHint': 'Modifications non commitées',
+      'composer.fileHint': '{a} ajoutés · {d} supprimés',
+      'composer.linesHint': '+{ins} −{del} lignes',
       'composer.behindHint': 'Nouveaux commits amont (récupérables)',
       'composer.aheadHint': 'Commits locaux en attente d’envoi',
       'composer.inWorktree': 'Extrait dans un autre arbre de travail',
@@ -3255,6 +3273,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Сменить ветку',
       'composer.detached': 'HEAD (отделён)',
       'composer.changesHint': 'Незакоммиченные изменения',
+      'composer.fileHint': 'добавлено: {a} · удалено: {d}',
+      'composer.linesHint': '+{ins} −{del} строк',
       'composer.behindHint': 'Новые коммиты upstream (можно забрать)',
       'composer.aheadHint': 'Локальные коммиты, ожидающие отправки',
       'composer.inWorktree': 'Выверен в другом worktree',
@@ -3583,6 +3603,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Trocar branch',
       'composer.detached': 'HEAD (destacado)',
       'composer.changesHint': 'Alterações não commitadas',
+      'composer.fileHint': '{a} adicionados · {d} removidos',
+      'composer.linesHint': '+{ins} −{del} linhas',
       'composer.behindHint': 'Novos commits remotos (para pull)',
       'composer.aheadHint': 'Commits locais aguardando push',
       'composer.inWorktree': 'Em checkout em outra worktree',
@@ -3911,6 +3933,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Cambia ramo',
       'composer.detached': 'HEAD (staccato)',
       'composer.changesHint': 'Modifiche non ancora committate',
+      'composer.fileHint': '{a} aggiunti · {d} eliminati',
+      'composer.linesHint': '+{ins} −{del} righe',
       'composer.behindHint': 'Nuovi commit upstream (scaricabili)',
       'composer.aheadHint': 'Commit locali in attesa di push',
       'composer.inWorktree': 'Estratto in un altro worktree',
@@ -4239,6 +4263,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Branch wisselen',
       'composer.detached': 'HEAD (los)',
       'composer.changesHint': 'Ongecommitte wijzigingen',
+      'composer.fileHint': '{a} toegevoegd · {d} verwijderd',
+      'composer.linesHint': '+{ins} −{del} regels',
       'composer.behindHint': 'Nieuwe upstream-commits (op te halen)',
       'composer.aheadHint': 'Lokale commits die wachten op push',
       'composer.inWorktree': 'Uitgecheckt in een andere worktree',
@@ -4567,6 +4593,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Przełącz gałąź',
       'composer.detached': 'HEAD (odłączony)',
       'composer.changesHint': 'Niezatwierdzone zmiany',
+      'composer.fileHint': 'dodane: {a} · usunięte: {d}',
+      'composer.linesHint': '+{ins} −{del} linii',
       'composer.behindHint': 'Nowe commity upstream (do pobrania)',
       'composer.aheadHint': 'Lokalne commity oczekujące na wysłanie',
       'composer.inWorktree': 'Wybrane w innym drzewie roboczym',
@@ -4895,6 +4923,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Byt gren',
       'composer.detached': 'HEAD (frånkopplad)',
       'composer.changesHint': 'Ocommittade ändringar',
+      'composer.fileHint': '{a} tillagda · {d} borttagna',
+      'composer.linesHint': '+{ins} −{del} rader',
       'composer.behindHint': 'Nya upstream-commits (hämtbara)',
       'composer.aheadHint': 'Lokala commits som väntar på push',
       'composer.inWorktree': 'Utcheckad i ett annat arbetsträd',
@@ -5223,6 +5253,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Dal değiştir',
       'composer.detached': 'HEAD (ayrık)',
       'composer.changesHint': 'Commitlenmemiş değişiklikler',
+      'composer.fileHint': '{a} eklendi · {d} silindi',
+      'composer.linesHint': '+{ins} −{del} satır',
       'composer.behindHint': 'Yeni upstream commitleri (çekilebilir)',
       'composer.aheadHint': 'Push bekleyen yerel commitler',
       'composer.inWorktree': 'Başka bir worktree’da checkout yapılmış',
@@ -5551,6 +5583,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Ganti cabang',
       'composer.detached': 'HEAD (lepas)',
       'composer.changesHint': 'Perubahan yang belum di-commit',
+      'composer.fileHint': '{a} ditambahkan · {d} dihapus',
+      'composer.linesHint': '+{ins} −{del} baris',
       'composer.behindHint': 'Commit upstream baru (bisa ditarik)',
       'composer.aheadHint': 'Commit lokal menunggu push',
       'composer.inWorktree': 'Sudah di-checkout di worktree lain',
@@ -5879,6 +5913,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'Chuyển nhánh',
       'composer.detached': 'HEAD (tách rời)',
       'composer.changesHint': 'Thay đổi chưa commit',
+      'composer.fileHint': 'thêm {a} · xóa {d} tệp',
+      'composer.linesHint': '+{ins} −{del} dòng',
       'composer.behindHint': 'Commit mới từ xa (có thể kéo về)',
       'composer.aheadHint': 'Commit cục bộ chờ đẩy lên',
       'composer.inWorktree': 'Đã được checkout ở worktree khác',
@@ -6207,6 +6243,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'تبديل الفرع',
       'composer.detached': 'HEAD (منفصل)',
       'composer.changesHint': 'تغييرات غير ملتزَم بها',
+      'composer.fileHint': 'مضاف {a} · محذوف {d}',
+      'composer.linesHint': '+{ins} −{del} أسطر',
       'composer.behindHint': 'التزامات جديدة في المستودع البعيد (قابلة للسحب)',
       'composer.aheadHint': 'التزامات محلية بانتظار الدفع',
       'composer.inWorktree': 'مسحوب في شجرة عمل أخرى',
@@ -6535,6 +6573,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'शाखा बदलें',
       'composer.detached': 'HEAD (पृथक)',
       'composer.changesHint': 'बिना कमिट बदलाव',
+      'composer.fileHint': '{a} जोड़ी गईं · {d} हटाई गईं',
+      'composer.linesHint': '+{ins} −{del} पंक्तियाँ',
       'composer.behindHint': 'अपस्ट्रीम के नए कमिट (खींचने योग्य)',
       'composer.aheadHint': 'पुश के लिए प्रतीक्षारत स्थानीय कमिट',
       'composer.inWorktree': 'दूसरे वर्कट्री में चेकआउट',
@@ -6863,6 +6903,8 @@ window.__ModuleLoader__.load({
       'composer.branchHint': 'สลับแบรนช์',
       'composer.detached': 'HEAD (แยกขาด)',
       'composer.changesHint': 'การเปลี่ยนแปลงที่ยังไม่คอมมิต',
+      'composer.fileHint': 'เพิ่ม {a} · ลบ {d} ไฟล์',
+      'composer.linesHint': '+{ins} −{del} บรรทัด',
       'composer.behindHint': 'คอมมิตใหม่จากรีโมต (ดึงได้)',
       'composer.aheadHint': 'คอมมิตในเครื่องรอพุช',
       'composer.inWorktree': 'ถูกเช็คเอาต์ในเวิร์กทรีอื่น',
@@ -7337,6 +7379,58 @@ window.__ModuleLoader__.load({
       if (data.isRepo === true) return data.cwd
       if (paths.length > 0) return paths[0]
       return null
+    }
+
+    /* How many changed FILES are additions vs deletions, from the status
+       letters the summary already carries (index/worktree per entry) — no
+       extra git call. Untracked entries ARE additions in git's own model
+       (?? = to-be-added); a rename (R/C) or a conflict counts as neither. */
+    function composerFileSplitOf(summary) {
+      const changes = summary !== null && summary !== undefined && summary.changes !== null && typeof summary.changes === 'object' ? summary.changes : null
+      if (changes === null) return { added: 0, deleted: 0 }
+      let added = 0
+      let deleted = 0
+      const count = (list) => {
+        for (const entry of list === undefined || list === null ? [] : list) {
+          if (entry.index === 'A' || entry.worktree === 'A') added += 1
+          else if (entry.index === 'D' || entry.worktree === 'D') deleted += 1
+        }
+      }
+      count(changes.staged)
+      count(changes.unstaged)
+      added += changes.untracked === undefined || changes.untracked === null ? 0 : changes.untracked.length
+      return { added: added, deleted: deleted }
+    }
+
+    /* Total uncommitted line churn: the packed [path, additions, deletions,
+       binary] rows the host's stats method returns, summed over both the
+       worktree and the index passes. Untracked files have no line counts
+       (git cannot diff what it does not track) — they only ever move the
+       file counters above. */
+    function composerStatsLinesOf(pack) {
+      let additions = 0
+      let deletions = 0
+      if (pack !== null && pack !== undefined && typeof pack === 'object') {
+        for (const row of pack.unstaged === undefined || pack.unstaged === null ? [] : pack.unstaged) { additions += row[1]; deletions += row[2] }
+        for (const row of pack.staged === undefined || pack.staged === null ? [] : pack.staged) { additions += row[1]; deletions += row[2] }
+      }
+      return { additions: additions, deletions: deletions }
+    }
+
+    /* Whether the line counts need a refetch: any path/status move or a new
+       HEAD commit/checkout invalidates them; lines rewritten inside
+       already-dirty files do NOT move this — the slow COMPOSER_STATS_MS
+       floor covers those. */
+    function composerFingerprintOf(summary) {
+      if (summary === null || summary === undefined || summary.changes === null || typeof summary.changes !== 'object') return ''
+      const rows = []
+      const collect = (list) => { for (const entry of list === undefined || list === null ? [] : list) rows.push(entry.path + ':' + entry.index + entry.worktree) }
+      collect(summary.changes.staged)
+      collect(summary.changes.unstaged)
+      collect(summary.changes.untracked)
+      collect(summary.changes.conflicted)
+      rows.sort()
+      return rows.join('|') + '#' + String(summary.head === undefined || summary.head === null ? '' : summary.head)
     }
 
     async function prewarmWorkspace(sessionId, cwd) {
@@ -14903,6 +14997,13 @@ window.__ModuleLoader__.load({
       '.dig-cs-changes{color:var(--dsw-alias-state-warn-primary)}',
       '.dig-cs-behind{color:var(--dsw-alias-state-business-primary)}',
       '.dig-cs-ahead{color:var(--dsw-alias-state-success-primary)}',
+      /* v0.19.12: file-level add/del split rides INSIDE the ± chip at one
+         step down (11px) so the two +/− groups read as two levels — small
+         green/red = FILES, full-size green/red = LINES. */
+      '.dig-cs-split{font-size:11px;line-height:20px;font-variant-numeric:tabular-nums;margin-left:2px}',
+      '.dig-cs-add{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-cs-del{color:var(--dsw-alias-state-error-primary)}',
+      '.dig-cs-lines{display:inline-flex;align-items:center;gap:2px;margin-left:5px}',
       '.dig-cs-error{display:inline-flex;align-items:center;color:var(--dsw-alias-state-error-primary);font-size:12px;padding:0 3px;cursor:help}',
       // .dig-cs-menu opens upward (the composer sits at the bottom of the UI). The surface
       // carries no backdrop-filter of its own: the data-cordis-panel attribute opts the popover
@@ -15064,6 +15165,13 @@ window.__ModuleLoader__.load({
 
     const COMPOSER_POLL_MS = 30000
     const COMPOSER_ERROR_TTL_MS = 6000
+    /* Line counts re-run at most this often without a real change: the two
+       numstat passes are the expensive step on a big dirty tree (issue #11),
+       so the pill keeps its cheap stats:false poll and refreshes lines only
+       when the change set or HEAD moves — plus this slow floor for edits
+       that rewrite lines in already-dirty files (nothing else in the
+       fingerprint moves then). */
+    const COMPOSER_STATS_MS = 90000
 
     /* Windows paths ride backslashes, so both pill labels cut the leaf with
        this slash-aware split instead of a bare forward-slash split — a drive
@@ -15134,6 +15242,13 @@ window.__ModuleLoader__.load({
       const [checkingOut, setCheckingOut] = useState('')
       const [error, setError] = useState('')
       const [tick, setTick] = useState(0)
+      /* Uncommitted line churn (+n −m), fetched lazily: only when the change
+         set or HEAD moves — never on the ambient 30s tick by itself (the
+         root tag keeps a previous repository's numbers from leaking into
+         this one's pill). */
+      const [lineStats, setLineStats] = useState(null)
+      const statsStampRef = useRef('')
+      const statsAtRef = useRef(0)
       const rootRef = useRef(null)
 
       /* The switch flips live through the same rail-config notify walk the
@@ -15192,7 +15307,7 @@ window.__ModuleLoader__.load({
          The panel keeps its own 12s poll for its bigger surface; 30s here is
          only the ambient state, never a correctness dependency. */
       useEffect(() => {
-        if (repoRoot === null || enabled !== true) { setSummary(null); return undefined }
+        if (repoRoot === null || enabled !== true) { setSummary(null); setLineStats(null); return undefined }
         let cancelled = false
         const load = async () => {
           try {
@@ -15204,6 +15319,27 @@ window.__ModuleLoader__.load({
                mount with zero round trips. Merge only our field — a panel
                page keeps its commits. */
             mergePaintPage(repoRoot, { summary: data })
+            /* Line counts ride the same tick only when something actually
+               moved (any status/path change or a new HEAD), or when the slow
+               floor elapsed for in-place edits of dirty files. A clean tree
+               skips the numstat passes entirely and just zeroes the badges. */
+            const fingerprint = composerFingerprintOf(data)
+            const stamp = repoRoot + '::' + fingerprint
+            const now = Date.now()
+            const count = data.changes === null || typeof data.changes !== 'object' ? 0 : data.changes.staged.length + data.changes.unstaged.length + data.changes.untracked.length
+            if (count === 0) {
+              statsStampRef.current = stamp
+              statsAtRef.current = now
+              setLineStats({ root: repoRoot, additions: 0, deletions: 0 })
+            } else if (stamp !== statsStampRef.current || now - statsAtRef.current >= COMPOSER_STATS_MS) {
+              try {
+                const pack = await request('stats', { cwd: cwd, repoRoot: repoRoot })
+                if (cancelled === true) return
+                statsStampRef.current = stamp
+                statsAtRef.current = now
+                setLineStats(Object.assign({ root: repoRoot }, composerStatsLinesOf(pack)))
+              } catch (statsError) { void statsError }
+            }
           } catch (error) { void error }
         }
         const seed = readPaintPage(repoRoot)
@@ -15274,6 +15410,18 @@ window.__ModuleLoader__.load({
       const changesCount = summary !== null && summary.changes !== null && typeof summary.changes === 'object'
         ? summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length
         : null
+      /* File-level add/del split (status letters, free) + the lazily fetched
+         line churn, assembled into one tooltip that reads as a sentence. */
+      const fileSplit = composerFileSplitOf(summary)
+      const linesLive = lineStats !== null && lineStats.root === repoRoot ? lineStats : null
+      const changesTitle = (() => {
+        let title = t('composer.changesHint')
+        if (changesCount !== null && changesCount > 0) {
+          title += ' · ' + fill(t('composer.fileHint'), { a: fileSplit.added, d: fileSplit.deleted })
+          if (linesLive !== null) title += ' · ' + fill(t('composer.linesHint'), { ins: linesLive.additions, del: linesLive.deletions })
+        }
+        return title
+      })()
 
       const openBranchMenu = async () => {
         setMenu('branch')
@@ -15340,7 +15488,14 @@ window.__ModuleLoader__.load({
           E('span', { className: 'dig-cs-name' }, detached === true ? t('composer.detached') : branchName),
           E(Icon, { name: 'chevron', size: 10 })) : null,
         changesCount !== null && changesCount > 0
-          ? E('span', { className: 'dig-cs-badge dig-cs-changes', title: t('composer.changesHint') }, '±' + String(changesCount))
+          ? E('span', { className: 'dig-cs-badge dig-cs-changes', title: changesTitle }, '±' + String(changesCount),
+              fileSplit.added > 0 ? E('span', { className: 'dig-cs-split dig-cs-add' }, '+' + String(fileSplit.added)) : null,
+              fileSplit.deleted > 0 ? E('span', { className: 'dig-cs-split dig-cs-del' }, '−' + String(fileSplit.deleted)) : null)
+          : null,
+        linesLive !== null && (linesLive.additions > 0 || linesLive.deletions > 0)
+          ? E('span', { className: 'dig-cs-lines' },
+              linesLive.additions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-add', title: changesTitle }, '+' + String(linesLive.additions)) : null,
+              linesLive.deletions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-del', title: changesTitle }, '−' + String(linesLive.deletions)) : null)
           : null,
         behind > 0 ? E('span', { className: 'dig-cs-badge dig-cs-behind', title: t('composer.behindHint') }, '↓' + String(behind)) : null,
         ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,

@@ -1823,3 +1823,68 @@ test('the changes tree condenses single-dir chains at every level with relative 
   walk(forest.roots)
   assert.deepEqual(forest.ids, ids, 'collect() enumerates the same compressed tree the renderer shows')
 })
+
+test('the composer badge splits files added/deleted and lazily sums uncommitted lines (v0.19.12)', () => {
+  // Three module-level pure helpers carry the badge. FileSplit reads the
+  // status letters the summary ALREADY has (no extra git call): A anywhere
+  // (index or worktree) is an addition, D is a deletion, untracked entries
+  // ARE additions (git's ?? = to-be-added), renames/conflicts count as
+  // neither. Lines sum the packed numstat rows over BOTH passes.
+  const sliceOf = (name) => {
+    const start = client.indexOf('function ' + name + '(')
+    assert.ok(start >= 0, name + ' must exist at module level')
+    const end = client.indexOf('\n    function ', start + 10)
+    assert.ok(end > start, name + ' must be followed by a sibling function')
+    return new Function(client.slice(start, end) + '; return ' + name)()
+  }
+  const split = sliceOf('composerFileSplitOf')
+  const entry = (index, worktree) => ({ path: 'f', index: index, worktree: worktree })
+  const changes = { staged: [entry('A', ' '), entry('M', 'M'), entry('D', ' ')], unstaged: [entry(' ', 'D'), entry(' ', 'M')], untracked: ['q1', 'q2', 'q3'], conflicted: [entry('U', 'U')] }
+  assert.deepEqual(split({ changes: changes }), { added: 4, deleted: 2 }, 'A/untracked count as additions, D as deletions, M/R-conflict as neither')
+  assert.deepEqual(split({ changes: { staged: [], unstaged: [], untracked: [], conflicted: [] } }), { added: 0, deleted: 0 }, 'a clean tree splits to zeros')
+  assert.deepEqual(split(null), { added: 0, deleted: 0 })
+  // An "added to index, then deleted in the worktree" pair is ONE path —
+  // first match wins so the file is never counted twice.
+  assert.deepEqual(split({ changes: { staged: [entry('A', 'D')], unstaged: [], untracked: [], conflicted: [] } }), { added: 1, deleted: 0 })
+
+  const linesOf = sliceOf('composerStatsLinesOf')
+  const pack = { unstaged: [['a', 1, 2, false], ['b', 0, 3, true]], staged: [['c', 10, 0, false]] }
+  assert.deepEqual(linesOf(pack), { additions: 11, deletions: 5 }, 'both passes sum; binary rows carry zeros and add nothing')
+  assert.deepEqual(linesOf(null), { additions: 0, deletions: 0 })
+
+  const fingerprint = sliceOf('composerFingerprintOf')
+  const head = { head: 'abc123' }
+  const fp = (c) => fingerprint(Object.assign({ changes: c }, head))
+  const clean = { staged: [entry('M', ' ')], unstaged: [], untracked: [], conflicted: [] }
+  assert.ok(fp(clean) !== '', 'a dirty tree has a fingerprint')
+  assert.equal(fp(clean), fp({ staged: [entry('M', ' ')], unstaged: [], untracked: [], conflicted: [] }), 'order does not matter (rows sort)')
+  assert.ok(fp(clean) !== fp({ staged: [entry('M', ' ')], unstaged: [entry(' ', 'M')], untracked: [], conflicted: [] }), 'a new dirty file invalidates line counts')
+  assert.ok(fp(clean) !== fp(Object.assign({ changes: clean }, { head: 'def456' })), 'a new HEAD invalidates line counts (checkout/pull)')
+  assert.equal(fingerprint(null), '')
+
+  // Wiring: the ± chip embeds the small +n −n file split; the line badges
+  // render only for the CURRENT repository (stale numbers from a repo the
+  // pill just left must not leak in) and the tooltip reads as one sentence.
+  assert.match(client, /composerFileSplitOf\(summary\)/, 'the render computes the file split from the live summary')
+  assert.match(client, /className: 'dig-cs-split dig-cs-add'/, 'added FILES ride inside the ± chip in green')
+  assert.match(client, /className: 'dig-cs-split dig-cs-del'/, 'deleted FILES ride inside the ± chip in red')
+  assert.match(client, /lineStats !== null && lineStats\.root === repoRoot \? lineStats : null/, 'line stats carry the repository root and only live for it')
+  assert.match(client, /fill\(t\(\'composer\.fileHint'\)\, \{ a: fileSplit\.added, d: fileSplit\.deleted \}\)/, 'the tooltip names added/deleted file counts')
+  assert.match(client, /fill\(t\(\'composer\.linesHint'\)\, \{ ins: linesLive\.additions, del: linesLive\.deletions \}\)/, 'the tooltip sums the line churn')
+  // Lazy fetch: never on the ambient tick — only when the fingerprint moves
+  // or the slow floor elapses; a clean tree skips numstat entirely.
+  assert.match(client, /const COMPOSER_STATS_MS = 90000/, 'the slow floor for in-place line edits exists')
+  assert.match(client, /stamp !== statsStampRef\.current \|\| now - statsAtRef\.current >= COMPOSER_STATS_MS/, 'lines refetch on fingerprint move or slow floor only')
+  assert.match(client, /if \(count === 0\) \{[\s\S]*?setLineStats\(\{ root: repoRoot, additions: 0, deletions: 0 \}\)/, 'a clean tree zeroes the line badges without a git call')
+  assert.match(client, /await request\('stats', \{ cwd: cwd, repoRoot: repoRoot \}\)/, 'the fetch reuses the host read-only stats method')
+  assert.match(client, /setLineStats\(Object\.assign\(\{ root: repoRoot \}, composerStatsLinesOf\(pack\)\)\)/, 'the result is tagged with its root before it reaches state')
+  // CSS: two visual levels — 11px file split inside the chip, full-size line
+  // badges in their own group with the wider group gap.
+  assert.match(cssRule('.dig-cs-split'), /font-size:11px/, 'the file split is one step down from the badge digits')
+  assert.match(cssRule('.dig-cs-add'), /var\(--dsw-alias-state-success-primary\)/, 'additions are green in both groups')
+  assert.match(cssRule('.dig-cs-del'), /var\(--dsw-alias-state-error-primary\)/, 'deletions are red in both groups')
+  assert.match(cssRule('.dig-cs-lines'), /margin-left:5px/, 'the line-badge group keeps its own gap from the file chip')
+  // 21 gates carry both new keys (the key-set equality test pins the rest).
+  assert.equal((client.match(/'composer\.fileHint':/g) || []).length, 21)
+  assert.equal((client.match(/'composer\.linesHint':/g) || []).length, 21)
+})
