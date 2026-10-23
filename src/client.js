@@ -14991,7 +14991,12 @@ window.__ModuleLoader__.load({
       '.dig-cs-pill{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:var(--dsh-content-font-size-secondary,13px);line-height:20px;white-space:nowrap;cursor:pointer}',
       '.dig-cs-pill:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-cs-pill:disabled{cursor:default}',
-      '.dig-cs-name{overflow:hidden;text-overflow:ellipsis;max-width:150px}',
+      '.dig-cs-name{overflow:hidden;text-overflow:ellipsis;max-width:260px;white-space:nowrap;display:inline-block;vertical-align:bottom}',
+      '.dig-cs-mrun{display:inline-flex;text-overflow:clip;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 14px),transparent)}',
+      '.dig-cs-mrun .dig-cs-run{display:inline-flex;flex:none;will-change:transform}',
+      '.dig-cs-mrun .dig-cs-chunk{flex:none;white-space:nowrap;padding-right:28px}',
+      '.dig-cs-mrun:hover .dig-cs-run{animation:dig-cs-marquee var(--dig-cs-marquee-dur,10s) linear infinite}',
+      '@keyframes dig-cs-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}',
       '.dig-cs-pill svg{flex:none}',
       '.dig-cs-badge{display:inline-flex;align-items:center;font-size:12px;line-height:20px;font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 3px;font-weight:500}',
       '.dig-cs-changes{color:var(--dsw-alias-state-warn-primary)}',
@@ -15212,6 +15217,51 @@ window.__ModuleLoader__.load({
       if (data.isRepo === true) return data.cwd
       if (paths.length > 0) return paths[0]
       return null
+    }
+
+    /* Long repository/branch names: widen the label cap and, past it, run a
+       hover-only seamless marquee (the official sidebar rows scroll hovered
+       titles via useTitleMarquee, which this surface cannot require — this is
+       the CSS twin). The label is measured after paint; only overflowing text
+       switches to the duplicated-chunk structure, so short names keep the
+       plain ellipsis and never animate. Duration follows the text width so a
+       slightly-long name does not crawl. */
+    const COMPOSER_NAME_MAX_PX = 260
+    const MARQUEE_PX_PER_S = 28
+
+    function ComposerMarqueeName(props) {
+      const text = typeof props.text === 'string' ? props.text : ''
+      const boxRef = useRef(null)
+      const [run, setRun] = useState(false)
+      const [dur, setDur] = useState('')
+      useEffect(() => {
+        const box = boxRef.current
+        if (box === null) return undefined
+        const measure = () => {
+          if (boxRef.current !== box) return /* replaced or unmounted */
+          const overflow = box.scrollWidth > box.clientWidth + 1
+          setRun(overflow)
+          /* In the running structure scrollWidth covers BOTH chunks, so one
+             chunk is half of it; the plain structure measures the text alone. */
+          const unit = overflow === true && run === true ? box.scrollWidth / 2 : box.scrollWidth
+          setDur(overflow === true ? (unit / MARQUEE_PX_PER_S).toFixed(2) + 's' : '')
+        }
+        measure()
+        /* Webfonts land after paint and change text metrics — re-measure once. */
+        let frame = 0
+        const fonts = document.fonts
+        if (fonts !== undefined && fonts !== null && fonts.ready !== undefined && typeof fonts.ready.then === 'function') {
+          fonts.ready.then(() => { frame = requestAnimationFrame(measure) }, () => {})
+        }
+        return () => { if (frame !== 0) cancelAnimationFrame(frame) }
+      }, [text, run])
+      if (run !== true) {
+        return E('span', { ref: boxRef, className: 'dig-cs-name' }, text)
+      }
+      return E('span', { ref: boxRef, className: 'dig-cs-name dig-cs-mrun', style: dur !== '' ? { '--dig-cs-marquee-dur': dur } : undefined },
+        E('span', { className: 'dig-cs-run' },
+          E('span', { className: 'dig-cs-chunk' }, text),
+          E('span', { className: 'dig-cs-chunk', 'aria-hidden': 'true' }, text)))
     }
 
     function ComposerGitStatus(props) {
@@ -15476,7 +15526,7 @@ window.__ModuleLoader__.load({
           onClick: singleRepo === true ? undefined : () => { setMenu(menu === 'repo' ? null : 'repo') },
         },
           E(Icon, { name: 'commit', size: 13 }),
-          E('span', { className: 'dig-cs-name' }, repoName),
+          E(ComposerMarqueeName, { text: repoName }),
           singleRepo === true ? null : E(Icon, { name: 'chevron', size: 10 })),
         branchName !== null ? E('button', {
           type: 'button',
@@ -15485,7 +15535,7 @@ window.__ModuleLoader__.load({
           onClick: () => { if (menu !== 'branch') void openBranchMenu(); else setMenu(null) },
         },
           E(Icon, { name: 'branch', size: 13 }),
-          E('span', { className: 'dig-cs-name' }, detached === true ? t('composer.detached') : branchName),
+          E(ComposerMarqueeName, { text: detached === true ? t('composer.detached') : branchName }),
           E(Icon, { name: 'chevron', size: 10 })) : null,
         changesCount !== null && changesCount > 0
           ? E('span', { className: 'dig-cs-badge dig-cs-changes', title: changesTitle }, '±' + String(changesCount),

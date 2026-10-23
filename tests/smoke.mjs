@@ -1888,3 +1888,29 @@ test('the composer badge splits files added/deleted and lazily sums uncommitted 
   assert.equal((client.match(/'composer\.fileHint':/g) || []).length, 21)
   assert.equal((client.match(/'composer\.linesHint':/g) || []).length, 21)
 })
+
+test('long pill names widen to 260px and scroll only on hover, seamlessly (v0.19.13)', () => {
+  // The cap widens 150→260; past it the label switches to a duplicated-chunk
+  // structure measured after paint, and ONLY :hover starts the marquee —
+  // short names keep the plain ellipsis and never animate.
+  assert.match(client, /max-width:260px/, 'the label cap is widened to 260px')
+  assert.equal((client.match(/ComposerMarqueeName, \{ text:/g) || []).length, 2, 'both pill labels (repo + branch) use the marquee name')
+  assert.match(client, /function ComposerMarqueeName\(/, 'the marquee name component exists')
+  // Overflow detection happens on the real DOM after paint (scrollWidth vs
+  // clientWidth); a replaced/unmounted node never re-measures.
+  assert.match(client, /box\.scrollWidth > box\.clientWidth \+ 1/, 'overflow is measured against the real box')
+  assert.match(client, /if \(boxRef\.current !== box\) return/, 'a replaced node never re-measures')
+  assert.match(client, /fonts\.ready/, 'webfont landing re-measures once')
+  // The animation lives ONLY in the :hover rule (non-hovering labels are
+  // static); duration follows the text width via the CSS custom property.
+  assert.match(client, /\.dig-cs-mrun:hover \.dig-cs-run\{animation:dig-cs-marquee var\(--dig-cs-marquee-dur,10s\) linear infinite\}/, 'hover alone starts the scroll')
+  assert.equal((client.match(/animation:dig-cs-marquee/g) || []).length, 1, 'no non-hover animation rule exists')
+  assert.match(client, /@keyframes dig-cs-marquee\{from\{transform:translateX\(0\)\}to\{transform:translateX\(-50%\)\}\}/, 'the loop translates half the duplicated run (seamless)')
+  assert.match(client, /const MARQUEE_PX_PER_S = 28/, 'the scroll speed is a named constant')
+  assert.match(client, /box\.scrollWidth \/ 2 : box\.scrollWidth/, 'duration divides the doubled run back to one chunk')
+  // CSS: the running label clips (no stale ellipsis) with a right-fade mask
+  // hinting at more text; chunks stay on one line with a seam gap.
+  assert.match(cssRule('.dig-cs-mrun'), /mask-image:linear-gradient/, 'the running label fades at its right edge')
+  assert.match(cssRule('.dig-cs-mrun .dig-cs-chunk'), /padding-right:28px/, 'the seam gap equals the mask fade')
+  assert.match(cssRule('.dig-cs-mrun .dig-cs-run'), /will-change:transform/, 'the scroll rides the compositor')
+})
