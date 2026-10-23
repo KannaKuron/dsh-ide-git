@@ -772,9 +772,10 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
+    if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
     assert.match(host, new RegExp('^  ' + method + ',$', 'm'), 'host method missing: ' + method)
   }
   for (const call of client.match(/request\('([a-zA-Z]+)'/g) || []) {
@@ -1913,4 +1914,39 @@ test('long pill names widen to 260px and scroll only on hover, seamlessly (v0.19
   assert.match(cssRule('.dig-cs-mrun'), /mask-image:linear-gradient/, 'the running label fades at its right edge')
   assert.match(cssRule('.dig-cs-mrun .dig-cs-chunk'), /padding-right:28px/, 'the seam gap equals the mask fade')
   assert.match(cssRule('.dig-cs-mrun .dig-cs-run'), /will-change:transform/, 'the scroll rides the compositor')
+})
+
+
+test('upstream management: bind, drop and create-tracking from menus (v0.20.0, issue #18)', () => {
+  // Host: set/unset go through branch --set-upstream-to / --unset-upstream on
+  // a validated ref; creating from a remote ref with track:true rides
+  // checkout -b --track so binding happens in the same breath.
+  assert.match(host, /git\(root, \['branch', '--set-upstream-to=' \+ upstream, branch\]\)/, 'the set verb uses branch --set-upstream-to')
+  assert.match(host, /git\(root, \['branch', '--unset-upstream', branch\]\)/, 'the unset verb uses branch --unset-upstream')
+  assert.match(host, /payload\.track === true && start !== undefined\) args\.push\('--track'\)/, 'checkout -b gains --track for remote starts')
+  // The write is serialised like every other mutating method.
+  assert.match(host, /'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',/, 'branch-upstream is a declared write method')
+  // Branch-row menu: local rows bind/drop, remote rows create a local branch.
+  assert.match(client, /id: 'setUpstream'/, 'branch rows can set an upstream')
+  assert.match(client, /id: 'unsetUpstream'/, 'branch rows can drop an upstream')
+  assert.match(client, /id: 'createTracking'/, 'remote rows offer create-local-branch')
+  // The submenu is built at click time (branches.remote), never at render
+  // time — the useCallback deps must not grow a later-defined binding.
+  assert.match(client, /run: \(event\) => openMenuAt\(event, branches\.remote\.map/, 'the remote picker is built inside run() at click time')
+  assert.match(client, /active: entry\.upstream === remoteEntry\.name/, 'the current upstream is marked active in the submenu')
+  // More menu carries the same verbs for the CURRENT branch.
+  assert.match(client, /id: 'br-upstream'/, 'the more menu can set the current branch upstream')
+  assert.match(client, /id: 'br-unset-upstream'/, 'the more menu can drop the current branch upstream')
+  assert.match(client, /disabled: headBranch === '' \|\| remoteBranches\.length === 0 \|\| blocked/, 'set-head verb is gated on a branch and remotes existing')
+  assert.match(client, /disabled: headBranch === '' \|\| tracked !== true \|\| blocked/, 'unset-head verb only makes sense when tracking')
+  // The dialog prefills the bare branch name and creates with --track.
+  assert.match(client, /kind === 'createTracking' \? dialog\.name/, 'the tracking dialog prefills the local name')
+  assert.match(client, /startPoint: state\.from, track: true \}\); return \}/, 'the tracking dialog creates with --track')
+  // The tree shows the binding inline, muted and capped.
+  assert.match(client, /className: 'dig-row-upstream'/, 'local rows show the upstream inline')
+  assert.match(cssRule('.dig-row-upstream'), /max-width:180px/, 'the inline target is capped so it cannot starve the label')
+  // Dictionary: 21 gates for all six new keys (key-set equality test pins parity).
+  for (const key of ['action.setUpstream', 'action.unsetUpstream', 'action.createLocalBranch', 'prompt.createTracking', 'more.setUpstreamHead', 'more.unsetUpstreamHead']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
+  }
 })

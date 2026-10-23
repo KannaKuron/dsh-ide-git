@@ -470,7 +470,7 @@ function withRepoLock(key, work) {
 }
 
 const WRITE_METHODS = new Set([
-  'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename',
+  'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',
   'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
   'push', 'stashPush', 'stashApply', 'stashDrop', 'stashClear', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'undoApply',
 ])
@@ -1003,6 +1003,9 @@ async function checkout(payload) {
     const name = requireRef(payload.branch, 'branch')
     const start = typeof payload.startPoint === 'string' && payload.startPoint.trim() !== '' ? requireRef(payload.startPoint, 'startPoint') : undefined
     const args = ['checkout', '-b', name]
+    /* track (issue #18): "create a local branch from a remote one" must bind
+       the upstream in the same breath — checkout -b alone never does. */
+    if (payload.track === true && start !== undefined) args.push('--track')
     if (start !== undefined) args.push(start)
     await git(root, args)
     return { branch: name, created: true }
@@ -1020,6 +1023,25 @@ async function branchCreate(payload) {
   if (typeof payload.startPoint === 'string' && payload.startPoint.trim() !== '') args.push(requireRef(payload.startPoint, 'startPoint'))
   await git(root, args)
   return { branch: name }
+}
+
+/* Upstream management (issue #18): rebind or drop a branch's tracking remote.
+   git refuses --set-upstream-to with a ref it cannot resolve, so a typo dies
+   here instead of silently writing branch.<name>.merge. */
+async function branchUpstream(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const branch = requireRef(payload.branch, 'branch')
+  if (payload.unset === true) {
+    /* --unset-upstream errors on a branch that has none; the client only
+       offers the verb when the row shows an upstream, and git's own message
+       is the right one to surface if they raced. */
+    await git(root, ['branch', '--unset-upstream', branch])
+    return { branch, upstream: null }
+  }
+  const upstream = requireRef(payload.upstream, 'upstream')
+  await git(root, ['branch', '--set-upstream-to=' + upstream, branch])
+  return { branch, upstream }
 }
 
 async function branchRename(payload) {
@@ -1999,6 +2021,7 @@ const METHODS = {
   checkout,
   branchCreate,
   branchRename,
+  'branch-upstream': branchUpstream,
   branchDelete,
   merge,
   rebase,
