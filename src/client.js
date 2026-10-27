@@ -302,6 +302,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '未提交变更数',
       'composer.fileHint': '新增 {a} · 删除 {d} 个文件',
       'composer.linesHint': '+{ins} −{del} 行',
+      'modelRoute.pick': '选择模型',
+      'modelRoute.trigger': 'AI 提交信息模型',
+      'modelRoute.modelRow': '模型',
+      'modelRoute.effortRow': '思考',
+      'modelRoute.effortDefault': '跟随默认',
+      'modelRoute.empty': '暂无可用模型',
       'composer.behindHint': '远程新提交(可拉取)',
       'composer.aheadHint': '本地待推送提交',
       'composer.inWorktree': '已被其他工作树签出',
@@ -638,6 +644,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Uncommitted changes',
       'composer.fileHint': '{a} added · {d} deleted files',
       'composer.linesHint': '+{ins} −{del} lines',
+      'modelRoute.pick': 'Pick a model',
+      'modelRoute.trigger': 'AI commit message model',
+      'modelRoute.modelRow': 'Model',
+      'modelRoute.effortRow': 'Reasoning',
+      'modelRoute.effortDefault': 'Follow default',
+      'modelRoute.empty': 'No models available',
       'composer.behindHint': 'New upstream commits (pullable)',
       'composer.aheadHint': 'Local commits waiting to push',
       'composer.inWorktree': 'Checked out in another worktree',
@@ -982,6 +994,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '未提交變更數',
       'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
       'composer.linesHint': '+{ins} −{del} 行',
+      'modelRoute.pick': '選擇模型',
+      'modelRoute.trigger': 'AI 提交訊息模型',
+      'modelRoute.modelRow': '模型',
+      'modelRoute.effortRow': '思考',
+      'modelRoute.effortDefault': '跟隨預設',
+      'modelRoute.empty': '暫無可用模型',
       'composer.behindHint': '遠端新提交(可以拉取)',
       'composer.aheadHint': '本地等待推送提交',
       'composer.inWorktree': '已經喺其他工作樹簽出',
@@ -1318,6 +1336,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '未提交變更數',
       'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
       'composer.linesHint': '+{ins} −{del} 行',
+      'modelRoute.pick': '選擇模型',
+      'modelRoute.trigger': 'AI 提交訊息模型',
+      'modelRoute.modelRow': '模型',
+      'modelRoute.effortRow': '思考',
+      'modelRoute.effortDefault': '跟隨預設',
+      'modelRoute.empty': '暫無可用模型',
       'composer.behindHint': '遠端新提交(可拉取)',
       'composer.aheadHint': '本地待推送提交',
       'composer.inWorktree': '已被其他工作樹簽出',
@@ -1654,6 +1678,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '未提交變更數',
       'composer.fileHint': '新增 {a} · 刪除 {d} 個檔案',
       'composer.linesHint': '+{ins} −{del} 行',
+      'modelRoute.pick': '選擇模型',
+      'modelRoute.trigger': 'AI 提交訊息模型',
+      'modelRoute.modelRow': '模型',
+      'modelRoute.effortRow': '思考',
+      'modelRoute.effortDefault': '跟隨預設',
+      'modelRoute.empty': '暫無可用模型',
       'composer.behindHint': '遠端新提交(可以拉取)',
       'composer.aheadHint': '本地等待推送提交',
       'composer.inWorktree': '已經喺其他工作樹簽出',
@@ -1990,6 +2020,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '未コミットの変更数',
       'composer.fileHint': '追加 {a} · 削除 {d} ファイル',
       'composer.linesHint': '+{ins} −{del} 行',
+      'modelRoute.pick': 'モデルを選択',
+      'modelRoute.trigger': 'AI コミットメッセージのモデル',
+      'modelRoute.modelRow': 'モデル',
+      'modelRoute.effortRow': '思考',
+      'modelRoute.effortDefault': 'デフォルトに従う',
+      'modelRoute.empty': '利用可能なモデルがありません',
       'composer.behindHint': 'リモートの新規コミット(取得可能)',
       'composer.aheadHint': 'プッシュ待ちのローカルコミット',
       'composer.inWorktree': '別のワークツリーでチェックアウト中',
@@ -2326,6 +2362,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': '커밋되지 않은 변경 수',
       'composer.fileHint': '추가 {a} · 삭제 {d}개 파일',
       'composer.linesHint': '+{ins} −{del}줄',
+      'modelRoute.pick': '모델 선택',
+      'modelRoute.trigger': 'AI 커밋 메시지 모델',
+      'modelRoute.modelRow': '모델',
+      'modelRoute.effortRow': '추론',
+      'modelRoute.effortDefault': '기본값 따르기',
+      'modelRoute.empty': '사용 가능한 모델이 없습니다',
       'composer.behindHint': '원격 새 커밋(가져오기 가능)',
       'composer.aheadHint': '푸시 대기 중인 로컬 커밋',
       'composer.inWorktree': '다른 작업 트리에서 체크아웃됨',
@@ -2662,6 +2704,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Uncommittete Änderungen',
       'composer.fileHint': '{a} hinzugefügt · {d} gelöscht',
       'composer.linesHint': '+{ins} −{del} Zeilen',
+      'modelRoute.pick': 'Modell wählen',
+      'modelRoute.trigger': 'Modell für KI-Commits',
+      'modelRoute.modelRow': 'Modell',
+      'modelRoute.effortRow': 'Denken',
+      'modelRoute.effortDefault': 'Standard folgen',
+      'modelRoute.empty': 'Keine Modelle verfügbar',
       'composer.behindHint': 'Neue Upstream-Commits (abrufbar)',
       'composer.aheadHint': 'Lokale Commits zum Pushen',
       'composer.inWorktree': 'In anderem Worktree ausgecheckt',
@@ -2998,6 +3046,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Modifications non commitées',
       'composer.fileHint': '{a} ajoutés · {d} supprimés',
       'composer.linesHint': '+{ins} −{del} lignes',
+      'modelRoute.pick': 'Choisir un modèle',
+      'modelRoute.trigger': 'Modèle des messages de commit IA',
+      'modelRoute.modelRow': 'Modèle',
+      'modelRoute.effortRow': 'Raisonnement',
+      'modelRoute.effortDefault': 'Suivre la valeur par défaut',
+      'modelRoute.empty': 'Aucun modèle disponible',
       'composer.behindHint': 'Nouveaux commits amont (récupérables)',
       'composer.aheadHint': 'Commits locaux en attente d’envoi',
       'composer.inWorktree': 'Extrait dans un autre arbre de travail',
@@ -3334,6 +3388,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Незакоммиченные изменения',
       'composer.fileHint': 'добавлено: {a} · удалено: {d}',
       'composer.linesHint': '+{ins} −{del} строк',
+      'modelRoute.pick': 'Выбрать модель',
+      'modelRoute.trigger': 'Модель сообщений коммитов ИИ',
+      'modelRoute.modelRow': 'Модель',
+      'modelRoute.effortRow': 'Рассуждение',
+      'modelRoute.effortDefault': 'По умолчанию',
+      'modelRoute.empty': 'Нет доступных моделей',
       'composer.behindHint': 'Новые коммиты upstream (можно забрать)',
       'composer.aheadHint': 'Локальные коммиты, ожидающие отправки',
       'composer.inWorktree': 'Выверен в другом worktree',
@@ -3670,6 +3730,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Alterações não commitadas',
       'composer.fileHint': '{a} adicionados · {d} removidos',
       'composer.linesHint': '+{ins} −{del} linhas',
+      'modelRoute.pick': 'Escolher modelo',
+      'modelRoute.trigger': 'Modelo da mensagem de commit por IA',
+      'modelRoute.modelRow': 'Modelo',
+      'modelRoute.effortRow': 'Raciocínio',
+      'modelRoute.effortDefault': 'Seguir o padrão',
+      'modelRoute.empty': 'Nenhum modelo disponível',
       'composer.behindHint': 'Novos commits remotos (para pull)',
       'composer.aheadHint': 'Commits locais aguardando push',
       'composer.inWorktree': 'Em checkout em outra worktree',
@@ -4006,6 +4072,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Modifiche non ancora committate',
       'composer.fileHint': '{a} aggiunti · {d} eliminati',
       'composer.linesHint': '+{ins} −{del} righe',
+      'modelRoute.pick': 'Scegli modello',
+      'modelRoute.trigger': 'Modello dei messaggi di commit IA',
+      'modelRoute.modelRow': 'Modello',
+      'modelRoute.effortRow': 'Ragionamento',
+      'modelRoute.effortDefault': 'Segui il predefinito',
+      'modelRoute.empty': 'Nessun modello disponibile',
       'composer.behindHint': 'Nuovi commit upstream (scaricabili)',
       'composer.aheadHint': 'Commit locali in attesa di push',
       'composer.inWorktree': 'Estratto in un altro worktree',
@@ -4342,6 +4414,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Ongecommitte wijzigingen',
       'composer.fileHint': '{a} toegevoegd · {d} verwijderd',
       'composer.linesHint': '+{ins} −{del} regels',
+      'modelRoute.pick': 'Kies een model',
+      'modelRoute.trigger': 'Model voor AI-commitberichten',
+      'modelRoute.modelRow': 'Model',
+      'modelRoute.effortRow': 'Redeneren',
+      'modelRoute.effortDefault': 'Standaard volgen',
+      'modelRoute.empty': 'Geen modellen beschikbaar',
       'composer.behindHint': 'Nieuwe upstream-commits (op te halen)',
       'composer.aheadHint': 'Lokale commits die wachten op push',
       'composer.inWorktree': 'Uitgecheckt in een andere worktree',
@@ -4678,6 +4756,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Niezatwierdzone zmiany',
       'composer.fileHint': 'dodane: {a} · usunięte: {d}',
       'composer.linesHint': '+{ins} −{del} linii',
+      'modelRoute.pick': 'Wybierz model',
+      'modelRoute.trigger': 'Model wiadomości commitów AI',
+      'modelRoute.modelRow': 'Model',
+      'modelRoute.effortRow': 'Rozumowanie',
+      'modelRoute.effortDefault': 'Domyślne',
+      'modelRoute.empty': 'Brak dostępnych modeli',
       'composer.behindHint': 'Nowe commity upstream (do pobrania)',
       'composer.aheadHint': 'Lokalne commity oczekujące na wysłanie',
       'composer.inWorktree': 'Wybrane w innym drzewie roboczym',
@@ -5014,6 +5098,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Ocommittade ändringar',
       'composer.fileHint': '{a} tillagda · {d} borttagna',
       'composer.linesHint': '+{ins} −{del} rader',
+      'modelRoute.pick': 'Välj modell',
+      'modelRoute.trigger': 'Modell för AI-commit-meddelanden',
+      'modelRoute.modelRow': 'Modell',
+      'modelRoute.effortRow': 'Resonemang',
+      'modelRoute.effortDefault': 'Följ standard',
+      'modelRoute.empty': 'Inga modeller tillgängliga',
       'composer.behindHint': 'Nya upstream-commits (hämtbara)',
       'composer.aheadHint': 'Lokala commits som väntar på push',
       'composer.inWorktree': 'Utcheckad i ett annat arbetsträd',
@@ -5350,6 +5440,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Commitlenmemiş değişiklikler',
       'composer.fileHint': '{a} eklendi · {d} silindi',
       'composer.linesHint': '+{ins} −{del} satır',
+      'modelRoute.pick': 'Model seç',
+      'modelRoute.trigger': 'Yapay zekâ commit mesajı modeli',
+      'modelRoute.modelRow': 'Model',
+      'modelRoute.effortRow': 'Akıl yürütme',
+      'modelRoute.effortDefault': 'Varsayılanı izle',
+      'modelRoute.empty': 'Kullanılabilir model yok',
       'composer.behindHint': 'Yeni upstream commitleri (çekilebilir)',
       'composer.aheadHint': 'Push bekleyen yerel commitler',
       'composer.inWorktree': 'Başka bir worktree’da checkout yapılmış',
@@ -5686,6 +5782,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Perubahan yang belum di-commit',
       'composer.fileHint': '{a} ditambahkan · {d} dihapus',
       'composer.linesHint': '+{ins} −{del} baris',
+      'modelRoute.pick': 'Pilih model',
+      'modelRoute.trigger': 'Model pesan commit AI',
+      'modelRoute.modelRow': 'Model',
+      'modelRoute.effortRow': 'Penalaran',
+      'modelRoute.effortDefault': 'Ikuti bawaan',
+      'modelRoute.empty': 'Tidak ada model yang tersedia',
       'composer.behindHint': 'Commit upstream baru (bisa ditarik)',
       'composer.aheadHint': 'Commit lokal menunggu push',
       'composer.inWorktree': 'Sudah di-checkout di worktree lain',
@@ -6022,6 +6124,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'Thay đổi chưa commit',
       'composer.fileHint': 'thêm {a} · xóa {d} tệp',
       'composer.linesHint': '+{ins} −{del} dòng',
+      'modelRoute.pick': 'Chọn mô hình',
+      'modelRoute.trigger': 'Mô hình tin nhắn commit AI',
+      'modelRoute.modelRow': 'Mô hình',
+      'modelRoute.effortRow': 'Suy luận',
+      'modelRoute.effortDefault': 'Theo mặc định',
+      'modelRoute.empty': 'Không có mô hình nào',
       'composer.behindHint': 'Commit mới từ xa (có thể kéo về)',
       'composer.aheadHint': 'Commit cục bộ chờ đẩy lên',
       'composer.inWorktree': 'Đã được checkout ở worktree khác',
@@ -6358,6 +6466,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'تغييرات غير ملتزَم بها',
       'composer.fileHint': 'مضاف {a} · محذوف {d}',
       'composer.linesHint': '+{ins} −{del} أسطر',
+      'modelRoute.pick': 'اختر نموذجًا',
+      'modelRoute.trigger': 'نموذج رسائل الالتزام بالذكاء الاصطناعي',
+      'modelRoute.modelRow': 'النموذج',
+      'modelRoute.effortRow': 'الاستدلال',
+      'modelRoute.effortDefault': 'اتبع الافتراضي',
+      'modelRoute.empty': 'لا توجد نماذج متاحة',
       'composer.behindHint': 'التزامات جديدة في المستودع البعيد (قابلة للسحب)',
       'composer.aheadHint': 'التزامات محلية بانتظار الدفع',
       'composer.inWorktree': 'مسحوب في شجرة عمل أخرى',
@@ -6694,6 +6808,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'बिना कमिट बदलाव',
       'composer.fileHint': '{a} जोड़ी गईं · {d} हटाई गईं',
       'composer.linesHint': '+{ins} −{del} पंक्तियाँ',
+      'modelRoute.pick': 'मॉडल चुनें',
+      'modelRoute.trigger': 'AI कमिट संदेश मॉडल',
+      'modelRoute.modelRow': 'मॉडल',
+      'modelRoute.effortRow': 'तर्क',
+      'modelRoute.effortDefault': 'डिफ़ॉल्ट का पालन करें',
+      'modelRoute.empty': 'कोई मॉडल उपलब्ध नहीं',
       'composer.behindHint': 'अपस्ट्रीम के नए कमिट (खींचने योग्य)',
       'composer.aheadHint': 'पुश के लिए प्रतीक्षारत स्थानीय कमिट',
       'composer.inWorktree': 'दूसरे वर्कट्री में चेकआउट',
@@ -7030,6 +7150,12 @@ window.__ModuleLoader__.load({
       'composer.changesHint': 'การเปลี่ยนแปลงที่ยังไม่คอมมิต',
       'composer.fileHint': 'เพิ่ม {a} · ลบ {d} ไฟล์',
       'composer.linesHint': '+{ins} −{del} บรรทัด',
+      'modelRoute.pick': 'เลือกโมเดล',
+      'modelRoute.trigger': 'โมเดลข้อความคอมมิต AI',
+      'modelRoute.modelRow': 'โมเดล',
+      'modelRoute.effortRow': 'การใช้เหตุผล',
+      'modelRoute.effortDefault': 'ตามค่าเริ่มต้น',
+      'modelRoute.empty': 'ไม่มีโมเดลที่ใช้ได้',
       'composer.behindHint': 'คอมมิตใหม่จากรีโมต (ดึงได้)',
       'composer.aheadHint': 'คอมมิตในเครื่องรอพุช',
       'composer.inWorktree': 'ถูกเช็คเอาต์ในเวิร์กทรีอื่น',
@@ -11060,6 +11186,9 @@ window.__ModuleLoader__.load({
     function ChangesPanel(props) {
       const t = props.t
       const summary = props.summary
+      /* The panel-side model picker (issue #19) rides the official model
+         directories, soft-injected into a module ref at apply time — see
+         ModelRoutePicker for why a bare ctx property read cannot work. */
       const [message, setMessage] = useState('')
       const [amend, setAmend] = useState(false)
       const [collapsed, setCollapsed] = useState(() => {
@@ -11358,6 +11487,7 @@ window.__ModuleLoader__.load({
               title: t('changes.aiQuota'),
               onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
             }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
+            E(ModelRoutePicker, { sessionId: props.sessionId, t: t }),
             E('button', {
               type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
               disabled: message.trim() === '' || props.busy === true,
@@ -11379,6 +11509,7 @@ window.__ModuleLoader__.load({
                 disabled: aiBusy === true || props.busy === true,
                 onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
               }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
+              E(ModelRoutePicker, { sessionId: props.sessionId, t: t }),
               E('span', { className: 'dig-commit-ai-hint' }, t('changes.aiQuota')),
               aiUndo === null ? null : E('button', {
                 type: 'button', className: 'dig-link',
@@ -15200,6 +15331,22 @@ window.__ModuleLoader__.load({
       '.dig-cs-item-note{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none}',
       '.dig-cs-item-counts{display:inline-flex;gap:5px;margin-left:auto;flex:none;font-variant-numeric:tabular-nums;font-size:11px}',
       '.dig-cs-static{color:var(--dsw-alias-label-tertiary);cursor:default}',
+      /* ---- ModelRoutePicker (issue #19) ---- */
+      '.dig-mrp-root{position:relative;display:inline-flex;flex:none;min-width:0}',
+      '.dig-mrp-trigger{display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:220px;font-size:11px;line-height:16px}',
+      '.dig-mrp-trigger[data-open=true]{color:var(--dsw-alias-brand-primary)}',
+      '.dig-mrp-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-mrp-effort{flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:10px}',
+      '.dig-mrp-menu{max-width:300px}',
+      '.dig-mrp-row .dig-cs-item-name{display:none}',
+      '.dig-mrp-row-label{flex:none}',
+      '.dig-mrp-row-value{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:auto;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-mrp-row-arrow{flex:none;display:inline-flex;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-mrp-back{color:var(--dsw-alias-label-tertiary)}',
+      '.dig-mrp-group{padding:6px 10px 2px;color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:14px}',
+      '.dig-mrp-empty{padding:10px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
+      '.dig-mrp-error{padding:6px 10px;margin-bottom:2px;border-radius:var(--dsw-radius-sm,8px);background:rgba(220,38,38,.12);color:var(--dsw-alias-state-error-primary);font-size:11px;line-height:16px;word-break:break-word}',
+      'body[data-ds-dark-theme] .dig-mrp-error{background:rgba(248,113,113,.16)}',
     ].concat(LANE_TRACE_RULES).join('\n')
 
     /* ============================== plugin ============================== */
@@ -15427,6 +15574,179 @@ window.__ModuleLoader__.load({
         E('span', { className: 'dig-cs-run' },
           E('span', { className: 'dig-cs-chunk' }, text),
           E('span', { className: 'dig-cs-chunk', 'aria-hidden': 'true' }, text)))
+    }
+
+    /* ---- ModelRoutePicker (issue #19) ------------------------------------
+       The panel-side model + reasoning picker, bound to the SAME session model
+       route the composer's own selector writes: the host's ui-model-selection
+       plugin exposes the modelDirectories resolver, and directoryFor(sessionId)
+       hands out the session-scoped directory whose select() IS
+       sessions.selectModel — so this picker, the composer pill and the /model
+       command can never disagree. The VIEW is hand-drawn (ModelSelect is not
+       exported from the official package); the DATA and the selection semantics
+       are official end to end. The resolver arrives through a soft inject into
+       a module-level ref (a bare `ctx.modelDirectories` read throws "without
+       inject" on a real host — cordis gates EVERY property read behind an
+       inject declaration); until it lands, and on any older host, the picker
+       hides itself instead of throwing, and the AI-write button still works
+       through the host's served-models fallback. */
+    let modelDirectoriesRef = null
+    const modelDirectorySubs = new Set()
+    function ModelRoutePicker(props) {
+      const t = props.t
+      const sessionId = typeof props.sessionId === 'string' && props.sessionId !== '' ? props.sessionId : 'default'
+      const [injectVersion, setInjectVersion] = useState(0)
+      const [directory, setDirectory] = useState(null)
+      const [state, setState] = useState(null)
+      const [open, setOpen] = useState(false)
+      const [pane, setPane] = useState('root')
+      const rootRef = useRef(null)
+      /* The soft inject may land AFTER first paint (apply runs once, this slot
+         mounts per session view): re-render when the module ref refills. */
+      useEffect(() => {
+        const bump = () => setInjectVersion((v) => v + 1)
+        modelDirectorySubs.add(bump)
+        return () => modelDirectorySubs.delete(bump)
+      }, [])
+      const resolver = modelDirectoriesRef
+      const ok = resolver !== undefined && resolver !== null && typeof resolver.directoryFor === 'function'
+      /* Resolve the session-scoped directory once per session; subscribe AFTER
+         taking the snapshot so a change that lands between the two is not lost. */
+      useEffect(() => {
+        if (ok !== true) return undefined
+        let dir = null
+        try { dir = resolver.directoryFor(sessionId) } catch (error) { void error }
+        if (dir === null || dir === undefined) return undefined
+        setState(dir.store.getSnapshot())
+        setDirectory(dir)
+        /* Snapshot and subscription live on dir.store (uSES-safe); load()/
+           select() hang directly off the directory. */
+        return dir.store.subscribe(() => setState(dir.store.getSnapshot()))
+      }, [ok, resolver, sessionId, injectVersion])
+      /* The catalog loads on mount; failures surface through the store and the
+         menu shows them. A rejected load must not unmount or disable anything. */
+      useEffect(() => {
+        if (directory === null) return undefined
+        directory.load().catch(() => {})
+        return undefined
+      }, [directory])
+      /* Outside close. pointerdown + capture: the change list captures
+         pointerdown for the rubber band, so a plain mousedown listener can
+         miss the very click that opened another menu (v0.19.2 lesson). */
+      useEffect(() => {
+        if (open !== true) return undefined
+        const close = (event) => {
+          const root = rootRef.current
+          if (root !== null && root.contains(event.target) === true) return
+          setOpen(false)
+          setPane('root')
+        }
+        document.addEventListener('pointerdown', close, true)
+        return () => document.removeEventListener('pointerdown', close, true)
+      }, [open])
+      if (ok !== true || directory === null) return null
+      const s = state === null ? directory.getSnapshot() : state
+      const current = s === null || s.current === undefined ? null : s.current
+      const busy = s !== null && s.pending !== null && s.pending !== undefined
+      const groups = s === null || s.groups === undefined ? [] : s.groups
+      /* The current route's reasoning table, looked up through the SAME
+         directory groups the menu renders (official effectiveEffort rule). */
+      let routeGroup = null
+      let routeModel = null
+      if (current !== null) {
+        routeGroup = groups.filter((row) => row.id === current.provider)[0] || null
+        routeModel = routeGroup === null ? null : routeGroup.models.filter((row) => row.id === current.model)[0] || null
+      }
+      const reasoning = routeModel === null || routeModel.reasoning === undefined ? undefined : routeModel.reasoning
+      const effectiveEffort = current === null ? undefined : current.reasoningEffort !== undefined ? current.reasoningEffort : reasoning === undefined ? undefined : reasoning.defaultEffort
+      const effortName = (effort) => {
+        if (reasoning !== undefined) {
+          const hit = reasoning.efforts.filter((row) => row.id === effort)[0]
+          if (hit !== undefined) return hit.name
+        }
+        return effort === undefined ? t('modelRoute.effortDefault') : effort
+      }
+      const effortLabel = current === null ? '' : reasoning === undefined
+        ? (current.reasoningEffort === undefined ? '' : current.reasoningEffort)
+        : (effectiveEffort === undefined ? t('modelRoute.effortDefault') : effortName(effectiveEffort))
+      const modelName = current === null ? '' : routeModel === null ? current.model : routeModel.name
+      const effortChoices = reasoning === undefined ? [] : ([
+        ...(reasoning.defaultEffort === undefined ? [{ key: 'provider-default', effort: undefined, label: t('modelRoute.effortDefault') }] : []),
+        ...reasoning.efforts.map((row) => ({ key: row.id, effort: row.id, label: row.name })),
+      ])
+      const closeMenu = () => { setOpen(false); setPane('root') }
+      const choose = (selection) => {
+        void directory.select(selection).then((result) => {
+          if (result !== undefined && result !== null && result.ok !== true) return
+          closeMenu()
+        }).catch(() => {})
+      }
+      const triggerTitle = t('modelRoute.trigger') + (current === null ? '' : ' · ' + current.provider + '/' + current.model + (effortLabel === '' ? '' : ' · ' + effortLabel))
+      return E('div', { className: 'dig-mrp-root', ref: rootRef },
+        E('button', {
+          type: 'button',
+          className: 'dig-btn dig-btn-small dig-mrp-trigger',
+          'data-open': open === true ? 'true' : undefined,
+          title: triggerTitle,
+          onClick: () => { setOpen(!open); setPane('root') },
+        },
+          E(Icon, { name: 'settings', size: 11 }),
+          E('span', { className: 'dig-mrp-label' }, current === null ? t('modelRoute.pick') : modelName),
+          effortLabel === '' ? null : E('span', { className: 'dig-mrp-effort' }, effortLabel),
+          E(Icon, { name: 'chevron', size: 9 })),
+        open !== true ? null : E('div', { className: 'dig-cs-menu dig-mrp-menu', role: 'menu' },
+          s !== null && typeof s.error === 'string' && s.error !== ''
+            ? E('div', { className: 'dig-mrp-error', role: 'status' }, s.error)
+            : null,
+          pane === 'root'
+            ? [
+              E('button', {
+                type: 'button', key: 'model', className: 'dig-cs-item dig-mrp-row', disabled: busy === true,
+                onClick: () => setPane('model'),
+              },
+                E('span', { className: 'dig-mrp-row-label' }, t('modelRoute.modelRow')),
+                E('span', { className: 'dig-mrp-row-value' }, current === null ? t('modelRoute.pick') : modelName),
+                E('span', { className: 'dig-mrp-row-arrow' }, E(Icon, { name: 'chevron', size: 9 }))),
+              E('button', {
+                type: 'button', key: 'effort', className: 'dig-cs-item dig-mrp-row', disabled: busy === true || current === null || effortChoices.length === 0,
+                onClick: () => setPane('effort'),
+              },
+                E('span', { className: 'dig-mrp-row-label' }, t('modelRoute.effortRow')),
+                E('span', { className: 'dig-mrp-row-value' }, effortChoices.length === 0 ? '' : (effortLabel === '' ? t('modelRoute.effortDefault') : effortLabel)),
+                E('span', { className: 'dig-mrp-row-arrow' }, E(Icon, { name: 'chevron', size: 9 }))),
+            ]
+            : [
+              E('button', {
+                type: 'button', key: 'back', className: 'dig-cs-item dig-mrp-back', disabled: busy === true,
+                onClick: () => setPane('root'),
+              }, '‹ ' + (pane === 'model' ? t('modelRoute.modelRow') : t('modelRoute.effortRow'))),
+            ],
+          pane === 'model' && groups.length === 0
+            ? E('div', { className: 'dig-mrp-empty' }, t('modelRoute.empty'))
+            : null,
+          pane === 'model' && groups.map((group) => E(Fragment, { key: group.id },
+            E('div', { className: 'dig-mrp-group' }, group.name === undefined || group.name === null || group.name === '' ? group.id : group.name),
+            group.models.map((model) => {
+              const selected = current !== null && current.provider === group.id && current.model === model.id
+              return E('button', {
+                type: 'button', key: model.id, className: 'dig-cs-item', 'data-current': selected === true ? 'true' : undefined,
+                disabled: busy === true,
+                title: group.id + '/' + model.id,
+                onClick: () => choose({ provider: group.id, model: model.id }),
+              },
+                E('span', { className: 'dig-cs-item-name' }, model.name === undefined || model.name === null ? model.id : model.name),
+                E('span', { className: 'dig-cs-item-note' }, selected === true ? E(Icon, { name: 'check', size: 11 }) : null))
+            }))),
+          pane === 'effort' && current !== null && effortChoices.map((level) => {
+            const selected = effectiveEffort === level.effort
+            return E('button', {
+              type: 'button', key: level.key, className: 'dig-cs-item', 'data-current': selected === true ? 'true' : undefined,
+              disabled: busy === true,
+              onClick: () => choose({ provider: current.provider, model: current.model, reasoningEffort: level.effort }),
+            },
+              E('span', { className: 'dig-cs-item-name' }, level.label),
+              E('span', { className: 'dig-cs-item-note' }, selected === true ? E(Icon, { name: 'check', size: 11 }) : null))
+          })))
     }
 
     function ComposerGitStatus(props) {
@@ -16328,6 +16648,20 @@ window.__ModuleLoader__.load({
             armed.clear()
           }
         }, 'dsh-ide-git: session-switch prewarm')
+      })
+
+      /* ---- panel model picker: the official directories resolver ---- */
+      /* ui-model-selection exposes the resolver as a CONTEXT PROPERTY, and
+         cordis refuses bare property reads ("cannot get property … without
+         inject") — the only legal consumer path is a declared inject. Soft:
+         an older host without the service never fires this callback, the ref
+         stays null and the picker hides itself (the AI-write button keeps its
+         served-models fallback). Subscribers re-render the mounted pickers. */
+      ctx.inject(['modelDirectories'], (mdCtx) => {
+        const md = mdCtx.get('modelDirectories')
+        if (md === undefined || md === null || typeof md.directoryFor !== 'function') return
+        modelDirectoriesRef = md
+        for (const notify of modelDirectorySubs) { try { notify() } catch (error) { void error } }
       })
 
       /* ---- settings: the row Config is the rail's source of truth ---- */

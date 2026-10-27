@@ -737,10 +737,23 @@ test('commit-message: a thrown adapter failure is still a loud failure', async (
   assert.match(result.body.error.message, /adapter exploded/)
 })
 
-test('commit-message: no session route, unknown provider and unknown model are refused with a next step', async () => {
-  const noRoute = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }]), { list: () => [{ id: 'sess-1', requestHeader: () => ({ config: {} }) }] }, (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
-  assert.equal(noRoute.status, 502)
-  assert.equal(noRoute.body.error.code, 'no-route')
+test('commit-message: a blank session falls back to the served models; unknown provider and unknown model are refused with a next step', async () => {
+  // Issue #19: 'no-route' used to kill the panel button on a fresh session.
+  // The host now falls back to the first served provider/model, and the
+  // response admits it through routeSource: 'fallback'.
+  writeFileSync(join(repo, 'ai-fallback.txt'), 'fallback probe\n')
+  git('add', 'ai-fallback.txt')
+  const seen = []
+  const fallback = await withServices(fakeLlm([{ type: 'text-delta', index: 0, text: 'chore: fallback' }, { type: 'finish', reason: { kind: 'stop' } }], seen), { list: () => [{ id: 'sess-1', requestHeader: () => ({ config: {} }) }] }, (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(fallback.status, 200, JSON.stringify(fallback.body))
+  assert.equal(fallback.body.data.routeSource, 'fallback', 'the response names the fallback route')
+  assert.equal(seen[0].provider, 'deepseek-official', 'the fallback serves the first provider')
+  assert.equal(seen[0].model, 'deepseek-flash', 'the fallback serves that provider\'s first model')
+  // And when the host serves nothing at all, the refusal still names a next step.
+  const noModels = await withServices({ listProviders: () => [], listModels: async () => [] }, { list: () => [{ id: 'sess-1', requestHeader: () => ({ config: {} }) }] }, (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.equal(noModels.status, 502)
+  assert.equal(noModels.body.error.code, 'no-models')
+  assert.match(noModels.body.error.message, /pick a model/, 'the refusal carries the old next step')
   const noSession = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'stop' } }]), { list: () => [] }, (call) => call('commit-message', { cwd: repo, sessionId: 'ghost' }))
   assert.equal(noSession.body.error.code, 'no-session')
   const badShape = await withServices(fakeLlm([]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 's', model: 'deepseek-flash' }))

@@ -1788,6 +1788,28 @@ function failureTextOf(failure) {
   return String(failure.code === undefined ? failure : failure.code)
 }
 
+/** The no-route fallback: the first provider this host serves that lists at
+    least one model, and that provider's first model. Issue #19 — a fresh
+    session (no model picked yet) used to fail the panel button with 'no-route'
+    before the user ever saw a message; a commit message is too small a task to
+    lecture anyone about routing. Errors per provider stay silent on purpose:
+    a provider that fails its catalog simply is not a fallback candidate. */
+async function fallbackRouteOf() {
+  const llm = commitServices.llm
+  for (const row of llm.listProviders()) {
+    try {
+      const models = await llm.listModels(row.id)
+      const model = models[0]
+      if (model !== undefined && model !== null && typeof model.id === 'string' && model.id !== '') {
+        return { provider: row.id, model: model.id }
+      }
+    } catch (error) {
+      void error
+    }
+  }
+  return null
+}
+
 /** Route the call exactly like the session does when it talks to the model. */
 async function commitRouteOf(payload) {
   const wanted = typeof payload.model === 'string' ? payload.model.trim() : ''
@@ -1801,7 +1823,13 @@ async function commitRouteOf(payload) {
     try { header = session.requestHeader() } catch (error) { header = null; void error }
     const config = header === null || header === undefined || header.config === undefined || header.config === null ? {} : header.config
     if (typeof config.provider !== 'string' || typeof config.model !== 'string') {
-      throw new PanelError('no-route', 'this session has no model route yet; pick a model in the session first', 502)
+      /* Issue #19: 'no-route' is the failure every blank session hit. The
+         served fallback below keeps the button useful on a brand-new session;
+         the panel's model picker (this release) is the user's visible way to
+         steer it, and it drives the SAME session route once a model is picked. */
+      const fallback = await fallbackRouteOf()
+      if (fallback !== null) return { provider: fallback.provider, model: fallback.model, source: 'fallback' }
+      throw new PanelError('no-models', 'no model route and no served models to fall back to; pick a model in the session first', 502)
     }
     return { provider: config.provider, model: config.model, source: 'session' }
   }

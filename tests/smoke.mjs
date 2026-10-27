@@ -1917,6 +1917,56 @@ test('long pill names widen to 260px and scroll only on hover, seamlessly (v0.19
 })
 
 
+test('panel model picker rides the official model directories (v0.21.0, issue #19)', () => {
+  // Host: a blank session (no model route yet) no longer fails the panel
+  // button — the first served provider/model becomes the route, the response
+  // names it, and a served-empty catalog still refuses with a next step.
+  assert.match(host, /async function fallbackRouteOf\(/, 'the served fallback exists')
+  assert.match(host, /const fallback = await fallbackRouteOf\(\)/, 'no-route falls back before failing')
+  assert.match(host, /source: 'fallback'/, 'the fallback route names itself')
+  assert.match(host, /'no-models'/, 'an empty catalog refuses with a next step')
+  assert.doesNotMatch(host, /this session has no model route yet/, 'the old no-route text is gone')
+  // Client: the picker binds to the official modelDirectories resolver —
+  // soft-injected at apply time into a module ref (a bare ctx property read
+  // throws "without inject" on a real host: cordis gates EVERY property read
+  // behind an inject declaration), resolves the SESSION directory, subscribes,
+  // loads on mount, and every choice goes through directory.select — the same
+  // state the composer pill and /model write, so the three can never disagree.
+  // An older host (or a session with no binding) hides the picker instead of
+  // throwing.
+  assert.match(client, /function ModelRoutePicker\(/, 'the picker component exists')
+  assert.equal((client.match(/E\(ModelRoutePicker, \{ sessionId: props\.sessionId, t: t \}\)/g) || []).length, 2, 'both composer variants mount the picker')
+  assert.match(client, /ctx\.inject\(\['modelDirectories'\], \(mdCtx\) => \{/, 'the resolver arrives through a declared inject')
+  assert.match(client, /let modelDirectoriesRef = null/, 'the resolver ref starts hidden')
+  assert.match(client, /modelDirectorySubs\.add\(bump\)/, 'mounted pickers re-render when the inject lands')
+  assert.match(client, /const resolver = modelDirectoriesRef/, 'the picker reads the injected ref')
+  assert.match(client, /resolver\.directoryFor\(sessionId\)/, 'the picker resolves the session directory')
+  assert.match(client, /dir\.store\.subscribe\(\(\) => setState\(dir\.store\.getSnapshot\(\)\)\)/, 'the picker subscribes on dir.store after snapshotting')
+  assert.match(client, /directory\.load\(\)\.catch/, 'the catalog loads on mount without throwing')
+  assert.match(client, /void directory\.select\(selection\)/, 'choices go through directory.select')
+  assert.match(client, /ok !== true \|\| directory === null\) return null/, 'an unreachable service hides the picker')
+  // Two-level menu: model rows choose provider/model (effort rides the
+  // official default), effort rows keep the current route and follow the
+  // official effortChoices rule (a 'follow default' row exists exactly when
+  // the model has no provider default).
+  assert.match(client, /choose\(\{ provider: group\.id, model: model\.id \}\)/, 'model rows choose provider/model only')
+  assert.match(client, /choose\(\{ provider: current\.provider, model: current\.model, reasoningEffort: level\.effort \}\)/, 'effort rows keep the current route')
+  assert.match(client, /reasoning\.defaultEffort === undefined \? \[\{ key: 'provider-default', effort: undefined/, "a 'follow default' row exists only without a provider default")
+  assert.match(client, /setPane\('model'\)/, 'the menu drills into models')
+  assert.match(client, /setPane\('effort'\)/, 'the menu drills into reasoning')
+  // Outside close rides pointerdown in capture phase (the v0.19.2 lesson:
+  // the change list captures pointerdown for the rubber band).
+  assert.match(client, /document\.addEventListener\('pointerdown', close, true\)/, 'outside close is a capturing pointerdown')
+  // CSS: the menu reuses the pill menu card (.dig-cs-menu) and the trigger
+  // carries the picker-specific chrome.
+  assert.match(cssRule('.dig-mrp-trigger'), /max-width:220px/, 'the trigger cap exists')
+  assert.match(cssRule('.dig-mrp-menu'), /max-width:300px/, 'the menu narrows to the panel')
+  assert.match(cssRule('.dig-mrp-error'), /word-break:break-word/, 'errors wrap instead of overflowing')
+  // Dictionary: the six picker keys exist in every gate (21 × 6).
+  assert.equal((client.match(/'modelRoute\.[\w.]+':/g) || []).length, 126, 'the six picker keys exist in all 21 gates')
+})
+
+
 test('upstream management: bind, drop and create-tracking from menus (v0.20.0, issue #18)', () => {
   // Host: set/unset go through branch --set-upstream-to / --unset-upstream on
   // a validated ref; creating from a remote ref with track:true rides
