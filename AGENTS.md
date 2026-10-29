@@ -17,6 +17,7 @@
   - 宿主半改动**只提示**用户(「宿主半改了,需要你重启 `dsh web` 后生效」),不代劳重启。
   - 万不得已动了用户的实例(动手前必须先告知):**收尾时把它杀掉**并说明当前状态,由用户自己重新敲命令启动——绝不留下一个「我们拉起来的」进程冒充他的环境。
   - **收尾清场**:本次启动的任何 `dsh web`(隔离实例、脚本拉起的进程)一个都不留,不留占用端口的孤儿进程(`lsof -tiTCP:<port> -sTCP:LISTEN` 自查)。
+- **真机验证用发布版 CLI,别用本机 dev checkout**:2026-10-29(issue #20)实测本机 checkout 的 0.2.2-alpha.2 缺 `packages/client/ui-trajectory/lib/typert.host.js`(typert loader `ERR_MODULE_NOT_FOUND`),导致 gateway 定义不可用、工作区/会话 RPC 全废——页面卡在「正在加载工作区…」,探针会全 FAIL 且与插件无关。此时从 npmmirror 装一个发布版(`npm install @deepseek-ai/dsh@<latest> --registry https://registry.npmmirror.com` 到 /tmp 独立目录,后台跑),用它的 `node_modules/.bin/dsh` 起隔离实例(同一 `DSH_HOME` 可复用,gate 状态已持久化);重启后 token 会变,从启动日志重新取。
 - **两道自检,覆盖面不同**:`scripts/ssr-check.mjs` 渲染的是「还没解析出仓库」的初始态——它**显式不覆盖** rail / 分支树 / 历史 / 变更这些要有数据才出现的 chrome;`scripts/layout-probe.mjs` 才是带真数据的真机渲染(它会捕获 pageerror,面板一崩就以非零码退出)。2026-09-14 的教训:`BranchRow` 里写了 `t('branches.pickHint')` 却没有 `const t = props.t`——空态根本不渲染分支行,所以 ssr-check 全绿,而真机上整个面板被 better-sidebar 的错误边界吞掉、`.dig-root` 压根不出现。**改到「有数据才出现」的代码,必须跑 layout-probe**。
   - **探针打开面板的选择器随底座版本变**:`dsh-better-sidebar` 0.21 把侧栏卡片渲染成带 `data-sidebar-right-guide-entry="<tab id>"` 的 guide-entry 按钮,**不再渲染 title/description 文案**(旧探针里那个 `span` 文案选择器因此一个都点不到,表现为 `the Git card is not on the sidebar start page`)。现在的写法是先用 `[data-sidebar-right-guide-entry="dsh-ide-git:panel"]`,取不到再回退到旧的描述文案探测;`scripts/panes-probe.mjs` / `scripts/dock-probe.mjs` 沿用同一套。
 
