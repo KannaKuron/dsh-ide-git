@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.21.1 — 2026-10-29
+
+**类型**:fix(局域网 HTTP 直连:Git 面板误报 HTTP 405 / 403,#20)
+
+- **fix 非回环纯 HTTP 页面不再被自己的宿主拒绝**([#20](https://github.com/KannaKuron/dsh-ide-git/issues/20) by @jihaiqiang):信任判据此前只认浏览器发送的 Sec-Fetch-Site;但局域网 IP + 纯 HTTP 属于非安全上下文,Chrome/Edge/Firefox 在那里**完全不发** Sec-Fetch-* 头,页面自己的同源请求被判 403。客户端按设计回退 `/remote` 配对代理,未安装 remote-web-ui 时该路径落到 SPA 静态 fallback(405 + 空体),于是面板最终显示误导性的「HTTP 405」而不是真实原因。
+- **fix 同源 Origin / Referer 兜底**:Sec-Fetch 判据之后新增同源比较——`Origin` / `Referer` 是浏览器自己写下的 forbidden header,页面脚本无法伪造;跨站页面发来的永远是攻击者自己的 origin,比对 `Host` 仍然能挡住 CSRF。Host 未带端口时同时接受 http(80)/ https(443)两个协议默认端口。403 的 message 也从裸「forbidden」改成可操作说明(非回环请求必须同源打开,或经配对代理)。
+- **fix `/remote` 回退只采纳 JSON 应答**:此前只要代理返回的不是 401/403 就切到远程通道,405 空体因此被当成代理成功、盖掉原始拒绝;现在先用 clone 探测能否解析出 JSON 对象,空体 / HTML fallback 一律丢弃并保留原始 403 语义。
+- **说明**:边界没有放宽——没有同源信号的裸请求、跨站 Origin / Referer、opaque「null」origin、端口不同的 origin 依旧全部 403;回环地址的信任规则不变。
+- **验证**:120 项测试全绿(新增防回归:LAN 同源 Origin 通过、同源 Referer 通过、隐式端口按 http/https 归一、跨站 origin/referer/null origin/端口不符全部 403;answersJson 只认 JSON 对象、空体与 HTML fallback 不翻转 sticky 通道,旧的「非 auth 应答即切换」断言随之收紧)。真机局域网实例:curl 三态实测——无 Origin 403(新文案)、同源 Origin 200、跨站 Origin 403,`/remote` 仍 405 空体但客户端不再采纳;Chrome 从 `http://192.168.100.100:3099` 页面内直接调用插件 API 返回 200(Git 数据正常),说明浏览器真实发出的同源信号被判据接受。
+
 ## v0.21.0 — 2026-10-27
 
 **类型**:feat(AI 提交信息:面板内模型/思考选择 + 全新会话自动兜底,#19)

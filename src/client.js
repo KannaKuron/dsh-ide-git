@@ -7425,6 +7425,19 @@ window.__ModuleLoader__.load({
     function isAuthRejection(status) {
       return status === 401 || status === 403
     }
+
+    /* Whether a proxy answer looks like OUR route (a JSON object). With no
+       remote-web-ui installed the SPA static fallback serves /remote/<path> as
+       '405 Method Not Allowed' with an EMPTY body (issue #20: on a plain-HTTP
+       LAN page the panel surfaced a bare 'HTTP 405' instead of the real
+       403 refusal). A non-JSON retry therefore proves there is no proxy, and
+       the original answer must be what the caller sees. Cloning leaves the
+       caller's own body untouched. */
+    async function answersJson(response) {
+      let body = null
+      try { body = await response.clone().json() } catch (error) { return false }
+      return body !== null && typeof body === 'object'
+    }
     /* ---- end remote channel fallback core ---- */
 
     /* Sticky remote-channel mode: once the proxy has answered, later calls go
@@ -7446,13 +7459,15 @@ window.__ModuleLoader__.load({
       } else {
         response = await fetch(direct, init)
         if (isAuthRejection(response.status) === true) {
-          /* Off the origin's trust path: try the pairing proxy once. With no
-             remote-web-ui installed the proxy path 404s — the retry then also
-             fails, and the ORIGINAL rejection is what the caller sees (a
-             proxy answer that is itself an auth rejection is discarded the
-             same way, so a genuine cross-site refusal can never be masked). */
+          /* Off the origin's trust path: try the pairing proxy once. It has to
+             answer like our route (a JSON body) to take over: with no
+             remote-web-ui installed the SPA fallback serves the retry as 405
+             with an empty body, and that non-answer must not outrank the
+             ORIGINAL rejection (issue #20). A proxy answer that is itself an
+             auth rejection is discarded the same way, so a genuine refusal can
+             never be masked. */
           const retried = await fetch(remoteFallbackUrl(direct), init)
-          if (isAuthRejection(retried.status) !== true) {
+          if (isAuthRejection(retried.status) !== true && (await answersJson(retried)) === true) {
             viaRemoteChannel = true
             response = retried
           }

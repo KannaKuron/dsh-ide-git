@@ -281,7 +281,7 @@ test('argument validation blocks ref injection', async () => {
   assert.equal(unknown.body.error.code, 'not-found')
 })
 
-test('trust fence refuses cross-site requests and accepts same-origin remote hosts', async () => {
+test('trust fence refuses cross-site requests and accepts same-origin remote hosts (issue #20: plain-HTTP LAN sends no Sec-Fetch-*)', async () => {
   const hostile = await call('summary', { cwd: repo }, { host: 'evil.example.com', 'sec-fetch-site': 'cross-site' })
   assert.equal(hostile.status, 403)
   assert.equal(hostile.body.error.code, 'forbidden')
@@ -289,6 +289,31 @@ test('trust fence refuses cross-site requests and accepts same-origin remote hos
   assert.equal(remote.body.ok, true)
   const noHost = await call('summary', { cwd: repo }, { host: '' })
   assert.equal(noHost.status, 403)
+  // A page served over plain HTTP from a LAN address is not a secure context,
+  // so Chrome/Edge send NO Sec-Fetch-* header on its own same-origin calls
+  // (issue #20: the git panel answered 403 there). Origin and Referer are
+  // forbidden headers a page cannot forge; comparing either against Host
+  // restores the fence.
+  const lanHost = '192.168.100.100:3080'
+  const sameOrigin = await call('summary', { cwd: repo }, { host: lanHost, origin: 'http://' + lanHost })
+  assert.equal(sameOrigin.body.ok, true, 'a same-origin Origin admits the LAN page')
+  const sameReferer = await call('summary', { cwd: repo }, { host: lanHost, referer: 'http://' + lanHost + '/session/x' })
+  assert.equal(sameReferer.body.ok, true, 'a same-origin Referer admits the LAN page')
+  // Scheme-default ports normalize on both sides.
+  const httpDefault = await call('summary', { cwd: repo }, { host: 'git.example.com', origin: 'http://git.example.com' })
+  assert.equal(httpDefault.body.ok, true, 'an implicit Host port matches the http default')
+  const httpsDefault = await call('summary', { cwd: repo }, { host: 'git.example.com', origin: 'https://git.example.com' })
+  assert.equal(httpsDefault.body.ok, true, 'an implicit Host port also matches the https default')
+  const crossOrigin = await call('summary', { cwd: repo }, { host: lanHost, origin: 'http://198.51.100.7:3080' })
+  assert.equal(crossOrigin.status, 403, 'a foreign origin never passes')
+  const crossReferer = await call('summary', { cwd: repo }, { host: lanHost, referer: 'https://evil.example.net/session' })
+  assert.equal(crossReferer.status, 403, 'a foreign referer never passes')
+  const nullOrigin = await call('summary', { cwd: repo }, { host: lanHost, origin: 'null' })
+  assert.equal(nullOrigin.status, 403, 'the opaque null origin is not same-origin')
+  const portMismatch = await call('summary', { cwd: repo }, { host: 'git.example.com:3080', origin: 'http://git.example.com:3081' })
+  assert.equal(portMismatch.status, 403, 'a different port is a different origin')
+  const bare = await call('summary', { cwd: repo }, { host: lanHost })
+  assert.equal(bare.status, 403, 'no same-origin signal at all stays refused')
 })
 
 test('branch delete is reversible through the undo stack', async () => {

@@ -2086,6 +2086,61 @@ function headerOf(req, name) {
   return value
 }
 
+/* Normalize an authority ("host[:port]" or an absolute URL) to
+   "hostname:port", filling the scheme default port when it is implicit.
+   Returns '' for anything unparseable (including the "null" opaque origin). */
+function authorityKey(value, protocol) {
+  const text = String(value === undefined || value === null ? '' : value).trim()
+  if (text === '') return ''
+  let hostname = text
+  let port = ''
+  let scheme = protocol
+  if (text.includes('://') === true) {
+    let parsed = null
+    try { parsed = new URL(text) } catch (error) { parsed = null }
+    if (parsed === null) return ''
+    hostname = parsed.hostname
+    port = parsed.port
+    scheme = parsed.protocol
+  } else {
+    const bracketed = /^\[([^\]]+)\](?::(\d+))?$/.exec(text)
+    if (bracketed !== null) {
+      hostname = bracketed[1]
+      port = bracketed[2] === undefined ? '' : bracketed[2]
+    } else {
+      const plain = /^([^:]+)(?::(\d+))?$/.exec(text)
+      if (plain === null) return ''
+      hostname = plain[1]
+      port = plain[2] === undefined ? '' : plain[2]
+    }
+  }
+  if (hostname === '') return ''
+  if (port === '') port = scheme === 'https:' ? '443' : '80'
+  return hostname.toLowerCase() + ':' + port
+}
+
+/* Same-origin fallback for browsers that send no Sec-Fetch-* headers. A page
+   served over plain HTTP from a non-loopback address is not a secure context,
+   and the fetch-metadata headers are omitted there (issue #20: the git panel
+   answered 403 on a LAN address). Origin and Referer are forbidden headers a
+   page cannot forge — a cross-site request always carries the caller's own
+   origin — so comparing either against the Host header restores the
+   same-origin fence without trusting anything the request body claims. */
+function sameOriginOf(req, host) {
+  const hostKey = authorityKey(host, 'http:')
+  if (hostKey === '') return false
+  /* A Host header without a port says nothing about the scheme, so either
+     scheme default may be the one the browser used in Origin. */
+  const candidates = new Set([hostKey])
+  if (/:\d+$/.test(String(host).trim()) !== true) candidates.add(authorityKey(host, 'https:'))
+  const matches = (value) => {
+    const key = authorityKey(value, 'http:')
+    return key !== '' && candidates.has(key)
+  }
+  if (matches(headerOf(req, 'origin')) === true) return true
+  return matches(headerOf(req, 'referer'))
+}
+
 /** Loopback authority, or a same-origin browser request (desktop shell / remote UI). */
 function isTrusted(req) {
   const host = headerOf(req, 'host')
@@ -2094,7 +2149,8 @@ function isTrusted(req) {
   if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '0.0.0.0') return true
   if (/^127\./.test(hostname)) return true
   const site = headerOf(req, 'sec-fetch-site')
-  return site === 'same-origin' || site === 'same-site'
+  if (site === 'same-origin' || site === 'same-site') return true
+  return sameOriginOf(req, host)
 }
 
 function sendJson(res, status, body) {
@@ -2136,7 +2192,13 @@ function readJsonBody(req, limit = 1 << 20) {
 
 async function handle(req, res) {
   if (!isTrusted(req)) {
-    sendJson(res, 403, { ok: false, error: { code: 'forbidden', message: 'forbidden' } })
+    sendJson(res, 403, {
+      ok: false,
+      error: {
+        code: 'forbidden',
+        message: 'forbidden: a non-loopback request must be same-origin (open this host from its own page) or come through the remote pairing proxy',
+      },
+    })
     return
   }
   if (req.method !== 'POST') {

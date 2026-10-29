@@ -541,7 +541,7 @@ test('client API base is mount-relative (sub-path support, issue #4)', () => {
   )
 })
 
-test('plugin API calls fall back to the remote pairing proxy on auth rejection (issue #9)', () => {
+test('plugin API calls fall back to the remote pairing proxy on auth rejection (issue #9)', async () => {
   // dsh-remote-web-ui's browser channel rewrites only the host's own /api/,
   // /sidebar/, /git/ and /pet/ prefixes onto its /remote/ proxy — a
   // plugin-owned route is not on the list, so from a paired remote client the
@@ -558,7 +558,7 @@ test('plugin API calls fall back to the remote pairing proxy on auth rejection (
   // pathname (mount prefix included) + search — resolved through the same
   // base the direct fetch used (document.baseURI, which honours <base href>).
   const helpers = new Function('window', 'document', core
-    + '\nreturn { remoteFallbackUrl: remoteFallbackUrl, isAuthRejection: isAuthRejection }')
+    + '\nreturn { remoteFallbackUrl: remoteFallbackUrl, isAuthRejection: isAuthRejection, answersJson: answersJson }')
   const atMount = helpers({ location: { href: 'http://dsh.internal/dsh/session' } },
     { baseURI: 'http://dsh.internal/dsh/' })
   assert.equal(atMount.remoteFallbackUrl('dsh-ide-git/api/resolve'),
@@ -582,13 +582,38 @@ test('plugin API calls fall back to the remote pairing proxy on auth rejection (
   // never masked by a second request.
   for (const status of [401, 403]) assert.equal(bare.isAuthRejection(status), true)
   for (const status of [200, 400, 404, 422, 500]) assert.equal(bare.isAuthRejection(status), false)
+  // Only a proxy answer that parses as a JSON object may take over the channel
+  // (issue #20: with no remote-web-ui the SPA fallback answers 405 with an
+  // EMPTY body — adopting it surfaced a bare 'HTTP 405' instead of the real
+  // 403 refusal).
+  assert.equal(await bare.answersJson({ clone: () => ({ json: async () => ({ ok: false, error: { code: 'forbidden' } }) }) }),
+    true, 'a JSON answer is a proxy answer')
+  assert.equal(await bare.answersJson({ clone: () => ({ json: async () => { throw new SyntaxError('Unexpected end of JSON input') } }) }),
+    false, 'an empty 405 body proves there is no proxy here')
+  assert.equal(await bare.answersJson({ clone: () => ({ json: async () => { throw new SyntaxError('Unexpected token <') } }) }),
+    false, 'an HTML fallback page is not a proxy answer')
+  assert.equal(await bare.answersJson({ clone: () => ({ json: async () => null }) }), false, 'a JSON null is not the route envelope')
   // The retry is sticky: once the proxy answered, later calls skip the doomed
   // direct round trip; a retry that is ITSELF an auth rejection never flips
   // the switch (a genuine cross-site refusal cannot be masked).
   const request = client.slice(client.indexOf('async function request(method, payload)'), client.indexOf('/* ============================== storage'))
   assert.match(request, /viaRemoteChannel === true/, 'sticky mode short-circuits the direct call')
-  assert.match(request, /if \(isAuthRejection\(retried\.status\) !== true\) \{\n\s+viaRemoteChannel = true/, 'only a non-rejection from the proxy flips the sticky switch')
+  assert.match(request, /if \(isAuthRejection\(retried\.status\) !== true && \(await answersJson\(retried\)\) === true\) \{\n\s+viaRemoteChannel = true/, 'only a JSON, non-auth answer from the proxy flips the sticky switch')
   assert.match(request, /const retried = await fetch\(remoteFallbackUrl\(direct\), init\)/, 'the retry reuses the same init (method, headers, body)')
+  // Host side of issue #20: a plain-HTTP LAN page is not a secure context and
+  // sends no Sec-Fetch-* header, so the fence falls back to comparing the
+  // browser-written Origin/Referer against Host; the 403 now explains the
+  // rule instead of saying 'forbidden'.
+  assert.match(host, /function authorityKey\(value, protocol\)/, 'authority normalization exists')
+  assert.match(host, /function sameOriginOf\(req, host\)/, 'the same-origin fallback exists')
+  const trusted = host.slice(host.indexOf('function sameOriginOf(req, host)'), host.indexOf('function isTrusted(req)'))
+  assert.match(trusted, /headerOf\(req, 'origin'\)/, 'the fallback reads Origin')
+  assert.match(trusted, /headerOf\(req, 'referer'\)/, 'the fallback reads Referer')
+  assert.match(trusted, /candidates\.add\(authorityKey\(host, 'https:'\)\)/, 'an implicit Host port accepts either scheme default')
+  const fence = host.slice(host.indexOf('function isTrusted(req)'), host.indexOf('function isTrusted(req)') + 900)
+  assert.match(fence, /if \(site === 'same-origin' \|\| site === 'same-site'\) return true/, 'the Sec-Fetch path still comes first')
+  assert.match(fence, /return sameOriginOf\(req, host\)/, 'the fallback closes the fence')
+  assert.match(host, /non-loopback request must be same-origin/, 'the 403 explains the fence')
 })
 
 /** One rule out of the client half's injected stylesheet, by exact selector. */
