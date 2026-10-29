@@ -173,7 +173,7 @@ window.__ModuleLoader__.load({
       'action.mergeIntoCurrent': '合并到当前分支',
       'action.rebaseCurrentOnto': '将当前分支变基到此',
       'action.compare': '与当前分支比较',
-      'action.update': '更新(Fetch)',
+      'action.update': '拉取',
       'action.push': '推送',
       'action.newTag': '新建标签...',
       'action.cherryPick': '优选(Cherry-Pick)',
@@ -515,7 +515,7 @@ window.__ModuleLoader__.load({
       'action.mergeIntoCurrent': 'Merge into current branch',
       'action.rebaseCurrentOnto': 'Rebase current branch onto this',
       'action.compare': 'Compare with current branch',
-      'action.update': 'Update (fetch)',
+      'action.update': 'Pull',
       'action.push': 'Push',
       'action.newTag': 'New tag...',
       'action.cherryPick': 'Cherry-pick',
@@ -865,7 +865,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': '合併到當前分支',
         'action.rebaseCurrentOnto': '將當前分支變基到此',
         'action.compare': '同當前分支比較',
-        'action.update': '更新(抓取)',
+      'action.update': '拉取',
         'action.push': '推送',
         'action.newTag': '新建標籤...',
         'action.cherryPick': '揀選',
@@ -1207,7 +1207,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': '合併到目前分支',
         'action.rebaseCurrentOnto': '將目前分支變基到此',
         'action.compare': '與目前分支比較',
-        'action.update': '更新(抓取)',
+      'action.update': '拉取',
         'action.push': '推送',
         'action.newTag': '新建標籤...',
         'action.cherryPick': '揀選',
@@ -1549,7 +1549,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': '合併到當前分支',
         'action.rebaseCurrentOnto': '將當前分支變基到此',
         'action.compare': '同當前分支比較',
-        'action.update': '更新(抓取)',
+      'action.update': '拉取',
         'action.push': '推送',
         'action.newTag': '新建標籤...',
         'action.cherryPick': '揀選',
@@ -1891,7 +1891,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': '現在のブランチにマージ',
         'action.rebaseCurrentOnto': '現在のブランチをここにリベース',
         'action.compare': '現在のブランチと比較',
-        'action.update': '更新(フェッチ)',
+      'action.update': 'プル',
         'action.push': 'プッシュ',
         'action.newTag': '新しいタグ...',
         'action.cherryPick': 'チェリーピック',
@@ -2233,7 +2233,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': '현재 브랜치로 병합',
         'action.rebaseCurrentOnto': '현재 브랜치를 여기로 리베이스',
         'action.compare': '현재 브랜치와 비교',
-        'action.update': '업데이트(페치)',
+      'action.update': '풀',
         'action.push': '푸시',
         'action.newTag': '새 태그...',
         'action.cherryPick': '체리픽',
@@ -2575,7 +2575,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'In aktuellen Branch mergen',
         'action.rebaseCurrentOnto': 'Aktuellen Branch hierauf rebasen',
         'action.compare': 'Mit aktuellem Branch vergleichen',
-        'action.update': 'Aktualisieren (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Push',
         'action.newTag': 'Neuer Tag...',
         'action.cherryPick': 'Cherry-Pick',
@@ -2917,7 +2917,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Fusionner dans la branche courante',
         'action.rebaseCurrentOnto': 'Rebaser la branche courante sur celle-ci',
         'action.compare': 'Comparer avec la branche courante',
-        'action.update': 'Mettre à jour (fetch)',
+      'action.update': 'Tirer',
         'action.push': 'Pousser',
         'action.newTag': 'Nouvelle étiquette...',
         'action.cherryPick': 'Cherry-pick',
@@ -3259,7 +3259,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Влить в текущую ветку',
         'action.rebaseCurrentOnto': 'Перебазировать текущую ветку сюда',
         'action.compare': 'Сравнить с текущей веткой',
-        'action.update': 'Обновить (fetch)',
+      'action.update': 'Забрать',
         'action.push': 'Отправить',
         'action.newTag': 'Новый тег...',
         'action.cherryPick': 'Cherry-pick',
@@ -3601,7 +3601,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Mesclar na branch atual',
         'action.rebaseCurrentOnto': 'Rebasear a branch atual sobre esta',
         'action.compare': 'Comparar com a branch atual',
-        'action.update': 'Atualizar (fetch)',
+      'action.update': 'Puxar',
         'action.push': 'Enviar',
         'action.newTag': 'Nova tag...',
         'action.cherryPick': 'Cherry-pick',
@@ -3943,7 +3943,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Unisci nel branch corrente',
         'action.rebaseCurrentOnto': 'Rebase del branch corrente su questo',
         'action.compare': 'Confronta con il branch corrente',
-        'action.update': 'Aggiorna (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Push',
         'action.newTag': 'Nuovo tag...',
         'action.cherryPick': 'Cherry-pick',
@@ -4285,7 +4285,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Samenvoegen in huidige branch',
         'action.rebaseCurrentOnto': 'Huidige branch rebasen op deze',
         'action.compare': 'Vergelijken met huidige branch',
-        'action.update': 'Bijwerken (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Pushen',
         'action.newTag': 'Nieuwe tag...',
         'action.cherryPick': 'Cherry-pick',
@@ -4627,7 +4627,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Scal z bieżącą gałęzią',
         'action.rebaseCurrentOnto': 'Zrebase’uj bieżącą gałąź na tę',
         'action.compare': 'Porównaj z bieżącą gałęzią',
-        'action.update': 'Odśwież (fetch)',
+      'action.update': 'Ściągnij',
         'action.push': 'Wypchnij',
         'action.newTag': 'Nowy tag...',
         'action.cherryPick': 'Cherry-pick',
@@ -4969,7 +4969,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Sammanfoga in i aktuell gren',
         'action.rebaseCurrentOnto': 'Rebasa aktuell gren mot denna',
         'action.compare': 'Jämför med aktuell gren',
-        'action.update': 'Uppdatera (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Pusha',
         'action.newTag': 'Ny tagg...',
         'action.cherryPick': 'Cherry-pick',
@@ -5311,7 +5311,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Geçerli dala birleştir',
         'action.rebaseCurrentOnto': 'Geçerli dalı bunun üzerine rebase et',
         'action.compare': 'Geçerli dalla karşılaştır',
-        'action.update': 'Güncelle (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Gönder',
         'action.newTag': 'Yeni etiket...',
         'action.cherryPick': 'Cherry-pick',
@@ -5653,7 +5653,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Gabungkan ke branch saat ini',
         'action.rebaseCurrentOnto': 'Rebase branch saat ini ke ini',
         'action.compare': 'Bandingkan dengan branch saat ini',
-        'action.update': 'Perbarui (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Push',
         'action.newTag': 'Tag baru...',
         'action.cherryPick': 'Cherry-pick',
@@ -5995,7 +5995,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'Hợp nhất vào nhánh hiện tại',
         'action.rebaseCurrentOnto': 'Rebase nhánh hiện tại lên nhánh này',
         'action.compare': 'So sánh với nhánh hiện tại',
-        'action.update': 'Cập nhật (fetch)',
+      'action.update': 'Pull',
         'action.push': 'Push',
         'action.newTag': 'Thẻ mới...',
         'action.cherryPick': 'Cherry-pick',
@@ -6337,7 +6337,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'الدمج في الفرع الحالي',
         'action.rebaseCurrentOnto': 'إعادة تأسيس الفرع الحالي على هذا',
         'action.compare': 'المقارنة مع الفرع الحالي',
-        'action.update': 'تحديث (fetch)',
+      'action.update': 'سحب',
         'action.push': 'دفع',
         'action.newTag': 'وسم جديد...',
         'action.cherryPick': 'انتقاء',
@@ -6679,7 +6679,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'वर्तमान शाखा में मर्ज करें',
         'action.rebaseCurrentOnto': 'वर्तमान शाखा को इस पर रीबेस करें',
         'action.compare': 'वर्तमान शाखा से तुलना करें',
-        'action.update': 'अद्यतन करें (fetch)',
+      'action.update': 'पुल',
         'action.push': 'पुश',
         'action.newTag': 'नया टैग...',
         'action.cherryPick': 'चेरी-पिक',
@@ -7021,7 +7021,7 @@ window.__ModuleLoader__.load({
         'action.mergeIntoCurrent': 'รวมเข้าแบรนช์ปัจจุบัน',
         'action.rebaseCurrentOnto': 'รีเบสแบรนช์ปัจจุบันไปที่นี้',
         'action.compare': 'เปรียบเทียบกับแบรนช์ปัจจุบัน',
-        'action.update': 'อัปเดต (fetch)',
+      'action.update': 'Pull',
         'action.push': 'พุช',
         'action.newTag': 'แท็กใหม่...',
         'action.cherryPick': 'เชอร์รีพิก',
@@ -9388,6 +9388,21 @@ window.__ModuleLoader__.load({
       try { window.localStorage.setItem(LINEDIFF_KEY, JSON.stringify(prefs)) } catch (error) { void error }
     }
 
+    /* The changes view mode (flat vs by directory) is a habit too, not tab
+       state: one localStorage home read on mount, so moving between
+       repositories or reopening the panel keeps the view the user chose
+       instead of snapping back to flat (v0.21.2). */
+    const CHANGES_GROUP_KEY = 'dsh-ide-git.groupBy.v1'
+    function readChangesGroupBy() {
+      try {
+        return window.localStorage.getItem(CHANGES_GROUP_KEY) === 'dir' ? 'dir' : 'flat'
+      } catch (error) { void error }
+      return 'flat'
+    }
+    function rememberChangesGroupBy(value) {
+      try { window.localStorage.setItem(CHANGES_GROUP_KEY, value === 'dir' ? 'dir' : 'flat') } catch (error) { void error }
+    }
+
     /* The seed blocks the official review uses, resolved once. Every consumer
        null-checks: a host whose primitives predate an export keeps working
        through the hand-drawn fallbacks (labels instead of icons, a plain
@@ -10808,10 +10823,9 @@ window.__ModuleLoader__.load({
       },
         E('span', { className: 'dig-row-icon dig-tone-' + tone + (starred === true ? ' dig-star-filled' : '') }, E(Icon, { name: glyph, size: 12 })),
         E('span', { className: 'dig-row-label' }, props.label === undefined ? entry.name : props.label),
-        // Inline tracking target (issue #18): the title already said "name →
-        // upstream", but nobody hovers a tree to learn a binding. Local rows
-        // show it as muted small text; remote rows ARE the upstream.
-        kind !== 'remote' && kind !== 'tag' && entry.upstream !== null && entry.upstream !== undefined ? E('span', { className: 'dig-row-upstream' }, '→ ' + entry.upstream) : null,
+        // The inline "→ upstream" target was removed (v0.21.2): it ate the
+        // label's width so long branch names truncated early, and the binding
+        // is still one hover away (the row title keeps "name → upstream").
         // A bare 'W' told nobody anything (reported right after the section counts):
         // it means this branch is checked out in ANOTHER working tree, which is why
         // git refuses to check it out here. An icon plus a spelled-out tooltip says so.
@@ -12728,7 +12742,14 @@ window.__ModuleLoader__.load({
          rail action, invariant 14) can drive the same groupBy and the sort
          order it introduces — one source of truth, wherever the click came
          from. sortKey 'git' keeps git's own status order. */
-      const [groupBy, setGroupBy] = useState('flat')
+      /* Both the panel and the ⋯ menu write through this wrapper, so the
+         choice survives a remount (the menu used to be the only writer that
+         did not persist, and a repo/session switch silently reset it). */
+      const [groupBy, setGroupByState] = useState(readChangesGroupBy)
+      const setGroupBy = useCallback((value) => {
+        setGroupByState(value)
+        rememberChangesGroupBy(value)
+      }, [])
       const [sortKey, setSortKey] = useState('git')
       /* The Git-output drawer (VS Code showOutput): null = closed, an array =
          the entries it currently shows. Opened on demand, refreshed by hand or
@@ -12964,9 +12985,15 @@ window.__ModuleLoader__.load({
 
       const run = useCallback(async (method, payload) => {
         const result = await guard(() => request(method, Object.assign({}, base, payload)))
-        if (result !== undefined) await refresh()
+        if (result !== undefined) {
+          await refresh()
+          /* v0.21.2: the composer pill is a separate tree; without this it only
+             learned about an in-panel checkout/commit at the next 30s poll. The
+             panel's own watcher skips source 'panel' (refresh already ran). */
+          if (repoRoot !== null) notifyBranchSwitched(sessionId, repoRoot, 'panel')
+        }
         return result
-      }, [base, guard, refresh])
+      }, [base, guard, refresh, sessionId, repoRoot])
 
       const pickRepo = useCallback((path) => {
         setRepoRoot(path)
@@ -12999,8 +13026,9 @@ window.__ModuleLoader__.load({
           if (sid !== sessionId || typeof root !== 'string' || root === '') return
           setRepoRoot((current) => (current === root ? current : pickRepo(root)))
         }
-        const onBranch = () => {
-          if (repoRoot === null) return
+        const onBranch = (sid, root, source) => {
+          if (sid !== sessionId || source === 'panel') return
+          if (repoRoot === null || root !== repoRoot) return
           void refresh()
         }
         composerRepoWatchers.add(onRepo)
@@ -13451,8 +13479,15 @@ window.__ModuleLoader__.load({
           ].filter((item) => item !== null))
           return
         }
+        const updateItem = { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } }
+        const pushItem = { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) }
         const items = [
           { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
+          // v0.21.2: on a LOCAL row the two high-frequency verbs sit right under
+          // 签出 (2nd/3rd) instead of past 删除; remote/tag rows keep the old
+          // tail placement (their menu is about the ref, not the working tree).
+          isLocal ? updateItem : null,
+          isLocal ? pushItem : null,
           isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
           isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
@@ -13494,8 +13529,8 @@ window.__ModuleLoader__.load({
                 },
               }),
           null,
-          { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } },
-          { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) },
+          isLocal ? null : updateItem,
+          isLocal ? null : pushItem,
         ].filter((item) => item !== null)
         openMenuAt(event, items)
       }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues])
@@ -15012,7 +15047,15 @@ window.__ModuleLoader__.load({
          tone) via the host's body[data-ds-dark-theme] switch. Selection reads
          as gray on both themes, wallpaper/frost stays visible, never white. */
       '.dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-75,var(--dsw-alias-bg-layer-3)) 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
-      'body[data-ds-dark-theme] .dig-row-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-800,var(--dsw-alias-bg-layer-3)) 42%)}',
+      /* v0.21.2: the checked-out row is amber; selecting it must not wash that
+         out to primary — the selection is a frame, not a recolour. */
+      '.dig-row-head.dig-row-selected{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
+      /* v0.21.2 (user): on the dark theme the 58/42 charcoal mix still read as
+         a bright frame over a wallpaper — the selection should be a BLACK frame
+         that the wallpaper shows through, not a lit one. rgba(0,0,0,.55) is
+         opaque enough to hold the amber/primary label, transparent enough to
+         stay in the any-background story. The light theme keeps the host gray. */
+      'body[data-ds-dark-theme] .dig-row-selected{background:rgba(0,0,0,.55)}',
       '.dig-row-remote .dig-row-label{color:var(--dsw-alias-label-secondary);font-weight:500}',
       '.dig-row-tag .dig-row-label{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-weight:500}',
       '.dig-row-head .dig-row-label{font-weight:600}',
@@ -15020,7 +15063,6 @@ window.__ModuleLoader__.load({
       '.dig-row-label{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;font-weight:600}',
       // Inline tracking target (issue #18): flex:none so it never starves the
       // label, capped and ellipsised so a long origin/… cannot push the badges.
-      '.dig-row-upstream{flex:none;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:400;color:var(--dsw-alias-label-tertiary,var(--dsw-alias-label-secondary))}',
       '.dig-row-sub{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}',
       '.dig-row-dir{margin-left:auto;opacity:.75}',
       '.dig-badge{font-size:10px;padding:0 5px;border-radius:999px;corner-shape:round;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);flex:none}',
@@ -15470,7 +15512,9 @@ window.__ModuleLoader__.load({
        right repository without any extra wiring. */
 
     const composerRepoWatchers = new Set()   /* (sessionId, repoRoot) */
-    const composerBranchWatchers = new Set() /* (sessionId, repoRoot) */
+    /* (sessionId, repoRoot, source) — source is 'composer' | 'panel' so the
+       seat that performed the switch can skip its own echo (v0.21.2). */
+    const composerBranchWatchers = new Set()
 
     function rememberRepoShared(sessionId, repoRoot) {
       rememberRepo(sessionId, repoRoot)
@@ -15479,9 +15523,9 @@ window.__ModuleLoader__.load({
       }
     }
 
-    function notifyBranchSwitched(sessionId, repoRoot) {
+    function notifyBranchSwitched(sessionId, repoRoot, source) {
       for (const watcher of composerBranchWatchers) {
-        try { watcher(sessionId, repoRoot) } catch (error) { void error }
+        try { watcher(sessionId, repoRoot, source) } catch (error) { void error }
       }
     }
 
@@ -15916,7 +15960,10 @@ window.__ModuleLoader__.load({
       /* A branch switched in the panel (or here) refreshes the summary now
          instead of at the next poll tick. */
       useEffect(() => {
-        const watcher = () => { setTick((value) => value + 1) }
+        const watcher = (sid, root, source) => {
+          if (sid !== sessionId || source === 'composer') return
+          setTick((value) => value + 1)
+        }
         composerBranchWatchers.add(watcher)
         return () => { composerBranchWatchers.delete(watcher) }
       }, [sessionId])
@@ -15994,7 +16041,7 @@ window.__ModuleLoader__.load({
           await request('checkout', { cwd: cwd, repoRoot: repoRoot, branch: name, confirm: true })
           setMenu(null)
           setTick((value) => value + 1)
-          notifyBranchSwitched(sessionId, repoRoot)
+          notifyBranchSwitched(sessionId, repoRoot, 'composer')
         } catch (caught) {
           setMenu(null)
           setError(caught instanceof Error ? caught.message : String(caught))

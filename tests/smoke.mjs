@@ -2017,9 +2017,37 @@ test('upstream management: bind, drop and create-tracking from menus (v0.20.0, i
   // The dialog prefills the bare branch name and creates with --track.
   assert.match(client, /kind === 'createTracking' \? dialog\.name/, 'the tracking dialog prefills the local name')
   assert.match(client, /startPoint: state\.from, track: true \}\); return \}/, 'the tracking dialog creates with --track')
-  // The tree shows the binding inline, muted and capped.
-  assert.match(client, /className: 'dig-row-upstream'/, 'local rows show the upstream inline')
-  assert.match(cssRule('.dig-row-upstream'), /max-width:180px/, 'the inline target is capped so it cannot starve the label')
+  // v0.21.2: the tree no longer prints the binding inline — the "→ upstream"
+  // text starved the label, so long branch names cut off early. The row title
+  // still carries "name → upstream" (one hover away), and the label itself
+  // keeps the full remaining width with an ellipsis.
+  assert.doesNotMatch(client, /className: 'dig-row-upstream'/, 'local rows no longer print the upstream inline')
+  assert.doesNotMatch(client, /\.dig-row-upstream\{/, 'the inline rule is gone with it')
+  assert.match(client, /const where = entry\.upstream === null \|\| entry\.upstream === undefined \? entry\.name : entry\.name \+ ' → ' \+ entry\.upstream/, 'the hover title still carries the binding')
+  assert.match(cssRule('.dig-row-label'), /text-overflow:ellipsis/, 'the label ellipsises instead of yielding width to a second column')
+  // v0.21.2: on a local row the two high-frequency verbs sit 2nd/3rd (right
+  // under 签出) instead of past 删除, and the fetch verb is spelled 拉取.
+  assert.match(client, /isLocal \? updateItem : null,\n\s+isLocal \? pushItem : null,/, 'local rows put 拉取/推送 right under 签出')
+  assert.match(client, /isLocal \? null : updateItem,\n\s+isLocal \? null : pushItem,/, 'remote/tag rows keep the tail placement')
+  assert.match(client, /'action\.update': '拉取',/, 'the zh menu label is 拉取')
+  assert.equal((client.match(/'action\.update':/g) || []).length, 21, '21 gates carry action.update')
+  // v0.21.2: selection paints a frame, never a recolour — the checked-out row
+  // keeps its amber; and both seats learn about a switch immediately instead
+  // of waiting for the 30s poll.
+  assert.match(client, /\.dig-row-head\.dig-row-selected\{color:var\(--dsw-alias-state-warn-primary/, 'a selected HEAD row keeps the amber label')
+  assert.match(client, /body\[data-ds-dark-theme\] \.dig-row-selected\{background:rgba\(0,0,0,\.55\)\}/, 'the dark theme paints a black selection frame')
+  assert.match(client, /function notifyBranchSwitched\(sessionId, repoRoot, source\)/, 'the branch notifier names the acting seat')
+  assert.match(client, /notifyBranchSwitched\(sessionId, repoRoot, 'panel'\)/, 'in-panel writes refresh the composer pill')
+  assert.match(client, /notifyBranchSwitched\(sessionId, repoRoot, 'composer'\)/, 'a composer checkout refreshes the panel')
+  assert.match(client, /if \(sid !== sessionId \|\| source === 'panel'\) return/, 'the panel skips its own broadcast')
+  assert.match(client, /if \(sid !== sessionId \|\| source === 'composer'\) return/, 'the composer skips its own broadcast')
+  assert.match(client, /if \(repoRoot === null \|\| root !== repoRoot\) return/, 'the panel only follows a branch move in the repo on screen')
+  // v0.21.2: the flat/by-directory view is a habit, not tab state — one
+  // localStorage home read on mount, both writers go through the wrapper.
+  assert.match(client, /const CHANGES_GROUP_KEY = 'dsh-ide-git\.groupBy\.v1'/, 'the changes view mode has its own localStorage home')
+  assert.match(client, /useState\(readChangesGroupBy\)/, 'the mode is seeded from that home on every mount')
+  assert.match(client, /setGroupByState\(value\)\n\s+rememberChangesGroupBy\(value\)/, 'every writer persists the mode')
+  assert.match(client, /onGroupBy: setGroupBy/, 'the panel and the ⋯ menu share the persisting writer')
   // Dictionary: 21 gates for all six new keys (key-set equality test pins parity).
   for (const key of ['action.setUpstream', 'action.unsetUpstream', 'action.createLocalBranch', 'prompt.createTracking', 'more.setUpstreamHead', 'more.unsetUpstreamHead']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
