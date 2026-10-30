@@ -86,6 +86,7 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 - Status line: branch, upstream, ahead/behind, stash count, busy indicator.
 - Composer status pill: repository/branch capsule in the host input-bar tool row (colored uncommitted / pullable / to-push counters), click to switch repo and branch — kept in sync with the panel both ways; single-repo workspaces switch branches only, multi-repo workspaces switch both. Off-switch in the settings (on by default). Sessions are pre-warmed on switch so the panel opens instantly.
 - Branch tree: HEAD / Local / Remote / Tags groups, filter box, ahead/behind badges, worktree marker; local blue / remote violet / tag amber / HEAD green.
+- Worktrees: a rail view listing the primary and every linked worktree (current / primary / locked / prunable badges, branch, short HEAD, path). Create one on a new branch or attach an existing branch (with an optional start point), open it in the panel, copy its path, remove it (a dirty tree asks for a second, forced confirmation), and prune stale records. It coexists with the official change-request panel.
 - Branch context menu: checkout, rebase current onto this, merge into current, compare with current, new branch from here, rename, delete, fetch, push, send to chat (branch + repo).
 - History filters: text or hash, branch or tag, author (with a one-click "Me" entry), date (today / 7 days / 30 days / this year), an order toggle (newest / oldest first) and one-click clear; the path filter runs server-side (`git log -- <path>`) on Enter. Infinite scroll keeps loading pages at the list edge, rubber-band selection works across all three lists, and double-clicking a branch browses its history without checking it out.
 - Commit list: IDEA column order — **date → author → graph → refs → subject**; a lane graph whose segments span whole rows (pixel-aligned across rows), a hollow dot for HEAD, refs badges (HEAD green / local blue / remote violet / tag amber, at most three plus `+n`), load more (120 per page).
@@ -93,7 +94,7 @@ The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 6
 - Commit details: full message, author/date, changed files with +/− and per-file line diff.
 - Diff pane: rendered with DSH's own DiffBlock (red/green rows plus a copy / wrap toolbar), draggable height remembered per placement; **select diff rows and right-click** to send a line-level reference into the conversation — an `@file` chip plus the line range with commit (hash / subject / current branch) or worktree (staged / uncommitted) context; deleted rows are labelled as old-numbered, selections that cannot be pinned to rows degrade to the raw snippet (truncated at 600 characters), and a copy-reference item is always available.
 - Changes: conflicts / staged / changes / untracked groups, inline stage / unstage / discard, group-level actions, click for diff.
-- Commit box: multi-line message, Ctrl+Enter (Cmd+Enter) to commit, amend.
+- Commit box: multi-line message, Ctrl+Enter (Cmd+Enter) to commit, amend. The AI commit-message model picker also shows each model's listing badge, localized to the active interface language.
 - File context menu: show diff, stage / unstage, discard changes, copy path, send to chat (an `@file` reference chip or the raw path).
 - **Safety and undo**: deleting a branch or a stash pops a toast in the corner with an **Undo** action — the delete is real, and undo recreates the ref from the object id recorded just before it (one-shot, valid for 30 minutes). Deleting `main` / `master` / `trunk` requires typing the branch name, destructive dialogs focus Cancel instead of the red button, writes are serialised per repository on the host, and while a merge / rebase / cherry-pick / revert / bisect is still open the affected actions are greyed out with the reason.
 
@@ -114,7 +115,7 @@ Restart `dsh web`, then:
 
 ### Compatibility
 
-- `engines.dsh` is **`>=0.1.2-0`**: every DSH from 0.1.2 up, prereleases such as `0.1.5-rc` / `0.1.6-alpha` included (plain semver never matches a prerelease against a range, hence the `-0` floor). **The same value is also the `@deepseek-ai/dsh` peerDependency**: DSH 0.1.7+ enforces `@deepseek-ai/dsh*` peer ranges (an unsatisfied one keeps the plugin from loading) while nothing reads `engines`, so the peer is where the fact has to live. The range is an **open floor with no ceiling**, so no host from 0.1.7 on (prereleases included) can be rejected by it, and 0.1.0–0.1.6 never run that check at all.
+- `engines.dsh` and the `@deepseek-ai/dsh` peerDependency are both **`>=0.2.2-alpha.2`**: this release follows the 0.2.2-alpha.2 session-row trailing seat and model badge fields, and a prerelease needs an explicit floor to match. The range is an **open floor with no ceiling**, so later rc / alpha prereleases are included. DSH enforces the peer range (an unsatisfied one keeps the plugin from loading); `engines` is the second declaration for package managers and diagnostics.
 - Three long-lived contracts, nothing else: the host's `webServer.register({ kind: 'prefix' })` route, the client's `window.__ModuleLoader__.load({ id, factory })`, and the client `slots` service. It does **not** import the `ui-primitives` icon set (every icon is an inline SVG), so host icon changes cannot reach it.
 - better-sidebar is an **optional** peer: absent, broken, or waiting on its own upstream fix, the plugin still mounts in the native right sidebar.
 
@@ -126,7 +127,7 @@ The dictionaries live in the `LOCALES` table inside `src/client.js`: one entry p
 
 ## How it works
 
-- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 32-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
+- **Host half** (`src/index.js`): one prefix route `/dsh-ide-git/api` with a 51-method table. Every git call is an argv array through `spawn` — no shell string, no `exec` — with argument validation (absolute paths, refs never start with `-`, paths stay inside the repository).
 - **Client half** (`src/client.js`): no build step, single file, `window.__ModuleLoader__.load({ id, factory })`, requiring only `react` (a DSH client baseline module).
 - **Trust fence**: only loopback Hosts, or same-origin browser requests (`Sec-Fetch-Site`), are served.
 - **Destructive actions** (push, hard reset, force delete, discarding untracked files, dropping a stash) require an explicit `confirm: true` and always ask in the UI first.
@@ -139,7 +140,7 @@ npm test   # smoke (file-level invariants) + api (a real throwaway repo driven t
 
 ## Limits / roadmap
 
-v0.1.0 covers the main path. Still missing: multi-select and partial commits (changelists), interactive rebase / fixup / squash, patches, a merge-conflict editor, blame and file history, plugin-owned settings rows, a worktree view, and desktop-client verification. Large repositories: paginated log and a 400KB diff cap.
+v0.1.0 covers the main path. Still missing: multi-select and partial commits (changelists), interactive rebase / fixup / squash, patches, a merge-conflict editor, blame and file history, plugin-owned settings rows, and desktop-client verification. Large repositories: paginated log and a 400KB diff cap.
 
 ## License
 

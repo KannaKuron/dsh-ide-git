@@ -67,8 +67,8 @@ test('the dsh peer survives the runtime compatibility check', () => {
   const peer = pkg.peerDependencies['@deepseek-ai/dsh']
   assert.equal(peer, pkg.engines.dsh, 'the dsh peer must mirror engines.dsh exactly')
   // Open floor with a prerelease tag, NO ceiling. The floor tracks the oldest
-  // supported host (0.1.6-alpha.2 — the first one with the plugins.bundle.config
-  // seat; 0.1.6 never shipped a stable). The host gate satisfies with
+  // supported host (0.2.2-alpha.2 — the first 0.2.2 alpha this release targets).
+  // The host gate satisfies with
   // includePrerelease:true (app-boot plugin-compatibility.ts), so a single
   // `>=X.Y.Z-tag` comparator is both honest and sufficient; the tag keeps a
   // future prerelease floor expressible without a second branch.
@@ -105,12 +105,12 @@ test('the dsh peer survives the runtime compatibility check', () => {
     if (m[4] === undefined) return true // a stable release outranks any prerelease
     return compareTag(m[4], floorTag) >= 0
   }
-  // Mirror of the host gate at numeric + prerelease granularity: 0.1.6-alpha.1
-  // and older hosts predate the plugins.bundle.config seat and are rejected.
-  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.1']) {
+  // Mirror of the host gate at numeric + prerelease granularity: 0.2.2-alpha.1
+  // and older hosts predate the alpha.2 surface this release targets.
+  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.2', '0.1.7-rc.1', '0.2.1', '0.2.2-alpha.1']) {
     assert.ok(!satisfies(version), 'the dsh peer must reject ' + version)
   }
-  for (const version of ['0.1.6-alpha.2', '0.1.6-alpha.3', '0.1.6', '0.1.7-alpha.1', '0.1.7-rc.1', '0.2.0']) {
+  for (const version of ['0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2', '0.2.3-rc.1', '0.3.0']) {
     assert.ok(satisfies(version), 'the dsh peer would reject ' + version)
   }
   // OPTIONAL keeps the gate intact while removing the install hazard: the gate
@@ -797,7 +797,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -904,11 +904,19 @@ test('the tree toggle is reachable again after it was folded', () => {
   assert.doesNotMatch(client, /treeOpen \? E\('button'/, 'no chrome may render its tree control only while the tree is open')
 
   const specs = client.slice(client.indexOf('const RAIL_SPECS = ['), client.indexOf('const RAIL_IDS ='))
-  for (const id of ['tree', 'float', 'split', 'fullscreen']) {
+  for (const id of ['tree', 'worktrees', 'float', 'split', 'fullscreen']) {
     assert.match(specs, new RegExp("\\{ id: '" + id + "'"), 'RAIL_SPECS must carry the ' + id + ' action')
   }
-  assert.match(client, /const RAIL_VIEW_IDS = \['tree', 'float', 'split', 'fullscreen'\]/,
+  assert.match(client, /const RAIL_VIEW_IDS = \['tree', 'worktrees', 'float', 'split', 'fullscreen'\]/,
     'view actions must stay clickable while a git command runs')
+  // A linked worktree is a root the workspace scan never listed; opening one
+  // used to leave the top bar naming the primary checkout.
+  assert.match(client, /headerRepos = repoOptions\.concat\(\[\{/,
+    'the current root stays a header option even when the workspace scan does not know it')
+  assert.match(client, /t: t, repos: headerRepos, value: repoRoot/,
+    'the repo switcher reads the header options, not the raw scan')
+  assert.match(client, /body-worktrees/,
+    'the worktree view has its own body class for the layout probe and styles')
   assert.match(client, /action\.available !== false/, 'an action this mount cannot perform is not rendered at all')
 })
 
@@ -1960,7 +1968,12 @@ test('panel model picker rides the official model directories (v0.21.0, issue #1
   // An older host (or a session with no binding) hides the picker instead of
   // throwing.
   assert.match(client, /function ModelRoutePicker\(/, 'the picker component exists')
-  assert.equal((client.match(/E\(ModelRoutePicker, \{ sessionId: props\.sessionId, t: t \}\)/g) || []).length, 2, 'both composer variants mount the picker')
+  assert.equal((client.match(/E\(ModelRoutePicker, \{ sessionId: props\.sessionId, t: t, ctx: props\.ctx \}\)/g) || []).length, 2, 'both composer variants mount the picker with the locale context')
+  assert.match(client, /function modelBadgeTextOf\(ctx, badge\)/, 'listing badges resolve their active language')
+  assert.ok(client.includes('t: t, ctx: props.ctx, summary: summary'), 'the panel passes the real context prop into the changes pane')
+  assert.ok(!client.includes('t: t, ctx: ctx, summary: summary'), 'the panel never reads a bare ctx variable (crashes the whole view)')
+  assert.match(client, /const routeBadge = badgeOf\(routeModel\)/, 'the trigger finds the current model badge')
+  assert.match(client, /badgeNode\(model\)/, 'every model row can render its badge')
   assert.match(client, /ctx\.inject\(\['modelDirectories'\], \(mdCtx\) => \{/, 'the resolver arrives through a declared inject')
   assert.match(client, /let modelDirectoriesRef = null/, 'the resolver ref starts hidden')
   assert.match(client, /modelDirectorySubs\.add\(bump\)/, 'mounted pickers re-render when the inject lands')

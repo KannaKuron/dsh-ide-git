@@ -399,6 +399,30 @@ window.__ModuleLoader__.load({
       'operation.revert': '还原进行中',
       'operation.bisect': '二分定位进行中',
       'operation.hint': '该仓库还有一个多步操作没有结束,先完成或中止它再执行分支级操作',
+        'worktrees.title': '工作树',
+        'worktrees.new': '新建工作树',
+        'worktrees.prune': '清理失效记录',
+        'worktrees.back': '返回',
+        'worktrees.current': '当前',
+        'worktrees.primary': '主工作树',
+        'worktrees.locked': '已锁定',
+        'worktrees.prunable': '可清理',
+        'worktrees.detached': '游离 HEAD',
+        'worktrees.open': '在面板中打开',
+        'worktrees.remove': '移除工作树',
+        'worktrees.removeConfirm': '移除工作树 {path}?',
+        'worktrees.removeDirty': '工作树 {path} 还有未提交的改动。强制移除会永久丢弃这些改动,确定?',
+        'worktrees.path': '路径',
+        'worktrees.branch': '分支',
+        'worktrees.newBranch': '新分支',
+        'worktrees.existingBranch': '已有分支',
+        'worktrees.base': '起点',
+        'worktrees.create': '创建',
+        'worktrees.empty': '没有工作树',
+        'worktrees.pruneConfirm': '清理已在磁盘上消失的工作树记录?',
+        'toast.worktreeAdded': '已创建工作树 {path}',
+        'toast.worktreeRemoved': '已移除工作树 {path}',
+        'toast.worktreePruned': '已清理失效的工作树记录',
       'confirm.title': '确认操作',
       'confirm.cancel': '取消',
       'confirm.ok': '确定',
@@ -741,6 +765,30 @@ window.__ModuleLoader__.load({
       'operation.revert': 'Revert in progress',
       'operation.bisect': 'Bisect in progress',
       'operation.hint': 'This repository still has a multi-step operation open — finish or abort it before branch-level actions',
+        'worktrees.title': 'Worktrees',
+        'worktrees.new': 'New worktree',
+        'worktrees.prune': 'Prune stale entries',
+        'worktrees.back': 'Back',
+        'worktrees.current': 'Current',
+        'worktrees.primary': 'Primary',
+        'worktrees.locked': 'Locked',
+        'worktrees.prunable': 'Prunable',
+        'worktrees.detached': 'Detached HEAD',
+        'worktrees.open': 'Open in panel',
+        'worktrees.remove': 'Remove worktree',
+        'worktrees.removeConfirm': 'Remove worktree {path}?',
+        'worktrees.removeDirty': 'Worktree {path} has uncommitted changes. Force removal permanently discards them. Continue?',
+        'worktrees.path': 'Path',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'New branch',
+        'worktrees.existingBranch': 'Existing branch',
+        'worktrees.base': 'Start point',
+        'worktrees.create': 'Create',
+        'worktrees.empty': 'No worktrees',
+        'worktrees.pruneConfirm': 'Prune worktree records whose directories are gone?',
+        'toast.worktreeAdded': 'Created worktree {path}',
+        'toast.worktreeRemoved': 'Removed worktree {path}',
+        'toast.worktreePruned': 'Pruned stale worktree records',
       'confirm.title': 'Confirm',
       'confirm.cancel': 'Cancel',
       'confirm.ok': 'OK',
@@ -1091,6 +1139,30 @@ window.__ModuleLoader__.load({
         'operation.revert': '還原進行中',
         'operation.bisect': 'Bisect 進行中',
         'operation.hint': '呢個存放庫仲有未完成嘅多步操作 —— 請先完成或中止,再進行分支層級嘅操作',
+        'worktrees.title': '工作樹',
+        'worktrees.new': '新增工作樹',
+        'worktrees.prune': '清理失效記錄',
+        'worktrees.back': '返回',
+        'worktrees.current': '目前',
+        'worktrees.primary': '主工作樹',
+        'worktrees.locked': '已鎖定',
+        'worktrees.prunable': '可清理',
+        'worktrees.detached': '分離 HEAD',
+        'worktrees.open': '喺面板打開',
+        'worktrees.remove': '移除工作樹',
+        'worktrees.removeConfirm': '移除工作樹 {path}?',
+        'worktrees.removeDirty': '工作樹 {path} 仲有未提交嘅改動。強制移除會永久丟棄呢啲改動,確定?',
+        'worktrees.path': '路徑',
+        'worktrees.branch': '分支',
+        'worktrees.newBranch': '新分支',
+        'worktrees.existingBranch': '現有分支',
+        'worktrees.base': '起點',
+        'worktrees.create': '建立',
+        'worktrees.empty': '冇工作樹',
+        'worktrees.pruneConfirm': '清理喺磁碟上已經消失嘅工作樹記錄?',
+        'toast.worktreeAdded': '已建立工作樹 {path}',
+        'toast.worktreeRemoved': '已移除工作樹 {path}',
+        'toast.worktreePruned': '已清理失效嘅工作樹記錄',
         'confirm.title': '確認',
         'confirm.cancel': '取消',
         'confirm.ok': '確定',
@@ -1433,6 +1505,30 @@ window.__ModuleLoader__.load({
         'operation.revert': '還原進行中',
         'operation.bisect': 'Bisect 進行中',
         'operation.hint': '這個版本庫仍有未完成的多步驟操作 —— 請先完成或中止,再進行分支層級的操作',
+        'worktrees.title': '工作樹',
+        'worktrees.new': '新增工作樹',
+        'worktrees.prune': '清理失效記錄',
+        'worktrees.back': '返回',
+        'worktrees.current': '目前',
+        'worktrees.primary': '主工作樹',
+        'worktrees.locked': '已鎖定',
+        'worktrees.prunable': '可清理',
+        'worktrees.detached': '分離 HEAD',
+        'worktrees.open': '在面板中開啟',
+        'worktrees.remove': '移除工作樹',
+        'worktrees.removeConfirm': '移除工作樹 {path}?',
+        'worktrees.removeDirty': '工作樹 {path} 還有未提交的變更。強制移除會永久捨棄這些變更,確定?',
+        'worktrees.path': '路徑',
+        'worktrees.branch': '分支',
+        'worktrees.newBranch': '新分支',
+        'worktrees.existingBranch': '現有分支',
+        'worktrees.base': '起點',
+        'worktrees.create': '建立',
+        'worktrees.empty': '沒有工作樹',
+        'worktrees.pruneConfirm': '清理已在磁碟上消失的工作樹記錄?',
+        'toast.worktreeAdded': '已建立工作樹 {path}',
+        'toast.worktreeRemoved': '已移除工作樹 {path}',
+        'toast.worktreePruned': '已清理失效的工作樹記錄',
         'confirm.title': '確認',
         'confirm.cancel': '取消',
         'confirm.ok': '確定',
@@ -1775,6 +1871,30 @@ window.__ModuleLoader__.load({
         'operation.revert': '還原進行中',
         'operation.bisect': 'Bisect 進行中',
         'operation.hint': '呢個存放庫仲有未完成嘅多步操作 —— 請先完成或中止,再進行分支層級嘅操作',
+        'worktrees.title': '工作樹',
+        'worktrees.new': '新增工作樹',
+        'worktrees.prune': '清理失效記錄',
+        'worktrees.back': '返回',
+        'worktrees.current': '目前',
+        'worktrees.primary': '主工作樹',
+        'worktrees.locked': '已鎖定',
+        'worktrees.prunable': '可清理',
+        'worktrees.detached': '分離 HEAD',
+        'worktrees.open': '在面板中開啟',
+        'worktrees.remove': '移除工作樹',
+        'worktrees.removeConfirm': '移除工作樹 {path}?',
+        'worktrees.removeDirty': '工作樹 {path} 還有未提交的變更。強制移除會永久捨棄這些變更,確定?',
+        'worktrees.path': '路徑',
+        'worktrees.branch': '分支',
+        'worktrees.newBranch': '新分支',
+        'worktrees.existingBranch': '現有分支',
+        'worktrees.base': '起點',
+        'worktrees.create': '建立',
+        'worktrees.empty': '沒有工作樹',
+        'worktrees.pruneConfirm': '清理已在磁碟上消失的工作樹記錄?',
+        'toast.worktreeAdded': '已建立工作樹 {path}',
+        'toast.worktreeRemoved': '已移除工作樹 {path}',
+        'toast.worktreePruned': '已清理失效的工作樹記錄',
         'confirm.title': '確認',
         'confirm.cancel': '取消',
         'confirm.ok': '確定',
@@ -2117,6 +2237,30 @@ window.__ModuleLoader__.load({
         'operation.revert': '打ち消し中',
         'operation.bisect': 'bisect 中',
         'operation.hint': 'このリポジトリには未完了の多段階操作があります —— ブランチ操作の前に完了または中止してください',
+        'worktrees.title': 'ワークツリー',
+        'worktrees.new': '新しいワークツリー',
+        'worktrees.prune': '古い記録を整理',
+        'worktrees.back': '戻る',
+        'worktrees.current': '現在',
+        'worktrees.primary': 'メイン',
+        'worktrees.locked': 'ロック中',
+        'worktrees.prunable': '整理可能',
+        'worktrees.detached': '分離 HEAD',
+        'worktrees.open': 'パネルで開く',
+        'worktrees.remove': 'ワークツリーを削除',
+        'worktrees.removeConfirm': 'ワークツリー {path} を削除しますか?',
+        'worktrees.removeDirty': 'ワークツリー {path} には未コミットの変更があります。強制削除するとこれらの変更は完全に失われます。続行しますか?',
+        'worktrees.path': 'パス',
+        'worktrees.branch': 'ブランチ',
+        'worktrees.newBranch': '新しいブランチ',
+        'worktrees.existingBranch': '既存のブランチ',
+        'worktrees.base': '開始点',
+        'worktrees.create': '作成',
+        'worktrees.empty': 'ワークツリーはありません',
+        'worktrees.pruneConfirm': 'ディスク上に存在しないワークツリーの記録を整理しますか?',
+        'toast.worktreeAdded': 'ワークツリー {path} を作成しました',
+        'toast.worktreeRemoved': 'ワークツリー {path} を削除しました',
+        'toast.worktreePruned': '古いワークツリー記録を整理しました',
         'confirm.title': '確認',
         'confirm.cancel': 'キャンセル',
         'confirm.ok': 'OK',
@@ -2459,6 +2603,30 @@ window.__ModuleLoader__.load({
         'operation.revert': '되돌리기 진행 중',
         'operation.bisect': 'bisect 진행 중',
         'operation.hint': '이 저장소에 아직 끝나지 않은 다단계 작업이 있습니다 —— 브랜치 작업 전에 완료하거나 중단하세요',
+        'worktrees.title': '워크트리',
+        'worktrees.new': '새 워크트리',
+        'worktrees.prune': '오래된 기록 정리',
+        'worktrees.back': '뒤로',
+        'worktrees.current': '현재',
+        'worktrees.primary': '기본',
+        'worktrees.locked': '잠김',
+        'worktrees.prunable': '정리 가능',
+        'worktrees.detached': '분리된 HEAD',
+        'worktrees.open': '패널에서 열기',
+        'worktrees.remove': '워크트리 제거',
+        'worktrees.removeConfirm': '워크트리 {path}을(를) 제거할까요?',
+        'worktrees.removeDirty': '워크트리 {path}에 커밋되지 않은 변경 사항이 있습니다. 강제 제거하면 이 변경 사항이 영구적으로 사라집니다. 계속할까요?',
+        'worktrees.path': '경로',
+        'worktrees.branch': '브랜치',
+        'worktrees.newBranch': '새 브랜치',
+        'worktrees.existingBranch': '기존 브랜치',
+        'worktrees.base': '시작점',
+        'worktrees.create': '만들기',
+        'worktrees.empty': '워크트리가 없습니다',
+        'worktrees.pruneConfirm': '디스크에서 사라진 워크트리 기록을 정리할까요?',
+        'toast.worktreeAdded': '워크트리 {path}을(를) 만들었습니다',
+        'toast.worktreeRemoved': '워크트리 {path}을(를) 제거했습니다',
+        'toast.worktreePruned': '오래된 워크트리 기록을 정리했습니다',
         'confirm.title': '확인',
         'confirm.cancel': '취소',
         'confirm.ok': '확인',
@@ -2801,6 +2969,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Revert läuft',
         'operation.bisect': 'Bisect läuft',
         'operation.hint': 'In diesem Repository läuft noch eine mehrstufige Operation —— bitte zuerst abschließen oder abbrechen',
+        'worktrees.title': 'Worktrees',
+        'worktrees.new': 'Neuer Worktree',
+        'worktrees.prune': 'Verwaiste Einträge bereinigen',
+        'worktrees.back': 'Zurück',
+        'worktrees.current': 'Aktuell',
+        'worktrees.primary': 'Primär',
+        'worktrees.locked': 'Gesperrt',
+        'worktrees.prunable': 'Bereinigbar',
+        'worktrees.detached': 'Losgelöster HEAD',
+        'worktrees.open': 'Im Panel öffnen',
+        'worktrees.remove': 'Worktree entfernen',
+        'worktrees.removeConfirm': 'Worktree {path} entfernen?',
+        'worktrees.removeDirty': 'Worktree {path} hat nicht committete Änderungen. Erzwungenes Entfernen verwirft sie dauerhaft. Fortfahren?',
+        'worktrees.path': 'Pfad',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'Neuer Branch',
+        'worktrees.existingBranch': 'Vorhandener Branch',
+        'worktrees.base': 'Startpunkt',
+        'worktrees.create': 'Erstellen',
+        'worktrees.empty': 'Keine Worktrees',
+        'worktrees.pruneConfirm': 'Einträge für nicht mehr vorhandene Worktrees bereinigen?',
+        'toast.worktreeAdded': 'Worktree {path} erstellt',
+        'toast.worktreeRemoved': 'Worktree {path} entfernt',
+        'toast.worktreePruned': 'Verwaiste Worktree-Einträge bereinigt',
         'confirm.title': 'Bestätigen',
         'confirm.cancel': 'Abbrechen',
         'confirm.ok': 'OK',
@@ -3143,6 +3335,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Annulation en cours',
         'operation.bisect': 'Bisect en cours',
         'operation.hint': 'Ce dépôt a encore une opération multi-étapes en cours —— terminez-la ou abandonnez-la avant les actions de branche',
+        'worktrees.title': 'Arbres de travail',
+        'worktrees.new': 'Nouvel arbre de travail',
+        'worktrees.prune': 'Nettoyer les entrées obsolètes',
+        'worktrees.back': 'Retour',
+        'worktrees.current': 'Actuel',
+        'worktrees.primary': 'Principal',
+        'worktrees.locked': 'Verrouillé',
+        'worktrees.prunable': 'Nettoyable',
+        'worktrees.detached': 'HEAD détaché',
+        'worktrees.open': 'Ouvrir dans le panneau',
+        'worktrees.remove': 'Supprimer l’arbre de travail',
+        'worktrees.removeConfirm': 'Supprimer l’arbre de travail {path}?',
+        'worktrees.removeDirty': 'L’arbre de travail {path} contient des modifications non validées. Une suppression forcée les perdra définitivement. Continuer?',
+        'worktrees.path': 'Chemin',
+        'worktrees.branch': 'Branche',
+        'worktrees.newBranch': 'Nouvelle branche',
+        'worktrees.existingBranch': 'Branche existante',
+        'worktrees.base': 'Point de départ',
+        'worktrees.create': 'Créer',
+        'worktrees.empty': 'Aucun arbre de travail',
+        'worktrees.pruneConfirm': 'Nettoyer les enregistrements des arbres de travail disparus du disque?',
+        'toast.worktreeAdded': 'Arbre de travail {path} créé',
+        'toast.worktreeRemoved': 'Arbre de travail {path} supprimé',
+        'toast.worktreePruned': 'Enregistrements obsolètes nettoyés',
         'confirm.title': 'Confirmer',
         'confirm.cancel': 'Annuler',
         'confirm.ok': 'OK',
@@ -3485,6 +3701,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Идёт отмена коммита',
         'operation.bisect': 'Идёт bisect',
         'operation.hint': 'В этом репозитории ещё не завершена многошаговая операция —— завершите или прервите её перед действиями с ветками',
+        'worktrees.title': 'Рабочие деревья',
+        'worktrees.new': 'Новое рабочее дерево',
+        'worktrees.prune': 'Очистить устаревшие записи',
+        'worktrees.back': 'Назад',
+        'worktrees.current': 'Текущее',
+        'worktrees.primary': 'Основное',
+        'worktrees.locked': 'Заблокировано',
+        'worktrees.prunable': 'Можно очистить',
+        'worktrees.detached': 'Отсоединённый HEAD',
+        'worktrees.open': 'Открыть в панели',
+        'worktrees.remove': 'Удалить рабочее дерево',
+        'worktrees.removeConfirm': 'Удалить рабочее дерево {path}?',
+        'worktrees.removeDirty': 'В рабочем дереве {path} есть незакоммиченные изменения. Принудительное удаление безвозвратно их удалит. Продолжить?',
+        'worktrees.path': 'Путь',
+        'worktrees.branch': 'Ветка',
+        'worktrees.newBranch': 'Новая ветка',
+        'worktrees.existingBranch': 'Существующая ветка',
+        'worktrees.base': 'Начальная точка',
+        'worktrees.create': 'Создать',
+        'worktrees.empty': 'Нет рабочих деревьев',
+        'worktrees.pruneConfirm': 'Очистить записи рабочих деревьев, исчезнувших с диска?',
+        'toast.worktreeAdded': 'Рабочее дерево {path} создано',
+        'toast.worktreeRemoved': 'Рабочее дерево {path} удалено',
+        'toast.worktreePruned': 'Устаревшие записи очищены',
         'confirm.title': 'Подтверждение',
         'confirm.cancel': 'Отмена',
         'confirm.ok': 'OK',
@@ -3827,6 +4067,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Reversão em andamento',
         'operation.bisect': 'Bisect em andamento',
         'operation.hint': 'Este repositório ainda tem uma operação de várias etapas aberta —— conclua ou aborte antes das ações de branch',
+        'worktrees.title': 'Árvores de trabalho',
+        'worktrees.new': 'Nova árvore de trabalho',
+        'worktrees.prune': 'Limpar registros obsoletos',
+        'worktrees.back': 'Voltar',
+        'worktrees.current': 'Atual',
+        'worktrees.primary': 'Principal',
+        'worktrees.locked': 'Bloqueada',
+        'worktrees.prunable': 'Limpável',
+        'worktrees.detached': 'HEAD destacado',
+        'worktrees.open': 'Abrir no painel',
+        'worktrees.remove': 'Remover árvore de trabalho',
+        'worktrees.removeConfirm': 'Remover a árvore de trabalho {path}?',
+        'worktrees.removeDirty': 'A árvore de trabalho {path} tem alterações não commitadas. A remoção forçada irá descartá-las permanentemente. Continuar?',
+        'worktrees.path': 'Caminho',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'Nova branch',
+        'worktrees.existingBranch': 'Branch existente',
+        'worktrees.base': 'Ponto de partida',
+        'worktrees.create': 'Criar',
+        'worktrees.empty': 'Nenhuma árvore de trabalho',
+        'worktrees.pruneConfirm': 'Limpar registros de árvores de trabalho que não existem mais no disco?',
+        'toast.worktreeAdded': 'Árvore de trabalho {path} criada',
+        'toast.worktreeRemoved': 'Árvore de trabalho {path} removida',
+        'toast.worktreePruned': 'Registros obsoletos limpos',
         'confirm.title': 'Confirmar',
         'confirm.cancel': 'Cancelar',
         'confirm.ok': 'OK',
@@ -4169,6 +4433,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Annullamento in corso',
         'operation.bisect': 'Bisect in corso',
         'operation.hint': 'Questo repository ha ancora un’operazione a più passaggi aperta —— completala o interrompila prima delle azioni sui branch',
+        'worktrees.title': 'Alberi di lavoro',
+        'worktrees.new': 'Nuovo albero di lavoro',
+        'worktrees.prune': 'Pulisci record obsoleti',
+        'worktrees.back': 'Indietro',
+        'worktrees.current': 'Attuale',
+        'worktrees.primary': 'Principale',
+        'worktrees.locked': 'Bloccato',
+        'worktrees.prunable': 'Pulibile',
+        'worktrees.detached': 'HEAD scollegato',
+        'worktrees.open': 'Apri nel pannello',
+        'worktrees.remove': 'Rimuovi albero di lavoro',
+        'worktrees.removeConfirm': 'Rimuovere l’albero di lavoro {path}?',
+        'worktrees.removeDirty': 'L’albero di lavoro {path} ha modifiche non committate. La rimozione forzata le eliminerà definitivamente. Continuare?',
+        'worktrees.path': 'Percorso',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'Nuovo branch',
+        'worktrees.existingBranch': 'Branch esistente',
+        'worktrees.base': 'Punto di partenza',
+        'worktrees.create': 'Crea',
+        'worktrees.empty': 'Nessun albero di lavoro',
+        'worktrees.pruneConfirm': 'Pulisci i record degli alberi di lavoro scomparsi dal disco?',
+        'toast.worktreeAdded': 'Albero di lavoro {path} creato',
+        'toast.worktreeRemoved': 'Albero di lavoro {path} rimosso',
+        'toast.worktreePruned': 'Record obsoleti puliti',
         'confirm.title': 'Conferma',
         'confirm.cancel': 'Annulla',
         'confirm.ok': 'OK',
@@ -4511,6 +4799,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Terugdraaien bezig',
         'operation.bisect': 'Bisect bezig',
         'operation.hint': 'Deze repository heeft nog een meerstapsbewerking openstaan —— rond die af of breek die af voordat je branchacties uitvoert',
+        'worktrees.title': 'Werkbomen',
+        'worktrees.new': 'Nieuwe werkboom',
+        'worktrees.prune': 'Verouderde records opschonen',
+        'worktrees.back': 'Terug',
+        'worktrees.current': 'Huidige',
+        'worktrees.primary': 'Primair',
+        'worktrees.locked': 'Vergrendeld',
+        'worktrees.prunable': 'Opschoonbaar',
+        'worktrees.detached': 'Losgekoppelde HEAD',
+        'worktrees.open': 'In paneel openen',
+        'worktrees.remove': 'Werkboom verwijderen',
+        'worktrees.removeConfirm': 'Werkboom {path} verwijderen?',
+        'worktrees.removeDirty': 'Werkboom {path} heeft niet-gecommitte wijzigingen. Geforceerd verwijderen gooit ze definitief weg. Doorgaan?',
+        'worktrees.path': 'Pad',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'Nieuwe branch',
+        'worktrees.existingBranch': 'Bestaande branch',
+        'worktrees.base': 'Startpunt',
+        'worktrees.create': 'Aanmaken',
+        'worktrees.empty': 'Geen werkbomen',
+        'worktrees.pruneConfirm': 'Records van werkbomen die niet meer op schijf staan opschonen?',
+        'toast.worktreeAdded': 'Werkboom {path} aangemaakt',
+        'toast.worktreeRemoved': 'Werkboom {path} verwijderd',
+        'toast.worktreePruned': 'Verouderde werkboomrecords opgeschoond',
         'confirm.title': 'Bevestigen',
         'confirm.cancel': 'Annuleren',
         'confirm.ok': 'OK',
@@ -4853,6 +5165,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Trwa wycofywanie',
         'operation.bisect': 'Trwa bisect',
         'operation.hint': 'W tym repozytorium wciąż trwa wieloetapowa operacja —— zakończ ją lub przerwij przed działaniami na gałęziach',
+        'worktrees.title': 'Drzewa robocze',
+        'worktrees.new': 'Nowe drzewo robocze',
+        'worktrees.prune': 'Wyczyść nieaktualne wpisy',
+        'worktrees.back': 'Wstecz',
+        'worktrees.current': 'Bieżące',
+        'worktrees.primary': 'Główne',
+        'worktrees.locked': 'Zablokowane',
+        'worktrees.prunable': 'Do wyczyszczenia',
+        'worktrees.detached': 'Odłączony HEAD',
+        'worktrees.open': 'Otwórz w panelu',
+        'worktrees.remove': 'Usuń drzewo robocze',
+        'worktrees.removeConfirm': 'Usunąć drzewo robocze {path}?',
+        'worktrees.removeDirty': 'Drzewo robocze {path} ma niezatwierdzone zmiany. Wymuszone usunięcie bezpowrotnie je utraci. Kontynuować?',
+        'worktrees.path': 'Ścieżka',
+        'worktrees.branch': 'Gałąź',
+        'worktrees.newBranch': 'Nowa gałąź',
+        'worktrees.existingBranch': 'Istniejąca gałąź',
+        'worktrees.base': 'Punkt początkowy',
+        'worktrees.create': 'Utwórz',
+        'worktrees.empty': 'Brak drzew roboczych',
+        'worktrees.pruneConfirm': 'Wyczyścić wpisy drzew roboczych, które zniknęły z dysku?',
+        'toast.worktreeAdded': 'Utworzono drzewo robocze {path}',
+        'toast.worktreeRemoved': 'Usunięto drzewo robocze {path}',
+        'toast.worktreePruned': 'Wyczyszczono nieaktualne wpisy',
         'confirm.title': 'Potwierdzenie',
         'confirm.cancel': 'Anuluj',
         'confirm.ok': 'OK',
@@ -5195,6 +5531,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Återställning pågår',
         'operation.bisect': 'Bisect pågår',
         'operation.hint': 'Det här arkivet har fortfarande en flerstegsoperation öppen —— slutför eller avbryt den före grenåtgärder',
+        'worktrees.title': 'Arbetsträd',
+        'worktrees.new': 'Nytt arbetsträd',
+        'worktrees.prune': 'Rensa inaktuella poster',
+        'worktrees.back': 'Tillbaka',
+        'worktrees.current': 'Aktuellt',
+        'worktrees.primary': 'Primärt',
+        'worktrees.locked': 'Låst',
+        'worktrees.prunable': 'Rensningsbart',
+        'worktrees.detached': 'Frånkopplad HEAD',
+        'worktrees.open': 'Öppna i panelen',
+        'worktrees.remove': 'Ta bort arbetsträd',
+        'worktrees.removeConfirm': 'Ta bort arbetsträdet {path}?',
+        'worktrees.removeDirty': 'Arbetsträdet {path} har ej committade ändringar. Tvingad borttagning slänger dem permanent. Fortsätt?',
+        'worktrees.path': 'Sökväg',
+        'worktrees.branch': 'Gren',
+        'worktrees.newBranch': 'Ny gren',
+        'worktrees.existingBranch': 'Befintlig gren',
+        'worktrees.base': 'Startpunkt',
+        'worktrees.create': 'Skapa',
+        'worktrees.empty': 'Inga arbetsträd',
+        'worktrees.pruneConfirm': 'Rensa poster för arbetsträd som försvunnit från disken?',
+        'toast.worktreeAdded': 'Arbetsträdet {path} skapat',
+        'toast.worktreeRemoved': 'Arbetsträdet {path} borttaget',
+        'toast.worktreePruned': 'Inaktuella arbetsträdsposter rensade',
         'confirm.title': 'Bekräfta',
         'confirm.cancel': 'Avbryt',
         'confirm.ok': 'OK',
@@ -5537,6 +5897,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Geri alma sürüyor',
         'operation.bisect': 'Bisect sürüyor',
         'operation.hint': 'Bu depoda hâlâ açık çok adımlı bir işlem var —— dal işlemlerinden önce tamamlayın veya iptal edin',
+        'worktrees.title': 'Çalışma ağaçları',
+        'worktrees.new': 'Yeni çalışma ağacı',
+        'worktrees.prune': 'Eskimiş kayıtları temizle',
+        'worktrees.back': 'Geri',
+        'worktrees.current': 'Geçerli',
+        'worktrees.primary': 'Birincil',
+        'worktrees.locked': 'Kilitli',
+        'worktrees.prunable': 'Temizlenebilir',
+        'worktrees.detached': 'Ayrık HEAD',
+        'worktrees.open': 'Panelde aç',
+        'worktrees.remove': 'Çalışma ağacını kaldır',
+        'worktrees.removeConfirm': '{path} çalışma ağacı kaldırılsın mı?',
+        'worktrees.removeDirty': '{path} çalışma ağacında işlenmemiş değişiklikler var. Zorla kaldırma bunları kalıcı olarak siler. Devam?',
+        'worktrees.path': 'Yol',
+        'worktrees.branch': 'Dal',
+        'worktrees.newBranch': 'Yeni dal',
+        'worktrees.existingBranch': 'Mevcut dal',
+        'worktrees.base': 'Başlangıç noktası',
+        'worktrees.create': 'Oluştur',
+        'worktrees.empty': 'Çalışma ağacı yok',
+        'worktrees.pruneConfirm': 'Diskten kaybolan çalışma ağacı kayıtları temizlensin mi?',
+        'toast.worktreeAdded': '{path} çalışma ağacı oluşturuldu',
+        'toast.worktreeRemoved': '{path} çalışma ağacı kaldırıldı',
+        'toast.worktreePruned': 'Eskimiş çalışma ağacı kayıtları temizlendi',
         'confirm.title': 'Onayla',
         'confirm.cancel': 'İptal',
         'confirm.ok': 'Tamam',
@@ -5879,6 +6263,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Pembatalan berlangsung',
         'operation.bisect': 'Bisect berlangsung',
         'operation.hint': 'Repositori ini masih punya operasi bertahap yang terbuka —— selesaikan atau batalkan sebelum tindakan tingkat branch',
+        'worktrees.title': 'Worktree',
+        'worktrees.new': 'Worktree baru',
+        'worktrees.prune': 'Bersihkan catatan usang',
+        'worktrees.back': 'Kembali',
+        'worktrees.current': 'Saat ini',
+        'worktrees.primary': 'Utama',
+        'worktrees.locked': 'Terkunci',
+        'worktrees.prunable': 'Dapat dibersihkan',
+        'worktrees.detached': 'HEAD terlepas',
+        'worktrees.open': 'Buka di panel',
+        'worktrees.remove': 'Hapus worktree',
+        'worktrees.removeConfirm': 'Hapus worktree {path}?',
+        'worktrees.removeDirty': 'Worktree {path} memiliki perubahan yang belum di-commit. Penghapusan paksa akan membuangnya secara permanen. Lanjutkan?',
+        'worktrees.path': 'Jalur',
+        'worktrees.branch': 'Branch',
+        'worktrees.newBranch': 'Branch baru',
+        'worktrees.existingBranch': 'Branch yang ada',
+        'worktrees.base': 'Titik awal',
+        'worktrees.create': 'Buat',
+        'worktrees.empty': 'Tidak ada worktree',
+        'worktrees.pruneConfirm': 'Bersihkan catatan worktree yang sudah hilang dari disk?',
+        'toast.worktreeAdded': 'Worktree {path} dibuat',
+        'toast.worktreeRemoved': 'Worktree {path} dihapus',
+        'toast.worktreePruned': 'Catatan worktree usang dibersihkan',
         'confirm.title': 'Konfirmasi',
         'confirm.cancel': 'Batal',
         'confirm.ok': 'OK',
@@ -6221,6 +6629,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'Đang hoàn tác',
         'operation.bisect': 'Đang bisect',
         'operation.hint': 'Kho này vẫn còn một thao tác nhiều bước chưa xong —— hãy hoàn tất hoặc huỷ trước khi thao tác ở mức nhánh',
+        'worktrees.title': 'Cây làm việc',
+        'worktrees.new': 'Cây làm việc mới',
+        'worktrees.prune': 'Dọn bản ghi cũ',
+        'worktrees.back': 'Quay lại',
+        'worktrees.current': 'Hiện tại',
+        'worktrees.primary': 'Chính',
+        'worktrees.locked': 'Đã khóa',
+        'worktrees.prunable': 'Có thể dọn',
+        'worktrees.detached': 'HEAD tách rời',
+        'worktrees.open': 'Mở trong bảng',
+        'worktrees.remove': 'Xóa cây làm việc',
+        'worktrees.removeConfirm': 'Xóa cây làm việc {path}?',
+        'worktrees.removeDirty': 'Cây làm việc {path} có thay đổi chưa commit. Xóa cưỡng bức sẽ mất vĩnh viễn. Tiếp tục?',
+        'worktrees.path': 'Đường dẫn',
+        'worktrees.branch': 'Nhánh',
+        'worktrees.newBranch': 'Nhánh mới',
+        'worktrees.existingBranch': 'Nhánh hiện có',
+        'worktrees.base': 'Điểm bắt đầu',
+        'worktrees.create': 'Tạo',
+        'worktrees.empty': 'Không có cây làm việc',
+        'worktrees.pruneConfirm': 'Dọn bản ghi cây làm việc đã biến mất khỏi ổ đĩa?',
+        'toast.worktreeAdded': 'Đã tạo cây làm việc {path}',
+        'toast.worktreeRemoved': 'Đã xóa cây làm việc {path}',
+        'toast.worktreePruned': 'Đã dọn bản ghi cũ',
         'confirm.title': 'Xác nhận',
         'confirm.cancel': 'Huỷ',
         'confirm.ok': 'OK',
@@ -6563,6 +6995,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'التراجع جارٍ',
         'operation.bisect': 'bisect جارٍ',
         'operation.hint': 'لا يزال في هذا المستودع إجراء متعدد الخطوات مفتوح —— أكمله أو ألغِه قبل إجراءات الفروع',
+        'worktrees.title': 'أشجار العمل',
+        'worktrees.new': 'شجرة عمل جديدة',
+        'worktrees.prune': 'تنظيف السجلات القديمة',
+        'worktrees.back': 'رجوع',
+        'worktrees.current': 'الحالي',
+        'worktrees.primary': 'الرئيسي',
+        'worktrees.locked': 'مقفل',
+        'worktrees.prunable': 'قابل للتنظيف',
+        'worktrees.detached': 'HEAD منفصل',
+        'worktrees.open': 'فتح في اللوحة',
+        'worktrees.remove': 'إزالة شجرة العمل',
+        'worktrees.removeConfirm': 'إزالة شجرة العمل {path}؟',
+        'worktrees.removeDirty': 'شجرة العمل {path} تحتوي على تغييرات غير مُودعة. الإزالة القسرية ستحذفها نهائيًا. هل تريد المتابعة؟',
+        'worktrees.path': 'المسار',
+        'worktrees.branch': 'الفرع',
+        'worktrees.newBranch': 'فرع جديد',
+        'worktrees.existingBranch': 'فرع موجود',
+        'worktrees.base': 'نقطة البداية',
+        'worktrees.create': 'إنشاء',
+        'worktrees.empty': 'لا توجد أشجار عمل',
+        'worktrees.pruneConfirm': 'تنظيف سجلات أشجار العمل التي اختفت من القرص؟',
+        'toast.worktreeAdded': 'تم إنشاء شجرة العمل {path}',
+        'toast.worktreeRemoved': 'تمت إزالة شجرة العمل {path}',
+        'toast.worktreePruned': 'تم تنظيف السجلات القديمة',
         'confirm.title': 'تأكيد',
         'confirm.cancel': 'إلغاء',
         'confirm.ok': 'موافق',
@@ -6905,6 +7361,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'वापसी जारी है',
         'operation.bisect': 'bisect जारी है',
         'operation.hint': 'इस रिपॉज़िटरी में अभी एक बहु-चरणीय कार्य खुला है —— शाखा क्रियाओं से पहले उसे पूरा करें या रद्द करें',
+        'worktrees.title': 'वर्कट्री',
+        'worktrees.new': 'नई वर्कट्री',
+        'worktrees.prune': 'पुराने रिकॉर्ड साफ़ करें',
+        'worktrees.back': 'वापस',
+        'worktrees.current': 'मौजूदा',
+        'worktrees.primary': 'प्राथमिक',
+        'worktrees.locked': 'लॉक किया गया',
+        'worktrees.prunable': 'साफ़ करने योग्य',
+        'worktrees.detached': 'अलग HEAD',
+        'worktrees.open': 'पैनल में खोलें',
+        'worktrees.remove': 'वर्कट्री हटाएँ',
+        'worktrees.removeConfirm': 'वर्कट्री {path} हटाएँ?',
+        'worktrees.removeDirty': 'वर्कट्री {path} में अन-कमिट बदलाव हैं। ज़बरदस्ती हटाने से ये हमेशा के लिए चले जाएँगे। जारी रखें?',
+        'worktrees.path': 'पाथ',
+        'worktrees.branch': 'शाखा',
+        'worktrees.newBranch': 'नई शाखा',
+        'worktrees.existingBranch': 'मौजूदा शाखा',
+        'worktrees.base': 'शुरुआती बिंदु',
+        'worktrees.create': 'बनाएँ',
+        'worktrees.empty': 'कोई वर्कट्री नहीं',
+        'worktrees.pruneConfirm': 'डिस्क से गायब वर्कट्री रिकॉर्ड साफ़ करें?',
+        'toast.worktreeAdded': 'वर्कट्री {path} बनाई गई',
+        'toast.worktreeRemoved': 'वर्कट्री {path} हटाई गई',
+        'toast.worktreePruned': 'पुराने वर्कट्री रिकॉर्ड साफ़ किए गए',
         'confirm.title': 'पुष्टि',
         'confirm.cancel': 'रद्द करें',
         'confirm.ok': 'ठीक',
@@ -7247,6 +7727,30 @@ window.__ModuleLoader__.load({
         'operation.revert': 'กำลังย้อน',
         'operation.bisect': 'กำลัง bisect',
         'operation.hint': 'รีโพซิทอรีนี้ยังมีงานหลายขั้นตอนค้างอยู่ —— ทำให้เสร็จหรือยกเลิกก่อนทำการกับแบรนช์',
+        'worktrees.title': 'เวิร์กทรี',
+        'worktrees.new': 'เวิร์กทรีใหม่',
+        'worktrees.prune': 'ล้างบันทึกที่ค้างอยู่',
+        'worktrees.back': 'กลับ',
+        'worktrees.current': 'ปัจจุบัน',
+        'worktrees.primary': 'หลัก',
+        'worktrees.locked': 'ถูกล็อก',
+        'worktrees.prunable': 'ล้างได้',
+        'worktrees.detached': 'HEAD แยก',
+        'worktrees.open': 'เปิดในแผง',
+        'worktrees.remove': 'ลบเวิร์กทรี',
+        'worktrees.removeConfirm': 'ลบเวิร์กทรี {path}?',
+        'worktrees.removeDirty': 'เวิร์กทรี {path} มีการเปลี่ยนแปลงที่ยังไม่คอมมิต การลบแบบบังคับจะทิ้งถาวร ดำเนินการต่อ?',
+        'worktrees.path': 'พาธ',
+        'worktrees.branch': 'แบรนช์',
+        'worktrees.newBranch': 'แบรนช์ใหม่',
+        'worktrees.existingBranch': 'แบรนช์ที่มีอยู่',
+        'worktrees.base': 'จุดเริ่มต้น',
+        'worktrees.create': 'สร้าง',
+        'worktrees.empty': 'ไม่มีเวิร์กทรี',
+        'worktrees.pruneConfirm': 'ล้างบันทึกเวิร์กทรีที่หายไปจากดิสก์?',
+        'toast.worktreeAdded': 'สร้างเวิร์กทรี {path} แล้ว',
+        'toast.worktreeRemoved': 'ลบเวิร์กทรี {path} แล้ว',
+        'toast.worktreePruned': 'ล้างบันทึกเวิร์กทรีที่ค้างแล้ว',
         'confirm.title': 'ยืนยัน',
         'confirm.cancel': 'ยกเลิก',
         'confirm.ok': 'ตกลง',
@@ -7917,6 +8421,7 @@ window.__ModuleLoader__.load({
          compact is the only chrome with a header button, and it used to render
          that button only while the tree was OPEN. */
       { id: 'tree', icon: 'branch', key: 'toolbar.tree', tone: 'secondary' },
+      { id: 'worktrees', icon: 'folder', key: 'worktrees.title', tone: 'secondary' },
       /* The official right-sidebar dock (float / re-dock / split / full screen).
          They only render where that service exists — see dockFaceOf(). */
       { id: 'float', icon: 'float', key: 'action.float', tone: 'accent' },
@@ -7944,7 +8449,7 @@ window.__ModuleLoader__.load({
     const RAIL_IDS = RAIL_SPECS.map((spec) => spec.id)
     /* Actions that arrange the view rather than touch the repository, so a running
        git command never greys them out. */
-    const RAIL_VIEW_IDS = ['tree', 'float', 'split', 'fullscreen']
+    const RAIL_VIEW_IDS = ['tree', 'worktrees', 'float', 'split', 'fullscreen']
     const RAIL_DOCK_IDS = ['float', 'split', 'fullscreen']
 
     function normalizeRail(raw) {
@@ -10562,6 +11067,79 @@ window.__ModuleLoader__.load({
             E('button', { type: 'button', className: 'dig-btn dig-btn-primary', disabled: ready === false, onClick: submit }, props.okLabel))))
     }
 
+    /* A worktree create dialog: unlike CloneDialog it has a mode (a NEW branch
+       versus an existing one), so the branch field means two different things
+       and the base field only exists in the first mode. Validation is local
+       (non-empty fields) plus whatever the host rejects; onSubmit resolves to
+       null on success or the message to show under the fields. */
+    function WorktreeDialog(props) {
+      const t = props.t
+      const [mode, setMode] = useState('new')
+      const [path, setPath] = useState('')
+      const [branch, setBranch] = useState('')
+      const [base, setBase] = useState('')
+      const [error, setError] = useState(null)
+      const [sending, setSending] = useState(false)
+      const pathRef = useRef(null)
+      const alive = useRef(true)
+      useEffect(() => { if (pathRef.current !== null) pathRef.current.focus() }, [])
+      useEffect(() => () => { alive.current = false }, [])
+      const ready = path.trim() !== '' && branch.trim() !== '' && sending === false
+      const submit = async () => {
+        if (ready !== true) return
+        const draft = { path: path.trim(), branch: branch.trim(), createBranch: mode === 'new' }
+        if (mode === 'new' && base.trim() !== '') draft.base = base.trim()
+        setError(null)
+        setSending(true)
+        try {
+          const message = await props.onSubmit(draft)
+          if (alive.current === true && typeof message === 'string' && message !== '') setError(message)
+        } finally {
+          if (alive.current === true) setSending(false)
+        }
+      }
+      const onKey = (event) => {
+        if (event.key === 'Enter') { event.preventDefault(); void submit() }
+        if (event.key === 'Escape') { event.preventDefault(); props.onCancel() }
+      }
+      return E('div', { className: 'dig-overlay' },
+        E('div', { className: 'dig-dialog dig-wt-dialog' },
+          E('div', { className: 'dig-dialog-title' }, props.title),
+          E('label', { className: 'dig-wt-field' },
+            E('span', { className: 'dig-wt-label' }, t('worktrees.path')),
+            E('input', {
+              ref: pathRef, className: 'dig-input', value: path, spellCheck: false,
+              placeholder: '/abs/path/to/worktree',
+              onChange: (event) => setPath(event.target.value), onKeyDown: onKey,
+            })),
+          E('div', { className: 'dig-wt-field' },
+            E('span', { className: 'dig-wt-label' }, t('worktrees.branch')),
+            E(Segmented, {
+              value: mode,
+              onChange: setMode,
+              items: [
+                { id: 'new', label: t('worktrees.newBranch') },
+                { id: 'existing', label: t('worktrees.existingBranch') },
+              ],
+            }),
+            E('input', {
+              className: 'dig-input', value: branch, spellCheck: false,
+              placeholder: 'feature/name',
+              onChange: (event) => setBranch(event.target.value), onKeyDown: onKey,
+            })),
+          mode === 'new' ? E('label', { className: 'dig-wt-field' },
+            E('span', { className: 'dig-wt-label' }, t('worktrees.base')),
+            E('input', {
+              className: 'dig-input', value: base, spellCheck: false,
+              placeholder: 'HEAD',
+              onChange: (event) => setBase(event.target.value), onKeyDown: onKey,
+            })) : null,
+          error === null ? null : E('div', { className: 'dig-wt-error' }, error),
+          E('div', { className: 'dig-dialog-actions' },
+            E('button', { type: 'button', className: 'dig-btn', onClick: props.onCancel }, props.cancelLabel),
+            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', disabled: ready !== true, onClick: () => { void submit() } }, t('worktrees.create')))))
+    }
+
     /* VS Code's "Git output" view (showOutput): the tail of the host's git-run
        ring buffer, fetched through the gitLogs method. A debugging view —
        opened on demand, refreshed by hand; newest land at the bottom and the
@@ -11516,7 +12094,7 @@ window.__ModuleLoader__.load({
               title: t('changes.aiQuota'),
               onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
             }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
-            E(ModelRoutePicker, { sessionId: props.sessionId, t: t }),
+            E(ModelRoutePicker, { sessionId: props.sessionId, t: t, ctx: props.ctx }),
             E('button', {
               type: 'button', className: 'dig-btn dig-btn-primary dig-btn-small',
               disabled: message.trim() === '' || props.busy === true,
@@ -11538,7 +12116,7 @@ window.__ModuleLoader__.load({
                 disabled: aiBusy === true || props.busy === true,
                 onClick: () => { if (message.trim() === '') void aiRun(); else setAiAsk(true) },
               }, aiBusy === true ? t('changes.aiBusy') : t('changes.aiWrite')),
-              E(ModelRoutePicker, { sessionId: props.sessionId, t: t }),
+              E(ModelRoutePicker, { sessionId: props.sessionId, t: t, ctx: props.ctx }),
               E('span', { className: 'dig-commit-ai-hint' }, t('changes.aiQuota')),
               aiUndo === null ? null : E('button', {
                 type: 'button', className: 'dig-link',
@@ -12321,6 +12899,86 @@ window.__ModuleLoader__.load({
             E('span', { className: 'dig-row-sub dig-row-dir' }, dirName(file.path)),
             file.additions > 0 ? E('span', { className: 'dig-stat-add' }, '+' + file.additions) : null,
             file.deletions > 0 ? E('span', { className: 'dig-stat-del' }, '-' + file.deletions) : null))))
+    }
+
+    /* Worktrees view (v0.22.0): the repository's real working trees, read from
+       summary.worktrees (git worktree list --porcelain -z). It is a full-body
+       view rather than a fourth pane: opening one switches the panel's
+       repository to that path, and every row action stays inside the current
+       panel. Current / primary / locked / prunable trees are protected here for
+       the same reasons the host refuses them; the host is still the authority. */
+    function WorktreesPane(props) {
+      const t = props.t
+      const items = Array.isArray(props.worktrees) ? props.worktrees : []
+      const busy = props.busy === true
+      const hasPrunable = items.some((item) => item.prunable === true)
+      const open = (item) => {
+        if (item.current === true || item.prunable === true) return
+        props.onOpen(item.path)
+      }
+      const badgesOf = (item) => {
+        const badges = []
+        if (item.current === true) badges.push({ key: 'current', className: 'dig-wt-badge-current', label: t('worktrees.current'), title: undefined })
+        if (item.primary === true) badges.push({ key: 'primary', className: 'dig-wt-badge-primary', label: t('worktrees.primary'), title: undefined })
+        if (item.locked === true) badges.push({ key: 'locked', className: 'dig-wt-badge-locked', label: t('worktrees.locked'), title: item.lockReason === '' || item.lockReason === undefined ? t('worktrees.locked') : item.lockReason })
+        if (item.prunable === true) badges.push({ key: 'prunable', className: 'dig-wt-badge-prunable', label: t('worktrees.prunable'), title: item.pruneReason === '' || item.pruneReason === undefined ? t('worktrees.prunable') : item.pruneReason })
+        return badges
+      }
+      const removable = (item) => item.current !== true && item.primary !== true && item.locked !== true && item.prunable !== true
+      return E('div', { className: 'dig-wt' },
+        E('div', { className: 'dig-wt-head' },
+          E('span', { className: 'dig-wt-title' }, t('worktrees.title')),
+          E('span', { className: 'dig-wt-count' }, String(items.length)),
+          E('span', { className: 'dig-topbar-spacer' }),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn', title: t('worktrees.new'), disabled: busy,
+            onClick: props.onCreate,
+          }, E(Icon, { name: 'branchCreate', size: 14 })),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn', title: t('worktrees.prune'), disabled: busy || hasPrunable !== true,
+            onClick: props.onPrune,
+          }, E(Icon, { name: 'trash', size: 14 })),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn', title: t('worktrees.back'),
+            onClick: props.onBack,
+          }, E(Icon, { name: 'chevron', size: 14 }))),
+        items.length === 0
+          ? E('div', { className: 'dig-empty' }, t('worktrees.empty'))
+          : E('div', { className: 'dig-wt-scroll' }, items.map((item) => {
+            const badges = badgesOf(item)
+            const label = item.detached === true ? t('worktrees.detached') : String(item.branch === undefined || item.branch === '' ? t('worktrees.detached') : item.branch)
+            return E('div', {
+              key: item.path,
+              className: 'dig-wt-row' + (item.current === true ? ' dig-wt-row-current' : ''),
+              onDoubleClick: () => open(item),
+            },
+              E('div', { className: 'dig-wt-row-main' },
+                E('div', { className: 'dig-wt-top' },
+                  E(Icon, { name: item.detached === true ? 'commit' : 'branch', size: 13 }),
+                  E('span', { className: 'dig-wt-branch', title: label }, label),
+                  badges.length === 0 ? null : E('span', { className: 'dig-wt-badges' }, badges.map((badge) => E('span', {
+                    key: badge.key, className: 'dig-wt-badge ' + badge.className, title: badge.title === undefined ? badge.label : badge.title,
+                  }, badge.label)))),
+                E('div', { className: 'dig-wt-path dig-mono', title: item.path }, String(item.path)),
+                E('div', { className: 'dig-wt-meta' },
+                  item.head === undefined || item.head === null || item.head === '' ? null : E('span', { className: 'dig-wt-hash dig-mono' }, String(item.head).slice(0, 8)),
+                  item.pruneReason === '' || item.pruneReason === undefined ? null : E('span', { className: 'dig-wt-reason', title: item.pruneReason }, item.pruneReason))),
+              E('div', { className: 'dig-wt-row-actions' },
+                E('button', {
+                  type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('worktrees.open'),
+                  disabled: busy || item.current === true || item.prunable === true,
+                  onClick: () => open(item),
+                }, E(Icon, { name: 'checkout', size: 13 })),
+                E('button', {
+                  type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('action.copyPath'),
+                  onClick: () => props.onCopy(item.path),
+                }, E(Icon, { name: 'copy', size: 13 })),
+                E('button', {
+                  type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('worktrees.remove'),
+                  disabled: busy || removable(item) !== true,
+                  onClick: () => props.onRemove(item),
+                }, E(Icon, { name: 'trash', size: 13 }))))
+          })))
     }
 
     /* ============================== panel ============================== */
@@ -13306,6 +13964,67 @@ window.__ModuleLoader__.load({
         pushToast({ text: fill(t('selection.copied'), { n: values.length }), icon: 'tag', tone: 'ok', ttl: 2500 })
       }, [pushToast, t])
 
+      /* ---------- worktrees (v0.22.0) ---------- */
+      /* These bypass run(): worktreeAdd/Remove/Prune have their own payload
+         shapes and refresh only the repository's worktree list, and a dirty
+         removal is a two-step confirm (the first attempt returns
+         worktree-dirty, which reopens the confirm with the destructive force
+         wording). Busy is held by hand because refresh() has its own guard. */
+      const createWorktree = async (draft) => {
+        setBusy(true)
+        setError(null)
+        try {
+          await request('worktreeAdd', Object.assign({}, base, draft))
+          setDialog(null)
+          pushToast({ text: fill(t('toast.worktreeAdded'), { path: draft.path }), icon: 'check', tone: 'ok' })
+          await refresh()
+          return null
+        } catch (caught) {
+          return caught instanceof Error ? caught.message : String(caught)
+        } finally {
+          setBusy(false)
+        }
+      }
+      const removeWorktree = async (tree, force) => {
+        setBusy(true)
+        setError(null)
+        try {
+          await request('worktreeRemove', Object.assign({}, base, { path: tree.path, confirm: true, force: force === true }))
+          setDialog(null)
+          pushToast({ text: fill(t('toast.worktreeRemoved'), { path: tree.path }), icon: 'check', tone: 'ok' })
+          await refresh()
+          return null
+        } catch (caught) {
+          const message = caught instanceof Error ? caught.message : String(caught)
+          if (caught instanceof Error && caught.code === 'worktree-dirty' && force !== true) {
+            setDialog({ kind: 'worktreeRemove', tree: tree, force: true })
+            return message
+          }
+          setDialog(null)
+          setError(message)
+          return message
+        } finally {
+          setBusy(false)
+        }
+      }
+      const pruneWorktrees = async () => {
+        setBusy(true)
+        setError(null)
+        try {
+          const data = await request('worktreePrune', Object.assign({}, base, { confirm: true }))
+          setDialog(null)
+          pushToast({ text: t('toast.worktreePruned'), icon: 'check', tone: 'ok' })
+          await refresh()
+          return data
+        } catch (caught) {
+          setDialog(null)
+          setError(caught instanceof Error ? caught.message : String(caught))
+          return null
+        } finally {
+          setBusy(false)
+        }
+      }
+
       /* Resolve the change selection against the CURRENT summary: paths move
          between groups on every stage/unstage, so the key ('group:path') is
          the only stable handle and the entry lookup must be fresh. */
@@ -13812,13 +14531,28 @@ window.__ModuleLoader__.load({
       /* ---------- shared pieces ---------- */
 
       const repoOptions = repoState === null ? [] : repoState.repos
+      /* A linked worktree opened from the worktree view is a repository root
+         the workspace scan never listed. Without a header entry the top bar
+         kept naming the primary checkout while every branch and change below
+         it came from the worktree. Append the current root as a transient
+         option so the header names what the panel is actually showing. */
+      let headerRepos = repoOptions
+      if (repoRoot !== null && repoOptions.every((repo) => repo.path !== repoRoot)) {
+        const origin = summary === null ? '' : summary.origin
+        headerRepos = repoOptions.concat([{
+          path: repoRoot,
+          name: origin !== undefined && origin !== null && origin !== '' ? origin : baseNameOf(repoRoot),
+          branch: branches === null ? null : branches.branch,
+          worktree: true,
+        }])
+      }
       const dirty = summary === null ? 0 : summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length + summary.changes.conflicted.length
 
       /* Both header switchers are menu-driven now (see RepoSelect): the
          popovers reuse openMenuAt, so they clamp to the panel box and share
          the opaque, frosted menu surface instead of the OS select popup. */
       const openRepoMenu = useCallback((event) => {
-        openMenuAt(event, repoOptions.map((repo) => ({
+        openMenuAt(event, headerRepos.map((repo) => ({
           id: 'repo:' + repo.path,
           icon: 'folder',
           tone: 'accent',
@@ -13826,7 +14560,7 @@ window.__ModuleLoader__.load({
           active: repo.path === repoRoot,
           run: () => { if (repo.path !== repoRoot) pickRepo(repo.path) },
         })))
-      }, [openMenuAt, repoOptions, repoRoot, pickRepo])
+      }, [openMenuAt, headerRepos, repoRoot, pickRepo])
 
       const openBranchSwitchMenu = useCallback((event) => {
         const local = branches === null ? [] : branches.local
@@ -13842,7 +14576,7 @@ window.__ModuleLoader__.load({
 
       const topBar = E('div', { className: 'dig-topbar' },
         E(RepoSelect, {
-          t: t, repos: repoOptions, value: repoRoot,
+          t: t, repos: headerRepos, value: repoRoot,
           loading: repoState === null,
           onOpenMenu: openRepoMenu,
         }),
@@ -14165,7 +14899,7 @@ window.__ModuleLoader__.load({
       }
       const commitSettings = readCommitSettings()
       const changesPane = E(ChangesPanel, {
-        t: t, summary: summary, busy: busy, compact: compact, hideHeader: compact,
+        t: t, ctx: props.ctx, summary: summary, busy: busy, compact: compact, hideHeader: compact,
         groupBy: groupBy, sortKey: sortKey, onGroupBy: setGroupBy,
         foldedDirs: foldedDirs, onFoldedDirs: setFoldedDirs,
         onMoreMenu: moreMenu,
@@ -14288,6 +15022,10 @@ window.__ModuleLoader__.load({
           else { entry.disabled = remoteReady !== true || blocked; entry.run = () => setDialog({ kind: 'push' }) }
         }
         else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
+        else if (spec.id === 'worktrees') {
+          entry.active = view === 'worktrees'
+          entry.run = () => { setPatch(''); setDiffContext(null); setView(view === 'worktrees' ? 'history' : 'worktrees') }
+        }
         else if (spec.id === 'float') {
           // Label AND icon follow where the panel actually is: floating panels get
           // the way back, docked ones get the way out.
@@ -14429,7 +15167,7 @@ window.__ModuleLoader__.load({
 
       /* ---------- body per chrome ---------- */
 
-      /* ---------- body per chrome ---------- */
+      const worktrees = summary !== null && Array.isArray(summary.worktrees) ? summary.worktrees : []
 
       /* The history↔diff separator only exists while a diff is on screen, and it
          lives inside the middle pane — the diff is the pane below it. */
@@ -14444,6 +15182,18 @@ window.__ModuleLoader__.load({
       } else if (repoRoot === null) {
         body = E('div', { className: 'dig-body', ref: bodyRef }, E(RepoPicker, {
           t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo,
+        }))
+      } else if (view === 'worktrees') {
+        body = E('div', { className: 'dig-body dig-body-worktrees', ref: bodyRef }, E(WorktreesPane, {
+          t: t,
+          worktrees: worktrees,
+          busy: busy,
+          onBack: () => setView('history'),
+          onCreate: () => setDialog({ kind: 'worktreeAdd' }),
+          onPrune: () => setDialog({ kind: 'worktreePrune' }),
+          onOpen: pickRepo,
+          onCopy: (path) => copyValues([path]),
+          onRemove: (tree) => setDialog({ kind: 'worktreeRemove', tree: tree, force: false }),
         }))
       } else if (compact) {
         body = E('div', { className: 'dig-body dig-body-compact', ref: bodyRef },
@@ -14539,6 +15289,35 @@ window.__ModuleLoader__.load({
           okLabel: t('clone.run'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onSubmit: (url, dir) => { setDialog(null); void run('clone', { url: url, dir: dir }) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'worktreeAdd') {
+        overlays.push(E(WorktreeDialog, {
+          key: 'worktreeAdd', t: t,
+          title: t('worktrees.new'),
+          cancelLabel: t('confirm.cancel'),
+          onSubmit: (draft) => createWorktree(draft),
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'worktreeRemove') {
+        const force = dialog.force === true
+        overlays.push(E(ConfirmDialog, {
+          key: 'worktreeRemove', t: t,
+          title: t('worktrees.remove'),
+          text: fill(force === true ? t('worktrees.removeDirty') : t('worktrees.removeConfirm'), { path: dialog.tree.path }),
+          okLabel: t('worktrees.remove'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { const tree = dialog.tree; const forced = force; void removeWorktree(tree, forced) },
+        }))
+      }
+      if (dialog !== null && dialog.kind === 'worktreePrune') {
+        overlays.push(E(ConfirmDialog, {
+          key: 'worktreePrune', t: t,
+          title: t('worktrees.prune'),
+          text: t('worktrees.pruneConfirm'),
+          okLabel: t('worktrees.prune'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { void pruneWorktrees() },
         }))
       }
       /* SCM ▸ additions (v0.15): each destructive one is a ConfirmDialog whose
@@ -15392,6 +16171,10 @@ window.__ModuleLoader__.load({
       '.dig-mrp-root{position:relative;display:inline-flex;flex:none;min-width:0}',
       '.dig-mrp-trigger{display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:220px;font-size:11px;line-height:16px}',
       '.dig-mrp-trigger[data-open=true]{color:var(--dsw-alias-brand-primary)}',
+      '.dig-mrp-badge{flex:none;display:inline-block;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;padding:0 6px;border-radius:999px;corner-shape:round;font-size:10px;line-height:15px;font-weight:500;background:var(--dsw-alias-bg-module-platform);color:var(--dsw-alias-label-secondary)}',
+      '.dig-mrp-badge[data-tone=info]{background:color-mix(in srgb,var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary)) 12%,transparent);color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary))}',
+      '.dig-mrp-badge[data-tone=success]{background:color-mix(in srgb,var(--dsw-alias-state-success-primary) 12%,transparent);color:var(--dsw-alias-state-success-primary)}',
+      '.dig-mrp-badge[data-tone=warning]{background:color-mix(in srgb,var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary)) 12%,transparent);color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary))}',
       '.dig-mrp-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
       '.dig-mrp-effort{flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:10px}',
       '.dig-mrp-menu{max-width:300px}',
@@ -15404,6 +16187,39 @@ window.__ModuleLoader__.load({
       '.dig-mrp-empty{padding:10px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
       '.dig-mrp-error{padding:6px 10px;margin-bottom:2px;border-radius:var(--dsw-radius-sm,8px);background:rgba(220,38,38,.12);color:var(--dsw-alias-state-error-primary);font-size:11px;line-height:16px;word-break:break-word}',
       'body[data-ds-dark-theme] .dig-mrp-error{background:rgba(248,113,113,.16)}',
+      /* ---- worktrees view (v0.22.0) ---- */
+      '.dig-body-worktrees{flex-direction:column;min-width:0}',
+      '.dig-wt{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0}',
+      '.dig-wt-head{flex:none;display:flex;align-items:center;gap:5px;padding:4px 8px;min-height:26px;box-sizing:border-box;border-bottom:1px solid var(--dsw-alias-border-l1)}',
+      '.dig-wt-title{font-weight:600;color:var(--dsw-alias-label-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+      '.dig-wt-count{flex:none;min-width:16px;padding:0 5px;border-radius:999px;corner-shape:round;background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);font-size:10px;line-height:16px;text-align:center;font-variant-numeric:tabular-nums}',
+      '.dig-wt-head .dig-icon-btn{flex:none}',
+      '.dig-wt-scroll{flex:1;min-height:0;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:4px}',
+      '.dig-wt-row{display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;padding:7px 8px;min-width:0;border:1px solid transparent;border-radius:var(--dsw-radius-md,10px);background:var(--dsw-alias-bg-layer-1)}',
+      '.dig-wt-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-wt-row-current{border-color:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary));background:var(--dsw-alias-bg-layer-2)}',
+      '.dig-wt-row-current:hover{background:var(--dsw-alias-bg-layer-3,var(--dsw-alias-bg-layer-2))}',
+      '.dig-wt-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}',
+      '.dig-wt-top{display:flex;align-items:center;gap:5px;min-width:0}',
+      '.dig-wt-top svg{flex:none;color:var(--dsw-alias-label-secondary)}',
+      '.dig-wt-branch{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-primary);font-weight:600}',
+      '.dig-wt-badges{display:inline-flex;flex-wrap:wrap;gap:3px;flex:none;margin-left:2px}',
+      '.dig-wt-badge{display:inline-flex;align-items:center;padding:0 5px;border-radius:999px;corner-shape:round;font-size:10px;line-height:15px;font-weight:500;white-space:nowrap}',
+      '.dig-wt-badge-current{background:var(--dsw-alias-state-success-primary);color:var(--dsw-alias-label-primary-inverted,#fff)}',
+      '.dig-wt-badge-primary{background:var(--dsw-alias-state-business-primary,var(--dsw-alias-brand-primary));color:var(--dsw-alias-label-primary-inverted,#fff)}',
+      '.dig-wt-badge-locked{background:var(--dsw-alias-state-warn-primary);color:var(--dsw-alias-label-primary-inverted,#fff)}',
+      '.dig-wt-badge-prunable{background:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-label-primary-inverted,#fff)}',
+      '.dig-wt-path{color:var(--dsw-alias-label-secondary);font-size:11px;line-height:15px;word-break:break-all}',
+      '.dig-wt-meta{display:flex;align-items:center;gap:6px;min-width:0;color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:14px}',
+      '.dig-wt-hash{flex:none;letter-spacing:.02em}',
+      '.dig-wt-reason{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-wt-row-actions{flex:none;display:flex;align-items:center;gap:1px;margin-left:auto;opacity:.7}',
+      '.dig-wt-row:hover .dig-wt-row-actions,.dig-wt-row-current .dig-wt-row-actions{opacity:1}',
+      '.dig-wt-dialog{width:460px;max-width:calc(100% - 24px)}',
+      '.dig-wt-field{display:flex;flex-direction:column;gap:4px;min-width:0;margin-bottom:10px}',
+      '.dig-wt-label{color:var(--dsw-alias-label-secondary);font-size:12px;font-weight:500}',
+      '.dig-wt-error{padding:6px 8px;margin-bottom:8px;border-radius:var(--dsw-radius-sm,8px);background:rgba(220,38,38,.12);color:var(--dsw-alias-state-error-primary);font-size:11px;line-height:16px;word-break:break-word}',
+      'body[data-ds-dark-theme] .dig-wt-error{background:rgba(248,113,113,.16)}',
     ].concat(LANE_TRACE_RULES).join('\n')
 
     /* ============================== plugin ============================== */
@@ -15649,6 +16465,30 @@ window.__ModuleLoader__.load({
        inject declaration); until it lands, and on any older host, the picker
        hides itself instead of throwing, and the AI-write button still works
        through the host's served-models fallback. */
+    /* A listing badge's text may be a literal string or a language table
+       (llm-deepseek only accepts lowercase language ids plus "en"). The
+       official ModelSelect resolves this through its slot inject, which a
+       panel-side picker cannot see; read the active tag here the same way the
+       dictionary does, and fall back to English exactly like the host. */
+    function modelBadgeTextOf(ctx, badge) {
+      if (badge === null || typeof badge !== 'object') return ''
+      const text = badge.text
+      if (typeof text === 'string') return text
+      if (text === null || typeof text !== 'object') return ''
+      const tag = activeLocaleOf(ctx).toLowerCase()
+      const keys = []
+      if (tag !== '') {
+        keys.push(tag)
+        const primary = tag.split('-')[0]
+        if (primary !== '' && primary !== tag) keys.push(primary)
+      }
+      keys.push('en')
+      for (const key of keys) {
+        const candidate = text[key]
+        if (typeof candidate === 'string' && candidate !== '') return candidate
+      }
+      return ''
+    }
     let modelDirectoriesRef = null
     const modelDirectorySubs = new Set()
     function ModelRoutePicker(props) {
@@ -15729,6 +16569,21 @@ window.__ModuleLoader__.load({
         ? (current.reasoningEffort === undefined ? '' : current.reasoningEffort)
         : (effectiveEffort === undefined ? t('modelRoute.effortDefault') : effortName(effectiveEffort))
       const modelName = current === null ? '' : routeModel === null ? current.model : routeModel.name
+      /* Listing badges are optional and independently translated; a model
+         without one renders exactly as before. Unknown tones fall to neutral,
+         matching the host's listing decoder. */
+      const badgeOf = (model) => {
+        if (model === null || model === undefined || model.badge === null || typeof model.badge !== 'object') return null
+        const text = modelBadgeTextOf(props.ctx, model.badge)
+        if (text === '') return null
+        const tone = model.badge.tone === 'info' || model.badge.tone === 'success' || model.badge.tone === 'warning' ? model.badge.tone : 'neutral'
+        return { text: text, tone: tone }
+      }
+      const badgeNode = (model) => {
+        const badge = badgeOf(model)
+        return badge === null ? null : E('span', { className: 'dig-mrp-badge', 'data-tone': badge.tone }, badge.text)
+      }
+      const routeBadge = badgeOf(routeModel)
       const effortChoices = reasoning === undefined ? [] : ([
         ...(reasoning.defaultEffort === undefined ? [{ key: 'provider-default', effort: undefined, label: t('modelRoute.effortDefault') }] : []),
         ...reasoning.efforts.map((row) => ({ key: row.id, effort: row.id, label: row.name })),
@@ -15750,6 +16605,7 @@ window.__ModuleLoader__.load({
           onClick: () => { setOpen(!open); setPane('root') },
         },
           E(Icon, { name: 'settings', size: 11 }),
+          routeBadge === null ? null : E('span', { className: 'dig-mrp-badge', 'data-tone': routeBadge.tone }, routeBadge.text),
           E('span', { className: 'dig-mrp-label' }, current === null ? t('modelRoute.pick') : modelName),
           effortLabel === '' ? null : E('span', { className: 'dig-mrp-effort' }, effortLabel),
           E(Icon, { name: 'chevron', size: 9 })),
@@ -15794,6 +16650,7 @@ window.__ModuleLoader__.load({
                 onClick: () => choose({ provider: group.id, model: model.id }),
               },
                 E('span', { className: 'dig-cs-item-name' }, model.name === undefined || model.name === null ? model.id : model.name),
+                badgeNode(model),
                 E('span', { className: 'dig-cs-item-note' }, selected === true ? E(Icon, { name: 'check', size: 11 }) : null))
             }))),
           pane === 'effort' && current !== null && effortChoices.map((level) => {

@@ -98,6 +98,7 @@ DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-id
 | 状态行 | 当前分支、上游、`↑ahead ↓behind`、stash 数量、忙碌指示 |
 | 输入框状态条 | 宿主输入框工具条里的仓库/分支胶囊(着色 ±未提交 / ↓可拉取 / ↑待推送),点击切换仓库与分支,与面板双向联动;单仓库只切分支,多仓库两边都切;设置可关(默认开) |
 | 分支树 | `HEAD / 本地 / 远程 / 标签` 分组(可折叠)、过滤框、星标当前分支、ahead/behind 角标、worktree 占用标记;本地蓝 / 远程紫 / 标签黄 / HEAD 绿 |
+| 工作树 | 动作条新增「工作树」视图:列出主工作树与全部链接工作树(当前 / 主工作树 / 已锁定 / 可清理标记、分支、短 HEAD、路径),可新建(新分支或挂已有分支,可指定起点)、在面板中打开、复制路径、移除(有未提交改动需二次强制确认)、清理失效记录;与官方「变更请求」面板并存 |
 | 分支右键 | 签出、将当前分支变基到此、合并到当前分支、与当前分支比较、从该分支新建分支、重命名、删除(当前分支禁用)、更新(Fetch)、推送、发送到对话(分支名 + 仓库) |
 | 历史筛选 | 文本或哈希、分支或标签、提交人、日期(今天 / 近 7 天 / 近 30 天 / 今年),外加排序方向(新→旧 / 旧→新)与一键清除;路径筛选回车后由 git 服务端过滤(`git log -- <path>`) |
 | 提交列表 | 列序对齐 IDEA:**日期 → 提交人 → 图谱 → 分支标签 → 提交信息**;lane 拓扑图整格连线(相邻行像素对齐)、HEAD 空心点、refs 徽章(HEAD 绿 / 本地蓝 / 远程紫 / 标签黄,最多 3 个 + `+n`)、加载更多/无限滚动(每页 120)、三列表框选批量选中 |
@@ -127,7 +128,7 @@ dsh plugin --profile web add dsh-better-sidebar
 
 ### 兼容性
 
-- `engines.dsh` 声明为 **`>=0.1.2-0`** ——0.1.2 起的全部版本都算,包括 `0.1.5-rc` / `0.1.6-alpha` 这类**预发布**(纯 semver 下预发布默认不匹配任何范围,所以起点写成了 `-0`)。**同一个值也是 `@deepseek-ai/dsh` 的 peerDependencies**:dsh 0.1.7 起会强制执行 peer 里的 `@deepseek-ai/dsh*` 范围(不满足就不加载),而 `engines` 没有任何读取方——写进 peer 才算数。范围是**开放下界、不封顶**,所以 0.1.7 起的任何宿主(含 rc / alpha 预发布)都不会因此被禁用;0.1.0–0.1.6 没有这套检查,完全不受影响。
+- `engines.dsh` 与 `@deepseek-ai/dsh` 的 peerDependencies 都声明为 **`>=0.2.2-alpha.2`**:本版跟随 dsh 0.2.2-alpha.2 的会话列表行尾座位与模型徽章字段,pre-release 需要显式写出起点才匹配。范围是**开放下界、不封顶**,之后的 rc / alpha 预发布都算。dsh 会强制执行 peer 里的 `@deepseek-ai/dsh*` 范围(不满足就不加载),`engines` 是给包管理器与排障看的第二份声明。
 - 只依赖三样长期契约:宿主半的 `webServer.register({ kind: 'prefix' })` 路由、客户端半的 `window.__ModuleLoader__.load({ id, factory })`、以及客户端的 `slots` 服务。**不引用 `ui-primitives` 图标集**(图标全是自带 SVG),所以宿主删改图标不会波及本插件。
 - 底座是**可选** peer:没装、装坏了、或它自己要等上游修,都不影响本插件挂到原生右侧栏。
 
@@ -146,7 +147,7 @@ dsh plugin --profile web add dsh-better-sidebar
      └─ 会话工作区 = cwd(客户端 scope.cwd 传入)
 ```
 
-- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 32 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
+- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 51 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
 - **客户端半**:无构建、单文件、`window.__ModuleLoader__.load({ id, factory })` 包装,只 `require('react')`(DSH 客户端基线模块白名单内)。
 - **信任围栏**:路由挂在 DSH 自己的 web server 上,天然同源;只有 Host 为 loopback,或浏览器标记 `Sec-Fetch-Site: same-origin/same-site` 的请求才会被服务。
 - **破坏性操作**:`push` / 硬重置 / 强制删分支 / 丢弃未跟踪文件 / 删除 stash 都必须显式 `confirm: true`,UI 侧一律弹二次确认。
@@ -158,8 +159,7 @@ dsh plugin --profile web add dsh-better-sidebar
   - 交互式变基(`rebase -i`)、fixup/squash、补丁(format-patch/apply);
   - 三方合并冲突编辑器、冲突解决动作(接受本地/远端);
   - blame / 文件历史视图、行级注释;
-  - 设置页的插件自有开关(提交后自动刷新、diff 上下文行数等);
-  - worktree 视图(当前只在分支行标注占用)。
+  - 设置页的插件自有开关(提交后自动刷新、diff 上下文行数等)。
 - **只面向 `web` profile**:`dsh.client.platform` 为 `web`;桌面客户端的 renderer 复用同一套 shell 资产,但尚未真机验证。
 - **不写 `.git`**:所有操作都通过 `git` 命令走正常索引/引用,插件不直接改 `.git` 内部文件。
 - **大仓库**:提交列表分页(120/页),diff 输出上限 400KB(超出截断并标记)。

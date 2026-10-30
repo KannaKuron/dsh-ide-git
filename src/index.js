@@ -45,7 +45,7 @@ try {
 
 /** Rail action ids, in rail order. MUST mirror RAIL_SPECS in src/client.js. */
 const RAIL_CONFIG_IDS = [
-  'refresh', 'tree', 'float', 'split', 'fullscreen', 'newBranch', 'checkout', 'delete',
+  'refresh', 'tree', 'worktrees', 'float', 'split', 'fullscreen', 'newBranch', 'checkout', 'delete',
   'compare', 'diff', 'stash', 'tag', 'favorite', 'fetch', 'pull', 'push',
 ]
 
@@ -429,25 +429,54 @@ function sameDirectory(left, right) {
   try { return realpathSync(one) === realpathSync(two) } catch { return false }
 }
 
+/* `--porcelain -z` is the only parseable form: a path may contain spaces and
+   newlines, and git realpaths the main worktree (/var -> /private/var on macOS),
+   so every record is NUL-terminated and an empty record closes the current
+   block. The flags describe the ADMIN view: `locked` and `prunable` say
+   whether removal is blocked or the directory is already gone. */
 async function worktreesOf(root) {
-  const result = await runGit(root, ['worktree', 'list', '--porcelain'])
+  const result = await runGit(root, ['worktree', 'list', '--porcelain', '-z'])
   if (result.code !== 0) return []
   const trees = []
   let current = null
-  for (const line of result.stdout.split('\n')) {
-    if (line.startsWith('worktree ')) {
-      if (current !== null) trees.push(current)
-      current = { path: line.slice('worktree '.length), branch: null, head: null, detached: false, bare: false }
+  const push = () => { if (current !== null) trees.push(current); current = null }
+  for (const record of result.stdout.split('\u0000')) {
+    if (record === '') { push(); continue }
+    if (record.startsWith('worktree ')) {
+      push()
+      current = {
+        path: record.slice('worktree '.length),
+        branch: null,
+        head: null,
+        detached: false,
+        bare: false,
+        locked: false,
+        lockReason: null,
+        prunable: false,
+        pruneReason: null,
+      }
       continue
     }
     if (current === null) continue
-    if (line.startsWith('HEAD ')) current.head = line.slice('HEAD '.length)
-    else if (line.startsWith('branch ')) current.branch = line.slice('branch '.length).replace('refs/heads/', '')
-    else if (line === 'detached') current.detached = true
-    else if (line === 'bare') current.bare = true
+    if (record.startsWith('HEAD ')) current.head = record.slice('HEAD '.length)
+    else if (record.startsWith('branch ')) current.branch = record.slice('branch '.length).replace('refs/heads/', '')
+    else if (record === 'detached') current.detached = true
+    else if (record === 'bare') current.bare = true
+    else if (record.startsWith('locked')) {
+      current.locked = true
+      const reason = record.slice('locked'.length).trim()
+      current.lockReason = reason === '' ? null : reason
+    } else if (record.startsWith('prunable')) {
+      current.prunable = true
+      const reason = record.slice('prunable'.length).trim()
+      current.pruneReason = reason === '' ? null : reason
+    }
   }
-  if (current !== null) trees.push(current)
-  return trees
+  push()
+  return trees.map((tree, index) => Object.assign(tree, {
+    primary: index === 0,
+    current: sameDirectory(tree.path, root),
+  }))
 }
 
 /* ============================== safety ============================== */
@@ -471,7 +500,7 @@ function withRepoLock(key, work) {
 
 const WRITE_METHODS = new Set([
   'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',
-  'branchDelete', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
+  'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
   'push', 'stashPush', 'stashApply', 'stashDrop', 'stashClear', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'undoApply',
 ])
 
@@ -1023,6 +1052,70 @@ async function branchCreate(payload) {
   if (typeof payload.startPoint === 'string' && payload.startPoint.trim() !== '') args.push(requireRef(payload.startPoint, 'startPoint'))
   await git(root, args)
   return { branch: name }
+}
+
+/* ---------- worktrees (v0.22, alpha.2) ----------
+   A worktree is a second checkout of the same repository. These three verbs
+   are the whole lifecycle the panel offers: create a checkout (on a new or an
+   existing branch), remove one, and prune the admin records of directories
+   that are already gone.
+
+   Removal is deliberately strict. The current and primary checkouts are
+   refused outright (removing the tree the panel is reading is never what a
+   click meant), a locked worktree must be unlocked first, and a dirty one
+   needs a second request with force:true. The dirty check runs INSIDE the
+   target, not the repository root: git status at the root says nothing
+   about the linked checkout's files. */
+async function worktreeAdd(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const target = requireAbsolute(payload.path, 'path')
+  if (sameDirectory(target, root)) throw badRequest('path must differ from the current worktree')
+  if (existsSync(target)) throw new PanelError('worktree-exists', 'path already exists: ' + target, 409)
+  const branch = requireRef(payload.branch, 'branch')
+  const checked = await runGit(root, ['check-ref-format', '--branch', branch])
+  if (checked.code !== 0) throw badRequest('invalid branch name: ' + branch)
+  const createBranch = payload.createBranch !== false
+  const args = ['worktree', 'add']
+  if (createBranch === true) {
+    args.push('-b', branch, target)
+    if (typeof payload.base === 'string' && payload.base.trim() !== '') args.push(requireRef(payload.base, 'base'))
+  } else {
+    args.push(target, branch)
+  }
+  await git(root, args)
+  return { path: target, branch: branch, created: createBranch }
+}
+
+async function worktreeRemove(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  if (payload.confirm !== true) throw badRequest('removing a worktree requires confirm: true')
+  const target = requireAbsolute(payload.path, 'path')
+  const trees = await worktreesOf(root)
+  const tree = trees.find((entry) => sameDirectory(entry.path, target))
+  if (tree === undefined) throw new PanelError('worktree-missing', 'not a worktree of this repository: ' + target, 409)
+  if (tree.current === true) throw new PanelError('protected-worktree', 'refusing to remove the worktree this panel is showing', 409)
+  if (tree.primary === true) throw new PanelError('protected-worktree', 'refusing to remove the primary worktree', 409)
+  if (tree.locked === true) throw new PanelError('worktree-locked', 'worktree is locked; unlock it before removing: ' + target, 409)
+  if (tree.prunable === true || existsSync(target) === false) throw new PanelError('worktree-missing', 'worktree directory is gone; prune the record instead: ' + target, 409)
+  const dirty = await runGit(target, ['status', '--porcelain=v1', '-z', '--untracked-files=all'])
+  if (dirty.code !== 0) throw new PanelError('worktree-unreadable', 'could not inspect the worktree: ' + target, 409)
+  const hasChanges = dirty.stdout !== ''
+  if (hasChanges === true && payload.force !== true) throw new PanelError('worktree-dirty', 'worktree has uncommitted changes; force removal deletes them: ' + target, 409)
+  const args = ['worktree', 'remove']
+  if (payload.force === true) args.push('--force')
+  args.push(target)
+  await git(root, args)
+  return { path: target, forced: payload.force === true, dirty: hasChanges }
+}
+
+async function worktreePrune(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  if (payload.confirm !== true) throw badRequest('pruning worktrees requires confirm: true')
+  const output = await git(root, ['worktree', 'prune', '-v'])
+  return { output: output.trim() }
 }
 
 /* Upstream management (issue #18): rebind or drop a branch's tracking remote.
@@ -2051,6 +2144,9 @@ const METHODS = {
   branchRename,
   'branch-upstream': branchUpstream,
   branchDelete,
+  worktreeAdd,
+  worktreeRemove,
+  worktreePrune,
   merge,
   rebase,
   cherryPick,

@@ -583,6 +583,137 @@ test('only ANOTHER working tree marks a branch as occupied', async () => {
   }
 })
 
+
+test('worktrees: create on a new branch, attach an existing branch, reject bad input', async () => {
+  const baseDir = mkdtempSync(join(tmpdir(), 'dsh-ide-git-wt-add-'))
+  // The space is deliberate: git worktree list --porcelain -z must keep a
+  // path with a space in one record, not split it across lines.
+  const targetNew = join(baseDir, 'wt one')
+  const targetExisting = join(baseDir, 'wt two')
+  const cleanup = () => {
+    for (const target of [targetNew, targetExisting]) {
+      if (existsSync(target) === false) continue
+      try { git('worktree', 'remove', '--force', target) } catch (error) { void error }
+    }
+    try { git('branch', '-D', 'wt/new') } catch (error) { void error }
+    git('worktree', 'prune')
+    rmSync(baseDir, { recursive: true, force: true })
+  }
+  try {
+    const created = await call('worktreeAdd', { cwd: repo, path: targetNew, branch: 'wt/new', createBranch: true })
+    assert.equal(created.status, 200)
+    assert.equal(created.body.data.created, true)
+    assert.equal(created.body.data.branch, 'wt/new')
+    assert.equal(existsSync(join(targetNew, 'a.txt')), true, 'the new checkout got the repository contents')
+
+    const listed = await call('summary', { cwd: repo })
+    const row = listed.body.data.worktrees.find((entry) => entry.branch === 'wt/new')
+    assert.ok(row !== undefined, 'summary lists the new worktree')
+    assert.equal(row.current, false)
+    assert.equal(row.primary, false)
+    assert.equal(row.detached, false)
+    assert.equal(row.path.endsWith('wt one'), true, 'path with a space survives porcelain -z: ' + row.path)
+
+    const existing = await call('worktreeAdd', { cwd: repo, path: targetExisting, branch: 'feature', createBranch: false })
+    assert.equal(existing.status, 200)
+    assert.equal(existing.body.data.created, false)
+    assert.equal(existsSync(join(targetExisting, 'c.txt')), true, 'the existing branch was checked out')
+
+    const duplicate = await call('worktreeAdd', { cwd: repo, path: targetNew, branch: 'wt/other', createBranch: true })
+    assert.equal(duplicate.status, 409)
+    assert.equal(duplicate.body.error.code, 'worktree-exists')
+
+    const invalid = await call('worktreeAdd', { cwd: repo, path: join(baseDir, 'invalid'), branch: 'bad..name', createBranch: true })
+    assert.equal(invalid.status, 400)
+    assert.match(invalid.body.error.message, /invalid branch name/)
+    assert.equal(existsSync(join(baseDir, 'invalid')), false, 'a rejected branch never creates a checkout')
+  } finally {
+    cleanup()
+  }
+})
+
+test('worktrees: removal guards confirm, current/primary, locked and dirty trees', async () => {
+  const baseDir = mkdtempSync(join(tmpdir(), 'dsh-ide-git-wt-remove-'))
+  const dirtyTree = join(baseDir, 'wt dirty')
+  const lockedTree = join(baseDir, 'wt locked')
+  const cleanup = () => {
+    for (const target of [dirtyTree, lockedTree]) {
+      if (existsSync(target) === false) continue
+      try { git('worktree', 'remove', '--force', target) } catch (error) { void error }
+    }
+    for (const branch of ['wt/dirty', 'wt/locked']) {
+      try { git('branch', '-D', branch) } catch (error) { void error }
+    }
+    git('worktree', 'prune')
+    rmSync(baseDir, { recursive: true, force: true })
+  }
+  try {
+    const created = await call('worktreeAdd', { cwd: repo, path: dirtyTree, branch: 'wt/dirty', createBranch: true })
+    assert.equal(created.status, 200)
+    writeFileSync(join(dirtyTree, 'scratch.txt'), 'scratch\n')
+
+    const noConfirm = await call('worktreeRemove', { cwd: repo, path: dirtyTree })
+    assert.equal(noConfirm.status, 400)
+
+    const current = await call('worktreeRemove', { cwd: repo, path: repo, confirm: true })
+    assert.equal(current.status, 409)
+    assert.equal(current.body.error.code, 'protected-worktree')
+
+    const dirty = await call('worktreeRemove', { cwd: repo, path: dirtyTree, confirm: true })
+    assert.equal(dirty.status, 409)
+    assert.equal(dirty.body.error.code, 'worktree-dirty')
+    assert.equal(existsSync(dirtyTree), true, 'a refused removal leaves the checkout in place')
+
+    const forced = await call('worktreeRemove', { cwd: repo, path: dirtyTree, confirm: true, force: true })
+    assert.equal(forced.status, 200)
+    assert.equal(forced.body.data.forced, true)
+    assert.equal(forced.body.data.dirty, true)
+    assert.equal(existsSync(dirtyTree), false, 'force removal deletes the dirty checkout')
+
+    const lockedCreated = await call('worktreeAdd', { cwd: repo, path: lockedTree, branch: 'wt/locked', createBranch: true })
+    assert.equal(lockedCreated.status, 200)
+    git('worktree', 'lock', lockedTree)
+    const locked = await call('worktreeRemove', { cwd: repo, path: lockedTree, confirm: true })
+    assert.equal(locked.status, 409)
+    assert.equal(locked.body.error.code, 'worktree-locked')
+    git('worktree', 'unlock', lockedTree)
+    const unlocked = await call('worktreeRemove', { cwd: repo, path: lockedTree, confirm: true })
+    assert.equal(unlocked.status, 200)
+    assert.equal(existsSync(lockedTree), false)
+  } finally {
+    cleanup()
+  }
+})
+
+test('worktrees: prune forgets a directory deleted outside the panel', async () => {
+  const baseDir = mkdtempSync(join(tmpdir(), 'dsh-ide-git-wt-prune-'))
+  const target = join(baseDir, 'wt gone')
+  try {
+    const created = await call('worktreeAdd', { cwd: repo, path: target, branch: 'wt/gone', createBranch: true })
+    assert.equal(created.status, 200)
+    rmSync(target, { recursive: true, force: true })
+
+    const stale = await call('summary', { cwd: repo })
+    const row = stale.body.data.worktrees.find((entry) => entry.branch === 'wt/gone')
+    assert.ok(row !== undefined, 'the stale admin record is still listed')
+    assert.equal(row.prunable, true)
+
+    const refused = await call('worktreePrune', { cwd: repo })
+    assert.equal(refused.status, 400)
+
+    const pruned = await call('worktreePrune', { cwd: repo, confirm: true })
+    assert.equal(pruned.status, 200)
+
+    const after = await call('summary', { cwd: repo })
+    assert.equal(after.body.data.worktrees.some((entry) => entry.branch === 'wt/gone'), false,
+      'prune drops the record of the missing checkout')
+  } finally {
+    try { git('worktree', 'prune') } catch (error) { void error }
+    try { git('branch', '-D', 'wt/gone') } catch (error) { void error }
+    rmSync(baseDir, { recursive: true, force: true })
+  }
+})
+
 /* ============================== ai commit message (issue #6) ============================== */
 
 /** Drive one commit-message call against a fake llm/sessions pair. */
