@@ -67,7 +67,8 @@ test('the dsh peer survives the runtime compatibility check', () => {
   const peer = pkg.peerDependencies['@deepseek-ai/dsh']
   assert.equal(peer, pkg.engines.dsh, 'the dsh peer must mirror engines.dsh exactly')
   // Open floor with a prerelease tag, NO ceiling. The floor tracks the oldest
-  // supported host (0.2.2-alpha.2 — the first 0.2.2 alpha this release targets).
+  // supported host (0.1.6-alpha.2 — the plugin panel config seat's debut; the
+  // 0.2.2-alpha.2-only fields are capability-detected at runtime instead).
   // The host gate satisfies with
   // includePrerelease:true (app-boot plugin-compatibility.ts), so a single
   // `>=X.Y.Z-tag` comparator is both honest and sufficient; the tag keeps a
@@ -105,12 +106,12 @@ test('the dsh peer survives the runtime compatibility check', () => {
     if (m[4] === undefined) return true // a stable release outranks any prerelease
     return compareTag(m[4], floorTag) >= 0
   }
-  // Mirror of the host gate at numeric + prerelease granularity: 0.2.2-alpha.1
-  // and older hosts predate the alpha.2 surface this release targets.
-  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.2', '0.1.7-rc.1', '0.2.1', '0.2.2-alpha.1']) {
+  // Mirror of the host gate at numeric + prerelease granularity: 0.1.6-alpha.1
+  // and older hosts predate the plugin panel config seat.
+  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.1', '0.1.6-alpha.0']) {
     assert.ok(!satisfies(version), 'the dsh peer must reject ' + version)
   }
-  for (const version of ['0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2', '0.2.3-rc.1', '0.3.0']) {
+  for (const version of ['0.1.6-alpha.2', '0.1.7-rc.1', '0.2.1', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2', '0.2.3-rc.1', '0.3.0']) {
     assert.ok(satisfies(version), 'the dsh peer would reject ' + version)
   }
   // OPTIONAL keeps the gate intact while removing the install hazard: the gate
@@ -172,7 +173,7 @@ test('send-to-chat rides the composer facade with a guarded primitives require',
   // A host without the seed module must degrade, not throw (invariant 1's spirit).
   assert.match(client, /let UIPrimitives = null/, 'the primitives module handle must default to null')
   assert.match(client, /try \{ UIPrimitives = require\('@deepseek-ai\/dsh-client-ui-primitives'\) \} catch/, 'the require must be guarded')
-  assert.match(client, /UIPrimitives !== null && typeof UIPrimitives\.DiffBlock === 'function'/, 'the diff block must check the handle before use')
+  assert.match(client, /function DiffBody\(props\) \{\n\s*return E\(LineDiff, \{/, 'the inline diff must reuse LineDiff so split/wrap stay reachable (#22)')
   assert.match(client, /UIPrimitives === null \|\| typeof UIPrimitives\.FileTypeIcon !== 'function'/, 'the file glyph must check the handle before use')
 })
 
@@ -465,7 +466,17 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   // and the external ref carries the repo root both ways (worktree + repoRoot)
   // so a multi-root workspace cannot land the diff in the wrong repository.
   assert.match(client, /if \(previewDiff\(seed\) === true\) return/,
-    'every diff verb goes through the external-first funnel')
+    'every diff verb goes through the preview funnel')
+  // Issue #22: inline-first is the default so the panel's own split / wrap
+  // switches survive installing dsh-better-sidebar; the switch flips it back.
+  assert.match(client, /if \(inlineDiffEnabled\(\) === true\) return false/,
+    'the inline preview switch must gate the external hand-off chain')
+  assert.match(client, /function inlineDiffEnabled\(\) \{/,
+    'the inline preview switch reads one row-Config field')
+  assert.match(client, /function reviewRowSpanOf\(body, fromRow, toRow\)/,
+    'selections inside the review renderer read the printed line numbers')
+  assert.match(client, /span = reviewRowSpanOf\(from\.body, from\.row, to\.row\)/,
+    'the review branch must be wired into resolveDiffSelection')
   assert.match(client, /worktree: repoRoot, repoRoot: repoRoot/,
     'the external diff ref pins the repository root')
 
@@ -1286,6 +1297,11 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   assert.match(card, /const field = 'composerStatus'/, 'the composer pill switch is backed by its own row-Config field')
   assert.match(host, /shape\.composerStatus = live\(schema\.boolean\(\)\.default\(true\)\)/,
     'the host schema declares the composerStatus field with default true')
+  // Issue #22 (inline diff): the fourth placement switch keeps the plugin's own
+  // split / wrap pane reachable when an external diff tab is installed.
+  assert.match(card, /const field = 'inlineDiff'/, 'the inline preview switch is backed by its own row-Config field')
+  assert.match(host, /shape\.inlineDiff = live\(schema\.boolean\(\)\.default\(true\)\)/,
+    'the host schema declares the inlineDiff field with default true')
   // Generic guard, so the NEXT field cannot repeat the v0.19.7 bug: every
   // row-Config field the card writes must be declared volatile in the host
   // schema. Rail fields are covered by the RAIL_CONFIG_IDS parity test above.
@@ -1309,14 +1325,15 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   const cardCode = card.replace(/\/\*[\s\S]*?\*\//g, '')
   assert.doesNotMatch(cardCode, /values\[field\] !== false\) !== true/,
     'the precedence trap must not come back: parenthesize the whole fallback')
-  for (const field of ['conversationTab', 'immersive', 'composerStatus']) {
+  for (const field of ['conversationTab', 'immersive', 'composerStatus', 'inlineDiff']) {
     assert.match(card, new RegExp("const field = '" + field + "'\\n\\s+const inputId = 'dig-placement-' \\+ field\\n\\s+const shown = placementShown\\(field\\)"),
       field + ' must read its switch state through placementShown')
   }
   assert.match(card, /const wanted = placementTarget\(field, fromControl\)/,
     'every placement toggle derives its target from the shared helper')
   for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint',
-    'settings.placement.immersive', 'settings.placement.immersiveHint']) {
+    'settings.placement.immersive', 'settings.placement.immersiveHint',
+    'settings.diff.inline', 'settings.diff.inlineHint']) {
     const occurrences = client.split("'" + key + "'").length - 1
     assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
   }

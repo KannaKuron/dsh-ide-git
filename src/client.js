@@ -315,6 +315,8 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
       'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
       'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
+      'settings.diff.inline': '在面板内预览差异',
+      'settings.diff.inlineHint': '开启后差异在 Git 面板内打开，可使用左右分栏与自动换行；关闭后交给侧边栏的 diff 预览。',
       'preview.openFile': '打开文件预览',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
@@ -681,6 +683,8 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
       'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
       'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
+      'settings.diff.inline': 'Preview diffs in the panel',
+      'settings.diff.inlineHint': 'On, diffs open inside the Git panel with split view and line wrap. Off, the sidebar\'s diff preview takes over.',
       'preview.openFile': 'Open in the file preview',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
@@ -1055,6 +1059,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'settings.diff.inline': '喺面板內預覽差異',
+        'settings.diff.inlineHint': '開啟之後差異喺 Git 面板內開啟，可以用左右分欄同自動換行；關閉之後交畀側邊欄嘅 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -1421,6 +1427,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
+        'settings.diff.inline': '在面板內預覽差異',
+        'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -1787,6 +1795,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'settings.diff.inline': '在面板內預覽差異',
+        'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -2153,6 +2163,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
         'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
         'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
+        'settings.diff.inline': 'パネル内で差分をプレビュー',
+        'settings.diff.inlineHint': 'オンの場合、差分は Git パネル内で開き、左右分割と折り返しを使用できます。オフの場合はサイドバーの差分プレビューに任せます。',
         'preview.openFile': 'ファイルプレビューを開く',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -2519,6 +2531,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
         'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
         'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
+        'settings.diff.inline': '패널에서 차이 미리보기',
+        'settings.diff.inlineHint': '켜면 차이가 Git 패널 안에서 열리고 좌우 분할과 자동 줄바꿈을 사용할 수 있습니다. 끄면 사이드바의 차이 미리보기로 넘깁니다.',
         'preview.openFile': '파일 미리보기로 열기',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -2885,6 +2899,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
         'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
         'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
+        'settings.diff.inline': 'Diffs im Panel anzeigen',
+        'settings.diff.inlineHint': 'Ein: Diffs öffnen im Git-Panel, mit geteilter Ansicht und Zeilenumbruch. Aus: Die Diff-Vorschau der Seitenleiste übernimmt.',
         'preview.openFile': 'In der Dateivorschau öffnen',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -3251,6 +3267,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
         'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
         'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
+        'settings.diff.inline': 'Aperçu des diffs dans le panneau',
+        'settings.diff.inlineHint': 'Activé, les diffs s’ouvrent dans le panneau Git, avec vue scindée et retour à la ligne. Désactivé, l’aperçu diff de la barre latérale prend le relais.',
         'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -3617,6 +3635,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
         'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
         'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
+        'settings.diff.inline': 'Просмотр различий в панели',
+        'settings.diff.inlineHint': 'Включено: различия открываются в панели Git с разделённым видом и переносом строк. Выключено: показ переходит к боковой панели.',
         'preview.openFile': 'Открыть в предпросмотре файла',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -3983,6 +4003,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
         'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
         'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
+        'settings.diff.inline': 'Pré-visualizar diferenças no painel',
+        'settings.diff.inlineHint': 'Ligado, as diferenças abrem no painel Git, com vista dividida e quebra de linha. Desligado, a pré-visualização da barra lateral assume.',
         'preview.openFile': 'Abrir na pré-visualização do arquivo',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -4349,6 +4371,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
         'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
         'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
+        'settings.diff.inline': 'Anteprima delle differenze nel pannello',
+        'settings.diff.inlineHint': 'Attivo: le differenze si aprono nel pannello Git, con vista affiancata e ritorno a capo. Disattivo: subentra l’anteprima della barra laterale.',
         'preview.openFile': 'Apri nell’anteprima del file',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -4715,6 +4739,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
         'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
         'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
+        'settings.diff.inline': 'Diffs in het paneel bekijken',
+        'settings.diff.inlineHint': 'Aan: diffs openen in het Git-paneel, met gesplitste weergave en regelterugloop. Uit: de diff-voorvertoning in de zijbalk neemt het over.',
         'preview.openFile': 'Openen in de bestandsvoorbeeld',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -5081,6 +5107,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
         'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
         'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
+        'settings.diff.inline': 'Podgląd różnic w panelu',
+        'settings.diff.inlineHint': 'Włączone: różnice otwierają się w panelu Git, z widokiem dzielonym i zawijaniem wierszy. Wyłączone: podgląd różnic w pasku bocznym przejmuje.',
         'preview.openFile': 'Otwórz w podglądzie pliku',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -5447,6 +5475,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
         'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
         'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
+        'settings.diff.inline': 'Förhandsgranska diffar i panelen',
+        'settings.diff.inlineHint': 'På: diffar öppnas i Git-panelen med delad vy och radbrytning. Av: sidopanelens diff-förhandsgranskning tar över.',
         'preview.openFile': 'Öppna i filförhandsvisningen',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -5813,6 +5843,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
         'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
         'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
+        'settings.diff.inline': 'Farkları panelde önizle',
+        'settings.diff.inlineHint': 'Açık: farklar Git panelinde açılır; bölünmüş görünüm ve satır kaydırma kullanılabilir. Kapalı: kenar çubuğundaki fark önizlemesi devralır.',
         'preview.openFile': 'Dosya önizlemesinde aç',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -6179,6 +6211,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
         'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
         'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
+        'settings.diff.inline': 'Pratinjau diff di panel',
+        'settings.diff.inlineHint': 'Aktif: diff terbuka di panel Git, dengan tampilan terbagi dan pelipatan baris. Nonaktif: pratinjau diff bilah sisi mengambil alih.',
         'preview.openFile': 'Buka di pratinjau berkas',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -6545,6 +6579,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
         'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
         'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
+        'settings.diff.inline': 'Xem trước khác biệt trong bảng',
+        'settings.diff.inlineHint': 'Bật: khác biệt mở trong bảng Git, có chế độ chia đôi và tự động xuống dòng. Tắt: phần xem trước ở thanh bên đảm nhận.',
         'preview.openFile': 'Mở trong xem trước tệp',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -6911,6 +6947,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
         'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
         'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
+        'settings.diff.inline': 'معاينة الفروق داخل اللوحة',
+        'settings.diff.inlineHint': 'عند التشغيل تفتح الفروق داخل لوحة Git مع العرض المنقسم والتفاف الأسطر. عند الإيقاف تتولاها معاينة الفروق في الشريط الجانبي.',
         'preview.openFile': 'افتح في معاينة الملف',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -7277,6 +7315,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
         'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
         'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
+        'settings.diff.inline': 'पैनल में अंतर देखें',
+        'settings.diff.inlineHint': 'चालू: अंतर Git पैनल में खुलते हैं, स्प्लिट व्यू और लाइन रैप के साथ। बंद: साइडबार का अंतर पूर्वावलोकन संभालता है।',
         'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -7643,6 +7683,8 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
         'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
         'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
+        'settings.diff.inline': 'ดูตัวอย่างความแตกต่างในแผง',
+        'settings.diff.inlineHint': 'เปิด: ความแตกต่างเปิดในแผง Git พร้อมมุมมองแยกและตัดบรรทัดอัตโนมัติ ปิด: ตัวอย่างความแตกต่างในแถบข้างจะรับหน้าที่',
         'preview.openFile': 'เปิดในตัวอย่างไฟล์',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
@@ -9326,47 +9368,6 @@ window.__ModuleLoader__.load({
       return false
     }
 
-    /* One single-file unified diff (what the host `diff` method returns) → the
-       one DiffHunk DiffBlock renders, by replaying ` `/`-`/`+` lines back into
-       the two sides. No `@@` at all (binary patches, mode-only changes) or a
-       pathless header → null, and the caller keeps the hand-drawn rows. */
-    function patchToHunk(patch) {
-      const text = typeof patch === 'string' ? patch : ''
-      if (text === '' || text.indexOf('@@') < 0) return null
-      const lines = text.split('\n')
-      let path = null
-      const oldText = []
-      const newText = []
-      for (const line of lines) {
-        if (line.indexOf('+++ ') === 0) {
-          const name = line.slice(4).split('\t')[0]
-          if (name !== '/dev/null') path = name.replace(/^b\//, '')
-          continue
-        }
-        if (line.indexOf('--- ') === 0) {
-          if (path === null) {
-            const name = line.slice(4).split('\t')[0]
-            if (name !== '/dev/null') path = name.replace(/^a\//, '')
-          }
-          continue
-        }
-        if (line.indexOf('@@') === 0) continue
-        if (line.indexOf('+') === 0) { newText.push(line.slice(1)); continue }
-        if (line.indexOf('-') === 0) { oldText.push(line.slice(1)); continue }
-        if (line.indexOf('\\') === 0) continue
-        if (line.indexOf(' ') === 0) { oldText.push(line.slice(1)); newText.push(line.slice(1)); continue }
-        // diff --git / index / new file mode / rename from ...: metadata above
-        // the first hunk; anything else after it would be malformed.
-        continue
-      }
-      if (path === null || path === '') return null
-      // A patch without body lines (mode-only, bare metadata) replays into an
-      // empty hunk that DiffBlock draws as nothing at all — keep the hand-drawn
-      // rows for those, they at least show what happened.
-      if (oldText.length === 0 && newText.length === 0) return null
-      return { path: path, oldText: oldText.length === 0 ? null : oldText.join('\n'), newText: newText.join('\n') }
-    }
-
     /* ============================== diff ============================== */
 
     function diffLines(patch) {
@@ -9403,13 +9404,13 @@ window.__ModuleLoader__.load({
 
     /* ---- diff selection core
        Pure line-number plumbing for the diff-pane context menu (v0.13.5).
-       The host DiffBlock draws rows WITHOUT line-number attributes — a row is
-       `<div class={line + kindClass}>{row.text}</div>` (DiffBlock.tsx:204) and
-       the `+`/`-`/two-space prefixes live in CSS `::before` content — so the
-       menu reconstructs numbers by replaying the ROW KINDS in document order
-       from the patch's first hunk header. The hand-drawn rows already carry
-       parsed numbers (diffLines above). Kept DOM-free between the markers so
-       tests/smoke.mjs can slice the block and drive the real implementation. */
+       For a host DiffBlock body (kept as a forward-compat fallback) rows do
+       not expose numbers, so the menu replays ROW KINDS in document order from
+       the patch's first hunk header; hand-drawn rows carry parsed numbers
+       (diffLines above). The review renderer used today (#22) reads its own
+       printed numbers instead (reviewRowSpanOf, DOM side below). Kept DOM-free
+       between the markers so tests/smoke.mjs can slice the block and drive the
+       real implementation. */
 
     const DIFF_SNIPPET_MAX = 600
 
@@ -9555,13 +9556,13 @@ window.__ModuleLoader__.load({
 
     /* ---------- DOM side of the diff-pane context menu (browser only) ----------
        SSR never calls these: they run inside the pane's onContextMenu, after
-       the selection has been captured. The row element under a selection
-       endpoint is either a hand-drawn `.dig-diff-line`, or a DiffBlock row —
-       a div child of the body whose OWN parent carries the `data-diff`
-       marker. `data-diff` is a component attribute (DiffBlock.tsx:199), not a
-       hashed CSS-module class, so the lookup does not bet on build-time class
-       renaming; the row KIND comes from the `::before` content the kinds are
-       painted with, for the same reason. */
+       the selection has been captured. A row under a selection endpoint is
+       either a review row (data-diff-line on .dig-lf-line / .dig-lf-splitLine
+       / .dig-lf-sideLine), a hand-drawn `.dig-diff-line`, or a host DiffBlock
+       row (a div child of the body whose OWN parent carries `data-diff`). The
+       review path reads the printed .dig-lf-number cells; the host path gets
+       its KIND from the `::before` content the rows are painted with. Both
+       rely on component attributes, not hashed CSS-module classes. */
 
     function savedSelectionOf() {
       try {
@@ -9581,6 +9582,15 @@ window.__ModuleLoader__.load({
       for (let hop = 0; element !== null && element !== undefined && hop < 8; hop += 1) {
         if (element.classList !== undefined && element.classList.contains('dig-diff-line') === true) {
           return { kind: 'drawn', row: element, body: element.parentElement }
+        }
+        /* The review renderer (LineDiff, used by BOTH the inline pane and the
+           native preview since #22) stamps every row with data-diff-line and
+           carries the real line numbers in .dig-lf-number cells. */
+        if (element.hasAttribute !== undefined && element.hasAttribute('data-diff-line') === true
+          && element.classList !== undefined
+          && (element.classList.contains('dig-lf-line') === true || element.classList.contains('dig-lf-splitLine') === true || element.classList.contains('dig-lf-sideLine') === true)) {
+          const body = element.closest === undefined ? null : element.closest('.dig-lf-body')
+          if (body !== null) return { kind: 'review', row: element, body: body }
         }
         const parent = element.parentElement
         if (parent !== null && parent.getAttribute !== undefined && parent.hasAttribute('data-diff') === false) {
@@ -9612,6 +9622,49 @@ window.__ModuleLoader__.load({
       return { rows: rows, kinds: kinds }
     }
 
+    /* The review renderer's rows carry their printed numbers already: read
+       them straight off the selected rows (unified: old then new; split with
+       wrap: the two cells; split without wrap: one side per column). This is
+       simpler and more accurate than replaying kinds, and it follows the
+       SPLIT view, where one row is two files' lines. */
+    function reviewRowSpanOf(body, fromRow, toRow) {
+      if (body === null || body === undefined) return null
+      const rows = Array.prototype.slice.call(body.querySelectorAll('[data-diff-line]'))
+      const fromIndex = rows.indexOf(fromRow)
+      const toIndex = rows.indexOf(toRow)
+      if (fromIndex < 0 || toIndex < 0) return null
+      let newFrom = null
+      let newTo = null
+      let oldFrom = null
+      let oldTo = null
+      const read = (node) => {
+        const text = node === undefined || node === null ? '' : String(node.textContent).trim()
+        if (text === '') return null
+        const value = Number.parseInt(text, 10)
+        return Number.isFinite(value) ? value : null
+      }
+      for (let index = Math.min(fromIndex, toIndex); index <= Math.max(fromIndex, toIndex); index += 1) {
+        const row = rows[index]
+        const numbers = row.querySelectorAll('.dig-lf-number')
+        let oldLine = null
+        let newLine = null
+        if (row.classList.contains('dig-lf-sideLine') === true) {
+          const side = row.closest === undefined ? null : row.closest('[data-diff-side]')
+          const value = read(numbers[0])
+          if (side !== null && side.getAttribute('data-diff-side') === 'left') oldLine = value
+          else newLine = value
+        } else {
+          oldLine = read(numbers[0])
+          newLine = read(numbers[1])
+        }
+        if (oldLine !== null) { oldFrom = oldFrom === null ? oldLine : oldFrom; oldTo = oldLine }
+        if (newLine !== null) { newFrom = newFrom === null ? newLine : newFrom; newTo = newLine }
+      }
+      if (newFrom !== null) return { start: newFrom, end: newTo === null ? newFrom : newTo, old: false }
+      if (oldFrom !== null) return { start: oldFrom, end: oldTo === null ? oldFrom : oldTo, old: true }
+      return null
+    }
+
     /* { kind: 'lines', span } for a selection inside ONE diff body, or
        { kind: 'snippet' } when the rows are there but the numbers cannot be
        reconstructed. null (rows missing entirely) means "not a diff
@@ -9623,7 +9676,9 @@ window.__ModuleLoader__.load({
       if (from === null || to === null) return null
       if (from.kind !== to.kind || from.body !== to.body) return { kind: 'snippet', text: saved.text }
       let span = null
-      if (from.kind === 'drawn') {
+      if (from.kind === 'review') {
+        span = reviewRowSpanOf(from.body, from.row, to.row)
+      } else if (from.kind === 'drawn') {
         const rows = diffLines(patch)
         const all = from.body === null || from.body === undefined ? [] : Array.prototype.slice.call(from.body.querySelectorAll('.dig-diff-line'))
         const fromIndex = all.indexOf(from.row)
@@ -9645,55 +9700,19 @@ window.__ModuleLoader__.load({
     }
 
 
-    /* DiffBlock's own 16-line cap would REPLACE scrolling with a fold button;
-       this panel keeps the old contract (render everything, scroll inside the
-       .dig-diff-pane max-height), so the cap is pushed out of reach and the
-       fold labels below are placeholders that never render at this size. */
-    const DIFF_BLOCK_MAX_LINES = 1000000
-
-    function diffLabelsOf(t) {
-      return {
-        codeLabel: t('diff.codeLabel'),
-        wrapLabel: t('diff.wrapLabel'),
-        unwrapLabel: t('diff.unwrapLabel'),
-        copy: t('diff.copy'),
-        copied: t('diff.copied'),
-        collapseAria: 'Collapse diff',
-        expandAria: (hidden) => 'Show ' + String(hidden) + ' more diff lines',
-        collapse: 'Show less',
-        expand: (hidden) => 'Show ' + String(hidden) + ' more',
-      }
-    }
-
+    /* The inline pane body and the native preview tab share ONE renderer:
+       LineDiff is the ported official ReviewTab/FileDiff and carries the
+       split / wrap toolbar (issue #22). The former host DiffBlock body only
+       had wrap / copy, so turning the external hand-off off silently dropped
+       the 分栏 switch the user had asked for. One renderer also keeps both
+       diff surfaces visually identical. */
     function DiffBody(props) {
-      const rows = useMemo(() => diffLines(props.patch), [props.patch])
-      if (props.loading === true) return E('div', { className: 'dig-empty' }, props.t('diff.loading'))
-      if (props.binary === true) return E('div', { className: 'dig-empty' }, props.t('diff.binary'))
-      if (rows.length === 0) return E('div', { className: 'dig-empty' }, props.t('diff.empty'))
-      /* Host-rendered first (v0.14): the ui-primitives diff card brings the
-         shared toolbar (copy / wrap / language) and the product's diff colors.
-         A patch we cannot replay into a hunk (binary, mode-only) or a host
-         without the seed module falls back to the hand-drawn rows below. This
-         IS the official diff renderer (the platform seed table ships it, the
-         host's own surfaces render diffs through it) — the external preview
-         tab uses the same one, so every diff in the product reads alike. */
-      if (UIPrimitives !== null && typeof UIPrimitives.DiffBlock === 'function') {
-        const hunk = patchToHunk(props.patch)
-        if (hunk !== null) {
-          return E('div', { className: 'dig-diff-host' },
-            E(UIPrimitives.DiffBlock, {
-              diffs: [hunk],
-              labels: diffLabelsOf(props.t),
-              maxLines: DIFF_BLOCK_MAX_LINES,
-              className: 'dig-diff-card',
-            }))
-        }
-      }
-      return E('div', { className: 'dig-diff' }, rows.map((row, index) => E('div', { key: index, className: 'dig-diff-line dig-diff-' + row.kind },
-        E('span', { className: 'dig-diff-gutter' }, row.oldLine === null ? '' : String(row.oldLine)),
-        E('span', { className: 'dig-diff-gutter' }, row.newLine === null ? '' : String(row.newLine)),
-        E('span', { className: 'dig-diff-text' }, row.text === '' ? ' ' : row.text),
-      )))
+      return E(LineDiff, {
+        patch: props.patch,
+        loading: props.loading,
+        t: props.t,
+        onOpenFile: props.onOpenFile,
+      })
     }
 
     /* ---- external preview diff (v0.14.3): a faithful port of the review view ----
@@ -10891,6 +10910,43 @@ window.__ModuleLoader__.load({
               E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'branch', size: 13 })),
               E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.composer.title'))),
             E('div', { className: 'dig-settings-subnote' }, t('settings.composer.hint')))
+        })(),
+        (() => {
+          /* Inline diff preview (issue #22): ON keeps the panel's own diff pane
+             reachable, including its split / wrap switches. OFF restores the
+             external hand-off to dsh-better-sidebar or the native preview seat.
+             Same optimistic-write contract as the three rows above. */
+          const field = 'inlineDiff'
+          const inputId = 'dig-placement-' + field
+          const shown = placementShown(field)
+          const toggle = (event) => {
+            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
+            const fromControl = event !== undefined && event !== null && event.target !== null
+              && event.target !== undefined && typeof event.target.checked === 'boolean'
+              ? event.target.checked
+              : null
+            const wanted = placementTarget(field, fromControl)
+            intent.current[field] = wanted
+            dirty.current.set(field, wanted)
+            setPending((now) => Object.assign({}, now, { [field]: wanted }))
+            setNote('')
+            bump()
+            scheduleFlush()
+          }
+          return E('div', { key: field },
+            E('div', { className: 'dig-settings-row', 'data-placement-row': field },
+              E('input', {
+                id: inputId,
+                type: 'checkbox',
+                className: 'dig-settings-check',
+                'aria-labelledby': inputId + '-label',
+                checked: shown,
+                disabled: readOnly === true,
+                onChange: toggle,
+              }),
+              E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'diff', size: 13 })),
+              E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.diff.inline'))),
+            E('div', { className: 'dig-settings-subnote' }, t('settings.diff.inlineHint')))
         })()),
         /* Section 3 — the AI commit message (issue #6): model, reasoning and the
            prompt template. */
@@ -13722,6 +13778,11 @@ window.__ModuleLoader__.load({
          repoRoot 并进它自己的 git 调用,多仓库工作区不会落错仓库。 */
       const previewDiff = useCallback((seed) => {
         if (repoRoot === null) return false
+        /* Inline-first (issue #22): the switch defaults to ON, so the panel's
+           own diff pane — and its split / wrap controls — is what a click
+           opens. Turning it off hands the preview to the external chain
+           below, which is the only behaviour older releases had. */
+        if (inlineDiffEnabled() === true) return false
         const commitHash = seed.hash !== undefined && seed.hash !== null ? String(seed.hash) : null
         const ref = commitHash !== null
           ? { kind: 'commit', hash: commitHash.slice(0, 7), hashFull: commitHash, subject: seed.subject || '', worktree: repoRoot, repoRoot: repoRoot }
@@ -16355,6 +16416,18 @@ window.__ModuleLoader__.load({
       return value !== false
     }
 
+    /* Inline-first diff preview (issue #22). Default ON: the panel's own diff
+       pane owns the split / wrap switches, so installing dsh-better-sidebar or
+       opening the native preview seat must not silently take that capability
+       away. The settings card flips this field; false restores the external
+       hand-off chain in previewDiff. */
+    function inlineDiffEnabled() {
+      const ready = railFormReady()
+      if (ready === null) return true
+      const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.inlineDiff : undefined
+      return value !== false
+    }
+
     const COMPOSER_POLL_MS = 30000
     const COMPOSER_ERROR_TTL_MS = 6000
     /* Line counts re-run at most this often without a real change: the two
@@ -17201,9 +17274,9 @@ window.__ModuleLoader__.load({
        diff — whatever the store holds — fetched fresh from the host route on
        every seed. The seed carries cwd + repoRoot so a multi-root workspace
        lands on the right repository (the route requires cwd; repoRoot skips
-       the rev-parse). Rendered through the SAME DiffBody the inline pane uses,
-       so host DiffBlock reuse, the hand-drawn fallback and the binary/empty
-       states are all identical. */
+       the rev-parse). Rendered through the SAME LineDiff the inline pane's
+       DiffBody uses, so the header tool set (split / wrap / open file) and
+       the binary/empty states are identical on both surfaces. */
     function NativePreviewPanel(props) {
       const t = props.t
       const [seed, setSeed] = useState(() => previewStore.seed)

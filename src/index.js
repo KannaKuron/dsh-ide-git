@@ -84,6 +84,11 @@ function railConfigSchema(schema) {
      back and said "设置没写进去". Any new row-Config field the client writes MUST
      be declared (and volatile) here, or the write is refused before it lands. */
   shape.composerStatus = live(schema.boolean().default(true))
+  /* Inline diff preview (issue #22): ON by default so the panel's own diff
+     pane — with its split / wrap switches — stays reachable even when
+     dsh-better-sidebar or the native preview seat is installed. OFF hands the
+     preview back to those external tabs, exactly the pre-0.23 behaviour. */
+  shape.inlineDiff = live(schema.boolean().default(true))
   return schema.object(shape)
 }
 
