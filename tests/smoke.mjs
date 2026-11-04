@@ -2112,8 +2112,16 @@ test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
     'a plain click on a changed file opens its diff')
   assert.match(client, /'dig-diff-pane' \+ \(fill === true \? ' dig-diff-pane-fill' : ''\)/,
     'the compact chrome can render a filling diff pane')
-  assert.match(client, /splitTab === 'diff' && fillDiff !== null \? fillDiff : historyPane/,
+  assert.match(client, /const diffActive = splitTab === 'diff' && fillDiff !== null/,
     'the compact diff is a tab beside the history window (v0.26.0)')
+  // v0.26.3: switching tabs must not unmount the history list — it used to lose
+  // its scroll position and the commit detail its expanded state.
+  assert.match(client, /const tabPane = \(active, node\) => node === null \? null : E\('div', \{ className: 'dig-tab-pane' \+ \(active === true \? '' : ' dig-tab-pane-hidden'\) \}, node\)/,
+    'both tab bodies stay mounted, the inactive one just hides')
+  assert.match(client, /'\.dig-tab-pane\{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0\}'/,
+    'the pane wrapper fills the tab window')
+  assert.match(client, /'\.dig-tab-pane-hidden\{display:none\}'/,
+    'and the hidden pane keeps its scrollTop')
   assert.match(client, /'data-action': 'diff-tab'/, 'the compact chrome has a diff tab')
   assert.match(client, /'data-action': 'history-tab'/, 'and a history tab next to it')
   assert.match(client, /E\('div', \{ className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle\('changes'\) \}, changesPane\)/,
@@ -2133,4 +2141,18 @@ test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
     'the split pane still consumes the stored size')
   assert.match(client, /setSelectedPath\(seed\.path === undefined \? null : seed\.path\)/,
     'the inline diff header names the file it shows')
+})
+
+test('the diff request is single-flight, and untracked files keep their patch (v0.26.3)', () => {
+  // v0.25.1 made the row's single click open the diff, but the row still had
+  // onDoubleClick wired to the same handler: a double click fired three
+  // requests and the responses raced (an older patch could land last and paint
+  // the wrong file under the new title).
+  assert.match(client, /const diffSeq = useRef\(0\)/, 'each diff request gets a stamp')
+  assert.match(client, /if \(key === diffLast\.current\.key && now - diffLast\.current\.at < 400\) return/,
+    'the burst a double click produces is deduped')
+  assert.equal((client.match(/if \(diffSeq\.current !== run\) return/g) || []).length, 2,
+    'a stale response may not write the patch nor the error')
+  assert.match(client, /if \(diffSeq\.current === run\) setPatchLoading\(false\)/,
+    'and only the newest request clears the spinner')
 })

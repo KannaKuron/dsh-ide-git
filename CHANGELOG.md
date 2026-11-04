@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.26.3 — 2026-11-04
+
+**类型**:fix(代码审查 v0.25.0–v0.26.2:重复 diff 请求与页签卸载)
+
+- **重复请求与竞态**:v0.25.1 让变更行的单击就打开 diff,但行上仍绑着 `onDoubleClick` → 一次双击发三次 `diff` 请求,而 `openDiff` 没有请求序号:`setPatch(data.patch)` 谁最后回来算谁,慢响应会把 文件 A 的 patch 画到 文件 B 的标题下。现在 `openDiff` 记 `diffSeq` 序号,只有最新一次请求能写 `patch` / `error` / `patchLoading`;另加 `diffLast`(key + 时间戳,400ms 窗口)吞掉双击/连点产生的连发。
+- **页签切换会卸载历史列表**:v0.26.0/0.26.1 的页签窗是「三元式换元素」,切到差异就把 `historyPane`(以及 `CommitDetail`)从树上摘掉 → 滚动位置、虚拟列表窗口、详情展开状态全丢。现在两种纵向布局都渲染两个常驻窗格(`.dig-tab-pane`),非激活的那个只加 `.dig-tab-pane-hidden`(`display:none`);Chromium 实测 `display:none` 来回切换后 `scrollTop` 保留(300 → 0(读) → 300)。隐藏的 diff 高 0,被 `measurePanes` 的 `live > 0` 过滤,几何不受污染。
+- **未跟踪文件点开是空白(已知问题,本轮未改)**:`showDiff` 构造宿主 payload 时没带 `untracked`,未跟踪文件会走普通 `git diff -- <path>`(无索引条目 → 空 patch),差异页签置灰;宿主 `diff` 对 `untracked: true` 有 `--no-index /dev/null <file>` 分支。这是 v0.13.x 起就有的问题,不属于本轮的回归,按指示不动。
+- **验证**:`npm test` 127/127(新增 1 条 v0.26.3 测试:序号守卫 ×2、双击去重;既有的页签断言改到常驻窗格的新形状);`node --check` 通过;`/tmp/scroll-probe.mjs`(headless_shell + 裸 CDP)确认隐藏窗格保滚动。
+- 审查未改的小瑕疵:页签条只有 `data-active`,没有 `role="tablist"` / `aria-selected`;diff 失败后没有重试入口;`paneGeometry` 在分支树折叠时仍按 2 条分隔条扣高度(v0.24 之前就有)。
+
 ## v0.26.2 — 2026-11-04
 
 **类型**:fix(变更头的数字回到「变更」字样后面)

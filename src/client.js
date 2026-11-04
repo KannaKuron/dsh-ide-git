@@ -13178,6 +13178,14 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         if (splitTab === 'diff' && patch === '' && patchLoading === false) setSplitTab('history')
       }, [splitTab, patch, patchLoading])
+      /* v0.26.3: the row fires onDiff from its single click now, so a double
+         click used to open the same diff three times — and the responses raced
+         (a slow first request could land after the second and paint the wrong
+         file under the new title). `diffSeq` stamps each request and only the
+         newest one is allowed to write; `diffLast` swallows the burst a double
+         click produces. */
+      const diffSeq = useRef(0)
+      const diffLast = useRef({ key: '', at: 0 })
       /* What the open diff pane shows (v0.13.5): the pane is shared by the
          commit detail (hash + subject) and the working tree (staged or not),
          and the selection menu's payload must say which. Cleared everywhere
@@ -13862,16 +13870,24 @@ window.__ModuleLoader__.load({
       }, [sessionId, repoRoot, pickRepo, refresh])
 
       const openDiff = useCallback(async (seed) => {
+        const key = JSON.stringify([base, seed])
+        const now = Date.now()
+        if (key === diffLast.current.key && now - diffLast.current.at < 400) return
+        diffLast.current = { key: key, at: now }
+        const run = diffSeq.current + 1
+        diffSeq.current = run
         setPatchLoading(true)
         setPatch('')
         try {
           const data = await request('diff', Object.assign({}, base, seed))
+          if (diffSeq.current !== run) return
           setPatch(data.patch)
         } catch (caught) {
+          if (diffSeq.current !== run) return
           setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
         } finally {
-          setPatchLoading(false)
+          if (diffSeq.current === run) setPatchLoading(false)
         }
       }, [base])
 
@@ -15439,6 +15455,16 @@ window.__ModuleLoader__.load({
           onClick: () => foldTree(!treeOpen),
         }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' })) : null)
 
+      /* v0.26.3: a tabbed window keeps BOTH panes mounted and only hides the
+         inactive one. Swapping the elements out unmounted the history list (and
+         the commit detail) on every diff switch, which threw away its scroll
+         position and the windowed list's state. `display:none` keeps the
+         scrollTop (verified in Chromium). The hidden diff measures 0 tall and
+         is dropped by measurePanes' `live > 0` filter, so pane geometry stays
+         honest. */
+      const diffActive = splitTab === 'diff' && fillDiff !== null
+      const tabPane = (active, node) => node === null ? null : E('div', { className: 'dig-tab-pane' + (active === true ? '' : ' dig-tab-pane-hidden') }, node)
+
       let body
       if (repoState === null) {
         /* The scan is still running: a neutral loading state, never the
@@ -15473,7 +15499,8 @@ window.__ModuleLoader__.load({
           gutter('changes', 'prev'),
           E('div', { className: 'dig-pane dig-pane-main' },
             splitTabs(true, true),
-            splitTab === 'diff' && fillDiff !== null ? fillDiff : historyPane))
+            tabPane(diffActive === false, historyPane),
+            fillDiff === null ? null : tabPane(diffActive, fillDiff)))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
           treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
@@ -15492,7 +15519,8 @@ window.__ModuleLoader__.load({
              and leaves the list (and its scroll position) alone. */
           E('div', { className: 'dig-pane dig-pane-main' },
             splitTabs(false, false),
-            splitTab === 'diff' && fillDiff !== null ? fillDiff : historyPane))
+            tabPane(diffActive === false, historyPane),
+            fillDiff === null ? null : tabPane(diffActive, fillDiff)))
       }
 
       /* ---------- overlays ---------- */
@@ -16012,6 +16040,11 @@ window.__ModuleLoader__.load({
          window; the strip is the window's tab bar (the compact chrome also
          hosts the changes count and the tree toggle in it). */
       '.dig-split-tabs{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
+      /* v0.26.3: the tabbed window's bodies stay mounted; the inactive one is
+         hidden so the history list keeps its scroll position and the detail
+         keeps its expanded state. */
+      '.dig-tab-pane{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0}',
+      '.dig-tab-pane-hidden{display:none}',
       '.dig-compact-count{color:var(--dsw-alias-label-secondary);font-weight:500;font-size:11px;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}',
       '.dig-tab{border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;font-weight:500;padding:2px 10px;border-radius:var(--dsw-radius-sm,8px);cursor:pointer;white-space:nowrap;flex:none}',
       '.dig-tab:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
