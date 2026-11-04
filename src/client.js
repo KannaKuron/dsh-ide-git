@@ -16076,7 +16076,10 @@ window.__ModuleLoader__.load({
          filter bar, and painting from the wrong rect was the v0.19.2 drift. */
       '.dig-history{display:flex;flex-direction:column;min-height:0;flex:1;position:relative}',
       '.dig-history-scroll{flex:1;overflow:auto}',
-      '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 0;cursor:pointer;height:26px;overflow:hidden}',
+      // The row's left edge follows the bars above it (filter row / compact
+      // switch: 4px 6px padding), so the time column and the graph start on the
+      // same inset as the input box instead of flush against the pane edge.
+      '.dig-commit{display:flex;align-items:center;gap:6px;padding:1px 8px 1px 6px;cursor:pointer;height:26px;overflow:hidden}',
       '.dig-commit:hover{background:var(--dsw-alias-interactive-bg-hover)}',
       /* Same theme-aware gray mix as .dig-row-selected (see it). */
       '.dig-commit-selected{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover)) 58%,var(--dsw-static-neutral-bluish-75,var(--dsw-alias-bg-layer-3)) 42%);color:var(--dsw-alias-label-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}',
