@@ -21,8 +21,8 @@ export function apply(ctx) {
     'dsh-ide-git: /dsh-ide-git/api git routes',
   )
   /* AI commit message (issue #6). `llm` and `sessions` are injected HERE and not
-     in `export const inject`: a host without them must still load the whole
-     plugin, it just answers commit-message with no-host-service. */
+     in `export const inject`: a composition without them must still load the
+     whole plugin, it just answers commit-message with no-host-service. */
   if (typeof ctx.inject !== 'function') return
   ctx.inject(['llm', 'sessions'], (injected) => {
     const llm = injected.get('llm')

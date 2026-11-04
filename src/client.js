@@ -292,7 +292,6 @@ window.__ModuleLoader__.load({
       'toolbar.tree': '分支栏',
       'rail.more': '更多操作',
       'rail.settings': '动作条设置',
-      'rail.openSettings': '打开插件设置',
       'settings.card.title': 'Git 工具窗口设置',
       'settings.card.desc': '面板放置、动作条按钮与 AI 提交信息',
       'settings.placement.title': '面板放置',
@@ -335,7 +334,8 @@ window.__ModuleLoader__.load({
       'preview.hint': '点击文件或提交的「显示差异」,差异会在侧边栏这里打开。',
       'preview.boundary': '预览渲染出错——请重载页面,或反馈这个问题。',
       'settings.rail.title': '动作条',
-      'settings.rail.hint': '勾选要显示在动作条上的动作;顺序固定为默认顺序,取消勾选即隐藏。',
+      'settings.rail.hint': '勾选要显示在动作条上的动作；取消勾选即隐藏。拖动排序请用面板内的「动作条设置」。',
+      'settings.rail.loading': '正在加载设置…',
       'settings.rail.unavailable': '当前宿主没有设置服务,请用面板内的「动作条设置」。',
       'settings.commit.title': 'AI 提交信息',
       'settings.commit.model': '使用的模型',
@@ -680,7 +680,6 @@ window.__ModuleLoader__.load({
       'toolbar.tree': 'Branch pane',
       'rail.more': 'More actions',
       'rail.settings': 'Action bar settings',
-      'rail.openSettings': 'Open plugin settings',
       'settings.card.title': 'Git tool window settings',
       'settings.card.desc': 'Placement, action rail buttons and AI commit message',
       'settings.placement.title': 'Placement',
@@ -723,7 +722,8 @@ window.__ModuleLoader__.load({
       'preview.hint': 'Click “Show diff” on a file or commit — the diff opens here in the sidebar.',
       'preview.boundary': 'The preview failed to render — reload the page, or report an issue.',
       'settings.rail.title': 'Action rail',
-      'settings.rail.hint': 'Tick the actions shown on the rail. The order is fixed; unticking one hides it.',
+      'settings.rail.hint': 'Tick the actions shown on the rail; unticking one hides it. Reorder them in the panel’s “Action rail settings”.',
+      'settings.rail.loading': 'Loading settings…',
       'settings.rail.unavailable': 'This host has no settings service; use the in-panel “Action rail settings”.',
       'settings.commit.title': 'AI commit message',
       'settings.commit.model': 'Model',
@@ -1076,7 +1076,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
-        'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
@@ -1119,7 +1118,8 @@ window.__ModuleLoader__.load({
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'preview.boundary': '預覽渲染出錯——請重新載入頁面,或者回報呢個問題。',
         'settings.rail.title': '動作列',
-        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作；取消勾選即隱藏。拖曳排序請用面板內的「動作條設定」。',
+        'settings.rail.loading': '正在載入設定…',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用嘅模型',
@@ -1464,7 +1464,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
-        'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
@@ -1507,7 +1506,8 @@ window.__ModuleLoader__.load({
         'preview.hint': '點選檔案或提交的「顯示差異」,差異就會在側邊欄開啟。',
         'preview.boundary': '預覽算繪出錯——請重新載入頁面,或回報這個問題。',
         'settings.rail.title': '動作列',
-        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作；取消勾選即隱藏。拖曳排序請用面板內的「動作條設定」。',
+        'settings.rail.loading': '正在載入設定…',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用的模型',
@@ -1852,7 +1852,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '分支面板',
         'rail.more': '更多操作',
         'rail.settings': '動作列設定',
-        'rail.openSettings': '開啟外掛設定',
         'settings.card.title': 'Git 工具視窗設定',
         'settings.card.desc': '面板放置、動作列按鈕與 AI 提交訊息',
         'settings.placement.title': '面板放置',
@@ -1895,7 +1894,8 @@ window.__ModuleLoader__.load({
         'preview.hint': '喺檔案或提交撳「顯示差異」,差異就會喺側邊欄度開啟。',
         'preview.boundary': '預覽渲染出錯——請重新載入頁面,或者回報呢個問題。',
         'settings.rail.title': '動作列',
-        'settings.rail.hint': '勾選要顯示在動作列上的動作;順序固定,取消勾選即隱藏。',
+        'settings.rail.hint': '勾選要顯示在動作列上的動作；取消勾選即隱藏。拖曳排序請用面板內的「動作條設定」。',
+        'settings.rail.loading': '正在載入設定…',
         'settings.rail.unavailable': '目前宿主沒有設定服務,請用面板內的「動作條設定」。',
         'settings.commit.title': 'AI 提交訊息',
         'settings.commit.model': '使用的模型',
@@ -2240,7 +2240,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'ブランチペイン',
         'rail.more': 'その他の操作',
         'rail.settings': 'アクションバーの設定',
-        'rail.openSettings': 'プラグイン設定を開く',
         'settings.card.title': 'Gitツールウィンドウの設定',
         'settings.card.desc': 'パネル配置、アクションレールのボタンと AI コミットメッセージ',
         'settings.placement.title': 'パネル配置',
@@ -2283,7 +2282,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'ファイルやコミットの「差分を表示」をクリックすると、差分がここに開きます。',
         'preview.boundary': 'プレビューの描画に失敗しました——ページを再読み込みするか、問題を報告してください。',
         'settings.rail.title': 'レール',
-        'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。順序は固定で、チェックを外すと非表示になります。',
+        'settings.rail.hint': 'レールに表示する操作にチェックを入れてください。チェックを外すと非表示になります。並べ替えはパネルの「アクションレール設定」で行えます。',
+        'settings.rail.loading': '設定を読み込んでいます…',
         'settings.rail.unavailable': 'このホストには設定サービスがないため、パネル内の「アクションレール設定」を使ってください。',
         'settings.commit.title': 'AI コミットメッセージ',
         'settings.commit.model': '使用するモデル',
@@ -2628,7 +2628,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': '브랜치 창',
         'rail.more': '추가 작업',
         'rail.settings': '작업 표시줄 설정',
-        'rail.openSettings': '플러그인 설정 열기',
         'settings.card.title': 'Git 도구 창 설정',
         'settings.card.desc': '패널 배치, 액션 레일 버튼 및 AI 커밋 메시지',
         'settings.placement.title': '패널 배치',
@@ -2671,7 +2670,8 @@ window.__ModuleLoader__.load({
         'preview.hint': '파일이나 커밋의 「차이 보기」를 클릭하면 차이가 사이드바 여기에 열립니다.',
         'preview.boundary': '미리보기 렌더링에 실패했습니다 — 페이지를 새로고침하거나 문제를 보고해 주세요.',
         'settings.rail.title': '레일',
-        'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 순서는 고정이며 선택을 해제하면 숨겨집니다.',
+        'settings.rail.hint': '레일에 표시할 동작을 선택하세요. 선택을 해제하면 숨겨집니다. 순서는 패널의 “액션 레일 설정”에서 바꿀 수 있습니다.',
+        'settings.rail.loading': '설정을 불러오는 중…',
         'settings.rail.unavailable': '이 호스트에는 설정 서비스가 없으므로 패널의 "액션 레일 설정"을 사용하세요.',
         'settings.commit.title': 'AI 커밋 메시지',
         'settings.commit.model': '사용할 모델',
@@ -3016,7 +3016,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Branch-Bereich',
         'rail.more': 'Weitere Aktionen',
         'rail.settings': 'Einstellungen der Aktionsleiste',
-        'rail.openSettings': 'Plugin-Einstellungen öffnen',
         'settings.card.title': 'Git-Werkzeugfenster-Einstellungen',
         'settings.card.desc': 'Panel-Platzierung, Aktionsleisten-Schaltflächen und KI-Commit-Nachricht',
         'settings.placement.title': 'Panel-Platzierung',
@@ -3059,7 +3058,8 @@ window.__ModuleLoader__.load({
         'preview.hint': '„Diff anzeigen“ an einer Datei oder einem Commit öffnet den Diff hier in der Seitenleiste.',
         'preview.boundary': 'Die Vorschau konnte nicht gerendert werden – Seite neu laden oder das Problem melden.',
         'settings.rail.title': 'Aktionsleiste',
-        'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen. Die Reihenfolge ist fest; abwählen blendet eine aus.',
+        'settings.rail.hint': 'Die auf der Leiste sichtbaren Aktionen ankreuzen; abwählen blendet eine aus. Die Reihenfolge ändern Sie in den „Aktionsleisten-Einstellungen“ im Panel.',
+        'settings.rail.loading': 'Einstellungen werden geladen…',
         'settings.rail.unavailable': 'Dieser Host hat keinen Einstellungsdienst; nutze die „Aktionsleisten-Einstellungen“ im Panel.',
         'settings.commit.title': 'KI-Commit-Nachricht',
         'settings.commit.model': 'Modell',
@@ -3404,7 +3404,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Volet des branches',
         'rail.more': 'Plus d\'actions',
         'rail.settings': 'Réglages de la barre d\'actions',
-        'rail.openSettings': 'Ouvrir les réglages du plugin',
         'settings.card.title': 'Paramètres de la fenêtre d’outils Git',
         'settings.card.desc': 'Placement du panneau, boutons de la barre d’actions et message de commit par IA',
         'settings.placement.title': 'Placement du panneau',
@@ -3447,7 +3446,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Cliquez sur « Afficher le diff » sur un fichier ou un commit : le diff s’ouvre ici, dans la barre latérale.',
         'preview.boundary': 'L\'aperçu n\'a pas pu être affiché — rechargez la page ou signalez le problème.',
         'settings.rail.title': 'Barre d’actions',
-        'settings.rail.hint': 'Cochez les actions affichées sur la barre. L’ordre est fixe ; décocher masque une action.',
+        'settings.rail.hint': 'Cochez les actions affichées sur la barre ; décocher masque une action. Réordonnez-les dans « Réglages de la barre d’actions » du panneau.',
+        'settings.rail.loading': 'Chargement des réglages…',
         'settings.rail.unavailable': 'Cet hôte n’a pas de service de réglages ; utilisez « Réglages de la barre d’actions » dans le panneau.',
         'settings.commit.title': 'Message de commit par IA',
         'settings.commit.model': 'Modèle',
@@ -3792,7 +3792,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Панель веток',
         'rail.more': 'Другие действия',
         'rail.settings': 'Настройки панели действий',
-        'rail.openSettings': 'Открыть настройки плагина',
         'settings.card.title': 'Настройки окна инструментов Git',
         'settings.card.desc': 'Размещение панели, кнопки панели действий и сообщение коммита от ИИ',
         'settings.placement.title': 'Размещение панели',
@@ -3835,7 +3834,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Нажмите «Показать различия» у файла или коммита — различия откроются здесь, в боковой панели.',
         'preview.boundary': 'Не удалось отобразить предпросмотр — перезагрузите страницу или сообщите о проблеме.',
         'settings.rail.title': 'Панель действий',
-        'settings.rail.hint': 'Отметьте действия, показываемые на панели. Порядок фиксирован; снятие флажка скрывает действие.',
+        'settings.rail.hint': 'Отметьте действия, показываемые на панели; снятие флажка скрывает действие. Порядок меняется в «Настройках панели действий» в панели.',
+        'settings.rail.loading': 'Загрузка настроек…',
         'settings.rail.unavailable': 'На этом хосте нет службы настроек; используйте «Настройки панели действий» в панели.',
         'settings.commit.title': 'Сообщение коммита от ИИ',
         'settings.commit.model': 'Модель',
@@ -4180,7 +4180,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Painel de branches',
         'rail.more': 'Mais ações',
         'rail.settings': 'Configurações da barra de ações',
-        'rail.openSettings': 'Abrir configurações do plugin',
         'settings.card.title': 'Configurações da janela de ferramentas Git',
         'settings.card.desc': 'Posição do painel, botões da barra de ações e mensagem de commit por IA',
         'settings.placement.title': 'Posição do painel',
@@ -4223,7 +4222,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Clique em “Mostrar diff” num arquivo ou commit — o diff abre aqui, na barra lateral.',
         'preview.boundary': 'Falha ao renderizar a pré-visualização — recarregue a página ou relate o problema.',
         'settings.rail.title': 'Barra de ações',
-        'settings.rail.hint': 'Marque as ações exibidas na barra. A ordem é fixa; desmarcar oculta uma ação.',
+        'settings.rail.hint': 'Marque as ações exibidas na barra; desmarcar oculta uma ação. A ordem é ajustada em «Configurações da barra de ações» no painel.',
+        'settings.rail.loading': 'Carregando configurações…',
         'settings.rail.unavailable': 'Este host não tem serviço de configurações; use «Configurações da barra de ações» no painel.',
         'settings.commit.title': 'Mensagem de commit por IA',
         'settings.commit.model': 'Modelo',
@@ -4568,7 +4568,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Riquadro dei branch',
         'rail.more': 'Altre azioni',
         'rail.settings': 'Impostazioni della barra delle azioni',
-        'rail.openSettings': 'Apri le impostazioni del plugin',
         'settings.card.title': 'Impostazioni della finestra strumenti Git',
         'settings.card.desc': 'Posizione del pannello, pulsanti della barra azioni e messaggio di commit con IA',
         'settings.placement.title': 'Posizione del pannello',
@@ -4611,7 +4610,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Fai clic su «Mostra diff» su un file o un commit: il diff si apre qui, nella barra laterale.',
         'preview.boundary': 'Impossibile visualizzare l\'anteprima — ricarica la pagina o segnala il problema.',
         'settings.rail.title': 'Barra delle azioni',
-        'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra. L’ordine è fisso; deselezionando se ne nasconde una.',
+        'settings.rail.hint': 'Seleziona le azioni mostrate sulla barra; deselezionando se ne nasconde una. Riordinale in «Impostazioni barra azioni» nel pannello.',
+        'settings.rail.loading': 'Caricamento impostazioni…',
         'settings.rail.unavailable': 'Questo host non ha un servizio di impostazioni; usa «Impostazioni barra azioni» nel pannello.',
         'settings.commit.title': 'Messaggio di commit con IA',
         'settings.commit.model': 'Modello',
@@ -4956,7 +4956,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Branchpaneel',
         'rail.more': 'Meer acties',
         'rail.settings': 'Instellingen van de actiebalk',
-        'rail.openSettings': 'Plugin-instellingen openen',
         'settings.card.title': 'Instellingen van het Git-werkvenster',
         'settings.card.desc': 'Paneelplaatsing, knoppen van de actiebalk en AI-commitbericht',
         'settings.placement.title': 'Paneelplaatsing',
@@ -4999,7 +4998,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Klik op „Diff tonen“ bij een bestand of commit — de diff opent hier in de zijbalk.',
         'preview.boundary': 'De voorvertoning kon niet worden weergegeven — herlaad de pagina of meld het probleem.',
         'settings.rail.title': 'Actiebalk',
-        'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen. De volgorde ligt vast; uitvinken verbergt er een.',
+        'settings.rail.hint': 'Vink de acties aan die op de balk verschijnen; uitvinken verbergt er een. De volgorde wijzig je in “Actiebalk-instellingen” in het paneel.',
+        'settings.rail.loading': 'Instellingen laden…',
         'settings.rail.unavailable': 'Deze host heeft geen instellingenservice; gebruik "Actiebalk-instellingen" in het paneel.',
         'settings.commit.title': 'AI-commitbericht',
         'settings.commit.model': 'Model',
@@ -5344,7 +5344,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Panel gałęzi',
         'rail.more': 'Więcej działań',
         'rail.settings': 'Ustawienia paska działań',
-        'rail.openSettings': 'Otwórz ustawienia wtyczki',
         'settings.card.title': 'Ustawienia okna narzędzi Git',
         'settings.card.desc': 'Rozmieszczenie panelu, przyciski paska akcji i wiadomość commita od AI',
         'settings.placement.title': 'Rozmieszczenie panelu',
@@ -5387,7 +5386,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Kliknij „Pokaż różnice” przy pliku lub commicie — różnice otworzą się tutaj, na pasku bocznym.',
         'preview.boundary': 'Nie udało się wyświetlić podglądu — odśwież stronę lub zgłoś problem.',
         'settings.rail.title': 'Pasek akcji',
-        'settings.rail.hint': 'Zaznacz akcje widoczne na pasku. Kolejność jest stała; odznaczenie ukrywa akcję.',
+        'settings.rail.hint': 'Zaznacz akcje widoczne na pasku; odznaczenie ukrywa akcję. Kolejność zmienisz w „Ustawieniach paska akcji” w panelu.',
+        'settings.rail.loading': 'Wczytywanie ustawień…',
         'settings.rail.unavailable': 'Ten host nie ma usługi ustawień; użyj „Ustawienia paska akcji” w panelu.',
         'settings.commit.title': 'Wiadomość commita od AI',
         'settings.commit.model': 'Model',
@@ -5732,7 +5732,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Grenpanel',
         'rail.more': 'Fler åtgärder',
         'rail.settings': 'Inställningar för åtgärdsfältet',
-        'rail.openSettings': 'Öppna plugininställningar',
         'settings.card.title': 'Inställningar för Git-verktygsfönstret',
         'settings.card.desc': 'Panelplacering, knappar i åtgärdsfältet och AI-commitmeddelande',
         'settings.placement.title': 'Panelplacering',
@@ -5775,7 +5774,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Klicka på ”Visa diff” på en fil eller en commit — diffen öppnas här i sidopanelen.',
         'preview.boundary': 'Förhandsvisningen kunde inte visas — ladda om sidan eller rapportera problemet.',
         'settings.rail.title': 'Åtgärdsfältet',
-        'settings.rail.hint': 'Markera de åtgärder som visas i fältet. Ordningen är fast; avmarkering döljer en.',
+        'settings.rail.hint': 'Markera de åtgärder som visas i fältet; avmarkering döljer en. Ordna om dem i ”Åtgärdsfältets inställningar” i panelen.',
+        'settings.rail.loading': 'Läser in inställningar…',
         'settings.rail.unavailable': 'Denna värd saknar inställningstjänst; använd ”Åtgärdsfältets inställningar” i panelen.',
         'settings.commit.title': 'AI-commitmeddelande',
         'settings.commit.model': 'Modell',
@@ -6120,7 +6120,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Dal paneli',
         'rail.more': 'Diğer eylemler',
         'rail.settings': 'Eylem çubuğu ayarları',
-        'rail.openSettings': 'Eklenti ayarlarını aç',
         'settings.card.title': 'Git araç penceresi ayarları',
         'settings.card.desc': 'Panel yerleşimi, eylem çubuğu düğmeleri ve AI commit mesajı',
         'settings.placement.title': 'Panel yerleşimi',
@@ -6163,7 +6162,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Bir dosya veya commit üzerinde „Farkı göster”e tıklayın — fark burada, kenar çubuğunda açılır.',
         'preview.boundary': 'Önizleme işlenemedi — sayfayı yeniden yükleyin veya sorunu bildirin.',
         'settings.rail.title': 'Eylem çubuğu',
-        'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin. Sıra sabittir; işareti kaldırmak eylemi gizler.',
+        'settings.rail.hint': 'Çubukta gösterilecek eylemleri işaretleyin; işareti kaldırmak eylemi gizler. Sırayı paneldeki “Eylem çubuğu ayarları”ndan değiştirin.',
+        'settings.rail.loading': 'Ayarlar yükleniyor…',
         'settings.rail.unavailable': 'Bu ana bilgisayarda ayar hizmeti yok; paneldeki "Eylem çubuğu ayarları"nı kullanın.',
         'settings.commit.title': 'AI commit mesajı',
         'settings.commit.model': 'Model',
@@ -6508,7 +6508,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Panel branch',
         'rail.more': 'Tindakan lain',
         'rail.settings': 'Pengaturan bilah tindakan',
-        'rail.openSettings': 'Buka pengaturan plugin',
         'settings.card.title': 'Pengaturan jendela alat Git',
         'settings.card.desc': 'Penempatan panel, tombol bilah aksi dan pesan commit AI',
         'settings.placement.title': 'Penempatan panel',
@@ -6551,7 +6550,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Klik “Tampilkan diff” pada file atau commit — diff terbuka di sini, di bilah sisi.',
         'preview.boundary': 'Pratinjau gagal dirender — muat ulang halaman atau laporkan masalahnya.',
         'settings.rail.title': 'Bilah aksi',
-        'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah. Urutannya tetap; menghapus centang menyembunyikannya.',
+        'settings.rail.hint': 'Centang aksi yang ditampilkan di bilah; menghapus centang menyembunyikannya. Ubah urutan di “Pengaturan bilah aksi” di panel.',
+        'settings.rail.loading': 'Memuat pengaturan…',
         'settings.rail.unavailable': 'Host ini tidak punya layanan pengaturan; gunakan "Pengaturan bilah aksi" di panel.',
         'settings.commit.title': 'Pesan commit AI',
         'settings.commit.model': 'Model',
@@ -6896,7 +6896,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'Bảng nhánh',
         'rail.more': 'Thao tác khác',
         'rail.settings': 'Cài đặt thanh thao tác',
-        'rail.openSettings': 'Mở cài đặt plugin',
         'settings.card.title': 'Cài đặt cửa sổ công cụ Git',
         'settings.card.desc': 'Vị trí bảng, nút thanh tác vụ và thông điệp commit do AI viết',
         'settings.placement.title': 'Vị trí bảng',
@@ -6939,7 +6938,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'Bấm “Xem diff” trên tệp hoặc commit — diff sẽ mở ở đây, trên thanh bên.',
         'preview.boundary': 'Không thể hiển thị bản xem trước — hãy tải lại trang hoặc báo cáo sự cố.',
         'settings.rail.title': 'Thanh tác vụ',
-        'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh. Thứ tự cố định; bỏ chọn sẽ ẩn tác vụ đó.',
+        'settings.rail.hint': 'Chọn các tác vụ hiển thị trên thanh; bỏ chọn sẽ ẩn tác vụ đó. Thay đổi thứ tự trong “Cài đặt thanh tác vụ” ở bảng điều khiển.',
+        'settings.rail.loading': 'Đang tải cài đặt…',
         'settings.rail.unavailable': 'Máy chủ này không có dịch vụ cài đặt; hãy dùng “Cài đặt thanh tác vụ” trong bảng điều khiển.',
         'settings.commit.title': 'Thông điệp commit do AI viết',
         'settings.commit.model': 'Mô hình',
@@ -7284,7 +7284,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'لوحة الفروع',
         'rail.more': 'مزيد من الإجراءات',
         'rail.settings': 'إعدادات شريط الإجراءات',
-        'rail.openSettings': 'فتح إعدادات الإضافة',
         'settings.card.title': 'إعدادات نافذة أدوات Git',
         'settings.card.desc': 'موضع اللوحة، أزرار شريط الإجراءات ورسالة إيداع بالذكاء الاصطناعي',
         'settings.placement.title': 'موضع اللوحة',
@@ -7327,7 +7326,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'انقر «عرض الفروق» على ملف أو commit — تُفتح الفروق هنا في الشريط الجانبي.',
         'preview.boundary': 'تعذّر عرض المعاينة — أعد تحميل الصفحة أو أبلغ عن المشكلة.',
         'settings.rail.title': 'شريط الإجراءات',
-        'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط. الترتيب ثابت، وإلغاء التحديد يخفي الإجراء.',
+        'settings.rail.hint': 'حدّد الإجراءات المعروضة على الشريط؛ إلغاء التحديد يخفي الإجراء. غيّر الترتيب من «إعدادات شريط الإجراءات» في اللوحة.',
+        'settings.rail.loading': 'جارٍ تحميل الإعدادات…',
         'settings.rail.unavailable': 'لا تتوفر خدمة إعدادات على هذا المضيف؛ استخدم «إعدادات شريط الإجراءات» في اللوحة.',
         'settings.commit.title': 'رسالة إيداع بالذكاء الاصطناعي',
         'settings.commit.model': 'النموذج',
@@ -7672,7 +7672,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'शाखा पैनल',
         'rail.more': 'अधिक क्रियाएँ',
         'rail.settings': 'क्रिया पट्टी सेटिंग्स',
-        'rail.openSettings': 'प्लगइन सेटिंग खोलें',
         'settings.card.title': 'Git टूल विंडो सेटिंग्स',
         'settings.card.desc': 'पैनल प्लेसमेंट, एक्शन रेल बटन और AI कमिट संदेश',
         'settings.placement.title': 'पैनल प्लेसमेंट',
@@ -7715,7 +7714,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'फ़ाइल या कमिट पर “अंतर दिखाएँ” पर क्लिक करें — अंतर यहीं साइडबार में खुलेगा।',
         'preview.boundary': 'पूर्वावलोकन रेंडर नहीं हो सका — पृष्ठ पुनः लोड करें या समस्या की रिपोर्ट करें।',
         'settings.rail.title': 'क्रिया रेल',
-        'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें। क्रम निश्चित है; चुनाव हटाने पर वह छिप जाती है।',
+        'settings.rail.hint': 'रेल पर दिखने वाली क्रियाएँ चुनें; चुनाव हटाने पर वह छिप जाती है। क्रम बदलने के लिए पैनल की “एक्शन रेल सेटिंग्स” का उपयोग करें।',
+        'settings.rail.loading': 'सेटिंग्स लोड हो रही हैं…',
         'settings.rail.unavailable': 'इस होस्ट में सेटिंग सेवा नहीं है; पैनल में «एक्शन रेल सेटिंग» का उपयोग करें।',
         'settings.commit.title': 'AI कमिट संदेश',
         'settings.commit.model': 'मॉडल',
@@ -8060,7 +8060,6 @@ window.__ModuleLoader__.load({
         'toolbar.tree': 'แผงแบรนช์',
         'rail.more': 'การทำงานเพิ่มเติม',
         'rail.settings': 'ตั้งค่าแถบการทำงาน',
-        'rail.openSettings': 'เปิดการตั้งค่าปลั๊กอิน',
         'settings.card.title': 'การตั้งค่าหน้าต่างเครื่องมือ Git',
         'settings.card.desc': 'ตำแหน่งแผง, ปุ่มแถบการทำงานและข้อความคอมมิตโดย AI',
         'settings.placement.title': 'ตำแหน่งแผง',
@@ -8103,7 +8102,8 @@ window.__ModuleLoader__.load({
         'preview.hint': 'คลิก “แสดงความต่าง” ที่ไฟล์หรือคอมมิต — ความต่างจะเปิดที่นี่ในแถบข้าง',
         'preview.boundary': 'แสดงผลตัวอย่างไม่สำเร็จ — โหลดหน้าซ้ำหรือรายงานปัญหา',
         'settings.rail.title': 'แถบการทำงาน',
-        'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ ลำดับคงที่; ยกเลิกเครื่องหมายเพื่อซ่อน',
+        'settings.rail.hint': 'ทำเครื่องหมายการทำงานที่จะแสดงบนแถบ; ยกเลิกเครื่องหมายเพื่อซ่อน จัดลำดับได้ใน “การตั้งค่าแถบการทำงาน” ของแผง',
+        'settings.rail.loading': 'กำลังโหลดการตั้งค่า…',
         'settings.rail.unavailable': 'โฮสต์นี้ไม่มีบริการตั้งค่า ให้ใช้ «ตั้งค่าแถบการทำงาน» ในแผง',
         'settings.commit.title': 'ข้อความคอมมิตโดย AI',
         'settings.commit.model': 'โมเดล',
@@ -8931,13 +8931,11 @@ window.__ModuleLoader__.load({
     }
 
     /* ---------------------------------------------------------------------
-       Where the rail config LIVES. On dsh >= 0.1.7 a plugin's configuration is
-       the row Config (the official settings surface, persisted by the host under
-       the loader row id) and the browser reads it through ctx.configForms — so
-       the settings card and the rail read ONE source and nothing is written
-       twice. An older host has no such service: there the rail keeps its
-       localStorage home and its in-panel editor, which is the only editor those
-       hosts have. `railForm` is that switch; null means legacy.
+       Where the rail config LIVES. dsh >= 0.2.2-rc.1 serves a plugin's row
+       Config to the browser through ctx.configForms, so the settings card, the
+       action rail and the in-panel order editor read ONE document. The legacy
+       localStorage home is only read once by migrateRailConfig() below; nothing
+       writes it any more.
        --------------------------------------------------------------------- */
     const RAIL_NS = 'ide-git'
     /* One write window for the settings card: a burst of switches becomes one
@@ -8953,28 +8951,40 @@ window.__ModuleLoader__.load({
       return 'rail' + id.charAt(0).toUpperCase() + id.slice(1)
     }
 
-    /* Stored booleans -> the { order, hidden } shape the rail has always used.
-       The order is the code order now: the settings card edits one switch per
-       action, so a stored permutation would have no editor left, and dropping it
-       keeps this surface honest rather than half-editable. */
+    /* Stored row Config -> the { order, hidden } shape the rail uses. `railOrder`
+       is a comma-separated permutation; unknown or duplicate ids are dropped and
+       every action missing from it is appended in code order, so a document
+       written by an older version never hides an action added later. */
+    function railOrderOf(source) {
+      const order = []
+      const stored = typeof source.railOrder === 'string' ? source.railOrder.split(',') : []
+      for (const id of stored) {
+        if (RAIL_IDS.indexOf(id) < 0 || order.indexOf(id) >= 0) continue
+        order.push(id)
+      }
+      for (const id of RAIL_IDS) if (order.indexOf(id) < 0) order.push(id)
+      return order
+    }
+
+    function railOrderText(order) {
+      const input = Array.isArray(order) ? order : []
+      const normalized = input.filter((id, index) => RAIL_IDS.indexOf(id) >= 0 && input.indexOf(id) === index)
+      for (const id of RAIL_IDS) if (normalized.indexOf(id) < 0) normalized.push(id)
+      // The code order is the schema default; storing it as '' keeps a reset
+      // from writing a redundant 200-byte string.
+      return normalized.join(',') === RAIL_IDS.join(',') ? '' : normalized.join(',')
+    }
+
     function railConfigOfValues(values) {
       const source = values !== null && typeof values === 'object' ? values : {}
       const hidden = RAIL_IDS.filter((id) => source[railFieldOf(id)] === false)
-      return { order: RAIL_IDS.slice(), hidden: hidden }
-    }
-
-    /* The inverse of railFieldOf, for the one-field write path. Returns null for a
-       field no rail action owns, so a caller cannot invent a row-Config key. */
-    function railIdOfField(field) {
-      if (typeof field !== 'string' || field.indexOf('rail') !== 0 || field.length <= 4) return null
-      const name = field.slice(4)
-      const id = name.charAt(0).toLowerCase() + name.slice(1)
-      return RAIL_IDS.indexOf(id) < 0 ? null : id
+      return { order: railOrderOf(source), hidden: hidden }
     }
 
     function railValuesOfConfig(config) {
       const values = {}
       for (const id of RAIL_IDS) values[railFieldOf(id)] = config.hidden.indexOf(id) < 0
+      values.railOrder = railOrderText(config.order)
       return values
     }
 
@@ -9014,20 +9024,15 @@ window.__ModuleLoader__.load({
     function readRailConfig() {
       const ready = railFormReady()
       if (ready !== null) return railConfigOfValues(ready.value)
-      // Legacy home (and the state before the host answers): localStorage.
-      try {
-        const raw = window.localStorage.getItem(RAIL_KEY)
-        if (raw === null || raw === '') return normalizeRail(null)
-        return normalizeRail(JSON.parse(raw))
-      } catch (error) { void error }
+      // Before the host answers there is no document to show; the code order is
+      // the honest placeholder (the real values arrive through the subscription).
       return normalizeRail(null)
     }
 
-    /* `form` lets a caller write through the exact handle it read from (the
-       settings card gets the framework's own form); without it the module handle
-       is used. When a config surface EXISTS but is not ready yet, the write is
-       refused instead of silently landing in the legacy localStorage home — two
-       sources would be worse than a refused edit. */
+    /* `form` lets a caller write through the exact handle it read from; without
+       it the module handle is used. The row Config is the only home: when it is
+       not ready (or read-only) the write is refused rather than landing in the
+       retired localStorage key. */
     function writeRailConfig(config, form) {
       const active = form !== undefined && form !== null && typeof form.getSnapshot === 'function' ? form : railForm
       let ready = null
@@ -9035,26 +9040,31 @@ window.__ModuleLoader__.load({
         const snapshot = active === null || active === undefined ? null : active.getSnapshot()
         if (snapshot !== null && snapshot !== undefined && snapshot.status === 'ready' && snapshot.value !== undefined) ready = snapshot
       } catch (error) { void error }
-      if (ready !== null) {
-        if (ready.writable !== true || typeof active.set !== 'function') return
-        railForm = active
-        const current = ready.value !== null && typeof ready.value === 'object' ? ready.value : {}
-        // Only the fields that actually changed: one write, not sixteen.
-        for (const id of RAIL_IDS) {
-          const field = railFieldOf(id)
-          const visible = config.hidden.indexOf(id) < 0
-          if (current[field] === visible) continue
-          const written = active.set(field, visible)
-          if (written !== undefined && written !== null && typeof written.then === 'function') {
-            void written.then((accepted) => {
-              if (accepted === false) console.warn('[dsh-ide-git] rail setting "' + field + '" was refused by the host')
-            }, (error) => { console.warn('[dsh-ide-git] rail setting write failed: ' + String(error && error.message ? error.message : error)) })
-          }
+      if (ready === null || ready.writable !== true || typeof active.set !== 'function') return
+      railForm = active
+      const current = ready.value !== null && typeof ready.value === 'object' ? ready.value : {}
+      const write = (field, value) => {
+        const written = active.set(field, value)
+        if (written !== undefined && written !== null && typeof written.then === 'function') {
+          void written.then((accepted) => {
+            if (accepted === false) console.warn('[dsh-ide-git] rail setting "' + field + '" was refused by the host')
+          }, (error) => { console.warn('[dsh-ide-git] rail setting write failed: ' + String(error && error.message ? error.message : error)) })
         }
-        return
       }
-      if (railForm !== null) return
-      try { window.localStorage.setItem(RAIL_KEY, JSON.stringify(config)) } catch (error) { void error }
+      // Only the fields that actually changed: one write, not sixteen.
+      for (const id of RAIL_IDS) {
+        const field = railFieldOf(id)
+        const visible = config.hidden.indexOf(id) < 0
+        // Every rail switch defaults to true in the schema; an absent field means
+        // "shown", so only a real change needs a write.
+        const accepted = current[field] === undefined ? true : current[field]
+        if (accepted !== visible) write(field, visible)
+      }
+      /* The order is one compact string; '' is the code order (the schema
+         default), so a reset does not write a redundant permutation. */
+      const order = railOrderText(config.order)
+      const stored = typeof current.railOrder === 'string' ? current.railOrder : ''
+      if (stored !== order) write('railOrder', order)
     }
 
     /* One switch, one field, one write — computed from the value the user just
@@ -9086,21 +9096,9 @@ window.__ModuleLoader__.load({
         )
         return { sent: true, settled: settled }
       }
-      /* A config surface that exists but has not answered yet must refuse rather
-         than fall through to the legacy home: two sources would be worse. */
-      if (railForm !== null) return { sent: false, reason: 'not-ready' }
-      const current = readRailConfig()
-      let hidden = current.hidden.slice()
-      for (const op of ops) {
-        const id = railIdOfField(String(op.path[0]))
-        if (id === null) return { sent: false, reason: 'unknown' }
-        const wanted = op.value === true
-        if (wanted === true) hidden = hidden.filter((entry) => entry !== id)
-        else if (hidden.indexOf(id) < 0) hidden = hidden.concat([id])
-      }
-      try { window.localStorage.setItem(RAIL_KEY, JSON.stringify({ order: current.order, hidden: hidden })) } catch (error) { void error }
-      notifyRailConfig()
-      return { sent: true }
+      /* No row Config (or it has not answered yet): never fall back to the
+         retired localStorage key. */
+      return { sent: false, reason: 'not-ready' }
     }
 
     /* One switch's write. The card batches a burst through writeRailFields so the
@@ -9132,6 +9130,7 @@ window.__ModuleLoader__.load({
           if (accepted[field] === values[field]) continue
           ops.push({ op: 'set', path: [field], value: values[field] === true })
         }
+        if (accepted.railOrder !== values.railOrder) ops.push({ op: 'set', path: ['railOrder'], value: values.railOrder })
         if (ops.length === 0) { done(); return }
         /* ONE atomic mutation, and the marker ONLY once the Host accepted it.
            The per-field set() loop this replaces fired sixteen unawaited writes
@@ -10994,20 +10993,16 @@ window.__ModuleLoader__.load({
        list is drag-sortable and arrow-sortable (the arrows also work with a
        keyboard); visibility is a per-action toggle, not a delete, so a hidden
        action keeps its position. */
-    /* The plugin's settings card. It lives on the plugin's detail page (slot
-       `plugins.bundle.config`, keyed by the PACKAGE name), and it is the only
-       editor when the host serves the row Config — the in-panel editor is not
-       reachable there. The legacy Settings → Plugins seat went away with the
-       raised host floor.
+    /* The plugin's settings card on the plugin detail page (slot
+       `plugins.bundle.config`, keyed by the PACKAGE name). It edits visibility
+       one switch at a time; ordering lives in the panel's gear editor because
+       that is the surface with drag and keyboard move controls.
 
-       A host without that service still renders the card (the seat exists), so it
-       says so instead of pretending to have settings. */
+       The seat exists even when the form is not ready, so the card distinguishes
+       loading from "this host serves no settings". */
     function RailSettingsCard(props) {
       const t = props.t
       const [tick, setTick] = useState(0)
-      /* Collapse state of the card shell (the li card on the list seat). The
-         plugin-page seat (props.view === 'page') renders flat. */
-      const [openCard, setOpenCard] = useState(false)
       const [pending, setPending] = useState({})
       const [note, setNote] = useState('')
       /* The three AI-commit settings are free text, so they are drafted locally
@@ -11203,13 +11198,10 @@ window.__ModuleLoader__.load({
         pendingFlush.current = setTimeout(() => { pendingFlush.current = null; flush() }, FLUSH_MS)
         timers.current.add(pendingFlush.current)
       }
-      /* Two handles, one document: the slot hands the card the framework's own
-         form for this entry (`props.scope`), and our ctx.configForms handle is the
-         fallback — both address the same namespace, so a write through either is
-         the same row Config write. */
-      const scope = props.scope !== undefined && props.scope !== null && typeof props.scope.getSnapshot === 'function'
-        ? props.scope
-        : railForm
+      /* dsh 0.2.2-rc.1 renders plugins.bundle.config with { view: 'page' } only;
+         the framework does not hand the card a form. The module handle opened in
+         apply() is the one document this card, the rail and the order editor read. */
+      const scope = railForm
       useEffect(() => {
         const offRail = subscribeRailConfig(bump)
         let offScope
@@ -11225,29 +11217,15 @@ window.__ModuleLoader__.load({
         }
       }, [])
       void tick
-      /* Card shell, shared by both seats — a visual twin of the pc-card /
-         dl-card / gb-card pattern in dsh-ptc-cordis-preset, dsh-agent-lang and
-         dsh-gitbash-shell: a collapsible li card on the Settings → Plugins
-         seat, a flat page card on the plugin-page seat. Title + description
-         come from the settings.card.* dictionary keys (every locale). */
-      const pageView = props.view === 'page'
+      /* The plugin detail page is the only seat this card has on rc.1, so it is
+         always the flat page card: a visual twin of the pc-card / dl-card /
+         gb-card pattern in dsh-ptc-cordis-preset, dsh-agent-lang and
+         dsh-gitbash-shell. Title + description come from settings.card.*. */
       const cardHead = E('span', { className: 'dig-card-head-text' },
         E('span', { className: 'dig-card-name' }, t('settings.card.title')),
         E('span', { className: 'dig-card-desc' }, t('settings.card.desc')))
-      const wrapCard = (body) => {
-        if (pageView) return E('div', { className: 'dig-card dig-card-page' },
-          E('div', { className: 'dig-card-header dig-card-header-flat' }, cardHead), body)
-        return E('li', { className: 'dig-card' + (openCard ? ' dig-card-open' : '') },
-          E('button', {
-            type: 'button',
-            className: 'dig-card-header',
-            'aria-expanded': openCard,
-            onClick: () => setOpenCard(!openCard),
-          }, cardHead,
-            E('span', { className: 'dig-card-chevron' + (openCard ? ' dig-card-chevron-open' : '') },
-              E(Icon, { name: 'chevron', size: 12 }))),
-          openCard ? body : null)
-      }
+      const wrapCard = (body) => E('div', { className: 'dig-card dig-card-page' },
+        E('div', { className: 'dig-card-header dig-card-header-flat' }, cardHead), body)
       let snapshot = null
       try { snapshot = scope === null || scope === undefined ? null : scope.getSnapshot() } catch (error) { void error }
       const status = snapshot === null || snapshot === undefined || typeof snapshot.status !== 'string' ? 'absent' : snapshot.status
@@ -11305,8 +11283,12 @@ window.__ModuleLoader__.load({
         )
         return () => { alive = false }
       }, [pickerModel])
-      // Switches exist only where they can actually write: a host that does not
-      // serve this entry's settings gets a sentence instead of dead controls.
+      // Loading and unavailable are different states: a bound form that is still
+      // answering must not claim the host has no settings service.
+      if (status === 'loading' || (status === 'absent' && railForm !== null)) {
+        return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': 'loading', 'aria-busy': 'true' },
+          E('div', { className: 'dig-settings-note' }, t('settings.rail.loading'))))
+      }
       if (status !== 'ready' || values === null) {
         return wrapCard(E('div', { className: 'dig-settings dig-card-body', 'data-settings-status': status },
           E('div', { className: 'dig-settings-note' }, t('settings.rail.unavailable'))))
@@ -13852,14 +13834,8 @@ window.__ModuleLoader__.load({
       // its own — v0.1.3 already made that mistake with a height < 330 test (a
       // 1500x300 workbench came out single-column) and v0.3.5 still let
       // height < 200 flip a 1320x180 workbench into the right-sidebar chrome.
-      /* Where the gear goes: the plugin's own settings page when this host has
-         both the row Config and the navigation to it, the in-panel editor
-         otherwise (see RAIL_NS / railForm). */
-      const railSettingsTarget = () => (railForm === null || props.openSettings === null || props.openSettings === undefined ? 'panel' : 'page')
-      const openSettingsPage = () => {
-        if (props.openSettings === null || props.openSettings === undefined) return
-        props.openSettings()
-      }
+      /* The gear always opens the in-panel editor: it is the only surface that
+         edits BOTH visibility and order, and rc.1's plugin page cannot show it. */
 
       /* The immersive conversation seat (v0.14) hands the panel a SQUARE-ish
          box by construction: the conversation column clamps content width
@@ -16012,15 +15988,8 @@ window.__ModuleLoader__.load({
           type: 'button',
           className: 'dig-rail-btn dig-rail-settings',
           'data-action': 'settings',
-          // On a host that serves the row Config this button opens the plugin's own
-          // settings page (where the card below the description edits the rail);
-          // on an older host it keeps the in-panel editor. Never both.
-          title: railSettingsTarget() === 'page' ? t('rail.openSettings') : t('rail.settings'),
-          onClick: () => {
-            const target = railSettingsTarget()
-            if (target === 'page') { openSettingsPage(); return }
-            setRailSettings(true)
-          },
+          title: t('rail.settings'),
+          onClick: () => setRailSettings(true),
         }, E(Icon, { name: 'settings', size: 18 })))
         return E('div', { className: vertical ? 'dig-rail' : 'dig-rail-row', ref: railHostRef }, children)
       }
@@ -16618,15 +16587,10 @@ window.__ModuleLoader__.load({
       // gb-card pattern the sibling plugins draw.
       '.dig-card{list-style:none;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-3);transition:border-color .16s,background .16s}',
       '.dig-card:hover{border-color:var(--dsw-alias-label-dimmed)}',
-      '.dig-card.dig-card-open{background:var(--dsw-alias-bg-layer-2);border-color:var(--dsw-alias-label-dimmed)}',
-      '.dig-card-header{width:100%;appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--dsw-radius-md,12px)}',
-      '.dig-card-header:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-2px}',
-      '.dig-card-header-flat{cursor:default}',
+      '.dig-card-header{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--dsw-radius-md,12px)}',
       '.dig-card-head-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}',
       '.dig-card-name{font-size:15px;font-weight:600;line-height:1.4;color:var(--dsw-alias-label-primary)}',
       '.dig-card-desc{font-size:13px;line-height:1.5;color:var(--dsw-alias-label-tertiary)}',
-      '.dig-card-chevron{flex:none;display:inline-flex;color:var(--dsw-alias-label-tertiary);transition:transform .16s}',
-      '.dig-card-chevron.dig-card-chevron-open{transform:rotate(180deg)}',
       '.dig-card-body{padding:8px 16px 16px}',
       '.dig-card-page{max-width:640px}',
       '.dig-settings{display:flex;flex-direction:column;gap:8px;min-width:0}',
@@ -17296,16 +17260,7 @@ window.__ModuleLoader__.load({
         return typeof unsubscribe === 'function' ? unsubscribe : undefined
       }, [])
       void tick
-      /* Read at RENDER time (the service may arrive after this plugin's apply) and
-         soft: a host without the plugin page simply keeps the in-panel editor. */
-      let navigation
-      try {
-        navigation = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('pluginNavigation')
-      } catch (error) { navigation = undefined }
-      const openSettings = navigation !== undefined && navigation !== null && typeof navigation.openBundle === 'function'
-        ? () => { navigation.openBundle(SETTINGS_BUNDLE) }
-        : null
-      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, openSettings: openSettings, ctx: props.ctx, openDiffExternal: props.openDiffExternal })
+      return E(Panel, { scope: props.scope, t: props.t, visible: props.visible, dock: props.dock, ctx: props.ctx, openDiffExternal: props.openDiffExternal })
     }
 
     /* The conversation-area seat (issue #8): the same panel as a view tab

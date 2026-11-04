@@ -65,64 +65,18 @@ test('every published entry exists on disk', () => {
 })
 
 test('the dsh peer survives the runtime compatibility check', () => {
-  // dsh 0.1.7+ enforces peerDependencies entries named @deepseek-ai/dsh* and
-  // ignores engines.dsh entirely (packages/boot/app-boot/src/plugin-compatibility.ts),
-  // so the plugin's floor has to live in BOTH fields with the same value.
+  // dsh 0.2.2-rc.1 is the single supported generation (v0.28.0). The host
+  // reads engines.dsh when it exists (packages/boot/app-boot/src/plugin-compatibility.ts)
+  // and satisfies it with includePrerelease:true, so one open floor is enough.
   const peer = pkg.peerDependencies['@deepseek-ai/dsh']
+  assert.equal(pkg.engines.dsh, '>=0.2.2-rc.1')
   assert.equal(peer, pkg.engines.dsh, 'the dsh peer must mirror engines.dsh exactly')
-  // Open floor with a prerelease tag, NO ceiling. The floor tracks the oldest
-  // supported host (0.1.6-alpha.2 — the plugin panel config seat's debut; the
-  // 0.2.2-alpha.2-only fields are capability-detected at runtime instead).
-  // The host gate satisfies with
-  // includePrerelease:true (app-boot plugin-compatibility.ts), so a single
-  // `>=X.Y.Z-tag` comparator is both honest and sufficient; the tag keeps a
-  // future prerelease floor expressible without a second branch.
-  const floor = /^>=(\d+)\.(\d+)\.(\d+)(-([0-9A-Za-z][0-9A-Za-z.-]*))?$/.exec(peer)
-  assert.ok(floor, 'the dsh peer must stay an open >=X.Y.Z[-tag] floor: ' + peer)
-  const required = floor.slice(1, 4).map(Number)
-  const floorTag = floor[5] || null
-  // semver prerelease identifier compare: numeric fields compare numerically,
-  // numeric < alphanumeric, longer wins when one is a prefix of the other.
-  const compareTag = (a, b) => {
-    const as = a === null ? [] : String(a).split('.')
-    const bs = b === null ? [] : String(b).split('.')
-    for (let i = 0; i < Math.max(as.length, bs.length); i += 1) {
-      const x = as[i]; const y = bs[i]
-      if (x === undefined) return -1
-      if (y === undefined) return 1
-      const xn = /^\d+$/.test(x); const yn = /^\d+$/.test(y)
-      if (xn && yn) { const d = Number(x) - Number(y); if (d !== 0) return d }
-      else if (xn !== yn) return xn ? -1 : 1
-      else if (x !== y) return x < y ? -1 : 1
-    }
-    return 0
-  }
-  // Mirror of the host gate (semver.satisfies with includePrerelease:true) at
-  // numeric + prerelease granularity.
-  const satisfies = (version) => {
-    const m = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z][0-9A-Za-z.-]*))?$/.exec(version)
-    assert.ok(m, 'unparsable version ' + version)
-    const got = m.slice(1, 4).map(Number)
-    for (let i = 0; i < 3; i += 1) {
-      if (got[i] !== required[i]) return got[i] > required[i]
-    }
-    if (floorTag === null) return true
-    if (m[4] === undefined) return true // a stable release outranks any prerelease
-    return compareTag(m[4], floorTag) >= 0
-  }
-  // Mirror of the host gate at numeric + prerelease granularity: 0.1.6-alpha.1
-  // and older hosts predate the plugin panel config seat.
-  for (const version of ['0.1.2', '0.1.5', '0.1.6-alpha.1', '0.1.6-alpha.0']) {
-    assert.ok(!satisfies(version), 'the dsh peer must reject ' + version)
-  }
-  for (const version of ['0.1.6-alpha.2', '0.1.7-rc.1', '0.2.1', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2', '0.2.3-rc.1', '0.3.0']) {
-    assert.ok(satisfies(version), 'the dsh peer would reject ' + version)
-  }
-  // OPTIONAL keeps the gate intact while removing the install hazard: the gate
-  // reads peerDependencies only, but a package manager with autoInstallPeers
-  // (pnpm's default) resolves the range against the registry — and every
-  // published @deepseek-ai/dsh version is a prerelease, which a plain range
-  // excludes (ERR_PNPM_NO_MATCHING_VERSION for the whole install).
+  assert.equal(pkg.engines.node, '>=24.9.0')
+  assert.match(peer, /^>=\d+\.\d+\.\d+-[0-9A-Za-z][0-9A-Za-z.-]*$/, 'the floor must carry the rc tag')
+  assert.doesNotMatch(peer, /</, 'the dsh peer must not grow an upper bound')
+  // OPTIONAL removes the pnpm autoInstallPeers hazard: registry @deepseek-ai/dsh
+  // releases are prereleases, which a plain range excludes before the host gate
+  // ever runs (ERR_PNPM_NO_MATCHING_VERSION for the whole install).
   assert.equal(pkg.peerDependenciesMeta?.['@deepseek-ai/dsh']?.optional, true)
 })
 
@@ -1264,21 +1218,17 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   //     that stays flipped while the Host still holds the old value.
   const core = client.slice(client.indexOf('/* ---- rail config core'), client.indexOf('/* ---- end rail config core'))
   const helpers = new Function('RAIL_IDS', core
-    + '\nreturn { railFieldOf: railFieldOf, railIdOfField: railIdOfField }')(['refresh', 'tree', 'float', 'newBranch'])
-  for (const id of ['refresh', 'tree', 'float', 'newBranch']) {
-    assert.equal(helpers.railIdOfField(helpers.railFieldOf(id)), id, 'railIdOfField must invert railFieldOf for ' + id)
-  }
-  assert.equal(helpers.railIdOfField('railNope'), null, 'a field no action owns must not become a row-Config key')
-  assert.equal(helpers.railIdOfField('rail'), null)
+    + '\nreturn { railFieldOf: railFieldOf }')(['refresh', 'tree', 'float', 'newBranch'])
+  assert.equal(helpers.railFieldOf('newBranch'), 'railNewBranch')
 
   const writer = client.slice(client.indexOf('function writeRailFields('), client.indexOf('/* One-shot move of the pre-settings rail config'))
   assert.ok(writer.length > 300, 'writeRailFields must exist')
   assert.match(writer, /active\.mutate\(ops\)/, 'a burst is submitted as ONE atomic mutation')
   assert.match(writer, /if \(ready\.writable !== true \|\| typeof active\.mutate !== 'function'\) return \{ sent: false, reason: 'read-only' \}/,
     'a read-only document must refuse instead of pretending')
-  assert.match(writer, /if \(railForm !== null\) return \{ sent: false, reason: 'not-ready' \}/,
-    'a config surface that has not answered yet must refuse rather than fall through to the legacy home')
-  assert.match(writer, /railIdOfField\(String\(op\.path\[0\]\)\)/, 'the legacy branch addresses ids through the inverse map')
+  assert.match(writer, /return \{ sent: false, reason: 'not-ready' \}/,
+    'a config surface that has not answered yet must refuse instead of writing anywhere else')
+  assert.doesNotMatch(writer, /railIdOfField|window\.localStorage/, 'the retired localStorage fallback must not come back')
   assert.match(client, /function writeRailField\(field, value, form\) \{\n\s+return writeRailFields\(\[\{ op: 'set', path: \[field\], value: value \}\], form\)/,
     'the single-field writer is a wrapper over the batched one')
 
@@ -1324,7 +1274,7 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   assert.match(card, /'data-placement-row': field/, 'the placement row is addressable')
   assert.match(card, /const field = 'conversationTab'/, 'one row-Config field backs the switch')
   assert.match(card, /values\[field\] !== false/, 'an absent value means the default: shown')
-  assert.match(host, /shape\.conversationTab = live\(schema\.boolean\(\)\.default\(true\)\)/,
+  assert.match(host, /shape\.conversationTab = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'the host schema declares the field with default true')
   // The immersive switch (issue #8 round 3): the SAME contract, and the SAME
   // trap — a client-side field the host schema does not declare is rejected by
@@ -1332,18 +1282,18 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   // fails without any console noise, and the switch silently rolls back. Both
   // halves must declare the field; both defaults must be true.
   assert.match(card, /const field = 'immersive'/, 'the immersive switch is backed by its own row-Config field')
-  assert.match(host, /shape\.immersive = live\(schema\.boolean\(\)\.default\(true\)\)/,
+  assert.match(host, /shape\.immersive = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'the host schema declares the immersive field with default true')
   // The composer-status switch (v0.19.0) shipped WITHOUT its host field and the
   // Host refused every write: the card rolled the switch back and said "设置没写
   // 进去" (v0.19.7 user report). It is the same contract as the two above.
   assert.match(card, /const field = 'composerStatus'/, 'the composer pill switch is backed by its own row-Config field')
-  assert.match(host, /shape\.composerStatus = live\(schema\.boolean\(\)\.default\(true\)\)/,
+  assert.match(host, /shape\.composerStatus = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'the host schema declares the composerStatus field with default true')
   // Issue #22 (inline diff): the fourth placement switch keeps the plugin's own
   // split / wrap pane reachable when an external diff tab is installed.
   assert.match(card, /const field = 'inlineDiff'/, 'the inline preview switch is backed by its own row-Config field')
-  assert.match(host, /shape\.inlineDiff = live\(schema\.boolean\(\)\.default\(true\)\)/,
+  assert.match(host, /shape\.inlineDiff = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'the host schema declares the inlineDiff field with default true')
   // Generic guard, so the NEXT field cannot repeat the v0.19.7 bug: every
   // row-Config field the card writes must be declared volatile in the host
@@ -1353,7 +1303,7 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   for (const match of card.matchAll(/(?:textRow|selectRow)\('([A-Za-z]+)'/g)) writtenFields.add(match[1])
   assert.ok(writtenFields.size >= 5, 'the card should still write the placement and commit fields')
   for (const field of writtenFields) {
-    assert.match(host, new RegExp('shape\\.' + field + ' = live\\(schema\\.'),
+    assert.match(host, new RegExp('shape\\.' + field + ' = schema\\.'),
       'the host schema must declare the row-Config field the card writes: ' + field)
   }
   // The label click must INVERT what is on screen. The old spelling of the
@@ -1612,22 +1562,27 @@ test('the settings entry draws a gear, not a sunburst', () => {
   assert.match(client, /E\(Icon, \{ name: 'settings', size: 18 \}\)/, 'the rail settings button still uses it')
 })
 
-test('the rail settings live in the row Config, with localStorage only as the legacy home', () => {
-  // One document, one editor. dsh >= 0.1.7 persists a plugin's settings as the
-  // row Config and serves it through ctx.configForms; the settings card on the
-  // plugin's page edits it, the rail reads it, and the pre-0.9 localStorage value
-  // is migrated once. An older host has no such service — there the localStorage
-  // home and the in-panel editor stay.
+test('the rail settings live in the row Config, and the order is persisted there too', () => {
+  // One document, one home. dsh >= 0.2.2-rc.1 serves a plugin's row Config
+  // through ctx.configForms; the settings card toggles visibility, the panel's
+  // gear editor reorders, and both write the same document. The old
+  // localStorage home is read once by the migration and never written again.
   const start = client.indexOf('/* ---- rail config core')
   const end = client.indexOf('/* ---- end rail config core')
   assert.ok(start >= 0 && end > start, 'the rail config core must keep its markers')
   const core = new Function('RAIL_IDS', client.slice(start, end)
-    + '\nreturn { railFieldOf: railFieldOf, railConfigOfValues: railConfigOfValues, railValuesOfConfig: railValuesOfConfig }')(['refresh', 'tree', 'float'])
+    + '\nreturn { railFieldOf: railFieldOf, railOrderOf: railOrderOf, railOrderText: railOrderText, railConfigOfValues: railConfigOfValues, railValuesOfConfig: railValuesOfConfig }')(['refresh', 'tree', 'float'])
   assert.equal(core.railFieldOf('newBranch'), 'railNewBranch')
   assert.equal(core.railFieldOf('float'), 'railFloat')
-  assert.deepEqual(core.railConfigOfValues({ railRefresh: true, railTree: false }), { order: ['refresh', 'tree', 'float'], hidden: ['tree'] })
+  assert.deepEqual(core.railConfigOfValues({ railRefresh: true, railTree: false, railOrder: 'float,refresh' }),
+    { order: ['float', 'refresh', 'tree'], hidden: ['tree'] },
+    'a stored permutation wins, unknown ids are dropped and missing ones are appended')
   assert.deepEqual(core.railConfigOfValues(null).hidden, [], 'a missing field means the default, which is shown')
-  assert.deepEqual(core.railValuesOfConfig({ hidden: ['float'] }), { railRefresh: true, railTree: true, railFloat: false })
+  assert.equal(core.railOrderText(['tree', 'refresh', 'float']), 'tree,refresh,float')
+  assert.equal(core.railOrderText(['refresh', 'tree', 'float']), '', 'the code order is the schema default, stored as empty')
+  assert.equal(core.railOrderText(['nope', 'float', 'float', 'tree']), 'float,tree,refresh', 'duplicates and unknown ids are removed')
+  assert.deepEqual(core.railValuesOfConfig({ hidden: ['float'], order: ['float', 'refresh', 'tree'] }),
+    { railRefresh: true, railTree: true, railFloat: false, railOrder: 'float,refresh,tree' })
 
   // The host schema mirrors the client rail ids — a new action must not be
   // silently missing from the settings surface.
@@ -1636,7 +1591,7 @@ test('the rail settings live in the row Config, with localStorage only as the le
   const specIds = [...client.slice(client.indexOf('const RAIL_SPECS = ['), client.indexOf('const RAIL_IDS =')).matchAll(/\{ id: '([^']+)'/g)].map((match) => match[1])
   assert.ok(specIds.length >= 12, 'RAIL_SPECS should still be the action authority')
   assert.deepEqual(schemaIds, specIds, 'the host row Config must mirror RAIL_SPECS exactly (and in order)')
-  assert.match(host, /shape\['rail' \+ id\.charAt\(0\)\.toUpperCase\(\) \+ id\.slice\(1\)\] = live\(schema\.boolean\(\)\.default\(true\)\)/,
+  assert.match(host, /shape\['rail' \+ id\.charAt\(0\)\.toUpperCase\(\) \+ id\.slice\(1\)\] = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'every action is a volatile boolean defaulting to shown')
   assert.match(host, /export const Config = Schema === null \? undefined : railConfigSchema\(Schema\)/,
     'an unresolvable schema module must only disable the surface, never the row')
@@ -1653,7 +1608,7 @@ test('the rail settings live in the row Config, with localStorage only as the le
   for (const match of cardSource.matchAll(/const field = '([A-Za-z]+)'/g)) cardFields.add(match[1])
   for (const match of cardSource.matchAll(/(?:textRow|selectRow)\('([A-Za-z]+)'/g)) cardFields.add(match[1])
   for (const field of cardFields) {
-    assert.match(host, new RegExp('shape\\.' + field + ' = live\\(schema\\.(?:boolean|string)\\(\\)'),
+    assert.match(host, new RegExp('shape\\.' + field + ' = schema\\.(?:boolean|string)\\(\\)'),
       'the host row Config must declare the field the settings card writes: ' + field)
   }
   assert.ok(cardFields.has('composerStatus'), 'the composer pill switch is part of the write surface')
@@ -1665,8 +1620,8 @@ test('the rail settings live in the row Config, with localStorage only as the le
   assert.deepEqual(dynamicImports, ['@deepseek-ai/schemastery'], 'the only allowed non-node reach, and it must stay dynamic')
   assert.doesNotMatch(host, /from '(?!node:|\.\/)/, 'host half may only import node: builtins or its own relative modules')
 
-  // Client wiring: the detail-page seat (the legacy Settings → Plugins seat went
-  // away with the raised host floor), soft services, one-shot migration.
+  // Client wiring: the detail-page seat, the rc.1 configForms service, one-shot
+  // migration, and a gear that always opens the editor with the reorder controls.
   assert.match(client, /const SETTINGS_BUNDLE = 'dsh-ide-git'/)
   assert.match(client, /const RAIL_NS = 'ide-git'/)
   assert.match(client, /slots\.inject\('plugins\.bundle\.config'/)
@@ -1674,12 +1629,10 @@ test('the rail settings live in the row Config, with localStorage only as the le
   assert.doesNotMatch(client, /settings\.plugin\.item/, 'the legacy settings-list seat must stay gone')
   assert.match(client, /ctx\.inject\(\['configForms'\]/)
   assert.match(client, /const RAIL_MIGRATED_KEY = 'dsh-ide-git\.rail\.v1\.migrated'/)
-  assert.match(client, /navigation\.openBundle\(SETTINGS_BUNDLE\)/, 'the gear opens the plugin page when the host has one')
-  assert.match(client, /const openSettings = navigation !== undefined && navigation !== null && typeof navigation\.openBundle === 'function'/,
-    'pluginNavigation is read at RENDER time and soft (it may be undefined)')
-  // The in-panel editor exists only where the row Config does not.
-  assert.match(client, /railForm === null \|\| props\.openSettings === null \|\| props\.openSettings === undefined \? 'panel' : 'page'/,
-    'the gear falls back to the in-panel editor only without the config/navigation pair')
+  assert.match(client, /const scope = railForm/, 'the card reads the module configForms handle directly')
+  assert.match(client, /onClick: \(\) => setRailSettings\(true\)/, 'the gear always opens the in-panel editor')
+  assert.doesNotMatch(client, /railSettingsTarget|navigation\.openBundle|props\.openSettings/,
+    'rc.1 has no plugin-settings navigation path from the rail')
 })
 
 test('every overlay is clamped to the panel it lives in', () => {

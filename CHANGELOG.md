@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.28.0 — 2026-11-05
+
+**类型**:breaking(兼容下限抬到 dsh >=0.2.2-rc.1)+ feat(动作条排序持久化)
+
+- **单代基线**:`engines.node` 改为 `>=24.9.0`;`engines.dsh` 与 `@deepseek-ai/dsh` peer 同步改为 `>=0.2.2-rc.1`(peer 仍 optional、无上界);`dsh.plugin.json` 同步。兼容门禁以 `engines.dsh` 为准,不再保留 `>=0.1.6-alpha.2` 的旧声明。
+- **设置面单代**:`src/host/config.js` 删除 `live()` 探测,17 个动作布尔、`commitModel` / `commitReasoning` / `commitPrompt`、`conversationTab` / `immersive` / `composerStatus` / `inlineDiff` 全部直接 `.volatile()`;新增 `railOrder` 字符串字段(默认空串=代码顺序)。`dsh.client.inject` 补声明 `@deepseek-ai/dsh-client-ui-settings`。
+- **动作条排序真正持久化**:此前 `writeRailConfig` 只写动作布尔、忽略 `order`,面板里拖动或上下移只改当次 state,重启即丢。现在读写都走 `railOrderOf()` / `railOrderText()`:丢弃未知/重复 id、按 `RAIL_IDS` 补全,代码顺序写成空串;旧 `localStorage` 文档由 `migrateRailConfig()` 一次性迁入(含排序),写路径不再回退到它。
+- **设置卡与入口**:插件详情页的 `plugins.bundle.config` 卡改成始终平铺的页面卡(rc.1 只以 `view:'page'` 渲染,不再有 li 折叠壳);删掉不存在的 `props.scope` 探测,统一读模块级 `railForm`;补 `loading` 与 `unavailable` 两种状态和 21 门文案。齿轮始终打开面板内编辑器(排序与显隐都在那里),不再按 `railSettingsTarget` 跳插件页;删除废弃的 `rail.openSettings` 文案与 `pluginNavigation` 读取。
+- **其它清理**:删除重复的 `return commitCatalogFlight`;21 门词典同步新的排序/加载说明。`src/index.js` 的 `typeof ctx.inject` 守卫保留——它是测试用最小 ctx 的防御,不是旧宿主版本分支。
+- **验证**:`npm test` 132/132 pass,0 fail;`node --check src/client.js src/host/config.js` 通过;`scripts/ssr-check.mjs` 四项 OK。隔离实例真机验证(动作条拖动/上下移重启后保持、插件页卡显隐与加载态、齿轮打开面板编辑器)待发布前完成。
+
 ## v0.27.4 — 2026-11-04
 
 **类型**:feat(issue #25:历史范围 + 合并模式 + 中止合并)
