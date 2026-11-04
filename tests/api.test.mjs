@@ -180,6 +180,74 @@ test('log parses hash, parents and paginates', async () => {
   assert.equal(rest.body.data.hasMore, false)
 })
 
+test('log widens to every branch + remote when asked (issue #25)', async () => {
+  const head = await call('log', { cwd: repo, limit: 20 })
+  assert.ok(
+    head.body.data.commits.some((commit) => commit.subject === 'third on feature') === false,
+    'the default HEAD view must not smuggle in the unrelated branch',
+  )
+  const all = await call('log', { cwd: repo, limit: 20, allBranches: true })
+  assert.equal(all.status, 200)
+  assert.ok(
+    all.body.data.commits.some((commit) => commit.subject === 'third on feature'),
+    'allBranches must surface commits that are not in HEAD history',
+  )
+})
+
+test('merge modes keep --no-ff / --no-commit and can be aborted (issue #25)', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'dsh-ide-git-merge-'))
+  const at = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' })
+  try {
+    at(root, 'init', '-q', '-b', 'main')
+    at(root, 'config', 'user.name', 'Check')
+    at(root, 'config', 'user.email', 'check@example.com')
+    writeFileSync(join(root, 'base.txt'), 'base\n')
+    at(root, 'add', '-A')
+    at(root, 'commit', '-q', '-m', 'base')
+    at(root, 'checkout', '-q', '-b', 'topic')
+    writeFileSync(join(root, 'topic.txt'), 'topic\n')
+    at(root, 'add', '-A')
+    at(root, 'commit', '-q', '-m', 'topic change')
+    at(root, 'checkout', '-q', 'main')
+    writeFileSync(join(root, 'main.txt'), 'main\n')
+    at(root, 'add', '-A')
+    at(root, 'commit', '-q', '-m', 'main change')
+    const before = at(root, 'rev-parse', 'HEAD').trim()
+
+    // --no-ff --no-commit: the merge is prepared, HEAD does not move, and the
+    // operation marker lets the panel offer Abort merge.
+    const stopped = await call('merge', { cwd: root, branch: 'topic', noFf: true, noCommit: true })
+    assert.equal(stopped.status, 200)
+    assert.equal(stopped.body.data.conflicted, false)
+    assert.equal(at(root, 'rev-parse', 'HEAD').trim(), before, '--no-commit must not move HEAD')
+    assert.equal((await call('summary', { cwd: root })).body.data.operation, 'merge')
+    assert.ok((await call('summary', { cwd: root })).body.data.changes.staged.some((file) => file.path === 'topic.txt'))
+
+    const aborted = await call('mergeAbort', { cwd: root })
+    assert.equal(aborted.status, 200)
+    assert.equal((await call('summary', { cwd: root })).body.data.operation, null)
+    assert.equal(at(root, 'rev-parse', 'HEAD').trim(), before)
+    assert.equal((await call('mergeAbort', { cwd: root })).status, 409, 'nothing to abort must be named, not ignored')
+
+    // --squash stages the changes without a commit and without MERGE_HEAD.
+    const squashed = await call('merge', { cwd: root, branch: 'topic', squash: true })
+    assert.equal(squashed.status, 200)
+    assert.equal((await call('summary', { cwd: root })).body.data.operation, null)
+    assert.ok((await call('summary', { cwd: root })).body.data.changes.staged.some((file) => file.path === 'topic.txt'))
+    at(root, 'reset', '--hard', '-q', before)
+
+    // --no-ff always leaves a two-parent merge commit, even when a fast-forward
+    // would have been possible for the files involved.
+    const merged = await call('merge', { cwd: root, branch: 'topic', noFf: true })
+    assert.equal(merged.status, 200)
+    assert.notEqual(at(root, 'rev-parse', 'HEAD').trim(), before)
+    const parents = at(root, 'rev-list', '--parents', '-n', '1', 'HEAD').trim().split(/\s+/)
+    assert.equal(parents.length, 3, 'a --no-ff merge commit has two parents')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test('commitDetail returns body and per-file numstat', async () => {
   // v1 is tagged on the second commit — a stable anchor that earlier tests
   // (which add commits) cannot move.

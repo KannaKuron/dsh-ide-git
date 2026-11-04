@@ -8,7 +8,7 @@ import {
 
   stage, unstage, discard, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
 
-  worktreePrune, branchUpstream, branchRename, branchDelete, merge, rebase, rebaseAbort,
+  worktreePrune, branchUpstream, branchRename, branchDelete, merge, mergeAbort, rebase, rebaseAbort,
 
   remoteAdd, remoteRemove, branchDeleteRemote, tagDeleteRemote, pushTags, stashClear,
 
@@ -58,6 +58,7 @@ const METHODS = {
   worktreeRemove,
   worktreePrune,
   merge,
+  mergeAbort,
   rebase,
   cherryPick,
   revert,

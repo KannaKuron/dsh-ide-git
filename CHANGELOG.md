@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.27.4 — 2026-11-04
+
+**类型**:feat(issue #25:历史范围 + 合并模式 + 中止合并)
+
+- **历史范围(issue #25)**:历史筛选栏新增「范围」选择器——当前分支(默认,行为不变)、全部分支、以及任意本地/远程分支。选「全部分支」时宿主把日志起点换成 `git log --branches --remotes`,指向具体分支时直接把该 ref 交给 `git log`;范围来自分支树列表,不再只从已加载提交的 refs 里收集,所以一个与当前分支无关、或领先于当前分支的分支,它的提交现在能真正出现在历史里。切换范围会清掉双击分支产生的合并锚点;范围是视图起点,不参与「一键清除」的文本过滤。
+- **合并模式(issue #25)**:分支行动作与分支右键的「合并到当前分支」现在都先打开合并对话框,可选 **默认 / `--no-ff` / `--squash` / `--no-ff --no-commit`**,并在选项下方说明各自后果。`--no-commit` 必须与 `--no-ff` 搭配,否则 git 在可快进时会拒绝;宿主 `merge` 新增 `noCommit` 旗标。
+- **中止合并**:新增宿主方法 `mergeAbort`(`git merge --abort`)与「更多操作 → 提交 → 中止合并」菜单项。`--no-ff --no-commit` 会留下 `MERGE_HEAD` 与已暂存改动,没有这个入口用户只能回终端退出;无合并进行中时路由返回 409,菜单项只在操作状态为 merge 时可用。
+- **文案**:21 门词典同步新增范围、合并标题/说明/四种模式与提示、中止合并共 14 个键;模式标签直接显示 git 旗标,`{branch}` 占位符在提示里替换为实际分支名。
+- **验证**:`npm test` 132/132(0 fail / 0 skip,新增历史范围、四模式映射、`mergeAbort` 的路由/写队列/菜单断言,以及 api 层的全分支日志、`--no-commit` 留 `MERGE_HEAD` 后中止、`--squash`、`--no-ff` 双父提交);`node --check` 全部通过;`node scripts/ssr-check.mjs` 四项全 OK;`node scripts/layout-probe.mjs` 在 1600→380px 共 11 档宽度全部通过、无 pageerror。隔离实例真机:dsh 0.2.2-rc.1 + 测试仓库(alpha 与 main 分叉),「全部分支」能看到 alpha only change;四种合并模式逐一执行,--no-commit 留下「合并进行中」与已暂存文件、中止后恢复干净,--no-ff 生成双父合并提交,--squash 只留暂存改动;console 无报错。
+- 相关:issue [#25](https://github.com/KannaKuron/dsh-ide-git/issues/25);README 中英文的功能与筛选表同步更新。
+
 ## v0.27.3 — 2026-11-04
 
 **类型**:chore(复核并声明 dsh 0.2.2-rc.1 兼容;零代码改动)

@@ -246,6 +246,11 @@ async function merge(payload) {
   if (payload.ffOnly === true) args.push('--ff-only')
   if (payload.noFf === true) args.push('--no-ff')
   if (payload.squash === true) args.push('--squash')
+  /* --no-commit is only meaningful when the merge cannot fast-forward (git
+     otherwise refuses with "--no-commit cannot be used with a fast-forward"),
+     so the client always sends it beside noFf. The route stays a plain flag
+     so an API caller can compose the same pair itself. */
+  if (payload.noCommit === true) args.push('--no-commit')
   args.push(branch)
   const result = await runGit(root, args)
   const combined = (result.stdout + '\n' + result.stderr).trim()
@@ -276,6 +281,21 @@ async function rebaseAbort(payload) {
   if (result.code !== 0) {
     const detail = (result.stdout + '\n' + result.stderr).trim()
     throw new PanelError('git-failed', detail === '' ? 'no rebase to abort' : detail, 409)
+  }
+  return { output: (result.stdout + '\n' + result.stderr).trim() }
+}
+
+/* The pair to rebaseAbort for issue #25: a --no-ff --no-commit merge leaves
+   MERGE_HEAD behind and stops before the commit, so without this entry the
+   user could only back out in a terminal. Same honest refusal when there is
+   no merge in progress. */
+async function mergeAbort(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const result = await runGit(root, ['merge', '--abort'])
+  if (result.code !== 0) {
+    const detail = (result.stdout + '\n' + result.stderr).trim()
+    throw new PanelError('git-failed', detail === '' ? 'no merge to abort' : detail, 409)
   }
   return { output: (result.stdout + '\n' + result.stderr).trim() }
 }
@@ -540,7 +560,7 @@ export {
 
   stage, unstage, discard, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
 
-  worktreePrune, branchUpstream, branchRename, branchDelete, merge, rebase, rebaseAbort,
+  worktreePrune, branchUpstream, branchRename, branchDelete, merge, mergeAbort, rebase, rebaseAbort,
 
   remoteAdd, remoteRemove, branchDeleteRemote, tagDeleteRemote, pushTags, stashClear,
 

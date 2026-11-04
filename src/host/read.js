@@ -169,7 +169,13 @@ async function log(payload) {
   const limit = clampInt(payload.limit, 1, 500, 100)
   const skip = clampInt(payload.skip, 0, 1_000_000, 0)
   const args = ['log', '--max-count=' + (limit + 1), '--skip=' + skip, '--date-order', '--pretty=format:' + LOG_FORMAT]
-  if (typeof payload.rev === 'string' && payload.rev.trim() !== '') args.push(requireRef(payload.rev, 'rev'))
+  /* History scope (issue #25). `allBranches` is a boolean switch, never a
+     caller-supplied ref list: --branches + --remotes is the union of every
+     local and remote tip, so commits that only exist on an unrelated or
+     ahead branch become visible instead of staying inside that branch's
+     own log. A named rev still wins when it is the only thing provided. */
+  if (payload.allBranches === true) args.push('--branches', '--remotes')
+  else if (typeof payload.rev === 'string' && payload.rev.trim() !== '') args.push(requireRef(payload.rev, 'rev'))
   if (typeof payload.path === 'string' && payload.path.trim() !== '') args.push('--', payload.path)
   const out = await git(root, args)
   const all = parseLog(out)

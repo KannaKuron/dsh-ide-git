@@ -815,7 +815,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -825,6 +825,24 @@ test('host half exposes the method table the client calls', () => {
     const method = call.slice(call.indexOf("'") + 1, call.length - 1)
     assert.ok(methods.includes(method), 'client calls an unregistered method: ' + method)
   }
+})
+
+test('history scope and merge modes follow issue #25', () => {
+  // Scope: the client maps '*' to a host BOOLEAN, and the host turns that into
+  // --branches --remotes — never a caller-supplied list of refs.
+  assert.ok(client.includes("if (browseRev === '*') payload.allBranches = true"), 'client must map the all-branches scope')
+  assert.ok(host.includes("if (payload.allBranches === true) args.push('--branches', '--remotes')"), 'host must widen the log to every branch + remote')
+  assert.ok(client.includes("label: t('history.scope')"), 'history must expose the scope filter')
+  assert.ok(client.includes('branches: branches, scope: browseRev, onScopeChange: setHistoryScope'), 'the panel must hand branches + scope to the list')
+  // Merge: both entry points open the mode dialog; the flag pair is exact.
+  assert.ok(client.includes('function MergeDialog(props) {'), 'merge must ask for a mode')
+  assert.equal((client.match(/run\('merge', \{ branch: entry\.name \}\)/g) || []).length, 0, 'no merge entry may skip the mode dialog')
+  assert.ok(client.includes("else if (mode === 'noCommit') { payload.noFf = true; payload.noCommit = true }"), '--no-commit must ride with --no-ff')
+  assert.ok(host.includes("if (payload.noCommit === true) args.push('--no-commit')"), 'host must pass --no-commit')
+  // A stopped merge needs a way out; the abort is a write method like rebaseAbort.
+  assert.ok(host.includes('async function mergeAbort(payload) {'), 'host must offer mergeAbort')
+  assert.ok(host.includes("'merge', 'mergeAbort', 'rebase'"), 'mergeAbort must join the write queue')
+  assert.ok(client.includes("run: () => { void run('mergeAbort', {}) }"), 'the more menu must expose Abort merge')
 })
 
 test('host half serialises writes and refuses the dangerous cases', () => {

@@ -225,6 +225,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': '全部提交...',
       'more.undoCommit': '撤销上次提交',
       'more.rebaseAbort': '中止变基',
+      'more.mergeAbort': '中止合并',
       'more.commitStagedAmend': '提交已暂存文件(修改)...',
       'more.commitAllAmend': '全部提交(修改)...',
       'more.commitStagedSign': '提交已暂存文件(已签收)...',
@@ -365,6 +366,19 @@ window.__ModuleLoader__.load({
       'rail.hide': '隐藏',
       'action.unavailable': '当前状态不可用',
       'filter.branch': '分支',
+      'history.scope': '范围',
+      'history.scopeCurrent': '当前分支',
+      'history.scopeAll': '全部分支',
+      'merge.title': '合并 {branch}',
+      'merge.into': '把 {branch} 合并进当前分支',
+      'merge.modeDefault': '默认',
+      'merge.modeNoFf': '--no-ff',
+      'merge.modeSquash': '--squash',
+      'merge.modeNoCommit': '--no-commit',
+      'merge.hint.default': '能快进时直接快进，不生成合并提交。',
+      'merge.hint.noFf': '总是生成一个合并提交，历史里能看出这次合并。',
+      'merge.hint.squash': '把 {branch} 的改动合成一个待提交的变更，不保留它的提交历史。',
+      'merge.hint.noCommit': '生成合并结果但停在提交前，方便检查或补充改动。',
       'filter.user': '用户',
       'history.me': '我',
       'filter.date': '日期',
@@ -599,6 +613,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Commit All...',
       'more.undoCommit': 'Undo Last Commit',
       'more.rebaseAbort': 'Abort Rebase',
+      'more.mergeAbort': 'Abort Merge',
       'more.commitStagedAmend': 'Commit Staged (Amend)...',
       'more.commitAllAmend': 'Commit All (Amend)...',
       'more.commitStagedSign': 'Commit Staged (Signed Off)...',
@@ -739,6 +754,19 @@ window.__ModuleLoader__.load({
       'rail.hide': 'Hide',
       'action.unavailable': 'Not available in the current state',
       'filter.branch': 'Branch',
+      'history.scope': 'Scope',
+      'history.scopeCurrent': 'Current branch',
+      'history.scopeAll': 'All branches',
+      'merge.title': 'Merge {branch}',
+      'merge.into': 'Merge {branch} into the current branch',
+      'merge.modeDefault': 'Default',
+      'merge.modeNoFf': '--no-ff',
+      'merge.modeSquash': '--squash',
+      'merge.modeNoCommit': '--no-commit',
+      'merge.hint.default': 'Fast-forwards when possible, without a merge commit.',
+      'merge.hint.noFf': 'Always creates a merge commit, so the merge stays visible in history.',
+      'merge.hint.squash': 'Combines the changes from {branch} into one staged change, without its commit history.',
+      'merge.hint.noCommit': 'Prepares the merge and stops before committing, so you can review or adjust it.',
       'filter.user': 'User',
       'history.me': 'Me',
       'filter.date': 'Date',
@@ -981,6 +1009,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': '全部提交...',
       'more.undoCommit': '撤銷上次提交',
       'more.rebaseAbort': '中止變基',
+      'more.mergeAbort': '中止合併',
       'more.commitStagedAmend': '提交已暫存檔案(修改)...',
       'more.commitAllAmend': '全部提交(修改)...',
       'more.commitStagedSign': '提交已暫存檔案(已簽收)...',
@@ -1121,6 +1150,19 @@ window.__ModuleLoader__.load({
         'rail.hide': '隱藏',
         'action.unavailable': '當前狀態下唔可用',
         'filter.branch': '分支',
+        'history.scope': '範圍',
+        'history.scopeCurrent': '目前分支',
+        'history.scopeAll': '全部分支',
+        'merge.title': '合併 {branch}',
+        'merge.into': '將 {branch} 合併進目前分支',
+        'merge.modeDefault': '預設',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': '可以快進時直接快進，唔會產生合併提交。',
+        'merge.hint.noFf': '總是產生合併提交，歷史裡可以睇到這次合併。',
+        'merge.hint.squash': '將 {branch} 的改動合成一個待提交的變更，唔保留它的提交歷史。',
+        'merge.hint.noCommit': '產生合併結果但停在提交前，方便檢查或補充改動。',
         'filter.user': '提交者',
         'history.me': '我',
         'filter.date': '日期',
@@ -1355,6 +1397,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': '全部提交...',
       'more.undoCommit': '復原上次提交',
       'more.rebaseAbort': '中止變基',
+      'more.mergeAbort': '中止合併',
       'more.commitStagedAmend': '提交已暫存檔案(修改)...',
       'more.commitAllAmend': '全部提交(修改)...',
       'more.commitStagedSign': '提交已暫存檔案(已簽核)...',
@@ -1495,6 +1538,19 @@ window.__ModuleLoader__.load({
         'rail.hide': '隱藏',
         'action.unavailable': '目前狀態下無法使用',
         'filter.branch': '分支',
+        'history.scope': '範圍',
+        'history.scopeCurrent': '目前分支',
+        'history.scopeAll': '全部分支',
+        'merge.title': '合併 {branch}',
+        'merge.into': '將 {branch} 合併進目前分支',
+        'merge.modeDefault': '預設',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': '可以快進時直接快進，不產生合併提交。',
+        'merge.hint.noFf': '總是產生合併提交，歷史裡能看到這次合併。',
+        'merge.hint.squash': '將 {branch} 的改動合成一個待提交的變更，不保留它的提交歷史。',
+        'merge.hint.noCommit': '產生合併結果但停在提交前，方便檢查或補充改動。',
         'filter.user': '提交者',
         'history.me': '我',
         'filter.date': '日期',
@@ -1729,6 +1785,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': '全部提交...',
       'more.undoCommit': '撤銷上次提交',
       'more.rebaseAbort': '中止變基',
+      'more.mergeAbort': '中止合併',
       'more.commitStagedAmend': '提交已暫存檔案(修改)...',
       'more.commitAllAmend': '全部提交(修改)...',
       'more.commitStagedSign': '提交已暫存檔案(已簽收)...',
@@ -1869,6 +1926,19 @@ window.__ModuleLoader__.load({
         'rail.hide': '隱藏',
         'action.unavailable': '當前狀態下唔可用',
         'filter.branch': '分支',
+        'history.scope': '範圍',
+        'history.scopeCurrent': '目前分支',
+        'history.scopeAll': '全部分支',
+        'merge.title': '合併 {branch}',
+        'merge.into': '將 {branch} 合併進目前分支',
+        'merge.modeDefault': '預設',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': '可以快進時直接快進，唔會產生合併提交。',
+        'merge.hint.noFf': '總是產生合併提交，歷史裡可以睇到這次合併。',
+        'merge.hint.squash': '將 {branch} 的改動合成一個待提交的變更，唔保留它的提交歷史。',
+        'merge.hint.noCommit': '產生合併結果但停在提交前，方便檢查或補充改動。',
         'filter.user': '提交者',
         'history.me': '我',
         'filter.date': '日期',
@@ -2103,6 +2173,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'すべてコミット...',
       'more.undoCommit': '最後のコミットを取り消す',
       'more.rebaseAbort': 'リベースを中止',
+      'more.mergeAbort': 'マージを中止',
       'more.commitStagedAmend': 'ステージ済みをコミット(修正)...',
       'more.commitAllAmend': 'すべてコミット(修正)...',
       'more.commitStagedSign': 'ステージ済みをコミット(署名)...',
@@ -2243,6 +2314,19 @@ window.__ModuleLoader__.load({
         'rail.hide': '非表示',
         'action.unavailable': '現在の状態では使用できません',
         'filter.branch': 'ブランチ',
+        'history.scope': '範囲',
+        'history.scopeCurrent': '現在のブランチ',
+        'history.scopeAll': 'すべてのブランチ',
+        'merge.title': '{branch} をマージ',
+        'merge.into': '{branch} を現在のブランチにマージ',
+        'merge.modeDefault': 'デフォルト',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': '可能な場合はファストフォワードし、マージコミットを作成しません。',
+        'merge.hint.noFf': '常にマージコミットを作成し、履歴にマージを残します。',
+        'merge.hint.squash': '{branch} の変更をコミット履歴を残さず、1 つのステージ済み変更にまとめます。',
+        'merge.hint.noCommit': 'マージ結果を用意してコミット直前で止め、確認や修正ができるようにします。',
         'filter.user': 'コミット者',
         'history.me': '自分',
         'filter.date': '日付',
@@ -2477,6 +2561,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': '모두 커밋...',
       'more.undoCommit': '마지막 커밋 취소',
       'more.rebaseAbort': '리베이스 중단',
+      'more.mergeAbort': '병합 중단',
       'more.commitStagedAmend': '스테이지된 파일 커밋(수정)...',
       'more.commitAllAmend': '모두 커밋(수정)...',
       'more.commitStagedSign': '스테이지된 파일 커밋(서명)...',
@@ -2617,6 +2702,19 @@ window.__ModuleLoader__.load({
         'rail.hide': '숨기기',
         'action.unavailable': '현재 상태에서는 사용할 수 없습니다',
         'filter.branch': '브랜치',
+        'history.scope': '범위',
+        'history.scopeCurrent': '현재 브랜치',
+        'history.scopeAll': '모든 브랜치',
+        'merge.title': '{branch} 병합',
+        'merge.into': '{branch}을(를) 현재 브랜치에 병합',
+        'merge.modeDefault': '기본',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': '가능하면 빨리 감기하고 병합 커밋을 만들지 않습니다.',
+        'merge.hint.noFf': '항상 병합 커밋을 만들어 기록에 병합이 남습니다.',
+        'merge.hint.squash': '{branch}의 변경을 커밋 기록 없이 하나의 스테이징된 변경으로 합칩니다.',
+        'merge.hint.noCommit': '병합 결과를 만들고 커밋 직전에 멈춰 검토하거나 수정할 수 있습니다.',
         'filter.user': '작성자',
         'history.me': '나',
         'filter.date': '날짜',
@@ -2851,6 +2949,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Alles committen...',
       'more.undoCommit': 'Letzten Commit zurücknehmen',
       'more.rebaseAbort': 'Rebase abbrechen',
+      'more.mergeAbort': 'Merge abbrechen',
       'more.commitStagedAmend': 'Staged committen (Amend)...',
       'more.commitAllAmend': 'Alles committen (Amend)...',
       'more.commitStagedSign': 'Staged committen (Signed Off)...',
@@ -2991,6 +3090,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Ausblenden',
         'action.unavailable': 'Im aktuellen Zustand nicht verfügbar',
         'filter.branch': 'Branch',
+        'history.scope': 'Umfang',
+        'history.scopeCurrent': 'Aktueller Branch',
+        'history.scopeAll': 'Alle Branches',
+        'merge.title': '{branch} mergen',
+        'merge.into': '{branch} in den aktuellen Branch mergen',
+        'merge.modeDefault': 'Standard',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Führt wenn möglich einen Fast-Forward aus, ohne Merge-Commit.',
+        'merge.hint.noFf': 'Erstellt immer einen Merge-Commit, damit der Merge in der Historie sichtbar bleibt.',
+        'merge.hint.squash': 'Fasst die Änderungen von {branch} zu einer gestagten Änderung zusammen, ohne ihre Commit-Historie.',
+        'merge.hint.noCommit': 'Bereitet den Merge vor und stoppt vor dem Commit, damit du ihn prüfen oder anpassen kannst.',
         'filter.user': 'Autor',
         'history.me': 'Ich',
         'filter.date': 'Datum',
@@ -3225,6 +3337,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Tout committer...',
       'more.undoCommit': 'Annuler le dernier commit',
       'more.rebaseAbort': 'Abandonner le rebase',
+      'more.mergeAbort': 'Abandonner la fusion',
       'more.commitStagedAmend': 'Commit indexé (Amend)...',
       'more.commitAllAmend': 'Tout committer (Amend)...',
       'more.commitStagedSign': 'Commit indexé (Signé)...',
@@ -3365,6 +3478,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Masquer',
         'action.unavailable': 'Indisponible dans l\'état actuel',
         'filter.branch': 'Branche',
+        'history.scope': 'Portée',
+        'history.scopeCurrent': 'Branche actuelle',
+        'history.scopeAll': 'Toutes les branches',
+        'merge.title': 'Fusionner {branch}',
+        'merge.into': 'Fusionner {branch} dans la branche actuelle',
+        'merge.modeDefault': 'Par défaut',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Avance rapidement quand c\'est possible, sans commit de fusion.',
+        'merge.hint.noFf': 'Crée toujours un commit de fusion, pour que la fusion reste visible dans l\'historique.',
+        'merge.hint.squash': 'Regroupe les modifications de {branch} en une seule modification indexée, sans son historique de commits.',
+        'merge.hint.noCommit': 'Prépare la fusion et s\'arrête avant le commit, pour que vous puissiez la vérifier ou l\'ajuster.',
         'filter.user': 'Auteur',
         'history.me': 'Moi',
         'filter.date': 'Date',
@@ -3599,6 +3725,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Фиксация всего...',
       'more.undoCommit': 'Отменить последнюю фиксацию',
       'more.rebaseAbort': 'Прервать перебазирование',
+      'more.mergeAbort': 'Прервать слияние',
       'more.commitStagedAmend': 'Фиксация индексированного (Amend)...',
       'more.commitAllAmend': 'Фиксация всего (Amend)...',
       'more.commitStagedSign': 'Фиксация индексированного (С подписью)...',
@@ -3739,6 +3866,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Скрыть',
         'action.unavailable': 'Недоступно в текущем состоянии',
         'filter.branch': 'Ветка',
+        'history.scope': 'Область',
+        'history.scopeCurrent': 'Текущая ветка',
+        'history.scopeAll': 'Все ветки',
+        'merge.title': 'Слить {branch}',
+        'merge.into': 'Слить {branch} в текущую ветку',
+        'merge.modeDefault': 'По умолчанию',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Выполняет fast-forward, когда это возможно, без коммита слияния.',
+        'merge.hint.noFf': 'Всегда создаёт коммит слияния, чтобы слияние осталось в истории.',
+        'merge.hint.squash': 'Объединяет изменения {branch} в одно подготовленное изменение без истории коммитов.',
+        'merge.hint.noCommit': 'Готовит слияние и останавливается перед коммитом, чтобы его можно было проверить или дополнить.',
         'filter.user': 'Автор',
         'history.me': 'Я',
         'filter.date': 'Дата',
@@ -3973,6 +4113,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Commit de tudo...',
       'more.undoCommit': 'Desfazer último commit',
       'more.rebaseAbort': 'Abortar rebase',
+      'more.mergeAbort': 'Abortar merge',
       'more.commitStagedAmend': 'Commit em staging (Amend)...',
       'more.commitAllAmend': 'Commit de tudo (Amend)...',
       'more.commitStagedSign': 'Commit em staging (Assinado)...',
@@ -4113,6 +4254,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Ocultar',
         'action.unavailable': 'Indisponível no estado atual',
         'filter.branch': 'Branch',
+        'history.scope': 'Escopo',
+        'history.scopeCurrent': 'Branch atual',
+        'history.scopeAll': 'Todos os branches',
+        'merge.title': 'Mesclar {branch}',
+        'merge.into': 'Mesclar {branch} no branch atual',
+        'merge.modeDefault': 'Padrão',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Avança rapidamente quando possível, sem commit de merge.',
+        'merge.hint.noFf': 'Sempre cria um commit de merge, para que o merge fique visível no histórico.',
+        'merge.hint.squash': 'Combina as alterações de {branch} em uma única alteração preparada, sem o histórico de commits.',
+        'merge.hint.noCommit': 'Prepara o merge e para antes do commit, para você revisar ou ajustar.',
         'filter.user': 'Autor',
         'history.me': 'Eu',
         'filter.date': 'Data',
@@ -4347,6 +4501,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Esegui commit di tutto...',
       'more.undoCommit': 'Annulla ultimo commit',
       'more.rebaseAbort': 'Interrompi rebase',
+      'more.mergeAbort': 'Interrompi merge',
       'more.commitStagedAmend': 'Commit in staging (Amend)...',
       'more.commitAllAmend': 'Commit di tutto (Amend)...',
       'more.commitStagedSign': 'Commit in staging (Firmato)...',
@@ -4487,6 +4642,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Nascondi',
         'action.unavailable': 'Non disponibile nello stato attuale',
         'filter.branch': 'Branch',
+        'history.scope': 'Ambito',
+        'history.scopeCurrent': 'Branch corrente',
+        'history.scopeAll': 'Tutti i branch',
+        'merge.title': 'Unisci {branch}',
+        'merge.into': 'Unisci {branch} nel branch corrente',
+        'merge.modeDefault': 'Predefinito',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Esegue un fast-forward quando possibile, senza commit di merge.',
+        'merge.hint.noFf': 'Crea sempre un commit di merge, così il merge resta visibile nella cronologia.',
+        'merge.hint.squash': 'Combina le modifiche di {branch} in un\'unica modifica preparata, senza la cronologia dei commit.',
+        'merge.hint.noCommit': 'Prepara il merge e si ferma prima del commit, così puoi controllarlo o modificarlo.',
         'filter.user': 'Autore',
         'history.me': 'Io',
         'filter.date': 'Data',
@@ -4721,6 +4889,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Alles committen...',
       'more.undoCommit': 'Laatste commit ongedaan maken',
       'more.rebaseAbort': 'Rebase afbreken',
+      'more.mergeAbort': 'Merge afbreken',
       'more.commitStagedAmend': 'Staged committen (Amend)...',
       'more.commitAllAmend': 'Alles committen (Amend)...',
       'more.commitStagedSign': 'Staged committen (Getekend)...',
@@ -4861,6 +5030,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Verbergen',
         'action.unavailable': 'Niet beschikbaar in de huidige staat',
         'filter.branch': 'Branch',
+        'history.scope': 'Bereik',
+        'history.scopeCurrent': 'Huidige branch',
+        'history.scopeAll': 'Alle branches',
+        'merge.title': '{branch} mergen',
+        'merge.into': '{branch} in de huidige branch mergen',
+        'merge.modeDefault': 'Standaard',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Voert indien mogelijk een fast-forward uit, zonder merge-commit.',
+        'merge.hint.noFf': 'Maakt altijd een merge-commit, zodat de merge zichtbaar blijft in de geschiedenis.',
+        'merge.hint.squash': 'Voegt de wijzigingen van {branch} samen tot één klaargezette wijziging, zonder de commitgeschiedenis.',
+        'merge.hint.noCommit': 'Bereidt de merge voor en stopt vóór de commit, zodat je hem kunt controleren of aanpassen.',
         'filter.user': 'Auteur',
         'history.me': 'Ik',
         'filter.date': 'Datum',
@@ -5095,6 +5277,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Zatwierdź wszystko...',
       'more.undoCommit': 'Cofnij ostatnie zatwierdzenie',
       'more.rebaseAbort': 'Przerwij rebase',
+      'more.mergeAbort': 'Przerwij scalanie',
       'more.commitStagedAmend': 'Zatwierdź przechowane (Amend)...',
       'more.commitAllAmend': 'Zatwierdź wszystko (Amend)...',
       'more.commitStagedSign': 'Zatwierdź przechowane (Podpisane)...',
@@ -5235,6 +5418,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Ukryj',
         'action.unavailable': 'Niedostępne w bieżącym stanie',
         'filter.branch': 'Gałąź',
+        'history.scope': 'Zakres',
+        'history.scopeCurrent': 'Bieżąca gałąź',
+        'history.scopeAll': 'Wszystkie gałęzie',
+        'merge.title': 'Scal {branch}',
+        'merge.into': 'Scal {branch} do bieżącej gałęzi',
+        'merge.modeDefault': 'Domyślnie',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Wykonuje fast-forward, gdy to możliwe, bez commita scalenia.',
+        'merge.hint.noFf': 'Zawsze tworzy commit scalenia, aby scalenie było widoczne w historii.',
+        'merge.hint.squash': 'Łączy zmiany z {branch} w jedną przygotowaną zmianę, bez historii commitów.',
+        'merge.hint.noCommit': 'Przygotowuje scalenie i zatrzymuje się przed commitem, aby można było je sprawdzić lub poprawić.',
         'filter.user': 'Autor',
         'history.me': 'Ja',
         'filter.date': 'Data',
@@ -5469,6 +5665,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Checka in allt...',
       'more.undoCommit': 'Ångra senaste incheckning',
       'more.rebaseAbort': 'Avbryt rebase',
+      'more.mergeAbort': 'Avbryt sammanfogning',
       'more.commitStagedAmend': 'Checka in stagingade (Amend)...',
       'more.commitAllAmend': 'Checka in allt (Amend)...',
       'more.commitStagedSign': 'Checka in stagingade (Signerat)...',
@@ -5609,6 +5806,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Dölj',
         'action.unavailable': 'Inte tillgängligt i aktuellt läge',
         'filter.branch': 'Gren',
+        'history.scope': 'Omfattning',
+        'history.scopeCurrent': 'Aktuell gren',
+        'history.scopeAll': 'Alla grenar',
+        'merge.title': 'Sammanfoga {branch}',
+        'merge.into': 'Sammanfoga {branch} i den aktuella grenen',
+        'merge.modeDefault': 'Standard',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Gör en fast-forward när det är möjligt, utan merge-commit.',
+        'merge.hint.noFf': 'Skapar alltid en merge-commit så att sammanfogningen syns i historiken.',
+        'merge.hint.squash': 'Slår ihop ändringarna från {branch} till en enda staged ändring, utan commit-historiken.',
+        'merge.hint.noCommit': 'Förbereder sammanfogningen och stannar före commit, så att du kan granska eller justera den.',
         'filter.user': 'Författare',
         'history.me': 'Jag',
         'filter.date': 'Datum',
@@ -5843,6 +6053,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Tümünü işle...',
       'more.undoCommit': 'Son işlemi geri al',
       'more.rebaseAbort': 'Rebase\'i durdur',
+      'more.mergeAbort': 'Birleştirmeyi iptal et',
       'more.commitStagedAmend': 'Staged dosyaları işle (Düzelt)...',
       'more.commitAllAmend': 'Tümünü işle (Düzelt)...',
       'more.commitStagedSign': 'Staged dosyaları işle (İmzalı)...',
@@ -5983,6 +6194,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Gizle',
         'action.unavailable': 'Geçerli durumda kullanılamaz',
         'filter.branch': 'Dal',
+        'history.scope': 'Kapsam',
+        'history.scopeCurrent': 'Geçerli dal',
+        'history.scopeAll': 'Tüm dallar',
+        'merge.title': '{branch} dalını birleştir',
+        'merge.into': '{branch} dalını geçerli dalla birleştir',
+        'merge.modeDefault': 'Varsayılan',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Mümkün olduğunda fast-forward yapar, birleştirme commit\'i oluşturmaz.',
+        'merge.hint.noFf': 'Her zaman bir birleştirme commit\'i oluşturur, böylece birleştirme geçmişte görünür.',
+        'merge.hint.squash': '{branch} dalındaki değişiklikleri commit geçmişi olmadan tek bir hazırlanmış değişiklikte birleştirir.',
+        'merge.hint.noCommit': 'Birleştirmeyi hazırlar ve commit öncesinde durur, böylece inceleyebilir veya düzenleyebilirsiniz.',
         'filter.user': 'Yazar',
         'history.me': 'Ben',
         'filter.date': 'Tarih',
@@ -6217,6 +6441,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Commit semua...',
       'more.undoCommit': 'Batalkan commit terakhir',
       'more.rebaseAbort': 'Batalkan rebase',
+      'more.mergeAbort': 'Batalkan merge',
       'more.commitStagedAmend': 'Commit stage (Amend)...',
       'more.commitAllAmend': 'Commit semua (Amend)...',
       'more.commitStagedSign': 'Commit stage (Ditandatangani)...',
@@ -6357,6 +6582,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Sembunyikan',
         'action.unavailable': 'Tidak tersedia pada keadaan saat ini',
         'filter.branch': 'Branch',
+        'history.scope': 'Cakupan',
+        'history.scopeCurrent': 'Branch saat ini',
+        'history.scopeAll': 'Semua branch',
+        'merge.title': 'Gabungkan {branch}',
+        'merge.into': 'Gabungkan {branch} ke branch saat ini',
+        'merge.modeDefault': 'Default',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Melakukan fast-forward bila memungkinkan, tanpa commit merge.',
+        'merge.hint.noFf': 'Selalu membuat commit merge, agar merge tetap terlihat di riwayat.',
+        'merge.hint.squash': 'Menggabungkan perubahan dari {branch} menjadi satu perubahan yang disiapkan, tanpa riwayat commit-nya.',
+        'merge.hint.noCommit': 'Menyiapkan merge dan berhenti sebelum commit, agar Anda dapat meninjau atau menyesuaikannya.',
         'filter.user': 'Penulis',
         'history.me': 'Saya',
         'filter.date': 'Tanggal',
@@ -6591,6 +6829,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'Commit tất cả...',
       'more.undoCommit': 'Hoàn tác commit cuối',
       'more.rebaseAbort': 'Hủy rebase',
+      'more.mergeAbort': 'Hủy hợp nhất',
       'more.commitStagedAmend': 'Commit đã stage (Sửa)...',
       'more.commitAllAmend': 'Commit tất cả (Sửa)...',
       'more.commitStagedSign': 'Commit đã stage (Ký)...',
@@ -6731,6 +6970,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'Ẩn',
         'action.unavailable': 'Không dùng được ở trạng thái hiện tại',
         'filter.branch': 'Nhánh',
+        'history.scope': 'Phạm vi',
+        'history.scopeCurrent': 'Nhánh hiện tại',
+        'history.scopeAll': 'Tất cả nhánh',
+        'merge.title': 'Hợp nhất {branch}',
+        'merge.into': 'Hợp nhất {branch} vào nhánh hiện tại',
+        'merge.modeDefault': 'Mặc định',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'Thực hiện fast-forward khi có thể, không tạo commit hợp nhất.',
+        'merge.hint.noFf': 'Luôn tạo commit hợp nhất để lần hợp nhất hiển thị trong lịch sử.',
+        'merge.hint.squash': 'Gộp các thay đổi từ {branch} thành một thay đổi đã chuẩn bị, không giữ lịch sử commit.',
+        'merge.hint.noCommit': 'Chuẩn bị hợp nhất và dừng trước khi commit để bạn xem lại hoặc điều chỉnh.',
         'filter.user': 'Tác giả',
         'history.me': 'Tôi',
         'filter.date': 'Ngày',
@@ -6965,6 +7217,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'إيداع الكل...',
       'more.undoCommit': 'تراجع عن آخر إيداع',
       'more.rebaseAbort': 'إلغاء إعادة الأساس',
+      'more.mergeAbort': 'إلغاء الدمج',
       'more.commitStagedAmend': 'إيداع المجهز (تعديل)...',
       'more.commitAllAmend': 'إيداع الكل (تعديل)...',
       'more.commitStagedSign': 'إيداع المجهز (موقع)...',
@@ -7105,6 +7358,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'إخفاء',
         'action.unavailable': 'غير متاح في الحالة الحالية',
         'filter.branch': 'الفرع',
+        'history.scope': 'النطاق',
+        'history.scopeCurrent': 'الفرع الحالي',
+        'history.scopeAll': 'جميع الفروع',
+        'merge.title': 'دمج {branch}',
+        'merge.into': 'دمج {branch} في الفرع الحالي',
+        'merge.modeDefault': 'افتراضي',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'ينفّذ تقديمًا سريعًا عند الإمكان، دون إنشاء commit للدمج.',
+        'merge.hint.noFf': 'ينشئ دائمًا commit للدمج كي يبقى الدمج ظاهرًا في السجل.',
+        'merge.hint.squash': 'يجمع تغييرات {branch} في تغيير واحد مُجهّز، دون سجل الـ commits.',
+        'merge.hint.noCommit': 'يجهّز الدمج ويتوقف قبل الـ commit لتتمكن من مراجعته أو تعديله.',
         'filter.user': 'المؤلف',
         'history.me': 'أنا',
         'filter.date': 'التاريخ',
@@ -7339,6 +7605,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'सभी कमिट करें...',
       'more.undoCommit': 'अंतिम कमिट रद्द करें',
       'more.rebaseAbort': 'रिबेस रोकें',
+      'more.mergeAbort': 'मर्ज रोकें',
       'more.commitStagedAmend': 'स्टेज्ड कमिट (संशोधन)...',
       'more.commitAllAmend': 'सभी कमिट (संशोधन)...',
       'more.commitStagedSign': 'स्टेज्ड कमिट (हस्ताक्षरित)...',
@@ -7479,6 +7746,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'छिपाएँ',
         'action.unavailable': 'वर्तमान स्थिति में उपलब्ध नहीं',
         'filter.branch': 'शाखा',
+        'history.scope': 'दायरा',
+        'history.scopeCurrent': 'वर्तमान शाखा',
+        'history.scopeAll': 'सभी शाखाएँ',
+        'merge.title': '{branch} मर्ज करें',
+        'merge.into': '{branch} को वर्तमान शाखा में मर्ज करें',
+        'merge.modeDefault': 'डिफ़ॉल्ट',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'जब संभव हो फ़ास्ट-फ़ॉरवर्ड करता है, मर्ज कमिट बनाए बिना।',
+        'merge.hint.noFf': 'हमेशा मर्ज कमिट बनाता है, ताकि मर्ज इतिहास में दिखे।',
+        'merge.hint.squash': '{branch} के बदलावों को कमिट इतिहास के बिना एक तैयार बदलाव में जोड़ता है।',
+        'merge.hint.noCommit': 'मर्ज तैयार करता है और कमिट से पहले रुकता है, ताकि आप उसे देख या बदल सकें।',
         'filter.user': 'लेखक',
         'history.me': 'मैं',
         'filter.date': 'दिनांक',
@@ -7713,6 +7993,7 @@ window.__ModuleLoader__.load({
       'more.commitAll': 'คอมมิตทั้งหมด...',
       'more.undoCommit': 'ยกเลิกคอมมิตล่าสุด',
       'more.rebaseAbort': 'ยกเลิกรีเบส',
+      'more.mergeAbort': 'ยกเลิกการรวม',
       'more.commitStagedAmend': 'คอมมิตไฟล์ที่สเตจ(แก้ไข)...',
       'more.commitAllAmend': 'คอมมิตทั้งหมด(แก้ไข)...',
       'more.commitStagedSign': 'คอมมิตไฟล์ที่สเตจ(ลงนาม)...',
@@ -7853,6 +8134,19 @@ window.__ModuleLoader__.load({
         'rail.hide': 'ซ่อน',
         'action.unavailable': 'ใช้ไม่ได้ในสถานะปัจจุบัน',
         'filter.branch': 'แบรนช์',
+        'history.scope': 'ขอบเขต',
+        'history.scopeCurrent': 'สาขาปัจจุบัน',
+        'history.scopeAll': 'ทุกสาขา',
+        'merge.title': 'รวม {branch}',
+        'merge.into': 'รวม {branch} เข้ากับสาขาปัจจุบัน',
+        'merge.modeDefault': 'ค่าเริ่มต้น',
+        'merge.modeNoFf': '--no-ff',
+        'merge.modeSquash': '--squash',
+        'merge.modeNoCommit': '--no-commit',
+        'merge.hint.default': 'ทำ fast-forward เมื่อทำได้ โดยไม่สร้าง commit การรวม',
+        'merge.hint.noFf': 'สร้าง commit การรวมเสมอ เพื่อให้เห็นการรวมในประวัติ',
+        'merge.hint.squash': 'รวมการเปลี่ยนแปลงจาก {branch} เป็นการเปลี่ยนแปลงที่เตรียมไว้หนึ่งรายการ โดยไม่เก็บประวัติ commit',
+        'merge.hint.noCommit': 'เตรียมการรวมและหยุดก่อน commit เพื่อให้คุณตรวจสอบหรือปรับแก้ได้',
         'filter.user': 'ผู้เขียน',
         'history.me': 'ฉัน',
         'filter.date': 'วันที่',
@@ -11567,6 +11861,34 @@ window.__ModuleLoader__.load({
         }, item.label)))
     }
 
+    /* Issue #25: merge is not one verb any more. The four modes map to the
+       flags the host already accepts (or now accepts: --no-commit); the hint
+       under the selector spells out what the chosen flag does, because --no-ff
+       and --squash are exactly the words users ask for but may not remember
+       the consequences of. */
+    function MergeDialog(props) {
+      const t = props.t
+      const [mode, setMode] = useState('default')
+      return E('div', { className: 'dig-overlay' },
+        E('div', { className: 'dig-dialog dig-merge-dialog' },
+          E('div', { className: 'dig-dialog-title' }, fill(t('merge.title'), { branch: props.branch })),
+          E('div', { className: 'dig-dialog-text' }, fill(t('merge.into'), { branch: props.branch })),
+          E(Segmented, {
+            value: mode,
+            onChange: setMode,
+            items: [
+              { id: 'default', label: t('merge.modeDefault') },
+              { id: 'noFf', label: t('merge.modeNoFf') },
+              { id: 'squash', label: t('merge.modeSquash') },
+              { id: 'noCommit', label: t('merge.modeNoCommit') },
+            ],
+          }),
+          E('div', { className: 'dig-dialog-text dig-merge-hint' }, fill(t('merge.hint.' + mode), { branch: props.branch })),
+          E('div', { className: 'dig-dialog-actions' },
+            E('button', { type: 'button', className: 'dig-btn', onClick: props.onCancel }, t('confirm.cancel')),
+            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: () => props.onSubmit(mode) }, t('action.mergeIntoCurrent')))))
+    }
+
     /* A draggable divider between two panes. The pane it resizes is the sibling
        it is rendered against, and its size is MEASURED at pointerdown — so a pane
        still living on its stylesheet default (a percentage cap, or a diff pane
@@ -12925,6 +13247,23 @@ window.__ModuleLoader__.load({
         return found.sort()
       }, [commits])
 
+      /* Scope options come from the BRANCH LIST, not from the refs carried by
+         the loaded commits: the whole point of a scope switch is to reach a
+         branch whose commits are not in the current page yet (issue #25). */
+      const scopeBranches = useMemo(() => {
+        const found = []
+        const data = props.branches
+        if (data === null || typeof data !== 'object') return found
+        for (const group of [data.local, data.remote]) {
+          if (Array.isArray(group) === false) continue
+          for (const entry of group) {
+            const name = entry !== null && typeof entry === 'object' ? entry.name : ''
+            if (typeof name === 'string' && name !== '' && found.indexOf(name) < 0) found.push(name)
+          }
+        }
+        return found.sort()
+      }, [props.branches])
+
       const filtered = useMemo(() => {
         const needle = text.trim().toLowerCase()
         const threshold = sinceThreshold(since)
@@ -13129,6 +13468,17 @@ window.__ModuleLoader__.load({
           className: 'dig-input dig-input-compact dig-filter-text', value: text, spellCheck: false,
           placeholder: t('history.filter'),
           onChange: (event) => setText(event.target.value),
+        }),
+        E(FilterSelect, {
+          label: t('history.scope'), value: props.scope === undefined ? '' : props.scope,
+          hint: t('history.scope'),
+          options: [
+            { value: '', label: t('history.scopeCurrent') },
+            { value: '*', label: t('history.scopeAll') },
+          ].concat(scopeBranches.map((name) => ({ value: name, label: name }))),
+          onOpenMenu: (event, options) => openFilterMenu(event, options, props.scope === undefined ? '' : props.scope, (value) => {
+            if (props.onScopeChange !== undefined) props.onScopeChange(value)
+          }),
         }),
         E(FilterSelect, {
           label: t('filter.branch'), value: refName, hint: t('filter.branch'),
@@ -13896,7 +14246,11 @@ window.__ModuleLoader__.load({
       const loadCommits = useCallback(async (skip, overridePath) => {
         const activePath = overridePath === undefined ? pathFilter : overridePath
         const payload = Object.assign({}, base, { skip: skip === undefined ? 0 : skip, limit: 120 })
-        if (browseRev !== '') payload.rev = browseRev
+        /* '*' is the "all branches" scope (issue #25): the host turns it into
+           --branches --remotes, so an unrelated/ahead branch's commits are part
+           of the log instead of being filtered out after the fact. */
+        if (browseRev === '*') payload.allBranches = true
+        else if (browseRev !== '') payload.rev = browseRev
         if (activePath !== undefined && activePath !== '') payload.path = activePath
         const data = await request('log', payload)
         setCommits((previous) => (skip === undefined || skip === 0 ? data.commits : previous.concat(data.commits)))
@@ -13973,6 +14327,15 @@ window.__ModuleLoader__.load({
           } catch (error) { void error }
         }
       }, [base, request])
+      /* The history scope control: '' = HEAD, '*' = every branch + remote,
+         anything else = that branch. Changing it is a fresh view, not a filter
+         over the rows already loaded, so the merge anchor from a previous
+         double-click no longer applies either. */
+      const setHistoryScope = useCallback((value) => {
+        lastBrowseRef.current = null
+        setMergeAnchor(null)
+        setBrowseRev(typeof value === 'string' ? value : '')
+      }, [])
       /* A repository switch forgets the browsing context entirely. */
       useEffect(() => {
         lastBrowseRef.current = null
@@ -14056,6 +14419,18 @@ window.__ModuleLoader__.load({
         }
         return result
       }, [base, guard, refresh, sessionId, repoRoot])
+
+      /* Issue #25: one merge verb, four intents. --no-commit alone is refused by
+         git when the merge could fast-forward, so that mode always carries
+         --no-ff; the pair leaves MERGE_HEAD behind for review, which the
+         "Abort merge" entry in the more menu (mergeAbort) backs out of. */
+      const mergeWithMode = useCallback((branch, mode) => {
+        const payload = { branch: branch }
+        if (mode === 'noFf') payload.noFf = true
+        else if (mode === 'squash') payload.squash = true
+        else if (mode === 'noCommit') { payload.noFf = true; payload.noCommit = true }
+        void run('merge', payload)
+      }, [run])
 
       const pickRepo = useCallback((path) => {
         setRepoRoot(path)
@@ -14671,7 +15046,7 @@ window.__ModuleLoader__.load({
           isLocal ? updateItem : null,
           isLocal ? pushItem : null,
           isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
-          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('merge', { branch: entry.name }) } } : null,
+          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => setDialog({ kind: 'merge', branch: entry.name }) } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
           { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendGitSummaryToChat('send.branchText', { name: entry.name, repo: repoLabel }) },
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyName'), run: () => copyValues([entry.name]) },
@@ -14715,7 +15090,7 @@ window.__ModuleLoader__.load({
           isLocal ? null : pushItem,
         ].filter((item) => item !== null)
         openMenuAt(event, items)
-      }, [branches, checkout, run, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues])
+      }, [branches, checkout, run, mergeWithMode, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues])
 
       const commitMenu = useCallback((event, commit) => {
         const shortHash = commit.hash.slice(0, 7)
@@ -15104,6 +15479,7 @@ window.__ModuleLoader__.load({
         : E(HistoryList, {
             t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
             hideSearch: compact, pathFilter: pathFilter, openMenuAt: openMenuAt,
+            branches: branches, scope: browseRev, onScopeChange: setHistoryScope,
             onPathFilter: (value) => setPathFilter(value),
             onSelect: (commit) => { void selectCommit(commit) },
             onMenu: commitMenu,
@@ -15150,7 +15526,7 @@ window.__ModuleLoader__.load({
           run: () => {
             if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
             if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
-            if (kind === 'merge') { void run('merge', { branch: entry.name }); return }
+            if (kind === 'merge') { setDialog({ kind: 'merge', branch: entry.name }); return }
             if (kind === 'rebase') { void run('rebase', { onto: entry.name }); return }
             void compareWith(current, entry.name)
           },
@@ -15291,6 +15667,7 @@ window.__ModuleLoader__.load({
             null,
             { id: 'c-undo', label: t('more.undoCommit'), disabled: commits.length === 0 || blocked, reason, run: () => setDialog({ kind: 'undoCommit' }) },
             { id: 'c-abort', label: t('more.rebaseAbort'), disabled: operation !== 'rebase', reason, run: () => { void run('rebaseAbort', {}) } },
+            { id: 'c-merge-abort', label: t('more.mergeAbort'), disabled: operation !== 'merge', reason, run: () => { void run('mergeAbort', {}) } },
             null,
             { id: 'c-staged-amend', label: t('more.commitStagedAmend'), disabled: stagedPaths.length === 0 || commits.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: false, amend: true, sign: false }) },
             { id: 'c-all-amend', label: t('more.commitAllAmend'), disabled: allChangePaths.length === 0 || commits.length === 0, reason, run: () => setDialog({ kind: 'commitMsg', all: true, amend: true, sign: false }) },
@@ -15846,6 +16223,13 @@ window.__ModuleLoader__.load({
           onSubmit: (url, dir) => { setDialog(null); void run('clone', { url: url, dir: dir }) },
         }))
       }
+      if (dialog !== null && dialog.kind === 'merge') {
+        overlays.push(E(MergeDialog, {
+          key: 'merge', t: t, branch: dialog.branch,
+          onCancel: () => setDialog(null),
+          onSubmit: (mode) => { setDialog(null); mergeWithMode(dialog.branch, mode) },
+        }))
+      }
       if (dialog !== null && dialog.kind === 'worktreeAdd') {
         overlays.push(E(WorktreeDialog, {
           key: 'worktreeAdd', t: t,
@@ -16339,6 +16723,9 @@ window.__ModuleLoader__.load({
       '.dig-seg-item{border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-weight:500;padding:2px 10px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;white-space:nowrap}',
       '.dig-seg-item:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-seg-item[data-active="true"]{background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1));color:var(--dsw-alias-label-primary)}',
+      /* Issue #25: four flags do not fit on one line in every dictionary. */
+      '.dig-merge-dialog .dig-seg{display:flex;flex-wrap:wrap}',
+      '.dig-merge-hint{font-size:12px;line-height:1.5}',
       '.dig-search{padding:4px 6px;flex:none}',
       '.dig-input{width:100%;box-sizing:border-box;padding:4px 6px;border-radius:var(--dsw-radius-sm,8px);border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;outline:none}',
       '.dig-input::placeholder{color:var(--dsw-alias-label-tertiary)}',
