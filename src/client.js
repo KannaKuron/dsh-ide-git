@@ -14849,7 +14849,12 @@ window.__ModuleLoader__.load({
       const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
         E('div', { className: 'dig-diff-head' },
           E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
-          E('button', { type: 'button', className: 'dig-icon-btn', onClick: () => { setPatch(''); setSelectedPath(null); setDiffContext(null) } }, E(Icon, { name: 'close', size: 12 }))),
+          E('button', {
+            type: 'button',
+            className: 'dig-icon-btn',
+            title: t('toast.close'),
+            onClick: () => { setPatch(''); setSelectedPath(null); setDiffContext(null) },
+          }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
 
       /* ---------- rail (IDE-style left action strip) ---------- */
@@ -16422,6 +16427,13 @@ window.__ModuleLoader__.load({
       '.dig-wt-label{color:var(--dsw-alias-label-secondary);font-size:12px;font-weight:500}',
       '.dig-wt-error{padding:6px 8px;margin-bottom:8px;border-radius:var(--dsw-radius-sm,8px);background:rgba(220,38,38,.12);color:var(--dsw-alias-state-error-primary);font-size:11px;line-height:16px;word-break:break-word}',
       'body[data-ds-dark-theme] .dig-wt-error{background:rgba(248,113,113,.16)}',
+      /* ---- icon tooltip ---- */
+      /* A body child, not a panel child: the bottom workbench declares
+         `contain: layout style`, so a fixed element inside it would take the
+         panel box as its containing block and land off-screen (invariant 13).
+         Styled from the same menu tokens so it reads as part of the product. */
+      '.dig-tip{position:fixed;z-index:9999;display:none;box-sizing:border-box;max-width:280px;padding:5px 8px;border-radius:var(--dsw-radius-sm,8px);background:var(--dsw-specific-menu,var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1)));color:var(--dsw-alias-label-primary);box-shadow:var(--dsw-elevation-prominent,0 8px 22px rgba(0,0,0,.32));font-family:var(--dsw-font-family,system-ui,sans-serif);font-size:calc(11px + var(--dsh-content-font-delta-secondary,0px));font-weight:500;line-height:1.45;text-align:left;white-space:normal;overflow-wrap:anywhere;pointer-events:none}',
+      '.dig-tip[data-show="true"]{display:block}',
     ].concat(LANE_TRACE_RULES).join('\n')
 
     /* ============================== plugin ============================== */
@@ -17518,12 +17530,204 @@ window.__ModuleLoader__.load({
               }))))
     }
 
+    /* ---- icon tooltips ----
+       Every icon action already carries its name in `title` (the rail adds the
+       disabled reason; the toolbar / mini / pill buttons carry the action
+       verb). Native title bubbles are the wrong surface for this product: the
+       bottom workbench is a dense horizontal strip, the bubble needs a full
+       second of rest, it is drawn in the browser's own styling, and over a
+       DISABLED rail button it never appears at all. Draw one themed card
+       instead, shared by every seat (panel, composer pill, diff preview) and
+       hung off <body> — see the `.dig-tip` note in CSS for why it can't live
+       inside the panel. The card mirrors the anchor's own `title`, which is
+       removed while the card is up so the native bubble never doubles it. */
+    const TIP_ID = 'dsh-ide-git-tip'
+    const TIP_DELAY_MS = 120
+    const TIP_GAP = 6
+    /* Only this plugin's own surfaces explain themselves. `.dig-root` is the
+       panel (native and better-sidebar seats alike), `.dig-cs-root` the
+       composer status pill, `.dig-preview-root` the external diff seat. */
+    const TIP_ROOTS = '.dig-root, .dig-cs-root, .dig-preview-root'
+
+    function installHoverTips() {
+      /* The SSR self-check drives apply() with a minimal document stub: it has
+         no body, no id lookup and no event targets. Those environments get the
+         no-op installer rather than a throw during plugin activation. */
+      if (typeof document === 'undefined' || document.body == null
+        || typeof document.createElement !== 'function'
+        || typeof document.getElementById !== 'function'
+        || typeof document.addEventListener !== 'function'
+        || typeof window === 'undefined'
+        || typeof window.addEventListener !== 'function') return () => {}
+      /* HMR / re-apply: never stack two cards (or two listener sets on one). */
+      const stale = document.getElementById(TIP_ID)
+      if (stale !== null) stale.remove()
+      const card = document.createElement('div')
+      card.id = TIP_ID
+      card.className = 'dig-tip'
+      card.setAttribute('data-dsh-ide-git', '')
+      card.setAttribute('role', 'tooltip')
+      card.setAttribute('aria-hidden', 'true')
+      document.body.appendChild(card)
+
+      /* `anchor` is the button the pointer is on (or about to rest on, while
+         `timer` runs); `shown` is the one whose title the card has taken. */
+      let anchor = null
+      let shown = null
+      let takenTitle = null
+      let timer = null
+
+      const restore = () => {
+        if (shown === null) return
+        /* React may have rewritten the attribute while the card was up (toggle
+           buttons swap their copy): only put the taken text back when nothing
+           else has claimed the slot, so a fresh label is never clobbered. */
+        try {
+          if (shown.getAttribute('title') === null && takenTitle !== null) shown.setAttribute('title', takenTitle)
+        } catch (error) { void error }
+        shown = null
+        takenTitle = null
+      }
+
+      const hide = () => {
+        if (timer !== null) { clearTimeout(timer); timer = null }
+        anchor = null
+        restore()
+        card.removeAttribute('data-show')
+        card.setAttribute('aria-hidden', 'true')
+        card.textContent = ''
+      }
+
+      /* Viewport coordinates on a body child: no panel containment to fight. */
+      const place = () => {
+        const rect = anchor.getBoundingClientRect()
+        const width = card.offsetWidth
+        const height = card.offsetHeight
+        const viewportW = window.innerWidth || document.documentElement.clientWidth || 0
+        const viewportH = window.innerHeight || document.documentElement.clientHeight || 0
+        /* The vertical action rail is a 24px column on the panel's left edge:
+           a card under an icon there would cover the icons below it, so this one
+           sits to its right and follows the row. (The horizontal rail uses
+           `.dig-rail-row`, so the `closest` query only matches the vertical
+           seat — top rows keep the below-the-button placement.) */
+        if (anchor.closest('.dig-rail') !== null) {
+          let left = rect.left + rect.width + TIP_GAP
+          if (left + width > viewportW - 4) left = rect.left - TIP_GAP - width
+          if (left < 4) left = 4
+          let top = rect.top + (rect.height - height) / 2
+          if (top + height > viewportH - 4) top = viewportH - height - 4
+          if (top < 4) top = 4
+          card.style.left = Math.round(left) + 'px'
+          card.style.top = Math.round(top) + 'px'
+          return
+        }
+        /* Below the anchor; flip above when the bottom edge would clip. */
+        let top = rect.bottom + TIP_GAP
+        if (top + height > viewportH - 4) top = rect.top - height - TIP_GAP
+        if (top < 4) top = 4
+        let left = rect.left + (rect.width - width) / 2
+        if (left + width > viewportW - 4) left = viewportW - width - 4
+        if (left < 4) left = 4
+        card.style.left = Math.round(left) + 'px'
+        card.style.top = Math.round(top) + 'px'
+      }
+
+      const reveal = () => {
+        timer = null
+        if (anchor === null) return
+        const label = anchor.getAttribute('title')
+        if (label === null || label === '') { hide(); return }
+        takenTitle = label
+        try { anchor.removeAttribute('title') } catch (error) { void error }
+        shown = anchor
+        card.textContent = label
+        card.setAttribute('data-show', 'true')
+        card.removeAttribute('aria-hidden')
+        place()
+      }
+
+      /* Whatever sits under the pointer, not whatever received the event: a
+         disabled button still hit-tests (rail icons), and the SVG glyph inside
+         the button is usually the element under the cursor. `closest` walks up
+         to the button. The label is read here, but the anchor's own copy is
+         already taken while its card is up — so the shown button answers from
+         the saved text, otherwise it would stop counting as a candidate the
+         moment the card opened. */
+      const buttonAt = (x, y) => {
+        if (typeof document.elementFromPoint !== 'function') return null
+        let hit = null
+        try { hit = document.elementFromPoint(x, y) } catch (error) { void error; return null }
+        if (hit === null || hit === undefined || typeof hit.closest !== 'function') return null
+        if (hit.closest(TIP_ROOTS) === null) return null
+        return hit.closest('button, [role="button"]')
+      }
+
+      const labelOf = (button) => {
+        if (button === shown) return takenTitle
+        const label = button.getAttribute('title')
+        return label === null || label === '' ? null : label
+      }
+
+      const onPointerMove = (event) => {
+        if (event !== null && event !== undefined && event.pointerType === 'touch') return
+        /* A drag is not a hover: reordering rail actions, dragging a divider or
+           selecting rows all sweep across buttons with a pressed pointer, and
+           no card should pop up under the drag. */
+        if (event !== null && event !== undefined && typeof event.buttons === 'number' && event.buttons !== 0) {
+          if (anchor !== null || timer !== null || shown !== null) hide()
+          return
+        }
+        const button = buttonAt(event === null || event === undefined ? 0 : event.clientX, event === null || event === undefined ? 0 : event.clientY)
+        if (button === null || labelOf(button) === null) {
+          if (anchor !== null || timer !== null || shown !== null) hide()
+          return
+        }
+        if (button === anchor) return
+        /* Another button: the old card (and the title it took) goes now, the
+           new one waits out the grace period — sweeping the rail must not
+           flash a card per icon. */
+        if (timer !== null) { clearTimeout(timer); timer = null }
+        restore()
+        card.removeAttribute('data-show')
+        anchor = button
+        timer = setTimeout(reveal, TIP_DELAY_MS)
+      }
+
+      document.addEventListener('pointermove', onPointerMove, { passive: true })
+      document.addEventListener('pointerdown', hide, true)
+      document.addEventListener('pointerleave', hide)
+      document.addEventListener('wheel', hide, { passive: true, capture: true })
+      /* Scroll and resize move the anchor under a card that cannot follow it:
+         the card would lie about where the button is. Drop it and let the next
+         pointer move re-open it. */
+      window.addEventListener('scroll', hide, true)
+      window.addEventListener('resize', hide)
+      window.addEventListener('blur', hide)
+
+      return () => {
+        hide()
+        document.removeEventListener('pointermove', onPointerMove)
+        document.removeEventListener('pointerdown', hide, true)
+        document.removeEventListener('pointerleave', hide)
+        document.removeEventListener('wheel', hide, { capture: true })
+        window.removeEventListener('scroll', hide, true)
+        window.removeEventListener('resize', hide)
+        window.removeEventListener('blur', hide)
+        card.remove()
+      }
+    }
+
     function apply(ctx) {
       const style = document.createElement('style')
       style.setAttribute('data-dsh-ide-git', '')
       style.textContent = CSS
       document.head.appendChild(style)
       ctx.effect(() => () => { style.remove() }, 'dsh-ide-git: panel styles')
+
+      /* Icon affordances explain themselves on hover wherever this plugin
+         draws one — the panel in any seat, the composer pill, the diff
+         preview. One document-level card covers them all. */
+      ctx.effect(() => installHoverTips(), 'dsh-ide-git: icon tooltips')
 
       const t = translatorOf(ctx)
 
