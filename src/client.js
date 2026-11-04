@@ -17550,7 +17550,15 @@ window.__ModuleLoader__.load({
     const TIP_ROOTS = '.dig-root, .dig-cs-root, .dig-preview-root'
 
     function installHoverTips() {
-      if (typeof document === 'undefined' || document.body === null) return () => {}
+      /* The SSR self-check drives apply() with a minimal document stub: it has
+         no body, no id lookup and no event targets. Those environments get the
+         no-op installer rather than a throw during plugin activation. */
+      if (typeof document === 'undefined' || document.body == null
+        || typeof document.createElement !== 'function'
+        || typeof document.getElementById !== 'function'
+        || typeof document.addEventListener !== 'function'
+        || typeof window === 'undefined'
+        || typeof window.addEventListener !== 'function') return () => {}
       /* HMR / re-apply: never stack two cards (or two listener sets on one). */
       const stale = document.getElementById(TIP_ID)
       if (stale !== null) stale.remove()
