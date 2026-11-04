@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -18,7 +18,11 @@ const exists = (name) => existsSync(join(root, name))
 
 const pkg = JSON.parse(read('package.json'))
 const manifest = JSON.parse(read('dsh.plugin.json'))
-const host = read('src/index.js')
+const hostFiles = [
+  'src/index.js',
+  ...readdirSync(join(root, 'src/host')).filter((name) => name.endsWith('.js')).sort().map((name) => 'src/host/' + name),
+]
+const host = hostFiles.map(read).join('\n')
 const client = read('src/client.js')
 const changelog = read('CHANGELOG.md')
 const patch = read('cordis.patch.yml')
@@ -792,7 +796,7 @@ test('host half is an ESM cordis plugin with argv-only git calls', () => {
   assert.match(host, /spawn\(gitBinary\(\), args, \{ cwd/)
   assert.doesNotMatch(host, /(^|[^.\w])exec\(/m, 'no shell exec')
   assert.doesNotMatch(host, /execSync\(|shell:\s*true/, 'no shell exec / shell:true')
-  assert.doesNotMatch(host, /from '(?!node:)/, 'host half may only import node: builtins')
+  assert.doesNotMatch(host, /from '(?!node:|\.\/)/, 'host half may only import node: builtins or its own relative modules')
 })
 
 test('host half keeps the destructive-confirm guards', () => {
@@ -1375,10 +1379,11 @@ test('the ai commit message keeps the model honest and the input bounded', async
   //  3. the user's own instructions are DATA in the user message, never the system
   //     prompt, and they are capped;
   //  4. the reply is cleaned of the wrappers models habitually add.
-  const start = host.indexOf('const COMMIT_MAX_PROMPT_CHARS')
-  const end = host.indexOf('const METHODS = {')
+  const commitHost = read('src/host/commit-message.js')
+  const start = commitHost.indexOf('const COMMIT_MAX_PROMPT_CHARS')
+  const end = commitHost.indexOf('export function setCommitServices')
   assert.ok(start >= 0 && end > start, 'the ai commit block must keep its bounds')
-  const block = host.slice(start, end)
+  const block = commitHost.slice(start, end)
   const api = new Function(block + '\nreturn { collectCommitStream, commitInputOf, commitMessagesOf, cleanupCommitMessage, COMMIT_MAX_PROMPT_CHARS, COMMIT_TOTAL_BYTES, COMMIT_FILE_BYTES, COMMIT_FILE_LINES, COMMIT_MAX_FILES }')()
 
   // 1 — the finish is reported, whichever way the adapter failed.
@@ -1614,12 +1619,12 @@ test('the rail settings live in the row Config, with localStorage only as the le
   }
   assert.ok(cardFields.has('composerStatus'), 'the composer pill switch is part of the write surface')
 
-  // Invariant 2, amended: the host half still imports only node: builtins; the
-  // single non-node module it may REACH (lazily, guarded) is the host-provided
-  // schema module every sibling plugin uses to declare its row Config.
+  // Invariant 2, amended: the host half imports only node: builtins and its own
+  // relative modules; the single outside module it may REACH (lazily, guarded)
+  // is the host-provided schema module every sibling plugin uses for row Config.
   const dynamicImports = [...host.matchAll(/await import\('([^']+)'\)/g)].map((match) => match[1])
   assert.deepEqual(dynamicImports, ['@deepseek-ai/schemastery'], 'the only allowed non-node reach, and it must stay dynamic')
-  assert.doesNotMatch(host, /from '(?!node:)/, 'host half may only import node: builtins')
+  assert.doesNotMatch(host, /from '(?!node:|\.\/)/, 'host half may only import node: builtins or its own relative modules')
 
   // Client wiring: the detail-page seat (the legacy Settings → Plugins seat went
   // away with the raised host floor), soft services, one-shot migration.
@@ -1828,7 +1833,6 @@ test('the remote branch tree folds by path like the local one (v0.19.9)', () => 
   // (%(refname:short) of refs/remotes/<remote>/HEAD collapses that way); the
   // host drops it before it ever becomes a row — otherwise it pollutes the
   // tree AND defeats the single-remote prefix strip above.
-  const host = read('src/index.js')
   assert.match(host, /\/\^refs\\\/remotes\\\/\[\^\/\]\+\\\/HEAD\$\/\.test\(parts\[0\]\) === false\) remote\.push\(entry\)/,
     'the host filters <remote>/HEAD before listing remote branches')
 })

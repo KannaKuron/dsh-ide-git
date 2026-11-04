@@ -434,6 +434,10 @@ window.__ModuleLoader__.load({
       'prompt.newTag': '新标签名',
       'prompt.fromHead': '当前 HEAD',
       'error.dismiss': '关闭',
+      'error.pushRejected': '推送被拒绝：远程分支上有你本地没有的提交。请先「同步」（拉取并推送），或拉取合并后再推送。',
+      'error.pullDiverged': '本地和远程各有新提交，无法快进。请用「拉取」合并，或改用「拉取(变基)」。',
+      'error.pullConflict': '拉取时发生冲突：请在「变更」里解决冲突文件并提交，然后继续。',
+      'error.pullDirty': '拉取会覆盖本地未提交的更改：请先提交或贮藏这些更改。',
       'status.loading': '正在读取...',
       'status.busy': '处理中...',
       'counts.staged': '已暂存 {n}',
@@ -802,6 +806,10 @@ window.__ModuleLoader__.load({
       'prompt.newTag': 'New tag name',
       'prompt.fromHead': 'current HEAD',
       'error.dismiss': 'Dismiss',
+      'error.pushRejected': 'Push rejected: the remote branch has commits you do not have. Sync (pull and push), or pull (merge) and push again.',
+      'error.pullDiverged': 'Local and remote have both moved, so a fast-forward is impossible. Pull with merge, or use Pull (Rebase).',
+      'error.pullConflict': 'Pull stopped on conflicts: resolve the conflicted files under Changes, then commit.',
+      'error.pullDirty': 'Pull would overwrite uncommitted local changes. Commit or stash them first.',
       'status.loading': 'Reading...',
       'status.busy': 'Working...',
       'counts.staged': 'Staged {n}',
@@ -1178,6 +1186,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': '新標籤名',
         'prompt.fromHead': '當前 HEAD',
         'error.dismiss': '關閉',
+        'error.pushRejected': '推送被拒絕:遠端分支有啲你本地冇嘅提交。請先同步(拉取並推送),或者拉取合併之後再推送。',
+        'error.pullDiverged': '本地同遠端各有新提交,唔可以快進。請用「拉取」合併,或者改用「拉取(變基)」。',
+        'error.pullConflict': '拉取時有衝突:喺「變更」入面解決衝突檔案並提交,然後繼續。',
+        'error.pullDirty': '拉取會覆蓋本地未提交嘅改動:請先提交或者貯藏呢啲改動。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
         'counts.staged': '已暫存 {n}',
@@ -1546,6 +1558,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': '新標籤名稱',
         'prompt.fromHead': '目前 HEAD',
         'error.dismiss': '關閉',
+        'error.pushRejected': '推送被拒絕：遠端分支上有你本機沒有的提交。請先同步（拉取並推送），或拉取合併後再推送。',
+        'error.pullDiverged': '本機與遠端各有新提交，無法快進。請用「拉取」合併，或改用「拉取（變基）」。',
+        'error.pullConflict': '拉取時發生衝突：請在「變更」中解決衝突檔案並提交，然後繼續。',
+        'error.pullDirty': '拉取會覆蓋本機未提交的變更：請先提交或貯藏這些變更。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
         'counts.staged': '已暫存 {n}',
@@ -1914,6 +1930,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': '新標籤名',
         'prompt.fromHead': '當前 HEAD',
         'error.dismiss': '關閉',
+        'error.pushRejected': '推送被拒絕:遠端分支有啲你本地冇嘅提交。請先同步(拉取並推送),或者拉取合併之後再推送。',
+        'error.pullDiverged': '本地同遠端各有新提交,唔可以快進。請用「拉取」合併,或者改用「拉取(變基)」。',
+        'error.pullConflict': '拉取時有衝突:喺「變更」入面解決衝突檔案並提交,然後繼續。',
+        'error.pullDirty': '拉取會覆蓋本地未提交嘅改動:請先提交或者貯藏呢啲改動。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
         'counts.staged': '已暫存 {n}',
@@ -2282,6 +2302,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': '新しいタグ名',
         'prompt.fromHead': '現在の HEAD',
         'error.dismiss': '閉じる',
+        'error.pushRejected': 'プッシュが拒否されました：リモートブランチにローカルにないコミットがあります。先に同期（プルしてプッシュ）するか、プル（マージ）してから再プッシュしてください。',
+        'error.pullDiverged': 'ローカルとリモートの両方に新しいコミットがあり、fast-forward できません。「プル」（マージ）または「プル（リベース）」を使ってください。',
+        'error.pullConflict': 'プルで競合が発生しました。「変更」で競合ファイルを解決してコミットしてから続行してください。',
+        'error.pullDirty': 'プルするとローカルの未コミット変更が上書きされます。先にコミットするかスタッシュしてください。',
         'status.loading': '読み込み中...',
         'status.busy': '処理中...',
         'counts.staged': 'ステージ済み {n}',
@@ -2650,6 +2674,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': '새 태그 이름',
         'prompt.fromHead': '현재 HEAD',
         'error.dismiss': '닫기',
+        'error.pushRejected': '푸시가 거부되었습니다: 원격 브랜치에 로컬에 없는 커밋이 있습니다. 먼저 동기화(풀 후 푸시)하거나 풀(병합)한 뒤 다시 푸시하세요.',
+        'error.pullDiverged': '로컬과 원격에 각각 새 커밋이 있어 fast-forward할 수 없습니다. 풀(병합) 또는 풀(리베이스)을 사용하세요.',
+        'error.pullConflict': '풀 중 충돌이 발생했습니다. "변경"에서 충돌 파일을 해결하고 커밋한 뒤 계속하세요.',
+        'error.pullDirty': '풀을 하면 로컬의 커밋되지 않은 변경이 덮어써집니다. 먼저 커밋하거나 스태시하세요.',
         'status.loading': '읽는 중...',
         'status.busy': '처리 중...',
         'counts.staged': '스테이지됨 {n}',
@@ -3018,6 +3046,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Name des neuen Tags',
         'prompt.fromHead': 'aktuelles HEAD',
         'error.dismiss': 'Schließen',
+        'error.pushRejected': 'Push abgelehnt: Der Remote-Branch enthält Commits, die lokal fehlen. Zuerst synchronisieren (Pull und Push) oder pullen (Merge) und dann erneut pushen.',
+        'error.pullDiverged': 'Lokal und remote sind beide weitergezogen; ein Fast-Forward ist unmöglich. Mit Merge pullen oder Pull (Rebase) verwenden.',
+        'error.pullConflict': 'Pull wurde wegen Konflikten gestoppt: Konfliktdateien unter „Änderungen“ auflösen, committen und dann fortfahren.',
+        'error.pullDirty': 'Pull würde lokale, nicht committete Änderungen überschreiben. Zuerst committen oder stashen.',
         'status.loading': 'Wird gelesen...',
         'status.busy': 'Arbeitet...',
         'counts.staged': 'Vorgemerkt {n}',
@@ -3386,6 +3418,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Nom de la nouvelle étiquette',
         'prompt.fromHead': 'HEAD courant',
         'error.dismiss': 'Fermer',
+        'error.pushRejected': 'Push refusé : la branche distante contient des commits absents en local. Synchronisez (pull puis push) ou faites un pull (merge), puis poussez à nouveau.',
+        'error.pullDiverged': 'Local et distant ont tous deux avancé ; le fast-forward est impossible. Faites un pull (merge) ou un pull (rebase).',
+        'error.pullConflict': 'Le pull s\'est arrêté sur des conflits : résolvez les fichiers en conflit dans « Modifications », puis validez.',
+        'error.pullDirty': 'Le pull écraserait des modifications locales non validées. Validez-les ou remisez-les d\'abord.',
         'status.loading': 'Lecture...',
         'status.busy': 'En cours...',
         'counts.staged': 'Indexé {n}',
@@ -3754,6 +3790,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Имя нового тега',
         'prompt.fromHead': 'текущий HEAD',
         'error.dismiss': 'Закрыть',
+        'error.pushRejected': 'Push отклонён: в удалённой ветке есть коммиты, которых нет локально. Сначала синхронизируйтесь (pull и push) или выполните pull (merge), затем повторите push.',
+        'error.pullDiverged': 'Локальная и удалённая ветки разошлись; fast-forward невозможен. Используйте pull (merge) или pull (rebase).',
+        'error.pullConflict': 'Pull остановился из-за конфликтов: разрешите конфликтные файлы в «Изменениях» и закоммитьте их.',
+        'error.pullDirty': 'Pull перезапишет незакоммиченные локальные изменения. Сначала закоммитьте или спрячьте их.',
         'status.loading': 'Чтение...',
         'status.busy': 'Работа...',
         'counts.staged': 'В индексе {n}',
@@ -4122,6 +4162,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Nome da nova tag',
         'prompt.fromHead': 'HEAD atual',
         'error.dismiss': 'Fechar',
+        'error.pushRejected': 'Push rejeitado: o branch remoto tem commits que não existem localmente. Sincronize (pull e push) ou faça pull (merge) e envie novamente.',
+        'error.pullDiverged': 'Local e remoto avançaram; o fast-forward é impossível. Use pull (merge) ou pull (rebase).',
+        'error.pullConflict': 'O pull parou em conflitos: resolva os arquivos em conflito em "Alterações" e faça o commit.',
+        'error.pullDirty': 'O pull sobrescreveria alterações locais não commitadas. Faça commit ou stash primeiro.',
         'status.loading': 'Lendo...',
         'status.busy': 'Trabalhando...',
         'counts.staged': 'Preparado {n}',
@@ -4490,6 +4534,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Nome del nuovo tag',
         'prompt.fromHead': 'HEAD corrente',
         'error.dismiss': 'Chiudi',
+        'error.pushRejected': 'Push rifiutato: il branch remoto contiene commit assenti in locale. Sincronizza (pull e push) oppure esegui pull (merge) e riprova.',
+        'error.pullDiverged': 'Locale e remoto sono avanzati entrambi; il fast-forward è impossibile. Usa pull (merge) o pull (rebase).',
+        'error.pullConflict': 'Il pull si è fermato per conflitti: risolvi i file in conflitto in "Modifiche", poi esegui il commit.',
+        'error.pullDirty': 'Il pull sovrascriverebbe modifiche locali non committate. Esegui prima commit o stash.',
         'status.loading': 'Lettura...',
         'status.busy': 'In corso...',
         'counts.staged': 'In stage {n}',
@@ -4858,6 +4906,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Naam van de nieuwe tag',
         'prompt.fromHead': 'huidige HEAD',
         'error.dismiss': 'Sluiten',
+        'error.pushRejected': 'Push geweigerd: de remote branch heeft commits die lokaal ontbreken. Synchroniseer (pull en push) of pull (merge) en push daarna opnieuw.',
+        'error.pullDiverged': 'Lokaal en remote zijn beide verdergegaan; fast-forward is onmogelijk. Gebruik pull (merge) of pull (rebase).',
+        'error.pullConflict': 'Pull stopte door conflicten: los de conflictbestanden op onder "Wijzigingen" en commit daarna.',
+        'error.pullDirty': 'Pull zou niet-gecommitte lokale wijzigingen overschrijven. Commit of stash ze eerst.',
         'status.loading': 'Lezen...',
         'status.busy': 'Bezig...',
         'counts.staged': 'Gestaged {n}',
@@ -5226,6 +5278,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Nazwa nowego tagu',
         'prompt.fromHead': 'bieżący HEAD',
         'error.dismiss': 'Zamknij',
+        'error.pushRejected': 'Push odrzucony: zdalna gałąź ma commity, których nie ma lokalnie. Najpierw zsynchronizuj (pull i push) albo wykonaj pull (merge) i ponów push.',
+        'error.pullDiverged': 'Lokalna i zdalna gałąź rozeszły się; fast-forward jest niemożliwy. Użyj pull (merge) lub pull (rebase).',
+        'error.pullConflict': 'Pull zatrzymał się na konfliktach: rozwiąż pliki konfliktów w „Zmianach” i zatwierdź zmiany.',
+        'error.pullDirty': 'Pull nadpisałby niezatwierdzone zmiany lokalne. Najpierw je zatwierdź lub schowaj.',
         'status.loading': 'Wczytywanie...',
         'status.busy': 'Praca...',
         'counts.staged': 'W indeksie {n}',
@@ -5594,6 +5650,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Namn på ny tagg',
         'prompt.fromHead': 'aktuell HEAD',
         'error.dismiss': 'Stäng',
+        'error.pushRejected': 'Push avvisades: fjärrgrenen har commits som saknas lokalt. Synkronisera (pull och push) eller gör pull (merge) och pusha igen.',
+        'error.pullDiverged': 'Lokalt och fjärr har båda flyttats; fast-forward är omöjligt. Använd pull (merge) eller pull (rebase).',
+        'error.pullConflict': 'Pull stoppade på konflikter: lös konfliktfilerna under "Ändringar" och commit:a.',
+        'error.pullDirty': 'Pull skulle skriva över lokala ej commit:ade ändringar. Commit:a eller stash:a dem först.',
         'status.loading': 'Läser...',
         'status.busy': 'Arbetar...',
         'counts.staged': 'Klädda {n}',
@@ -5962,6 +6022,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Yeni etiket adı',
         'prompt.fromHead': 'geçerli HEAD',
         'error.dismiss': 'Kapat',
+        'error.pushRejected': 'Push reddedildi: uzak dalda yerelde olmayan commit\'ler var. Önce senkronize edin (pull ve push) veya pull (merge) yapıp yeniden push\'layın.',
+        'error.pullDiverged': 'Yerel ve uzak dal ikisi de ilerledi; fast-forward mümkün değil. Pull (merge) veya pull (rebase) kullanın.',
+        'error.pullConflict': 'Pull çakışmalarda durdu: "Değişiklikler" altında çakışan dosyaları çözüp commit\'leyin.',
+        'error.pullDirty': 'Pull, commit\'lenmemiş yerel değişikliklerin üzerine yazar. Önce commit\'leyin veya stash\'leyin.',
         'status.loading': 'Okunuyor...',
         'status.busy': 'Çalışıyor...',
         'counts.staged': 'Hazırlanan {n}',
@@ -6330,6 +6394,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Nama tag baru',
         'prompt.fromHead': 'HEAD saat ini',
         'error.dismiss': 'Tutup',
+        'error.pushRejected': 'Push ditolak: branch remote memiliki commit yang tidak ada di lokal. Sinkronkan (pull lalu push) atau pull (merge) lalu push lagi.',
+        'error.pullDiverged': 'Lokal dan remote sama-sama maju; fast-forward tidak mungkin. Gunakan pull (merge) atau pull (rebase).',
+        'error.pullConflict': 'Pull berhenti karena konflik: selesaikan file konflik di "Perubahan", lalu commit.',
+        'error.pullDirty': 'Pull akan menimpa perubahan lokal yang belum di-commit. Commit atau stash dulu.',
         'status.loading': 'Membaca...',
         'status.busy': 'Bekerja...',
         'counts.staged': 'Ter-stage {n}',
@@ -6698,6 +6766,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'Tên thẻ mới',
         'prompt.fromHead': 'HEAD hiện tại',
         'error.dismiss': 'Đóng',
+        'error.pushRejected': 'Push bị từ chối: nhánh remote có commit mà local chưa có. Hãy đồng bộ (pull rồi push) hoặc pull (merge) rồi push lại.',
+        'error.pullDiverged': 'Local và remote đều đã tiến lên; không thể fast-forward. Dùng pull (merge) hoặc pull (rebase).',
+        'error.pullConflict': 'Pull dừng do xung đột: giải quyết các tệp xung đột trong "Thay đổi" rồi commit.',
+        'error.pullDirty': 'Pull sẽ ghi đè thay đổi local chưa commit. Hãy commit hoặc stash trước.',
         'status.loading': 'Đang đọc...',
         'status.busy': 'Đang xử lý...',
         'counts.staged': 'Đã stage {n}',
@@ -7066,6 +7138,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'اسم الوسم الجديد',
         'prompt.fromHead': 'HEAD الحالي',
         'error.dismiss': 'إغلاق',
+        'error.pushRejected': 'تم رفض الدفع: الفرع البعيد يحتوي على commits غير موجودة محليًا. زامن أولًا (pull ثم push) أو اسحب (merge) ثم أعد الدفع.',
+        'error.pullDiverged': 'تقدّم الفرعان المحلي والبعيد؛ لا يمكن fast-forward. استخدم pull (merge) أو pull (rebase).',
+        'error.pullConflict': 'توقف pull بسبب تعارضات: حلّ ملفات التعارض في "التغييرات" ثم commit.',
+        'error.pullDirty': 'سيؤدي pull إلى الكتابة فوق تغييرات محلية غير مثبتة. ثبّتها أو خزّنها أولًا.',
         'status.loading': 'جارٍ القراءة...',
         'status.busy': 'جارٍ العمل...',
         'counts.staged': 'مُجهَّز {n}',
@@ -7434,6 +7510,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'नए टैग का नाम',
         'prompt.fromHead': 'वर्तमान HEAD',
         'error.dismiss': 'बंद करें',
+        'error.pushRejected': 'पुश अस्वीकृत: रिमोट ब्रांच में ऐसे commits हैं जो लोकल में नहीं हैं। पहले सिंक करें (pull फिर push) या pull (merge) करके फिर से push करें।',
+        'error.pullDiverged': 'लोकल और रिमोट दोनों आगे बढ़े हैं; fast-forward संभव नहीं। pull (merge) या pull (rebase) इस्तेमाल करें।',
+        'error.pullConflict': 'pull conflicts पर रुक गया: "परिवर्तन" में conflict फ़ाइलें हल करें, फिर commit करें।',
+        'error.pullDirty': 'pull लोकल की uncommitted changes को overwrite करेगा। पहले commit या stash करें।',
         'status.loading': 'पढ़ा जा रहा है...',
         'status.busy': 'कार्य जारी...',
         'counts.staged': 'स्टेज्ड {n}',
@@ -7802,6 +7882,10 @@ window.__ModuleLoader__.load({
         'prompt.newTag': 'ชื่อแท็กใหม่',
         'prompt.fromHead': 'HEAD ปัจจุบัน',
         'error.dismiss': 'ปิด',
+        'error.pushRejected': 'Push ถูกปฏิเสธ: สาขา remote มี commit ที่ยังไม่มีในเครื่องนี้ ให้ sync (pull แล้ว push) หรือ pull (merge) แล้ว push อีกครั้ง',
+        'error.pullDiverged': 'ทั้ง local และ remote มี commit ใหม่; fast-forward ไม่ได้ ใช้ pull (merge) หรือ pull (rebase)',
+        'error.pullConflict': 'Pull หยุดเพราะมี conflict: แก้ไฟล์ที่ขัดแย้งใน "การเปลี่ยนแปลง" แล้ว commit',
+        'error.pullDirty': 'Pull จะเขียนทับการเปลี่ยนแปลง local ที่ยังไม่ commit: ให้ commit หรือ stash ก่อน',
         'status.loading': 'กำลังอ่าน...',
         'status.busy': 'กำลังทำงาน...',
         'counts.staged': 'สเตจแล้ว {n}',
@@ -13055,6 +13139,9 @@ window.__ModuleLoader__.load({
       const [commits, setCommits] = useState([])
       const [hasMore, setHasMore] = useState(false)
       const [error, setError] = useState(null)
+      /* Named failure code (push-rejected / pull-conflict / ...), kept beside
+         the raw message so the banner can lead with an actionable sentence. */
+      const [errorCode, setErrorCode] = useState(null)
       const [note, setNote] = useState(null)
       const [busy, setBusy] = useState(false)
       const [view, setView] = useState('history')
@@ -13398,10 +13485,13 @@ window.__ModuleLoader__.load({
       const guard = useCallback(async (work) => {
         setBusy(true)
         setError(null)
+        setErrorCode(null)
         try {
           return await work()
         } catch (caught) {
-          setError(caught instanceof Error ? caught.message : String(caught))
+          const failure = caught instanceof Error ? caught : new Error(String(caught))
+          setError(failure.message)
+          setErrorCode(typeof failure.code === 'string' ? failure.code : null)
           return undefined
         } finally {
           setBusy(false)
@@ -13446,7 +13536,7 @@ window.__ModuleLoader__.load({
             writePaintRepos(cwd, data)
             apply(data, readPaintRoot(cwd))
           } catch (caught) {
-            if (!cancelled) setError(caught instanceof Error ? caught.message : String(caught))
+            if (!cancelled) { setErrorCode(null); setError(caught instanceof Error ? caught.message : String(caught)) }
           }
         })()
         return () => { cancelled = true }
@@ -13474,6 +13564,7 @@ window.__ModuleLoader__.load({
           const data = await request('gitLogs', {})
           setGitOutput(Array.isArray(data.entries) ? data.entries : [])
         } catch (caught) {
+          setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
         }
       }, [request])
@@ -13699,7 +13790,11 @@ window.__ModuleLoader__.load({
 
       const run = useCallback(async (method, payload) => {
         const result = await guard(() => request(method, Object.assign({}, base, payload)))
-        if (result !== undefined) {
+        /* A failed pull/push still changes repository state (merge conflicts,
+           or a merge that landed before the push was rejected), so refresh on
+           those failures too — otherwise the Changes list hides the conflict
+           files the banner is asking the user to resolve. */
+        if (result !== undefined || method === 'pull' || method === 'push') {
           await refresh()
           /* v0.21.2: the composer pill is a separate tree; without this it only
              learned about an in-panel checkout/commit at the next 30s poll. The
@@ -13760,6 +13855,7 @@ window.__ModuleLoader__.load({
           const data = await request('diff', Object.assign({}, base, seed))
           setPatch(data.patch)
         } catch (caught) {
+          setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
         } finally {
           setPatchLoading(false)
@@ -13862,6 +13958,7 @@ window.__ModuleLoader__.load({
         try {
           setDetail(await request('commitDetail', Object.assign({}, base, { hash: commit.hash })))
         } catch (caught) {
+          setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
         }
       }, [base])
@@ -14034,6 +14131,7 @@ window.__ModuleLoader__.load({
       const createWorktree = async (draft) => {
         setBusy(true)
         setError(null)
+        setErrorCode(null)
         try {
           await request('worktreeAdd', Object.assign({}, base, draft))
           setDialog(null)
@@ -14049,6 +14147,7 @@ window.__ModuleLoader__.load({
       const removeWorktree = async (tree, force) => {
         setBusy(true)
         setError(null)
+        setErrorCode(null)
         try {
           await request('worktreeRemove', Object.assign({}, base, { path: tree.path, confirm: true, force: force === true }))
           setDialog(null)
@@ -14062,6 +14161,7 @@ window.__ModuleLoader__.load({
             return message
           }
           setDialog(null)
+          setErrorCode(null)
           setError(message)
           return message
         } finally {
@@ -14071,6 +14171,7 @@ window.__ModuleLoader__.load({
       const pruneWorktrees = async () => {
         setBusy(true)
         setError(null)
+        setErrorCode(null)
         try {
           const data = await request('worktreePrune', Object.assign({}, base, { confirm: true }))
           setDialog(null)
@@ -14079,6 +14180,7 @@ window.__ModuleLoader__.load({
           return data
         } catch (caught) {
           setDialog(null)
+          setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
           return null
         } finally {
@@ -14259,7 +14361,26 @@ window.__ModuleLoader__.load({
           ].filter((item) => item !== null))
           return
         }
-        const updateItem = { id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'), run: () => { void run('fetch', { prune: true }) } }
+        /* v0.24.0: the label was always 拉取, but this only ran git fetch.
+           The checked-out branch now takes a real pull (merge, the new
+           default); a non-HEAD branch keeps the safe refspec update, because
+           git pull would merge into HEAD instead of into that branch. */
+        const updateItem = {
+          id: 'update', icon: 'fetch', tone: 'cyan', label: t('action.update'),
+          run: () => {
+            if (entry.head === true) {
+              const upstream = entry.upstream
+              if (upstream === null || upstream === undefined || upstream === '') { void run('fetch', { prune: true }); return }
+              void run('pull', { mode: 'merge' })
+              return
+            }
+            const upstream = entry.upstream
+            if (upstream === null || upstream === undefined || upstream === '') { void run('fetch', { prune: true }); return }
+            const slash = upstream.indexOf('/')
+            const remote = slash >= 0 ? upstream.slice(0, slash) : upstream
+            void run('fetch', { remote: remote, branch: entry.name + ':' + entry.name })
+          },
+        }
         const pushItem = { id: 'push', icon: 'push', tone: 'success', label: t('action.push'), disabled: blocked, reason: t('operation.hint'), run: () => setDialog({ kind: 'push' }) }
         const items = [
           { id: 'checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout'), disabled: entry.head === true || entry.tag === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void checkout(entry) } },
@@ -14662,9 +14783,29 @@ window.__ModuleLoader__.load({
         E('span', { className: 'dig-topbar-spacer' }),
         busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
 
+      /* Named git failures get a sentence that says what to do; the raw git
+         output stays one hover away in the title. The two recoverable ones
+         (push rejected, ff-only divergence) also offer the exact next action:
+         Sync = pull with merge, then push again. */
+      const errorHint = errorCode === 'push-rejected' ? t('error.pushRejected')
+        : errorCode === 'pull-diverged' ? t('error.pullDiverged')
+          : errorCode === 'pull-conflict' ? t('error.pullConflict')
+            : errorCode === 'pull-dirty' ? t('error.pullDirty')
+              : null
+      const syncFromBanner = () => {
+        setError(null)
+        setErrorCode(null)
+        void (async () => {
+          const pulled = await run('pull', { mode: 'merge' })
+          if (pulled !== undefined) await run('push', { confirm: true })
+        })()
+      }
       const banner = error === null ? null : E('div', { className: 'dig-banner' },
-        E('span', { className: 'dig-banner-text' }, error),
-        E('button', { type: 'button', className: 'dig-link', onClick: () => setError(null) }, t('error.dismiss')))
+        E('span', { className: 'dig-banner-text', title: errorHint === null ? undefined : error }, errorHint === null ? error : errorHint),
+        errorHint !== null && (errorCode === 'push-rejected' || errorCode === 'pull-diverged')
+          ? E('button', { type: 'button', className: 'dig-link', onClick: syncFromBanner }, t('more.sync'))
+          : null,
+        E('button', { type: 'button', className: 'dig-link', onClick: () => { setError(null); setErrorCode(null) } }, t('error.dismiss')))
 
       const noteBanner = note === null ? null : E('div', { className: 'dig-note' },
         E('span', { className: 'dig-banner-text' }, note),
@@ -14856,7 +14997,7 @@ window.__ModuleLoader__.load({
           ] },
           null,
           /* —— top-level sync (VS Code header row) —— */
-          { id: 'mm-pull', icon: 'pull', tone: 'accent', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'ff-only' }) } },
+          { id: 'mm-pull', icon: 'pull', tone: 'accent', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'merge' }) } },
           { id: 'mm-push', icon: 'push', tone: 'success', label: t('toolbar.push'), disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'push' }) },
           { id: 'mm-clone', icon: 'plus', tone: 'secondary', label: t('more.clone'), run: () => setDialog({ kind: 'clone' }) },
           { id: 'mm-checkout', icon: 'checkout', tone: 'accent', label: t('action.checkout') + '...', disabled: otherBranches.length === 0 || blocked, reason, run: (ev) => pickBranchMenu(ev, 'checkout') },
@@ -14885,12 +15026,12 @@ window.__ModuleLoader__.load({
           ] },
           /* —— SCM ▸ Pull, Push ▸ —— */
           { id: 'sub-pullpush', icon: 'pull', tone: 'accent', label: t('more.pullpushGroup'), items: [
-            { id: 'pp-sync', label: t('more.sync'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void (async () => { await run('pull', { mode: 'ff-only' }); await run('push', { confirm: true }) })() } },
+            { id: 'pp-sync', label: t('more.sync'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void (async () => { await run('pull', { mode: 'merge' }); await run('push', { confirm: true }) })() } },
             { id: 'pp-sync-rebase', label: t('more.syncRebase'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void (async () => { await run('pull', { mode: 'rebase' }); await run('push', { confirm: true }) })() } },
             null,
-            { id: 'pp-pull', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'ff-only' }) } },
+            { id: 'pp-pull', label: t('toolbar.pull'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'merge' }) } },
             { id: 'pp-pull-rebase', label: t('more.pullRebase'), disabled: remoteReady !== true || tracked !== true || blocked, reason, run: () => { void run('pull', { mode: 'rebase' }) } },
-            { id: 'pp-pull-from', label: t('more.pullFrom'), disabled: remoteNames.length === 0, reason, run: pickRemote((name) => { void run('pull', { mode: 'ff-only', remote: name }) }) },
+            { id: 'pp-pull-from', label: t('more.pullFrom'), disabled: remoteNames.length === 0, reason, run: pickRemote((name) => { void run('pull', { mode: 'merge', remote: name }) }) },
             null,
             { id: 'pp-push', label: t('toolbar.push'), disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'push' }) },
             { id: 'pp-push-force', label: t('more.pushForce'), danger: true, disabled: remoteReady !== true || blocked, reason, run: () => setDialog({ kind: 'pushForce' }) },
@@ -15017,7 +15158,7 @@ window.__ModuleLoader__.load({
       const pullPickedBranches = async (picked) => {
         for (const item of picked) {
           if (item.kind !== 'local') continue
-          if (item.entry.head === true) { await run('pull', { mode: 'ff-only' }); continue }
+          if (item.entry.head === true) { await run('pull', { mode: 'merge' }); continue }
           const upstream = item.entry.upstream
           if (upstream === null || upstream === undefined || upstream === '') continue
           const slash = upstream.indexOf('/')
@@ -15076,7 +15217,7 @@ window.__ModuleLoader__.load({
         }
         else if (spec.id === 'pull') {
           if (railPickedLocals.length > 0) { entry.label = fill(t('toolbar.pullPicked'), { n: railPickedLocals.length }); entry.disabled = blocked; entry.run = () => { void pullPickedBranches(railPickedLocals) } }
-          else { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'ff-only' }) } }
+          else { entry.disabled = remoteReady !== true || tracked !== true || blocked; entry.run = () => { void run('pull', { mode: 'merge' }) } }
         }
         else if (spec.id === 'push') {
           if (railPickedLocals.length > 0) { entry.label = fill(t('toolbar.pushPicked'), { n: railPickedLocals.length }); entry.disabled = blocked; entry.run = () => setDialog({ kind: 'pushMany', items: railPickedLocals.map((item) => ({ name: item.name, upstream: item.entry.upstream })) }) }

@@ -46,7 +46,8 @@
 
 | 路径 | 作用 |
 |---|---|
-| src/index.js | **宿主半**:`/dsh-ide-git/api` 前缀路由 + git 方法表(argv-only spawn)、参数校验、信任围栏、confirm 守卫 |
+| src/index.js | **宿主半入口**:只导出 `name` / `inject` / `Config` / 缓存与 `apply(ctx)`，把路由与 AI commit 服务接起来 |
+| src/host/ | **宿主半实现**:`config` 行配置、`core` 错误/校验/写队列、`git` argv spawn 与解析、`undo` 撤回栈、`read` 读方法、`write` 写方法、`repos` 仓库扫描、`commit-message` AI 提交信息、`http` 方法表与信任围栏 |
 | src/client.js | **客户端半(全部 UI)**:`window.__ModuleLoader__.load` 包装;注册 better-sidebar Tab;Panel 组件含分支树 / 图谱 / 变更 / 详情 / 历史筛选 / 可配置动作条 / 右键菜单 / 弹窗 / 撤回浮窗 / 样式 |
 | cordis.patch.yml | dsh plugin add 官方安装通道的挂载声明(insert 一行 `ide-git`) |
 | dsh.plugin.json | 插件注册表清单(id `dsh-external/dsh-ide-git`) |
@@ -61,7 +62,7 @@
 ## 核心不变量(改代码前必读)
 
 1. **无构建、单文件客户端**。`src/client.js` 必须保持 `window.__ModuleLoader__.load({ id, factory })` 包装;只能 require DSH 客户端基线模块(当前仅 `react`),冒烟测试用白名单强制执行。禁止 `import`、禁止新增第二个 client entry。
-2. **宿主半只 import `node:` 内置模块**(当前:`node:child_process` 的 `spawn`、`node:path`)。冒烟测试强制。
+2. **宿主半只 import `node:` 内置模块与自身相对模块**(`./host/*.js`);禁止任何第三方静态 import。唯一例外是懒加载、失败可降级的 `@deepseek-ai/schemastery`(行 Config)。冒烟测试强制。
 3. **git 调用永远是 argv 数组**:`spawn(gitBinary(), args, { cwd })`,禁止 `exec` / `shell: true` / 字符串拼接命令;用户输入先过 `requireAbsolute` / `requireRef`(不以 `-` 开头、无空白与控制字符)/ `requireRelativePath`(不越出仓库)。新增方法必须走同一套校验。
 4. **破坏性操作必须 `confirm: true`**:push、`reset --hard`、`branch -D`、丢弃未跟踪文件(`clean`)、`stash drop`。UI 侧对应动作一律先弹 ConfirmDialog。**唯一例外是「提交并推送」按钮**(v0.3.7):按钮文案已经把「会推送」写在脸上,点击即视为确认,不再二次弹框——它仍然把 `confirm: true` 传给宿主,所以守卫没有被绕过。冒烟测试校验这些守卫字符串存在。
 5. **两条信任围栏**:宿主路由只服务 loopback Host 或 `Sec-Fetch-Site: same-origin/same-site` 的请求;任何新路由都必须先过 `isTrusted(req)`,再检查 method 为 POST。

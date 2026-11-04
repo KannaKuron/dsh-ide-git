@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.24.0 — 2026-11-04
+
+**类型**:feat(拉取/推送分叉可恢复 + 宿主持久拆分)
+
+- **feat 右键「拉取」执行真正的 pull**:当前分支有 upstream 时直接 `git pull --no-rebase`(merge),不再只是 `fetch --prune`;非当前分支保持安全的 refspec fetch;无 upstream 仍只 fetch。
+- **feat 默认 pull 改为 merge**:远程与本地分叉但文件不冲突时自动合并并保留双方提交;「拉取(变基)」仍走 rebase,显式 `ff-only` 保留。
+- **feat 失败给出可操作提示**:push non-fast-forward / pull diverged / pull conflict / pull dirty 分别映射为 `push-rejected` / `pull-diverged` / `pull-conflict` / `pull-dirty`;横幅先说明怎么解决,`push-rejected` 与 `pull-diverged` 还提供「同步」按钮(先 pull merge、再 push)。21 门词典同步。
+- **refactor 宿主半拆分为 `src/host/`**:`src/index.js` 从 2385 行缩为 36 行入口,config / core / git / undo / read / write / repos / commit-message / http 各司其职;`package.json` 的 `files[]` 纳入 `src/host`,冒烟测试改为拼接入口与模块并允许自身相对 import。
+- **验证**:`npm test` 124/124;全部宿主模块 `node --check`;`npm pack --dry-run` 包含 9 个 host 模块;集成用例覆盖分叉 merge、落后远端 push 拒绝、同文件冲突与显式 ff-only 分叉。
+
 ## v0.23.0 — 2026-11-01
 
 **类型**:feat(内嵌 diff 预览保留分栏 + 兼容下限回落到 0.1.6-alpha.2,#21 / #22)

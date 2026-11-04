@@ -425,6 +425,78 @@ test('fetch accepts a refspec and fast-forwards a NON-checked-out branch (v0.18.
   rmSync(originRoot, { recursive: true, force: true })
 })
 
+test('pull defaults to merge and names the push/pull failures users hit (v0.24.0)', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'dsh-ide-git-sync-'))
+  const origin = join(root, 'origin.git')
+  const local = join(root, 'local')
+  const peer = join(root, 'peer')
+  const at = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' })
+  try {
+    execFileSync('git', ['init', '-q', '--bare', '-b', 'main', origin])
+    const seed = join(root, 'seed')
+    execFileSync('git', ['init', '-q', '-b', 'main', seed])
+    at(seed, 'config', 'user.name', 'Check')
+    at(seed, 'config', 'user.email', 'check@example.com')
+    writeFileSync(join(seed, 'base.txt'), 'base\n')
+    at(seed, 'add', '-A')
+    at(seed, 'commit', '-q', '-m', 'base')
+    at(seed, 'remote', 'add', 'origin', origin)
+    at(seed, 'push', '-q', '-u', 'origin', 'main')
+    execFileSync('git', ['clone', '-q', origin, local])
+    execFileSync('git', ['clone', '-q', origin, peer])
+    for (const dir of [local, peer]) {
+      at(dir, 'config', 'user.name', 'Check')
+      at(dir, 'config', 'user.email', 'check@example.com')
+    }
+
+    // A clean divergence (different files) is exactly the case the old
+    // --ff-only default answered with "Not possible to fast-forward".
+    writeFileSync(join(peer, 'peer.txt'), 'peer\n')
+    at(peer, 'add', '-A')
+    at(peer, 'commit', '-q', '-m', 'peer change')
+    at(peer, 'push', '-q', 'origin', 'main')
+    writeFileSync(join(local, 'local.txt'), 'local\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'local change')
+    const pulled = await call('pull', { cwd: local })
+    assert.equal(pulled.status, 200)
+    assert.equal(pulled.body.data.mode, 'merge', 'pull must default to merge')
+    const log = at(local, 'log', '--format=%s')
+    assert.match(log, /peer change/)
+    assert.match(log, /local change/)
+
+    // A behind-tip push is named, not left as raw git output.
+    writeFileSync(join(peer, 'ahead.txt'), 'ahead\n')
+    at(peer, 'add', '-A')
+    at(peer, 'commit', '-q', '-m', 'peer ahead')
+    at(peer, 'push', '-q', 'origin', 'main')
+    const rejected = await call('push', { cwd: local, confirm: true })
+    assert.equal(rejected.status, 409)
+    assert.equal(rejected.body.error.code, 'push-rejected')
+
+    // Catch up, then make both sides touch the same file: the explicit
+    // --ff-only check names the divergence, and the default merge names the
+    // conflict instead of returning a wall of git output.
+    await call('pull', { cwd: local })
+    writeFileSync(join(peer, 'same.txt'), 'peer\n')
+    at(peer, 'add', '-A')
+    at(peer, 'commit', '-q', '-m', 'peer same file')
+    at(peer, 'push', '-q', 'origin', 'main')
+    writeFileSync(join(local, 'same.txt'), 'local\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'local same file')
+    const diverged = await call('pull', { cwd: local, mode: 'ff-only' })
+    assert.equal(diverged.status, 409)
+    assert.equal(diverged.body.error.code, 'pull-diverged')
+    const conflicted = await call('pull', { cwd: local })
+    assert.equal(conflicted.status, 409)
+    assert.equal(conflicted.body.error.code, 'pull-conflict')
+    at(local, 'merge', '--abort')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test('the checked-out branch and protected branches are guarded', async () => {
   const current = await call('branchDelete', { cwd: repo, name: 'main', confirm: true })
   assert.equal(current.status, 409)
