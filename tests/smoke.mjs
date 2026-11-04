@@ -910,8 +910,9 @@ test('the tree toggle is reachable again after it was folded', () => {
   // treeOpen is persisted, so a header button that only rendered while the tree
   // was OPEN left a folded tree with no way back (a workspace could only be
   // repaired by clearing localStorage). The header button is two-way now, and the
-  // rail carries the action for the chromes that have no header button.
-  const bar = client.slice(client.indexOf("className: 'dig-compact-tabs'"), client.indexOf("className: 'dig-compact-tabs'") + 1800)
+  // rail carries the action for the chromes that have no header button. v0.26.1
+  // moved it into the shared tab-strip builder (compact passes withTree=true).
+  const bar = client.slice(client.indexOf("className: 'dig-split-tabs'"), client.indexOf("className: 'dig-split-tabs'") + 1800)
   assert.match(bar, /'data-action': 'tree'/, 'the compact header keeps a tree control')
   assert.match(bar, /onClick: \(\) => foldTree\(!treeOpen\)/, 'and it toggles BOTH ways')
   assert.match(bar, /'aria-pressed': treeOpen \? 'true' : 'false'/)
@@ -1125,8 +1126,8 @@ test('the pane clamps hold at both ends and never shrink a pane below its own bo
   const geo = core.paneGeometry('stack', tall, stored)
   assert.equal(geo.overrides.changes, 440, 'the changes pane stops where the middle pane begins')
   assert.equal(geo.overrides.tree, 324, 'the tree gives way to the pane it shares the column with')
-  assert.equal(geo.overrides.diff, 120, 'the diff can never eat the history list')
-  assert.equal(geo.limits.diff.max, 120)
+  assert.equal(geo.overrides.diff, undefined, 'the stacked chrome no longer splits a diff pane out (v0.26.1)')
+  assert.equal(geo.limits.diff, undefined, 'and it announces no diff divider')
   assert.equal(tall.height - geo.overrides.tree - geo.overrides.changes - 2 * core.PANE_GUTTER_PX, core.PANE_MAIN_FLOOR_PX,
     'the middle pane keeps exactly its hard floor when both stacked panes are maxed')
 
@@ -1200,9 +1201,10 @@ test('a divider only exists when it can move something', () => {
   const columns = core.paneGeometry('columns', { width: 700, height: 400 }, core.normalizePanes(null), { diff: 150 })
   assert.ok(columns.limits.diff !== undefined && columns.limits.diff.max > columns.limits.diff.min,
     'the columns chrome hands out a real diff window')
+  assert.deepEqual(core.PANE_CHROME_KEYS.stack, ['tree', 'changes'],
+    'the stacked chrome puts history and diff in one tabbed window (v0.26.1)')
   const stacked = core.paneGeometry('stack', { width: 700, height: 800 }, core.normalizePanes(null), { diff: 150 })
-  assert.ok(stacked.limits.diff !== undefined && stacked.limits.diff.max > stacked.limits.diff.min,
-    'while the stacked chrome hands out a real diff window')
+  assert.equal(stacked.limits.diff, undefined, 'so it hands out no diff divider at all')
 
   // The columns diff divides the body HEIGHT, not the chrome's own width
   // dimension: 0.5 of a 400px-tall body lands at 200px even in a 1000px-wide
@@ -2104,6 +2106,15 @@ test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
     'the changes list keeps the top of the compact chrome')
   assert.match(client, /compact: \['tree', 'changes'\]/,
     'the compact chrome hands its divider to the changes list, not the tabbed diff')
+  // v0.26.1: the stacked chrome (400–600px, the native right sidebar's bread and
+  // butter) got the same treatment — the diff is a TAB there too, not a window
+  // squeezed in at the bottom under a shrinking history list.
+  assert.match(client, /stack: \['tree', 'changes'\]/,
+    'the stacked chrome hands its divider to the changes list as well')
+  assert.match(client, /dig-body-stack[\s\S]{0,1400}splitTabs\(false, false\)/,
+    'the stacked chrome renders the shared tab strip above the history window')
+  assert.equal((client.match(/className: 'dig-pane dig-pane-main' \}, historyPane, diffGutter, diffPane/g) || []).length, 1,
+    'only the three-column chrome still splits the diff out under the history')
   assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
     'the split pane still consumes the stored size')
   assert.match(client, /setSelectedPath\(seed\.path === undefined \? null : seed\.path\)/,

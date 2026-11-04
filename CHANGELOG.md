@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.26.1 — 2026-11-04
+
+**类型**:fix(堆叠布局的「历史 / 差异」也做成页签)
+
+- **背景**:v0.26.0 只把紧凑 chrome(宽 < 400px)改成页签;右侧栏最常用的「窄而高」堆叠布局(`stack`,400–600px)仍是历史列表 + 底部 diff 分屏——点变更文件时 diff 从下面挤出来,历史被压走。用户反馈「改错了」指的就是这块:提交框下面的区域应该就是「提交历史 / 差异对比」两个页签。
+- **布局**:`stack` 与 `compact` 现在共用同一个页签条构造器 `splitTabs(withCount, withTree)`(`.dig-split-tabs`)。页签「历史 | 差异」;没有 patch 时「差异」置灰并用 `title` 说明原因;点变更文件自动切到「差异」,关掉 diff 自动落回「历史」。紧凑 chrome 额外把「变更 N」计数与树开关放在这条里(它的变更头是隐藏的),堆叠 chrome 只放页签。
+- **面板几何**:`PANE_CHROME_KEYS.stack` 由 `['tree','changes','diff']` 改为 `['tree','changes']`,删掉 `stack:diff` 限制;diff 不再是一个独立窗格,而是填满页签主体(`.dig-diff-pane-fill`)。三栏 chrome 保持原样:中间栏仍是历史在上、diff 在下,分隔条可拖。
+- **同时更新**:两份 README 的布局表/功能表、`scripts/dock-probe.mjs` 的探针选择器(`.dig-compact-tabs` → `.dig-split-tabs`)、smoke 测试里「堆叠 chrome 有独立 diff 窗格」的断言改为页签断言。
+- **验证**:`npm test` 125/125(改 3 条、增 3 条断言:堆叠 chrome 的页签、pane key、diff 只剩三栏一份);`node --check src/client.js`。纯布局改动,headless 量不到真机像素,需要重启 App 后目测。
+
 ## v0.26.0 — 2026-11-04
 
 **类型**:feat(窄栏改成「变更在上、历史/差异页签在下」)

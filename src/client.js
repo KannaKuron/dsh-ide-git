@@ -9,8 +9,8 @@
  * chrome:
  *
  *   columns  wide and tall enough : repo/branch bar | tree | graph | changes
- *   stack    narrow and tall      : changes over graph, collapsible tree
- *   compact  very narrow          : changes on top + a tabbed history/diff window
+ *   stack    narrow and tall      : changes over a tabbed history/diff window
+ *   compact  very narrow          : changes on top + the same tabbed window
  *
  * Theming: no hard-coded surfaces. Every surface is a --dsw-alias-* token, so
  * transparent themes and background plugins (dsh-any-background) show through,
@@ -8852,11 +8852,11 @@ window.__ModuleLoader__.load({
        panes measure width (columns). */
     const PANE_CHROME_KEYS = {
       columns: ['tree', 'changes', 'diff'],
-      stack: ['tree', 'changes', 'diff'],
-      /* v0.26.0: the compact chrome stacks the changes list over a TABBED
-         (history | diff) window instead of splitting the diff out of the
-         history pane, so the two panes it hands out a divider for are the
-         tree and the changes list — the diff fills the tab body. */
+      /* v0.26.1: BOTH stacked chromes put the history list and the diff in one
+         TABBED window (history | diff) under the changes list, so the diff is
+         no longer a pane of its own here — it fills the tab body. Only the
+         three-column chrome still splits the diff out of the middle column. */
+      stack: ['tree', 'changes'],
       compact: ['tree', 'changes'],
     }
     /* Whether a key measures a height (stacked chromes) or a width (columns).
@@ -8873,7 +8873,6 @@ window.__ModuleLoader__.load({
       'columns:diff': { min: 120, max: 900 },
       'stack:tree': { min: 100, max: 420 },
       'stack:changes': { min: 120, max: 460 },
-      'stack:diff': { min: 120, max: 900 },
       'compact:tree': { min: 100, max: 420 },
       'compact:changes': { min: 120, max: 460 },
     }
@@ -15400,8 +15399,45 @@ window.__ModuleLoader__.load({
       const worktrees = summary !== null && Array.isArray(summary.worktrees) ? summary.worktrees : []
 
       /* The history↔diff separator only exists while a diff is on screen, and it
-         lives inside the middle pane — the diff is the pane below it. */
+         lives inside the middle pane — the diff is the pane below it. Only the
+         three-column chrome keeps that split (v0.26.1). */
       const diffGutter = diffPane === null ? null : gutter('diff', 'next')
+
+      /* v0.26.1 — the stacked chromes (stack and compact) show the history list
+         and the diff in ONE tabbed window below the changes list: clicking a
+         file flips that window to the diff tab instead of splitting the diff out
+         and squeezing the history. `withCount` only matters on compact, whose
+         changes head (and with it the "changes {n}" badge) is hidden; `withTree`
+         adds the tree toggle that chrome has no other way to reach. */
+      const noDiff = patch === '' && patchLoading === false
+      const fillDiff = diffPaneOf(true)
+      const splitTabs = (withCount, withTree) => E('div', { className: 'dig-split-tabs' },
+        withCount === true ? E('span', { className: 'dig-compact-count' }, fill(t('seg.changes'), { n: dirty })) : null,
+        E('button', {
+          type: 'button',
+          className: 'dig-tab',
+          'data-active': splitTab === 'history' ? 'true' : 'false',
+          'data-action': 'history-tab',
+          onClick: () => setSplitTab('history'),
+        }, t('seg.history')),
+        E('button', {
+          type: 'button',
+          className: 'dig-tab',
+          'data-active': splitTab === 'diff' ? 'true' : 'false',
+          'data-action': 'diff-tab',
+          disabled: noDiff,
+          title: noDiff ? t('diff.empty') : t('diff.codeLabel'),
+          onClick: () => setSplitTab('diff'),
+        }, t('diff.codeLabel')),
+        E('span', { className: 'dig-topbar-spacer' }),
+        withTree === true ? E('button', {
+          type: 'button',
+          className: 'dig-icon-btn' + (treeOpen ? ' dig-icon-btn-active' : ''),
+          'data-action': 'tree',
+          'aria-pressed': treeOpen ? 'true' : 'false',
+          title: t('toolbar.tree'),
+          onClick: () => foldTree(!treeOpen),
+        }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' })) : null)
 
       let body
       if (repoState === null) {
@@ -15430,46 +15466,13 @@ window.__ModuleLoader__.load({
            pair (history | diff) instead of a split — opening a file no longer
            takes the history list away, and the changes list never disappears.
            The diff tab only exists while there is a patch to show. */
-        const fillDiff = diffPaneOf(true)
-        const noDiff = patch === '' && patchLoading === false
         body = E('div', { className: 'dig-body dig-body-compact', ref: bodyRef },
           treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
           E('div', { className: 'dig-pane dig-pane-main' },
-            E('div', { className: 'dig-compact-tabs' },
-              // The changes head is hidden on this chrome, so its count rides
-              // here instead of above the list.
-              E('span', { className: 'dig-compact-count' }, fill(t('seg.changes'), { n: dirty })),
-              E('button', {
-                type: 'button',
-                className: 'dig-tab',
-                'data-active': splitTab === 'history' ? 'true' : 'false',
-                'data-action': 'history-tab',
-                onClick: () => setSplitTab('history'),
-              }, t('seg.history')),
-              E('button', {
-                type: 'button',
-                className: 'dig-tab',
-                'data-active': splitTab === 'diff' ? 'true' : 'false',
-                'data-action': 'diff-tab',
-                disabled: noDiff,
-                title: noDiff ? t('diff.empty') : t('diff.codeLabel'),
-                onClick: () => setSplitTab('diff'),
-              }, t('diff.codeLabel')),
-              E('span', { className: 'dig-topbar-spacer' }),
-              // Two-way on purpose: treeOpen is persisted, so a header button that
-              // only rendered while the tree was OPEN left a folded tree with no way
-              // back on this chrome (the rail now carries one too, for the others).
-              E('button', {
-                type: 'button',
-                className: 'dig-icon-btn' + (treeOpen ? ' dig-icon-btn-active' : ''),
-                'data-action': 'tree',
-                'aria-pressed': treeOpen ? 'true' : 'false',
-                title: t('toolbar.tree'),
-                onClick: () => foldTree(!treeOpen),
-              }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
+            splitTabs(true, true),
             splitTab === 'diff' && fillDiff !== null ? fillDiff : historyPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
@@ -15484,7 +15487,12 @@ window.__ModuleLoader__.load({
           treeOpen ? gutter('tree', 'prev') : null,
           E('div', { className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle('changes') }, changesPane),
           gutter('changes', 'prev'),
-          E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
+          /* v0.26.1: below the commit box the history list and the diff share
+             one tabbed window — a click on a changed file flips to the diff tab
+             and leaves the list (and its scroll position) alone. */
+          E('div', { className: 'dig-pane dig-pane-main' },
+            splitTabs(false, false),
+            splitTab === 'diff' && fillDiff !== null ? fillDiff : historyPane))
       }
 
       /* ---------- overlays ---------- */
@@ -16000,9 +16008,10 @@ window.__ModuleLoader__.load({
       '.dig-pane-main{flex:1;min-width:0}',
       '.dig-pane-changes{width:290px;flex:none;border-left:1px solid var(--dsw-alias-border-l2)}',
       '.dig-pane-changes-stack{max-height:46%;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
-      /* v0.26.0: the compact chrome stacks changes over a tabbed window, so the
-         old switch bar became the tab strip of that window. */
-      '.dig-compact-tabs{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
+      /* v0.26.1: both stacked chromes show history and diff in one tabbed
+         window; the strip is the window's tab bar (the compact chrome also
+         hosts the changes count and the tree toggle in it). */
+      '.dig-split-tabs{display:flex;align-items:center;gap:4px;padding:4px 6px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
       '.dig-compact-count{color:var(--dsw-alias-label-secondary);font-weight:500;font-size:11px;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}',
       '.dig-tab{border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:11px;font-weight:500;padding:2px 10px;border-radius:var(--dsw-radius-sm,8px);cursor:pointer;white-space:nowrap;flex:none}',
       '.dig-tab:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
