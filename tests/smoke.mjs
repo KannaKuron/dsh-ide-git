@@ -456,8 +456,11 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   // The pane context rides the patch state and clears wherever the patch does
   // (pickRepo, selectCommit, onBack, pane close, view switch).
   assert.match(client, /const \[diffContext, setDiffContext\] = useState\(null\)/)
-  const clears = (client.match(/setDiffContext\(null\)/g) || []).length
-  assert.ok(clears >= 5, 'the diff context must clear wherever the patch clears (saw ' + clears + ')')
+  // v0.27: the clear moved into one resetDiff funnel so it could also bump
+  // the request stamp and drop the dedupe window; the five entry points call it.
+  assert.match(client, /const resetDiff = useCallback\(\(\) => \{[\s\S]*?setDiffContext\(null\)/)
+  const resets = (client.match(/resetDiff\(\)/g) || []).length
+  assert.ok(resets >= 5, 'the diff context must clear wherever the patch clears (saw ' + resets + ' resetDiff calls)')
   // v0.14: the open verbs moved into ONE funnel, showDiff (external preview
   // first, inline pane as the fallback). The context contract survives
   // verbatim inside the funnel's inline legs.
@@ -929,6 +932,8 @@ test('the tree toggle is reachable again after it was folded', () => {
   // used to leave the top bar naming the primary checkout.
   assert.match(client, /headerRepos = repoOptions\.concat\(\[\{/,
     'the current root stays a header option even when the workspace scan does not know it')
+  assert.match(client, /repo\.path === repoRoot && branches !== null \? Object\.assign\(\{\}, repo, \{ branch: branches\.branch \}\) : repo/,
+    'the repo label follows the live HEAD after a checkout instead of the branch the scan listed')
   assert.match(client, /t: t, repos: headerRepos, value: repoRoot/,
     'the repo switcher reads the header options, not the raw scan')
   assert.match(client, /body-worktrees/,
@@ -2156,3 +2161,49 @@ test('the diff request is single-flight, and untracked files keep their patch (v
   assert.match(client, /if \(diffSeq\.current === run\) setPatchLoading\(false\)/,
     'and only the newest request clears the spinner')
 })
+
+test('repo and branch switchers search on type and fold slash namespaces (v0.27.0)', () => {
+  // User report: with many clones and many fix/… branches the two pills were
+  // flat, unsearchable lists. SearchPicker is the shared body of BOTH the
+  // panel header switchers and the composer pills, so the tree/filter logic
+  // lives once and every entry point gets it.
+  const start = client.indexOf('function SearchPicker(props)')
+  assert.ok(start >= 0, 'SearchPicker must exist at module level')
+  const end = client.indexOf('\n    /* Lets the user choose', start)
+  assert.ok(end > start, 'SearchPicker must precede the rail settings')
+  const picker = client.slice(start, end)
+  assert.match(picker, /const mode = props\.mode === 'branch' \? 'branch' : 'repo'/, 'one component serves both kinds')
+  assert.match(picker, /matches\(repo\.path\) === false && matches\(repo\.sub\) === false && matches\(repo\.branch\) === false/,
+    'repositories match by name, path, clone directory and branch')
+  assert.match(picker, /String\(entry\.name\)\.split\('\/'\)/, 'branches split on / into folders')
+  assert.match(picker, /const open = query !== '' \|\| folded\[id\] !== true/, 'typing forces every folder open so matches cannot hide')
+  assert.match(picker, /event\.key === 'ArrowDown' \|\| event\.key === 'ArrowUp'/, 'arrow keys move the active row')
+  assert.match(picker, /event\.key === 'Enter'/, 'Enter picks the active row')
+  assert.match(picker, /'aria-label': mode === 'repo'/, 'the search field is labelled for screen readers')
+  // Wiring: both header pills open through openPickerAt, both composer pills
+  // render SearchPicker with their own key (so switching mode remounts state).
+  assert.match(client, /openPickerAt\(event, 'repo'\)/, 'the header repo pill opens the picker')
+  assert.match(client, /openPickerAt\(event, 'branch'\)/, 'the header branch pill opens the picker')
+  assert.match(client, /body: E\(SearchPicker, \{/, 'the panel picker rides the context-menu surface')
+  assert.match(client, /key: 'composer-repo'/, 'the composer repo pill has its own picker instance')
+  assert.match(client, /key: 'composer-branch'/, 'the composer branch pill has its own picker instance')
+  // 21 gates: the two new keys must not exist only in zh/en.
+  for (const key of ['repo.filter', 'picker.empty']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
+  }
+})
+
+test('closing a diff invalidates the in-flight response and the dedupe window (v0.27.0)', () => {
+  // PR #24's diff pane cleared the patch but not diffSeq/diffLast: a response
+  // already in flight could repaint the closed pane, and reopening the same
+  // file inside the 400ms guard was silently swallowed.
+  assert.match(client, /const resetDiff = useCallback\(\(\) => \{\s*diffSeq\.current \+= 1\s*diffLast\.current = \{ key: '', at: 0 \}/,
+    'resetDiff bumps the request stamp and clears the double-click window')
+  assert.match(client, /onBack: \(\) => \{ setView\('history'\); setSelectedPath\(null\); resetDiff\(\) \}/,
+    'leaving commit detail cancels a pending patch request')
+  assert.match(client, /onClick: \(\) => \{ resetDiff\(\); setSelectedPath\(null\); setSplitTab\('history'\) \}/,
+    'closing the diff pane cancels a pending patch request')
+  assert.match(client, /entry\.run = \(\) => \{ resetDiff\(\); setView\(view === 'worktrees'/, 'switching views does too')
+  assert.doesNotMatch(client, /entry\.run = \(\) => \{ setPatch\(''\)/, 'no clear path bypasses resetDiff')
+})
+

@@ -90,6 +90,8 @@ window.__ModuleLoader__.load({
       'repo.nested': '子仓库',
       'repo.none': '当前工作区不是 Git 仓库',
       'repo.pick': '选择要查看的仓库',
+      'repo.filter': '搜索仓库',
+      'picker.empty': '没有匹配项',
       'repo.empty': '这个工作区下没有找到 Git 仓库',
       'repo.switch': '切换仓库',
       'branch.switch': '切换分支',
@@ -462,6 +464,8 @@ window.__ModuleLoader__.load({
       'repo.nested': 'nested',
       'repo.none': 'This workspace is not a Git repository',
       'repo.pick': 'Pick a repository to inspect',
+      'repo.filter': 'Search repositories',
+      'picker.empty': 'No matches',
       'repo.empty': 'No Git repository found in this workspace',
       'repo.switch': 'Switch repository',
       'branch.switch': 'Switch branch',
@@ -842,6 +846,8 @@ window.__ModuleLoader__.load({
         'repo.nested': '巢狀',
         'repo.none': '呢個工作區唔係 Git 存放庫',
         'repo.pick': '揀一個存放庫嚟睇',
+        'repo.filter': '搵存放庫',
+        'picker.empty': '冇相符項目',
         'repo.empty': '呢個工作區搵唔到 Git 存放庫',
         'repo.switch': '切換存放庫',
         'branch.switch': '切換分支',
@@ -1214,6 +1220,8 @@ window.__ModuleLoader__.load({
         'repo.nested': '巢狀',
         'repo.none': '這個工作區不是 Git 版本庫',
         'repo.pick': '選擇要檢視的版本庫',
+        'repo.filter': '搜尋版本庫',
+        'picker.empty': '沒有相符項目',
         'repo.empty': '這個工作區找不到 Git 版本庫',
         'repo.switch': '切換版本庫',
         'branch.switch': '切換分支',
@@ -1586,6 +1594,8 @@ window.__ModuleLoader__.load({
         'repo.nested': '巢狀',
         'repo.none': '呢個工作區唔係 Git 存放庫',
         'repo.pick': '揀一個存放庫嚟睇',
+        'repo.filter': '搵存放庫',
+        'picker.empty': '冇相符項目',
         'repo.empty': '呢個工作區搵唔到 Git 存放庫',
         'repo.switch': '切換存放庫',
         'branch.switch': '切換分支',
@@ -1958,6 +1968,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'ネスト',
         'repo.none': 'このワークスペースは Git リポジトリではありません',
         'repo.pick': '確認するリポジトリを選択',
+        'repo.filter': 'リポジトリを検索',
+        'picker.empty': '一致する項目がありません',
         'repo.empty': 'このワークスペースに Git リポジトリが見つかりません',
         'repo.switch': 'リポジトリを切り替え',
         'branch.switch': 'ブランチを切り替え',
@@ -2330,6 +2342,8 @@ window.__ModuleLoader__.load({
         'repo.nested': '중첩',
         'repo.none': '이 워크스페이스는 Git 저장소가 아닙니다',
         'repo.pick': '확인할 저장소를 선택하세요',
+        'repo.filter': '저장소 검색',
+        'picker.empty': '일치하는 항목이 없습니다',
         'repo.empty': '이 워크스페이스에서 Git 저장소를 찾을 수 없습니다',
         'repo.switch': '저장소 전환',
         'branch.switch': '브랜치 전환',
@@ -2702,6 +2716,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'verschachtelt',
         'repo.none': 'Dieser Arbeitsbereich ist kein Git-Repository',
         'repo.pick': 'Repository zum Ansehen wählen',
+        'repo.filter': 'Repositories durchsuchen',
+        'picker.empty': 'Keine Treffer',
         'repo.empty': 'In diesem Arbeitsbereich wurde kein Git-Repository gefunden',
         'repo.switch': 'Repository wechseln',
         'branch.switch': 'Branch wechseln',
@@ -3074,6 +3090,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'imbriqué',
         'repo.none': 'Cet espace de travail n\'est pas un dépôt Git',
         'repo.pick': 'Choisir un dépôt à inspecter',
+        'repo.filter': 'Rechercher des dépôts',
+        'picker.empty': 'Aucun résultat',
         'repo.empty': 'Aucun dépôt Git trouvé dans cet espace de travail',
         'repo.switch': 'Changer de dépôt',
         'branch.switch': 'Changer de branche',
@@ -3446,6 +3464,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'вложенный',
         'repo.none': 'Эта рабочая область не является репозиторием Git',
         'repo.pick': 'Выберите репозиторий для просмотра',
+        'repo.filter': 'Поиск репозиториев',
+        'picker.empty': 'Нет совпадений',
         'repo.empty': 'В этой рабочей области репозиторий Git не найден',
         'repo.switch': 'Сменить репозиторий',
         'branch.switch': 'Сменить ветку',
@@ -3818,6 +3838,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'aninhado',
         'repo.none': 'Esta área de trabalho não é um repositório Git',
         'repo.pick': 'Escolha um repositório para inspecionar',
+        'repo.filter': 'Pesquisar repositórios',
+        'picker.empty': 'Nenhum resultado',
         'repo.empty': 'Nenhum repositório Git encontrado nesta área de trabalho',
         'repo.switch': 'Trocar de repositório',
         'branch.switch': 'Trocar de branch',
@@ -4190,6 +4212,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'annidato',
         'repo.none': 'Questa area di lavoro non è un repository Git',
         'repo.pick': 'Scegli un repository da esaminare',
+        'repo.filter': 'Cerca repository',
+        'picker.empty': 'Nessuna corrispondenza',
         'repo.empty': 'Nessun repository Git trovato in questa area di lavoro',
         'repo.switch': 'Cambia repository',
         'branch.switch': 'Cambia branch',
@@ -4562,6 +4586,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'genest',
         'repo.none': 'Deze werkruimte is geen Git-repository',
         'repo.pick': 'Kies een repository om te bekijken',
+        'repo.filter': 'Repositories zoeken',
+        'picker.empty': 'Geen resultaten',
         'repo.empty': 'Geen Git-repository gevonden in deze werkruimte',
         'repo.switch': 'Wissel van repository',
         'branch.switch': 'Wissel van branch',
@@ -4934,6 +4960,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'zagnieżdżone',
         'repo.none': 'Ten obszar roboczy nie jest repozytorium Git',
         'repo.pick': 'Wybierz repozytorium do podglądu',
+        'repo.filter': 'Szukaj repozytoriów',
+        'picker.empty': 'Brak dopasowań',
         'repo.empty': 'W tym obszarze roboczym nie znaleziono repozytorium Git',
         'repo.switch': 'Zmień repozytorium',
         'branch.switch': 'Zmień gałąź',
@@ -5306,6 +5334,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'nästlad',
         'repo.none': 'Den här arbetsytan är inte ett Git-arkiv',
         'repo.pick': 'Välj ett arkiv att granska',
+        'repo.filter': 'Sök bland arkiv',
+        'picker.empty': 'Inga träffar',
         'repo.empty': 'Inget Git-arkiv hittades i den här arbetsytan',
         'repo.switch': 'Byt arkiv',
         'branch.switch': 'Byt gren',
@@ -5678,6 +5708,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'iç içe',
         'repo.none': 'Bu çalışma alanı bir Git deposu değil',
         'repo.pick': 'İncelenecek depoyu seçin',
+        'repo.filter': 'Depo ara',
+        'picker.empty': 'Eşleşme yok',
         'repo.empty': 'Bu çalışma alanında Git deposu bulunamadı',
         'repo.switch': 'Depoyu değiştir',
         'branch.switch': 'Dalı değiştir',
@@ -6050,6 +6082,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'bersarang',
         'repo.none': 'Ruang kerja ini bukan repositori Git',
         'repo.pick': 'Pilih repositori untuk diperiksa',
+        'repo.filter': 'Cari repositori',
+        'picker.empty': 'Tidak ada kecocokan',
         'repo.empty': 'Tidak ada repositori Git di ruang kerja ini',
         'repo.switch': 'Ganti repositori',
         'branch.switch': 'Ganti branch',
@@ -6422,6 +6456,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'lồng nhau',
         'repo.none': 'Không gian làm việc này không phải kho Git',
         'repo.pick': 'Chọn một kho để xem',
+        'repo.filter': 'Tìm kho',
+        'picker.empty': 'Không có kết quả phù hợp',
         'repo.empty': 'Không tìm thấy kho Git trong không gian làm việc này',
         'repo.switch': 'Chuyển kho',
         'branch.switch': 'Chuyển nhánh',
@@ -6794,6 +6830,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'متشعّب',
         'repo.none': 'مساحة العمل هذه ليست مستودع Git',
         'repo.pick': 'اختر مستودعًا لعرضه',
+        'repo.filter': 'البحث عن المستودعات',
+        'picker.empty': 'لا توجد نتائج مطابقة',
         'repo.empty': 'لم يُعثر على مستودع Git في مساحة العمل هذه',
         'repo.switch': 'تبديل المستودع',
         'branch.switch': 'تبديل الفرع',
@@ -7166,6 +7204,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'नेस्टेड',
         'repo.none': 'यह कार्यक्षेत्र Git रिपॉज़िटरी नहीं है',
         'repo.pick': 'देखने के लिए रिपॉज़िटरी चुनें',
+        'repo.filter': 'रिपॉज़िटरी खोजें',
+        'picker.empty': 'कोई मेल नहीं',
         'repo.empty': 'इस कार्यक्षेत्र में कोई Git रिपॉज़िटरी नहीं मिली',
         'repo.switch': 'रिपॉज़िटरी बदलें',
         'branch.switch': 'शाखा बदलें',
@@ -7538,6 +7578,8 @@ window.__ModuleLoader__.load({
         'repo.nested': 'ซ้อนกัน',
         'repo.none': 'เวิร์กสเปซนี้ไม่ใช่รีโพซิทอรี Git',
         'repo.pick': 'เลือกรีโพซิทอรีที่จะดู',
+        'repo.filter': 'ค้นหารีโพซิทอรี',
+        'picker.empty': 'ไม่มีรายการที่ตรงกัน',
         'repo.empty': 'ไม่พบรีโพซิทอรี Git ในเวิร์กสเปซนี้',
         'repo.switch': 'สลับรีโพซิทอรี',
         'branch.switch': 'สลับแบรนช์',
@@ -10473,10 +10515,185 @@ window.__ModuleLoader__.load({
       return E('div', { className: 'dig-menu-wrap', ref: ref, style: { left: position.left + 'px', top: position.top + 'px' } },
         E('div', { className: 'dig-menu', ref: cardRef, 'data-menu-material': 'translucent' },
           E('div', { className: 'dig-menu-scroll' },
-            props.items.map((item, index) => renderItem(item, index, false)))),
+            props.body === undefined
+              ? (Array.isArray(props.items) ? props.items : []).map((item, index) => renderItem(item, index, false))
+              : props.body)),
         sub === null ? null : E('div', { className: 'dig-menu dig-menu-sub', 'data-menu-material': 'translucent', style: sub.flip === true ? { right: '100%', top: sub.top + 'px' } : { left: '100%', top: sub.top + 'px' } },
           E('div', { className: 'dig-menu-scroll' },
             sub.items.map((item, index) => renderItem(item, index, true)))))
+    }
+
+    /* Searchable picker body shared by the panel header switchers and the
+       composer pills. It owns no positioning: the panel renders it as a
+       ContextMenu body, the composer inside its own .dig-cs-menu. Repositories
+       are a flat, filtered list; branches keep their slash namespace as a
+       collapsible tree, and a non-empty query opens every folder so a match
+       is never hidden behind a fold. */
+    function SearchPicker(props) {
+      const t = props.t
+      const mode = props.mode === 'branch' ? 'branch' : 'repo'
+      const [needle, setNeedle] = useState('')
+      const [folded, setFolded] = useState({})
+      const [active, setActive] = useState(0)
+      const inputRef = useRef(null)
+      const listRef = useRef(null)
+      useEffect(() => {
+        const input = inputRef.current
+        if (input !== null && typeof input.focus === 'function') input.focus({ preventScroll: true })
+      }, [])
+      const query = needle.trim().toLowerCase()
+      const matches = (value) => query === '' || String(value === undefined || value === null ? '' : value).toLowerCase().indexOf(query) >= 0
+      const rows = []
+      if (mode === 'repo') {
+        const repos = Array.isArray(props.repos) ? props.repos : []
+        for (const repo of repos) {
+          const name = repo.name === undefined || repo.name === null ? baseNameOf(repo.path) : String(repo.name)
+          if (query !== '' && matches(name) === false && matches(repo.path) === false && matches(repo.sub) === false && matches(repo.branch) === false) continue
+          rows.push({ key: 'repo:' + String(repo.path), kind: 'repo', repo: repo, name: name })
+        }
+      } else {
+        const entries = (Array.isArray(props.branches) ? props.branches : []).filter((entry) => matches(entry.name))
+        const root = { folders: new Map(), leaves: [] }
+        for (const entry of entries) {
+          const parts = String(entry.name).split('/')
+          let node = root
+          for (let index = 0; index < parts.length - 1; index += 1) {
+            const key = parts[index]
+            if (node.folders.has(key) === false) node.folders.set(key, { folders: new Map(), leaves: [] })
+            node = node.folders.get(key)
+          }
+          node.leaves.push({ entry: entry, label: parts[parts.length - 1] })
+        }
+        const countLeaves = (node) => node.leaves.length + Array.from(node.folders.values()).reduce((sum, child) => sum + countLeaves(child), 0)
+        const walk = (node, prefix, depth) => {
+          for (const name of Array.from(node.folders.keys()).sort()) {
+            const id = prefix === '' ? name : prefix + '/' + name
+            const open = query !== '' || folded[id] !== true
+            rows.push({ key: 'dir:' + id, kind: 'folder', id: id, name: name, depth: depth, count: countLeaves(node.folders.get(name)), open: open })
+            if (open === true) walk(node.folders.get(name), id, depth + 1)
+          }
+          for (const leaf of node.leaves) {
+            const entry = leaf.entry
+            const worktree = entry.worktree !== null && entry.worktree !== undefined
+            const busy = typeof props.busyName === 'string' && props.busyName !== ''
+            rows.push({
+              key: 'branch:' + String(entry.name), kind: 'branch', entry: entry, label: leaf.label, depth: depth,
+              disabled: worktree === true || busy === true, worktree: worktree,
+            })
+          }
+        }
+        walk(root, '', 0)
+      }
+      const selectable = rows.filter((row) => row.kind !== 'folder' && row.disabled !== true)
+      const activeIndex = selectable.length === 0 ? -1 : Math.min(active, selectable.length - 1)
+      const activeRow = activeIndex < 0 ? null : selectable[activeIndex]
+      const activeKey = activeRow === null ? '' : activeRow.key
+      useEffect(() => {
+        const host = listRef.current
+        if (host === null || activeKey === '') return
+        const found = Array.from(host.querySelectorAll('[data-pick-key]')).find((row) => row.getAttribute('data-pick-key') === activeKey)
+        if (found !== undefined && typeof found.scrollIntoView === 'function') found.scrollIntoView({ block: 'nearest' })
+      }, [activeKey])
+      const pickRow = (row) => {
+        if (row === null || row.disabled === true || typeof props.onPick !== 'function') return
+        if (row.kind === 'repo') props.onPick(row.repo.path, row.repo)
+        else if (row.kind === 'branch') props.onPick(row.entry.name, row.entry)
+      }
+      const onKeyDown = (event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          if (typeof props.onClose === 'function') props.onClose()
+          return
+        }
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          if (selectable.length === 0) return
+          event.preventDefault()
+          event.stopPropagation()
+          setActive((value) => {
+            const current = Math.min(value, selectable.length - 1)
+            return event.key === 'ArrowDown' ? (current + 1) % selectable.length : (current - 1 + selectable.length) % selectable.length
+          })
+          return
+        }
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          event.stopPropagation()
+          pickRow(activeRow)
+        }
+      }
+      const currentRepo = mode === 'repo' && props.current !== undefined && props.current !== null ? String(props.current) : ''
+      const currentBranch = mode === 'branch' && props.current !== undefined && props.current !== null ? String(props.current) : ''
+      const rowClass = (row) => 'dig-pick-row'
+        + (activeKey === row.key ? ' dig-pick-row-active' : '')
+        + ((currentRepo !== '' && row.kind === 'repo' && String(row.repo.path) === currentRepo) ? ' dig-pick-row-current' : '')
+        + ((currentBranch !== '' && row.kind === 'branch' && String(row.entry.name) === currentBranch) ? ' dig-pick-row-current' : '')
+        + (row.disabled === true ? ' dig-pick-row-disabled' : '')
+      const rowsView = rows.map((row) => {
+        if (row.kind === 'folder') {
+          return E('button', {
+            key: row.key, type: 'button',
+            className: 'dig-pick-folder' + (row.open !== true ? ' dig-pick-folder-closed' : ''),
+            style: { paddingLeft: (6 + row.depth * 14) + 'px' },
+            onClick: () => { if (query !== '') return; setFolded((previous) => Object.assign({}, previous, { [row.id]: row.open === true })) },
+          },
+            E('span', { className: 'dig-pick-chevron' + (row.open === true ? ' dig-pick-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
+            E(Icon, { name: 'folder', size: 12 }),
+            E('span', { className: 'dig-pick-name' }, row.name),
+            E('span', { className: 'dig-pick-count' }, String(row.count)))
+        }
+        if (row.kind === 'repo') {
+          return E('button', {
+            key: row.key, type: 'button', className: rowClass(row), 'data-pick-key': row.key,
+            title: row.repo.path,
+            onMouseEnter: () => { const index = selectable.indexOf(row); if (index >= 0) setActive(index) },
+            onClick: () => pickRow(row),
+          },
+            E(Icon, { name: 'folder', size: 13 }),
+            E('span', { className: 'dig-pick-main' },
+              E('span', { className: 'dig-pick-name' }, row.name),
+              row.repo.sub !== undefined && row.repo.sub !== null && row.repo.sub !== '' && row.repo.sub !== row.name
+                ? E('span', { className: 'dig-pick-sub' }, row.repo.sub)
+                : null),
+            row.repo.branch === undefined || row.repo.branch === null || row.repo.branch === ''
+              ? null
+              : E('span', { className: 'dig-pick-badge' }, row.repo.branch))
+        }
+        const entry = row.entry
+        const head = entry.head === true
+        const worktreeNote = row.worktree === true
+          ? (props.worktreeNote === undefined ? t('branches.worktree') : props.worktreeNote)
+          : null
+        return E('button', {
+          key: row.key, type: 'button',
+          className: rowClass(row) + (head === true ? ' dig-pick-row-head' : ''),
+          'data-pick-key': row.key,
+          style: { paddingLeft: (6 + row.depth * 14) + 'px' },
+          disabled: row.disabled === true,
+          title: String(entry.name) + (worktreeNote === null ? '' : ' · ' + worktreeNote),
+          onMouseEnter: () => { const index = selectable.indexOf(row); if (index >= 0) setActive(index) },
+          onClick: () => pickRow(row),
+        },
+          E('span', { className: 'dig-pick-icon dig-tone-' + (head === true ? 'warn' : 'accent') }, E(Icon, { name: head === true ? 'star' : 'branch', size: 12 })),
+          E('span', { className: 'dig-pick-name' }, row.label),
+          worktreeNote === null ? null : E('span', { className: 'dig-pick-note' }, worktreeNote),
+          entry.ahead > 0 ? E('span', { className: 'dig-pick-count' }, '↑' + String(entry.ahead)) : null,
+          entry.behind > 0 ? E('span', { className: 'dig-pick-count' }, '↓' + String(entry.behind)) : null)
+      })
+      return E('div', { className: 'dig-pick dig-pick-' + mode },
+        E('div', { className: 'dig-pick-search' },
+          E('input', {
+            ref: inputRef,
+            className: 'dig-input dig-input-compact dig-pick-input',
+            value: needle,
+            spellCheck: false,
+            placeholder: mode === 'repo' ? t('repo.filter') : t('branches.filter'),
+            'aria-label': mode === 'repo' ? t('repo.filter') : t('branches.filter'),
+            onChange: (event) => { setNeedle(event.target.value); setActive(0) },
+            onKeyDown: onKeyDown,
+          })),
+        E('div', { className: 'dig-pick-list', ref: listRef, role: 'listbox' },
+          rowsView.length === 0 ? E('div', { className: 'dig-pick-empty' }, t('picker.empty')) : rowsView))
     }
 
     /* Lets the user choose which actions the rail shows and in which order. The
@@ -13191,6 +13408,17 @@ window.__ModuleLoader__.load({
          and the selection menu's payload must say which. Cleared everywhere
          the patch is cleared. */
       const [diffContext, setDiffContext] = useState(null)
+      /* v0.27: closing / switching away must also invalidate the request in
+         flight and reset the double-click guard. Without the stamp bump a
+         late response repainted the closed pane; without the diffLast reset
+         reopening the same file within 400ms was swallowed. */
+      const resetDiff = useCallback(() => {
+        diffSeq.current += 1
+        diffLast.current = { key: '', at: 0 }
+        setPatch('')
+        setPatchLoading(false)
+        setDiffContext(null)
+      }, [])
       /* ---- multi-select (issue #13): the change list's selection lives here
          so the right-click menu, the keyboard and the selection bar act on one
          set; the branch tree and the history keep theirs closer to their rows
@@ -13224,6 +13452,10 @@ window.__ModuleLoader__.load({
       const onChangeSelection = useCallback((update) => { setChangeSelection(update); clearPicksExcept('changes') }, [clearPicksExcept])
       const onCommitPicks = useCallback((update) => { setPickedCommits(update); clearPicksExcept('history') }, [clearPicksExcept])
       const [menu, setMenu] = useState(null)
+      /* The header repo/branch switchers need a search box and a branch tree,
+         which a plain ContextMenu item list cannot express; they share the
+         same anchored surface through its `body` prop. */
+      const [picker, setPicker] = useState(null)
       const [dialog, setDialog] = useState(null)
       const [tick, setTick] = useState(0)
       const [favTick, setFavTick] = useState(0)
@@ -13839,11 +14071,10 @@ window.__ModuleLoader__.load({
         headRef.current = null
         setDetail(null)
         setSelectedHash(null)
-        setPatch('')
-        setDiffContext(null)
+        resetDiff()
         setView('history')
         setPathFilter('')
-      }, [sessionId])
+      }, [sessionId, resetDiff])
 
       /* The composer status pill and this panel are separate trees; when the
          pill (or any other seat) switches the repository or the branch, this
@@ -13985,8 +14216,7 @@ window.__ModuleLoader__.load({
       const selectCommit = useCallback(async (commit) => {
         setSelectedHash(commit.hash)
         setSelectedPath(null)
-        setPatch('')
-        setDiffContext(null)
+        resetDiff()
         setView('detail')
         setDetail(null)
         try {
@@ -13995,7 +14225,7 @@ window.__ModuleLoader__.load({
           setErrorCode(null)
           setError(caught instanceof Error ? caught.message : String(caught))
         }
-      }, [base])
+      }, [base, resetDiff])
 
       const checkout = useCallback(async (entry) => {
         if (entry.tag === true) { void run('checkout', { branch: entry.name }); return }
@@ -14022,12 +14252,29 @@ window.__ModuleLoader__.load({
       const openMenuAt = useCallback((event, items) => {
         const element = hostRef.current
         const rect = element === null ? null : element.getBoundingClientRect()
+        setPicker(null)
         setMenu({
           x: event.clientX - (rect === null ? 0 : rect.left),
           y: event.clientY - (rect === null ? 0 : rect.top),
           boundsWidth: rect === null ? 0 : Math.round(rect.width),
           boundsHeight: rect === null ? 0 : Math.round(rect.height),
           items: items,
+        })
+      }, [])
+
+      /* Same anchor math as openMenuAt, but the body is a SearchPicker instead
+         of a fixed item list. Keeping it separate means the generic context
+         menus do not grow search state they never use. */
+      const openPickerAt = useCallback((event, kind) => {
+        const element = hostRef.current
+        const rect = element === null ? null : element.getBoundingClientRect()
+        setMenu(null)
+        setPicker({
+          kind: kind,
+          x: event.clientX - (rect === null ? 0 : rect.left),
+          y: event.clientY - (rect === null ? 0 : rect.top),
+          boundsWidth: rect === null ? 0 : Math.round(rect.width),
+          boundsHeight: rect === null ? 0 : Math.round(rect.height),
         })
       }, [])
 
@@ -14746,7 +14993,13 @@ window.__ModuleLoader__.load({
 
       /* ---------- shared pieces ---------- */
 
-      const repoOptions = repoState === null ? [] : repoState.repos
+      /* The scanned row keeps the branch it had when the workspace was
+         listed; after a checkout the branch pill and the tree move on, so the
+         repo label must follow the live HEAD instead of naming the old
+         branch. */
+      const repoOptions = repoState === null ? [] : repoState.repos.map((repo) => (
+        repo.path === repoRoot && branches !== null ? Object.assign({}, repo, { branch: branches.branch }) : repo
+      ))
       /* A linked worktree opened from the worktree view is a repository root
          the workspace scan never listed. Without a header entry the top bar
          kept naming the primary checkout while every branch and change below
@@ -14768,27 +15021,12 @@ window.__ModuleLoader__.load({
          popovers reuse openMenuAt, so they clamp to the panel box and share
          the opaque, frosted menu surface instead of the OS select popup. */
       const openRepoMenu = useCallback((event) => {
-        openMenuAt(event, headerRepos.map((repo) => ({
-          id: 'repo:' + repo.path,
-          icon: 'folder',
-          tone: 'accent',
-          label: repo.name + (repo.branch === null || repo.branch === undefined ? '' : ' · ' + repo.branch),
-          active: repo.path === repoRoot,
-          run: () => { if (repo.path !== repoRoot) pickRepo(repo.path) },
-        })))
-      }, [openMenuAt, headerRepos, repoRoot, pickRepo])
+        openPickerAt(event, 'repo')
+      }, [openPickerAt])
 
       const openBranchSwitchMenu = useCallback((event) => {
-        const local = branches === null ? [] : branches.local
-        openMenuAt(event, local.map((entry) => ({
-          id: 'switch:' + entry.name,
-          icon: entry.head === true ? 'star' : 'branch',
-          tone: entry.head === true ? 'warn' : 'accent',
-          label: entry.name,
-          active: entry.head === true,
-          run: () => { if (entry.head !== true) void checkout(entry) },
-        })))
-      }, [openMenuAt, branches, checkout])
+        openPickerAt(event, 'branch')
+      }, [openPickerAt])
 
       const topBar = E('div', { className: 'dig-topbar' },
         E(RepoSelect, {
@@ -14849,7 +15087,7 @@ window.__ModuleLoader__.load({
       const historyPane = view === 'detail'
         ? E(CommitDetail, {
             t: t, detail: detail, selectedPath: selectedPath,
-            onBack: () => { setView('history'); setSelectedPath(null); setPatch(''); setDiffContext(null) },
+            onBack: () => { setView('history'); setSelectedPath(null); resetDiff() },
             /* Plain click only highlights the file; the DOUBLE-click opens its
                diff (v0.18.3, one click model across every list). */
             onSelectFile: (file) => { setSelectedPath(file.path) },
@@ -14890,7 +15128,7 @@ window.__ModuleLoader__.load({
             type: 'button',
             className: 'dig-icon-btn',
             title: t('toast.close'),
-            onClick: () => { setPatch(''); setSelectedPath(null); setDiffContext(null); setSplitTab('history') },
+            onClick: () => { resetDiff(); setSelectedPath(null); setSplitTab('history') },
           }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
       const diffPane = diffPaneOf(false)
@@ -15269,7 +15507,7 @@ window.__ModuleLoader__.load({
         else if (spec.id === 'tree') { entry.active = treeOpen; entry.run = () => foldTree(!treeOpen) }
         else if (spec.id === 'worktrees') {
           entry.active = view === 'worktrees'
-          entry.run = () => { setPatch(''); setDiffContext(null); setView(view === 'worktrees' ? 'history' : 'worktrees') }
+          entry.run = () => { resetDiff(); setView(view === 'worktrees' ? 'history' : 'worktrees') }
         }
         else if (spec.id === 'float') {
           // Label AND icon follow where the panel actually is: floating panels get
@@ -15534,6 +15772,37 @@ window.__ModuleLoader__.load({
           boundsHeight: menu.boundsHeight,
           items: menu.items,
           onClose: () => setMenu(null),
+        }))
+      }
+      if (picker !== null) {
+        /* The panel header's repo/branch switchers share the ContextMenu
+           surface (same clamping and outside-click), but their body is the
+           searchable picker instead of an item list. */
+        const branchList = branches === null ? [] : branches.local
+        overlays.push(E(ContextMenu, {
+          key: 'picker',
+          anchor: { x: picker.x, y: picker.y },
+          boundsWidth: picker.boundsWidth,
+          boundsHeight: picker.boundsHeight,
+          items: [],
+          body: E(SearchPicker, {
+            key: picker.kind,
+            mode: picker.kind,
+            t: t,
+            repos: picker.kind === 'repo' ? headerRepos : [],
+            branches: picker.kind === 'branch' ? branchList : [],
+            current: picker.kind === 'repo' ? repoRoot : (branches === null ? '' : branches.branch),
+            onPick: (value, row) => {
+              setPicker(null)
+              if (picker.kind === 'repo') {
+                if (value !== repoRoot) pickRepo(value)
+                return
+              }
+              if (row.head !== true) void checkout(row)
+            },
+            onClose: () => setPicker(null),
+          }),
+          onClose: () => setPicker(null),
         }))
       }
       if (railSettings === true) {
@@ -16084,6 +16353,29 @@ window.__ModuleLoader__.load({
       '.dig-picker-name{flex:none;font-weight:600}',
       '.dig-picker-kind{color:var(--dsw-alias-label-tertiary);flex:none}',
       '.dig-picker-path{color:var(--dsw-alias-label-tertiary);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}',
+      /* v0.27 searchable repo / branch picker (panel header + composer pill).
+         The list scrolls, the search field stays pinned on top. */
+      '.dig-pick{display:flex;flex-direction:column;gap:2px;width:300px;max-width:100%;min-height:0;color:var(--dsw-alias-label-primary)}',
+      '.dig-pick-search{position:sticky;top:0;z-index:1;padding:2px 2px 6px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1))}',
+      '.dig-pick-list{display:flex;flex-direction:column;gap:1px;overflow:auto;min-height:0;max-height:300px;overscroll-behavior:contain}',
+      '.dig-pick-row{display:flex;align-items:center;gap:6px;width:100%;padding:4px 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer;min-width:0}',
+      '.dig-pick-row:hover:not(:disabled),.dig-pick-folder:hover{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-pick-row-active{background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-pick-row-current{color:var(--dsw-alias-brand-primary)}',
+      '.dig-pick-row-disabled{opacity:.45;cursor:default}',
+      '.dig-pick-row-head{font-weight:600}',
+      '.dig-pick-folder{display:flex;align-items:center;gap:5px;width:100%;padding:3px 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:12px;text-align:left;cursor:pointer;min-width:0}',
+      '.dig-pick-chevron{display:inline-flex;flex:none;transition:transform .12s ease;opacity:.6}',
+      '.dig-pick-chevron-open{transform:rotate(90deg)}',
+      '.dig-pick-main{display:flex;flex-direction:column;min-width:0;flex:1}',
+      '.dig-pick-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-pick-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:12px}',
+      '.dig-pick-icon{display:inline-flex;flex:none}',
+      '.dig-pick-badge{margin-left:auto;flex:none;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;border-radius:999px;corner-shape:round;background:var(--dsw-alias-bg-module-platform);color:var(--dsw-alias-label-secondary);font-size:10px;line-height:16px}',
+      '.dig-pick-note{flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px}',
+      '.dig-pick-count{margin-left:auto;flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px;font-variant-numeric:tabular-nums}',
+      '.dig-pick-empty{padding:10px 8px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
+      '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden}',
       /* position:relative: the marquee box paints against this wrapper (the
          scroll container is offset by the search field — same rule as
          .dig-history above). */
@@ -17282,50 +17574,48 @@ window.__ModuleLoader__.load({
         behind > 0 ? E('span', { className: 'dig-cs-badge dig-cs-behind', title: t('composer.behindHint') }, '↓' + String(behind)) : null,
         ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,
         error !== '' ? E('span', { className: 'dig-cs-error', title: error }, '×') : null,
-        menu === 'repo' ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' },
+        menu === 'repo' ? E('div', { className: 'dig-cs-menu dig-cs-picker', 'data-cordis-panel': '' },
           /* v0.19.2: one row per checkout — the repository's own name first
              (origin URL basename, falling back to the directory name), and the
              single-level directory name as a small sub line only when the two
              differ (two clones of one repository stay tellable apart). The
-             full path lives in the tooltip, not in the row. */
-          data.repos.map((row) => {
-            const dirName = baseNameOf(row.path)
-            const displayName = row.origin !== undefined && row.origin !== '' ? row.origin : dirName
-            return E('button', {
-              key: row.path,
-              type: 'button',
-              className: 'dig-cs-item',
-              'data-current': row.path === repoRoot ? 'true' : 'false',
-              title: row.path,
-              onClick: () => pickRepoRoot(row.path),
-            },
-              E(Icon, { name: 'commit', size: 11 }),
-              E('span', { className: 'dig-cs-item-main' },
-                E('span', { className: 'dig-cs-item-name' }, displayName),
-                dirName !== displayName ? E('span', { className: 'dig-cs-item-sub' }, dirName) : null))
+             full path lives in the tooltip, not in the row. v0.27 adds the
+             search field so seven clones need no scrolling to find one. */
+          E(SearchPicker, {
+            key: 'composer-repo',
+            mode: 'repo',
+            t: t,
+            repos: data.repos.map((row) => {
+              const dirName = baseNameOf(row.path)
+              const displayName = row.origin !== undefined && row.origin !== '' ? row.origin : dirName
+              return {
+                path: row.path,
+                name: displayName,
+                sub: dirName !== displayName ? dirName : undefined,
+              }
+            }),
+            current: repoRoot,
+            onPick: (path) => pickRepoRoot(path),
+            onClose: () => setMenu(null),
           }))
           : null,
         menu === 'branch' ? (branchLoading === true || branchList === null
           ? E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' }, E('div', { className: 'dig-cs-item dig-cs-static' }, '…'))
-          : E('div', { className: 'dig-cs-menu', 'data-cordis-panel': '' },
-            branchList.local.map((entry) => E('button', {
-              key: entry.name,
-              type: 'button',
-              className: 'dig-cs-item',
-              'data-current': entry.head === true ? 'true' : 'false',
-              disabled: entry.worktree !== null || checkingOut !== '',
-              title: entry.worktree !== null ? t('composer.inWorktree') : (checkingOut !== '' ? t('composer.busy') : entry.name),
-              onClick: () => { void checkoutBranch(entry.name) },
-            },
-              E(Icon, { name: 'branch', size: 11 }),
-              E('span', { className: 'dig-cs-item-name' }, entry.name),
-              entry.worktree !== null ? E('span', { className: 'dig-cs-item-note' }, t('composer.inWorktree')) : null,
-              checkingOut === entry.name ? E('span', { className: 'dig-cs-item-note' }, '…') : null,
-              entry.ahead > 0 || entry.behind > 0
-                ? E('span', { className: 'dig-cs-item-counts' },
-                  entry.ahead > 0 ? E('span', { className: 'dig-cs-ahead' }, '↑' + String(entry.ahead)) : null,
-                  entry.behind > 0 ? E('span', { className: 'dig-cs-behind' }, '↓' + String(entry.behind)) : null)
-                : null))))
+          : E('div', { className: 'dig-cs-menu dig-cs-picker', 'data-cordis-panel': '' },
+            E(SearchPicker, {
+              key: 'composer-branch',
+              mode: 'branch',
+              t: t,
+              branches: branchList.local,
+              current: branchName === null ? '' : branchName,
+              busyName: checkingOut,
+              worktreeNote: t('composer.inWorktree'),
+              onPick: (name, entry) => {
+                if (entry.head === true) { setMenu(null); return }
+                void checkoutBranch(name)
+              },
+              onClose: () => setMenu(null),
+            })))
           : null,
       )
     }
