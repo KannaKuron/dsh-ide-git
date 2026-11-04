@@ -2191,6 +2191,22 @@ test('repo and branch switchers search on type and fold slash namespaces (v0.27.
   for (const key of ['repo.filter', 'picker.empty']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
   }
+  // v0.27.1: the composer picker rides dsh-any-background's input-tier fill.
+  // A low-alpha neutral scrim keeps the list legible when the user turns menu
+  // opacity down; it is invisible over the opaque fallback, so the setting
+  // still wins. The plugin already supplies the blur for [data-cordis-panel].
+  const pickerCard = cssRule('.dig-cs-menu.dig-cs-picker')
+  assert.match(pickerCard, /background-color:var\(--dsh-any-op-menu-cordis,var\(--dsw-alias-bg-layer-2\)\)/,
+    'the picker keeps the plugin transparency variable as its fill')
+  assert.doesNotMatch(pickerCard, /background-image/,
+    'the base rule stays a pure fill so an opaque menu is never tinted by us')
+  assert.doesNotMatch(pickerCard, /backdrop-filter/,
+    'the picker must not install a second backdrop root; data-cordis-panel already blurs')
+  const pickerScrim = cssRule('.dab-input-frost .dig-cs-menu.dig-cs-picker')
+  assert.match(pickerScrim, /background-image:linear-gradient\(color-mix\(in srgb,var\(--dsw-alias-label-secondary,#808080\) 20%,transparent\)/,
+    'under input frost a 20% neutral scrim lifts the surface without making it opaque')
+  assert.doesNotMatch(pickerScrim, /backdrop-filter/,
+    'the scoped layer adds no second backdrop root either')
 })
 
 test('closing a diff invalidates the in-flight response and the dedupe window (v0.27.0)', () => {

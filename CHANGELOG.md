@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.27.1 — 2026-11-04
+
+**类型**:fix(透明输入状态下的搜索选择器仍能看出是一块可输入的面)
+
+- **背景**:用户截图反馈,输入框工具条的仓库/分支搜索浮层叠在聊天内容上时几乎全透明,背后的正文清晰透出,搜索框像悬空的输入光标,不容易看出这是一个可以输入的下拉面板。
+- **改动**:基础规则只保留 dsh-any-background 的输入层填充变量 `--dsh-any-op-menu-cordis`(缺省回退 `--dsw-alias-bg-layer-2`),不再无条件叠加灰罩;新增 `.dab-input-frost .dig-cs-menu.dig-cs-picker` 作用域,只在插件确实开启输入磨砂(html 带 `dab-input-frost`)时叠一层 20% 的 `--dsw-alias-label-secondary` 中性灰。没有该插件、插件改名标记,或用户把透明度设为 0 时,菜单回到官方的不透明/原样材质,不覆盖用户设置。两层都不新增 `backdrop-filter`——`[data-cordis-panel]` 已经提供模糊。
+- **验证**:`npm test` 129/129(0 fail / 0 skip);`node --check src/client.js`;`node scripts/ssr-check.mjs` 四项全 OK。隔离实例(全局 dsh 0.2.1-rc.2 + dsh-any-background 0.4.3)真机确认:html 为 `dab-input-frost` 时菜单 computed `background-color: rgba(248,249,250,0.58)` + `background-image: linear-gradient(... 0.2 ...)`,搜索框与分支行清晰可读;临时移除该 class 后 `background-image` 回到 `none`,证明灰罩只在透明输入状态生效。亮色截图 /tmp/idegit-css-scoped-open.png;深色只做了 token 推演,未作为验收依据。
+
 ## v0.27.0 — 2026-11-04
 
 **类型**:feat(可搜索的仓库/分支切换器 + 分支名折叠成树;合并 PR #24)

@@ -16354,7 +16354,13 @@ window.__ModuleLoader__.load({
       '.dig-picker-kind{color:var(--dsw-alias-label-tertiary);flex:none}',
       '.dig-picker-path{color:var(--dsw-alias-label-tertiary);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}',
       /* v0.27 searchable repo / branch picker (panel header + composer pill).
-         The list scrolls, the search field stays pinned on top. */
+         The list scrolls, the search field stays pinned on top.
+         v0.27.1: the composer popover follows dsh-any-background's input
+         opacity (--dsh-any-op-menu-cordis). While that plugin frosts inputs
+         (html.dab-input-frost), a 20% neutral scrim rides on top of the fill
+         so the list still reads as a surface when transparency is turned
+         down. Without the plugin (or with opacity at 0) the base rule alone
+         applies, so the user's setting and the stock opaque menu win. */
       '.dig-pick{display:flex;flex-direction:column;gap:2px;width:300px;max-width:100%;min-height:0;color:var(--dsw-alias-label-primary)}',
       '.dig-pick-search{position:sticky;top:0;z-index:1;padding:2px 2px 6px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1))}',
       '.dig-pick-list{display:flex;flex-direction:column;gap:1px;overflow:auto;min-height:0;max-height:300px;overscroll-behavior:contain}',
@@ -16375,7 +16381,11 @@ window.__ModuleLoader__.load({
       '.dig-pick-note{flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px}',
       '.dig-pick-count{margin-left:auto;flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px;font-variant-numeric:tabular-nums}',
       '.dig-pick-empty{padding:10px 8px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
-      '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden}',
+      '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden;background-color:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2))}',
+      // html.dab-input-frost is dsh-any-background's marker for "input opacity
+      // is on". It only adds our scrim; if the plugin is absent or renames the
+      // marker the menu simply falls back to the transparent fill above.
+      '.dab-input-frost .dig-cs-menu.dig-cs-picker{background-image:linear-gradient(color-mix(in srgb,var(--dsw-alias-label-secondary,#808080) 20%,transparent),color-mix(in srgb,var(--dsw-alias-label-secondary,#808080) 20%,transparent))}',
       /* position:relative: the marquee box paints against this wrapper (the
          scroll container is offset by the search field — same rule as
          .dig-history above). */
