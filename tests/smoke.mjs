@@ -2192,21 +2192,35 @@ test('repo and branch switchers search on type and fold slash namespaces (v0.27.
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
   }
   // v0.27.1: the composer picker rides dsh-any-background's input-tier fill.
-  // A low-alpha neutral scrim keeps the list legible when the user turns menu
-  // opacity down; it is invisible over the opaque fallback, so the setting
-  // still wins. The plugin already supplies the blur for [data-cordis-panel].
+  // v0.27.2: the menu must not re-declare --dsw-alias-bg-layer-* (it inherits
+  // into the search field and pins it opaque), and the field itself paints no
+  // fill so it fades with the popover like the panel's commit box.
+  // A low-alpha fill alone is too ghostly over a busy wallpaper, so the picker
+  // stacks the plugin fill one extra time. The second layer is transparent
+  // without the plugin, leaving the stock opaque fallback untouched. It must
+  // not depend on html.dab-input-frost: the user can keep input blur at 0
+  // while still wanting a readable menu surface.
   const pickerCard = cssRule('.dig-cs-menu.dig-cs-picker')
-  assert.match(pickerCard, /background-color:var\(--dsh-any-op-menu-cordis,var\(--dsw-alias-bg-layer-2\)\)/,
-    'the picker keeps the plugin transparency variable as its fill')
-  assert.doesNotMatch(pickerCard, /background-image/,
-    'the base rule stays a pure fill so an opaque menu is never tinted by us')
+  assert.match(pickerCard, /background-color:var\(--dsh-any-op-menu-cordis,var\(--dsw-static-neutral-bluish-00,#fff\)\)/,
+    'the picker keeps the plugin transparency variable and a theme-safe fallback')
+  assert.match(pickerCard, /background-image:linear-gradient\(var\(--dsh-any-op-menu-cordis,transparent\),var\(--dsh-any-op-menu-cordis,transparent\)\)/,
+    'the picker stacks the plugin fill once so a low-alpha menu still reads as a surface')
   assert.doesNotMatch(pickerCard, /backdrop-filter/,
     'the picker must not install a second backdrop root; data-cordis-panel already blurs')
-  const pickerScrim = cssRule('.dab-input-frost .dig-cs-menu.dig-cs-picker')
-  assert.match(pickerScrim, /background-image:linear-gradient\(color-mix\(in srgb,var\(--dsw-alias-label-secondary,#808080\) 20%,transparent\)/,
-    'under input frost a 20% neutral scrim lifts the surface without making it opaque')
-  assert.doesNotMatch(pickerScrim, /backdrop-filter/,
-    'the scoped layer adds no second backdrop root either')
+  assert.equal(client.includes("'.dab-input-frost .dig-cs-menu.dig-cs-picker{"), false,
+    'the surface must not depend on the input-frost marker (blur can be 0)')
+  const menuCard = cssRule('.dig-cs-menu')
+  assert.doesNotMatch(menuCard, /--dsw-alias-bg-layer-[12]:/,
+    'the menu must not pin the host layer tokens into every child')
+  assert.match(menuCard, /background-color:var\(--dsh-any-op-menu-cordis,var\(--dsw-static-neutral-bluish-00,#fff\)\)/,
+    'the menu surface falls back to the light static token, not a child-pinned alias')
+  const menuDark = cssRule('body[data-ds-dark-theme] .dig-cs-menu')
+  assert.match(menuDark, /--dsw-static-neutral-bluish-850/,
+    'the dark menu keeps its own static fallback (issue #15)')
+  const pickSearch = cssRule('.dig-pick-search')
+  assert.match(pickSearch, /background:transparent/, 'the sticky search strip paints no extra surface')
+  const pickInput = cssRule('.dig-pick-input')
+  assert.match(pickInput, /background:transparent/, 'the search field is glass over the menu, not a white box')
 })
 
 test('closing a diff invalidates the in-flight response and the dedupe window (v0.27.0)', () => {

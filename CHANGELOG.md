@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.27.2 — 2026-11-04
+
+**类型**:fix(搜索选择器的输入框跟随 dsh-any-background 真正透明)
+
+- **背景**:用户使用背景插件时,输入框工具条的仓库/分支搜索浮层里,搜索框仍是一块实白,而 Git 面板的「提交信息」输入框能正常透出壁纸。v0.27.1 的灰罩只在 `html.dab-input-frost`(插件开启输入磨砂)时生效;用户的真实主题是 input 透明度 0.37、input blur 0,根本没有这个 class,所以灰罩从未出现,搜索框仍是白的。
+- **根因**:v0.27.1 为了避免 issue #15 的浅色菜单白底,在 `.dig-cs-menu` 上重新声明了 `--dsw-alias-bg-layer-1/2`。这两个自定义属性会继承给菜单里的搜索条和输入框,把插件的透明输入层又钉回静态实色;面板提交框不在这个菜单里,所以一直正常。
+- **改动**:删掉 `.dig-cs-menu` 上的 layer 变量钉死,菜单表面只在自身规则里用静态 token 作为 `background-color` 回退(浅色 `--dsw-static-neutral-bluish-00`、深色 `--dsw-static-neutral-bluish-850`,issue #15 的兜底仍在);`.dig-pick-search` 与新增的 `.dig-pick-input` 都改为 `background:transparent`。输入框工具条的浮层把插件填充变量 `--dsh-any-op-menu-cordis` 再叠一层:0.37 的单层在繁忙壁纸上太虚,叠成约 0.60 后与面板选择器的菜单材质一致,但仍是半透明;这层不依赖 `dab-input-frost`,插件不存在时渐变透明、官方不透明回退不受影响。两层都不新增 `backdrop-filter`,模糊仍由 `[data-cordis-panel]` 提供。
+- **验证**:`npm test` 129/129(0 fail / 0 skip);`node --check src/client.js`;`node scripts/ssr-check.mjs` 四项全 OK。隔离实例(全局 dsh 0.2.1-rc.2 + dsh-any-background 0.4.3,复制真实主题:input 0.37 / blur 0 / dark / 壁纸)真机确认:输入框 computed `background-color: rgba(0,0,0,0)`,菜单 `rgba(135,135,135,0.37)` + 同色渐变(合成约 0.60),html 无 `dab-input-frost`,console 无报错;面板的 `.dig-menu::before` 为 `rgba(135,135,135,0.6)`,两处表面一致。截图 `/tmp/idegit-glass-03-first.png`、`/tmp/idegit-glass-panel-picker.png`。
+
 ## v0.27.1 — 2026-11-04
 
 **类型**:fix(透明输入状态下的搜索选择器仍能看出是一块可输入的面)

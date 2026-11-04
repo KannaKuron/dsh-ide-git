@@ -16356,13 +16356,24 @@ window.__ModuleLoader__.load({
       /* v0.27 searchable repo / branch picker (panel header + composer pill).
          The list scrolls, the search field stays pinned on top.
          v0.27.1: the composer popover follows dsh-any-background's input
-         opacity (--dsh-any-op-menu-cordis). While that plugin frosts inputs
-         (html.dab-input-frost), a 20% neutral scrim rides on top of the fill
-         so the list still reads as a surface when transparency is turned
-         down. Without the plugin (or with opacity at 0) the base rule alone
-         applies, so the user's setting and the stock opaque menu win. */
+         opacity (--dsh-any-op-menu-cordis) instead of pinning a solid layer.
+         v0.27.2: the search strip and input are transparent on purpose. They
+         used to inherit a pinned --dsw-alias-bg-layer-* from .dig-cs-menu,
+         which stacked a second solid surface over the menu and ignored the
+         plugin's alpha (white field, wallpaper nowhere in sight).
+         The popover itself stacks the plugin fill one extra time: 37% alpha
+         alone leaves the list too ghostly over a busy wallpaper, while a
+         second 37% pass reads as a surface without becoming opaque. This is
+         unconditional (the plugin may keep input blur at 0, so there is no
+         html.dab-input-frost marker); without the plugin the extra layer is
+         transparent over the stock opaque fallback. */
       '.dig-pick{display:flex;flex-direction:column;gap:2px;width:300px;max-width:100%;min-height:0;color:var(--dsw-alias-label-primary)}',
-      '.dig-pick-search{position:sticky;top:0;z-index:1;padding:2px 2px 6px;background:var(--dsw-alias-bg-layer-2,var(--dsw-alias-bg-layer-1))}',
+      '.dig-pick-search{position:sticky;top:0;z-index:1;padding:2px 2px 6px;background:transparent}',
+      /* v0.27.2: the search field never paints its own fill. It sits directly on
+         the popover surface, so it fades and frosts with the menu instead of
+         stacking a second opaque layer over it (the old layer pin made this
+         field solid white while the Git panel's commit box stayed transparent). */
+      '.dig-pick-input{background:transparent}',
       '.dig-pick-list{display:flex;flex-direction:column;gap:1px;overflow:auto;min-height:0;max-height:300px;overscroll-behavior:contain}',
       '.dig-pick-row{display:flex;align-items:center;gap:6px;width:100%;padding:4px 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer;min-width:0}',
       '.dig-pick-row:hover:not(:disabled),.dig-pick-folder:hover{background:var(--dsw-alias-interactive-bg-hover)}',
@@ -16381,11 +16392,7 @@ window.__ModuleLoader__.load({
       '.dig-pick-note{flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px}',
       '.dig-pick-count{margin-left:auto;flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px;font-variant-numeric:tabular-nums}',
       '.dig-pick-empty{padding:10px 8px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
-      '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden;background-color:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2))}',
-      // html.dab-input-frost is dsh-any-background's marker for "input opacity
-      // is on". It only adds our scrim; if the plugin is absent or renames the
-      // marker the menu simply falls back to the transparent fill above.
-      '.dab-input-frost .dig-cs-menu.dig-cs-picker{background-image:linear-gradient(color-mix(in srgb,var(--dsw-alias-label-secondary,#808080) 20%,transparent),color-mix(in srgb,var(--dsw-alias-label-secondary,#808080) 20%,transparent))}',
+      '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden;background-color:var(--dsh-any-op-menu-cordis,var(--dsw-static-neutral-bluish-00,#fff));background-image:linear-gradient(var(--dsh-any-op-menu-cordis,transparent),var(--dsh-any-op-menu-cordis,transparent))}',
       /* position:relative: the marquee box paints against this wrapper (the
          scroll container is offset by the search field — same rule as
          .dig-history above). */
@@ -16761,12 +16768,13 @@ window.__ModuleLoader__.load({
       // surface sampling misses and that remap would otherwise IVCT to transparent).
       // --dsh-any-op-menu-cordis at the input opacity tier, plus its input blur rule), so fill
       // opacity and frost follow the composer card exactly. Without that plugin the
-      // theme-owned menu material applies. The light re-declaration on the rule below
-      // pins the LIGHT static surface (see the .dig-selection-bar note); dark themes
-      // need the matching override right after it, or the menu renders white under
-      // light text (issue #15).
-      '.dig-cs-menu{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-00,#fff);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-00,#fff);position:absolute;bottom:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background:var(--dsh-any-op-menu-cordis,var(--dsw-alias-bg-layer-2));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
-      'body[data-ds-dark-theme] .dig-cs-menu{--dsw-alias-bg-layer-1:var(--dsw-static-neutral-bluish-875,#232324);--dsw-alias-bg-layer-2:var(--dsw-static-neutral-bluish-850,#2c2c2e)}',
+      // theme-owned menu material applies. The static fallback on the rule below lives
+      // on the menu surface only: re-declaring --dsw-alias-bg-layer-* here would inherit
+      // into the search field and pin it back to an opaque surface (the v0.27.1 white
+      // field bug). Dark themes get the matching fallback right after it, or the menu
+      // renders white under light text (issue #15).
+      '.dig-cs-menu{position:absolute;bottom:calc(100% + 6px);left:0;z-index:60;min-width:220px;max-width:320px;max-height:320px;overflow:auto;padding:6px;border-radius:var(--dsw-radius-lg,12px);background-color:var(--dsh-any-op-menu-cordis,var(--dsw-static-neutral-bluish-00,#fff));box-shadow:var(--dsw-elevation-prominent,var(--dsw-elevation-dimmed,0 8px 24px rgba(0,0,0,.2)));color:var(--dsw-alias-label-secondary);font-size:12px;line-height:20px}',
+      'body[data-ds-dark-theme] .dig-cs-menu{background-color:var(--dsh-any-op-menu-cordis,var(--dsw-static-neutral-bluish-850,#2c2c2e))}',
       '.dig-cs-item{display:flex;align-items:center;gap:8px;width:100%;padding:5px 10px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-primary);font-family:inherit;font-size:13px;line-height:20px;cursor:pointer;text-align:left}',
       '.dig-cs-item:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
       '.dig-cs-item:disabled{opacity:.5;cursor:default}',
