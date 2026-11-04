@@ -134,6 +134,7 @@ dsh plugin --profile web add dsh-better-sidebar
 
 - `engines.dsh` 与 `@deepseek-ai/dsh` 的 peerDependencies 都声明为 **`>=0.1.6-alpha.2`**(插件详情页设置卡与面板配置座位的起始版本)。范围是**开放下界、不封顶**,之后的 rc / alpha 预发布都算。dsh 会强制执行 peer 里的 `@deepseek-ai/dsh*` 范围(不满足就不加载),`engines` 是给包管理器与排障看的第二份声明。
 - 新宿主字段一律**能力探测、不写死版本**:0.2.2-alpha.2 起才有的模型徽章数据,宿主提供就显示、没有就保持旧外观;工作树视图只调用本地 `git worktree`,不依赖新宿主 API;宿主不提供行配置(0.1.7 以前)时设置卡显示不可用,内嵌 diff 预览保持默认开启。
+- **dsh 0.2.2-rc.1(v0.27.3)**:右侧栏新增的 `direction` / `isFloating` 字段与工作区菜单内部迁移不影响本插件使用的能力;`sidebarRight.openTab` / `openResource` / `float` / `dock`、composer 槽与官方 `contextMenus` 均按原契约工作。真机验证 Git 面板、仓库/分支选择器与 composer 菜单正常,129 项测试全绿。
 - 只依赖三样长期契约:宿主半的 `webServer.register({ kind: 'prefix' })` 路由、客户端半的 `window.__ModuleLoader__.load({ id, factory })`、以及客户端的 `slots` 服务。**不引用 `ui-primitives` 图标集**(图标全是自带 SVG),所以宿主删改图标不会波及本插件。
 - 底座是**可选** peer:没装、装坏了、或它自己要等上游修,都不影响本插件挂到原生右侧栏。
 

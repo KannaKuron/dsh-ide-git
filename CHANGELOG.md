@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.27.3 — 2026-11-04
+
+**类型**:chore(复核并声明 dsh 0.2.2-rc.1 兼容;零代码改动)
+
+- **宿主面复核**:0.2.2-rc.1 的 `ui-sidebar-right` 只新增可选 `direction` / `isFloating` 与菜单字段,本插件使用的 `openTab` / `openResource` / `float` / `dock` 契约未变;`ui-workspace` 内置菜单迁到官方 `contextMenus` 与本插件无关。
+- **composer 复核**:rc.1 的 `ui-conversation` 新增「固定浮层应 portal 到 body」的说明;本插件的仓库/分支选择器使用 `.dig-cs-root` 内的 absolute 菜单,不是 fixed 浮层。隔离实例中菜单完整展开、未被 composer 裁剪。
+- **真机**:dsh 0.2.2-rc.1 隔离实例里 Git 面板、仓库/分支 SearchPicker、分支树、composer 两个 pill 的搜索与签出均正常;v0.27.2 的透明输入适配不受影响;无控制台错误。
+- 测试:129 项全绿。
+
 ## v0.27.2 — 2026-11-04
 
 **类型**:fix(搜索选择器的输入框跟随 dsh-any-background 真正透明)
