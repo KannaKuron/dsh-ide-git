@@ -11,7 +11,7 @@
 - **feat 提示卡挂在 `document.body`**:底部工作台声明了 `contain: layout style`,面板内 `position: fixed` 后代的包含块会变成面板(不变量 13);所以卡片是 body 级单例,坐标取自锚点的视口矩形,面板怎么裁都裁不到它。只对**带 `title` 的 `button` / `[role="button"]`** 生效,因此 LineDiff 里那类只有 `aria-label`、走官方 seed Tooltip 的按钮不会叠出两层气泡。
 - **feat 不打断操作**:指针在按钮内移动不闪;扫过一排图标只在停留后显示;按住鼠标(拖拽排序、框选、拖分隔条)、滚轮、滚动、缩放、失焦、pointerleave 立即收起;触摸不触发;显示瞬间摘掉原生 `title` 压掉浏览器气泡,收起时还原(若 React 期间重渲染出新 title 则不覆盖)。
 - **fix** diff 头部关闭按钮此前只有图标、没有 `title`,补上(复用 `toast.close`,21 门词典无需新增键)。
-- **验证**:`npm test` 124/124;`node --check src/client.js`;headless Chromium 载入真实 `src/client.js`(伪造 `__ModuleLoader__` 与 ctx,面板套在 `contain: layout style` 容器里)跑 28 项断言全绿——显示与文案、竖排 rail 图标:卡片在图标右侧 6px 且与该行垂直居中、贴窗口右缘时改放图标左侧、非 rail 按钮仍在下方 +6px、贴底边时向上翻、贴右边缘水平夹取、包含块内仍按视口定位、原生 title 被摘与还原、按钮内移动不闪、禁用按钮带原因、空 title / 无 title 文字按钮不显示、面板外不显示、scroll 收起并还原、拖拽跨按钮不出卡、释放后恢复、dispose 清场,console 零报错。`scripts/ssr-check.mjs` 本机跳过(web profile 解析不到 react);未起隔离实例做真机截图验证(提示层已由上述探针覆盖)。
+- **验证**:`npm test` 124/124;`node --check src/client.js`;headless Chromium 载入真实 `src/client.js`(伪造 `__ModuleLoader__` 与 ctx,面板套在 `contain: layout style` 容器里)跑 28 项断言全绿——显示与文案、竖排 rail 图标:卡片在图标右侧 6px 且与该行垂直居中、贴窗口右缘时改放图标左侧、非 rail 按钮仍在下方 +6px、贴底边时向上翻、贴右边缘水平夹取、包含块内仍按视口定位、原生 title 被摘与还原、按钮内移动不闪、禁用按钮带原因、空 title / 无 title 文字按钮不显示、面板外不显示、scroll 收起并还原、拖拽跨按钮不出卡、释放后恢复、dispose 清场,console 零报错。维护者复验:`scripts/ssr-check.mjs` 四项全 OK——最小 document stub 下悬停提示安装器直接 no-op(缺少 body / getElementById / addEventListener 时不抛错);未起隔离实例做真机截图验证(提示层已由上述探针覆盖)。
 
 ## v0.24.0 — 2026-11-04
 
