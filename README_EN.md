@@ -75,14 +75,16 @@ The same panel shows up on surfaces of very different shapes, so the layout meas
 
 | Surface | Shape | Layout here |
 |---|---|---|
-| Right sidebar (native, or bridged by better-sidebar) | narrow + tall | `stack`: changes above the graph, collapsible branch pane |
+| Right sidebar (native, or bridged by better-sidebar) | narrow + tall | `stack`: changes on top, history and diff as two tabs below (a click on a file switches to `Diff`), collapsible branch pane |
 | Bottom workbench (better-sidebar only) | wide + flat | `columns`: tree / graph / changes — the JetBrains Git tool window shape |
+| Sidebar dragged very narrow (< 400px) | narrow | `compact`: changes on top, history and diff as two tabs below, collapsible tree |
 
-The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 600px and width ≥ 1.15 × height → columns, otherwise stack — width decides, height has no veto), so free-floating windows and the mobile drawer adapt too.
+The panel never guesses: it measures itself with a `ResizeObserver` (width ≥ 600px and width ≥ 1.15 × height → columns, width < 400px → the compact tabs, otherwise stack — width decides, height has no veto); both stacked layouts make history and diff tabs, and a click on a changed file flips to `Diff`. Free-floating windows and the mobile drawer adapt too.
 
 ## Features
 
 - Action rail: the JetBrains-style vertical strip in the bottom workbench (and one horizontal row under the header in the right sidebar) with refresh, new branch, checkout, delete, compare, show diff, stash, new tag, favorite, fetch, pull and push. **It shows as many buttons as fit**, folds the rest into a `⋯ more` menu, and pins a `⚙ settings` button that lets you reorder actions and toggle each of them (stored in `dsh-ide-git.rail.v1`). Every action lights up or greys out with the current state (no other branch → delete / checkout / compare off, no remote → fetch / push off, no upstream → pull off, no changes → diff off).
+- Tabs in the stacked layouts: below 600px (both `stack` and `compact`) the changes list keeps the top of the panel and the lower window is a `History` / `Diff` tab pair — opening a changed file switches to `Diff`, so the history list (and its scroll position) is never pushed away; the divider above that window drags and double-click resets (same store as the other panes, `dsh-ide-git.panes.v1`).
 - Hover hints: rest the pointer on an icon button for 120ms and its action name appears beside it — to the RIGHT of a vertical rail icon (centred on that row, flipping to the left when the window's right edge is in the way) and below everywhere else; greyed-out actions explain themselves too (e.g. `Hide · Not available in the current state`). The hint card lives on the window layer, so the bottom workbench cannot clip it — sweeping across a row of icons does not flash, and a pressed pointer / scroll / resize drops it immediately.
 - Status line: branch, upstream, ahead/behind, stash count, busy indicator.
 - Composer status pill: repository/branch capsule in the host input-bar tool row (colored uncommitted / pullable / to-push counters), click to switch repo and branch — kept in sync with the panel both ways; single-repo workspaces switch branches only, multi-repo workspaces switch both. Off-switch in the settings (on by default). Sessions are pre-warmed on switch so the panel opens instantly.

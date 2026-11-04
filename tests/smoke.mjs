@@ -910,8 +910,9 @@ test('the tree toggle is reachable again after it was folded', () => {
   // treeOpen is persisted, so a header button that only rendered while the tree
   // was OPEN left a folded tree with no way back (a workspace could only be
   // repaired by clearing localStorage). The header button is two-way now, and the
-  // rail carries the action for the chromes that have no header button.
-  const bar = client.slice(client.indexOf("className: 'dig-compact-bar'"), client.indexOf("className: 'dig-compact-bar'") + 1400)
+  // rail carries the action for the chromes that have no header button. v0.26.1
+  // moved it into the shared tab-strip builder (compact passes withTree=true).
+  const bar = client.slice(client.indexOf("className: 'dig-split-tabs'"), client.indexOf("className: 'dig-split-tabs'") + 1800)
   assert.match(bar, /'data-action': 'tree'/, 'the compact header keeps a tree control')
   assert.match(bar, /onClick: \(\) => foldTree\(!treeOpen\)/, 'and it toggles BOTH ways')
   assert.match(bar, /'aria-pressed': treeOpen \? 'true' : 'false'/)
@@ -1125,8 +1126,8 @@ test('the pane clamps hold at both ends and never shrink a pane below its own bo
   const geo = core.paneGeometry('stack', tall, stored)
   assert.equal(geo.overrides.changes, 440, 'the changes pane stops where the middle pane begins')
   assert.equal(geo.overrides.tree, 324, 'the tree gives way to the pane it shares the column with')
-  assert.equal(geo.overrides.diff, 120, 'the diff can never eat the history list')
-  assert.equal(geo.limits.diff.max, 120)
+  assert.equal(geo.overrides.diff, undefined, 'the stacked chrome no longer splits a diff pane out (v0.26.1)')
+  assert.equal(geo.limits.diff, undefined, 'and it announces no diff divider')
   assert.equal(tall.height - geo.overrides.tree - geo.overrides.changes - 2 * core.PANE_GUTTER_PX, core.PANE_MAIN_FLOOR_PX,
     'the middle pane keeps exactly its hard floor when both stacked panes are maxed')
 
@@ -1189,7 +1190,7 @@ test('a divider only exists when it can move something', () => {
   // diff pane, so its diff window (fixed max-height:55%) could not be resized
   // at all — user report. Every chrome now hands out a real diff window; the
   // diff keeps measuring HEIGHT even where the chrome runs sideways.
-  assert.match(client, /className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle\('diff'\)/,
+  assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
     'the diff pane must actually consume the stored size')
   assert.match(client, /if \(limit === undefined \|\| limit\.max <= limit\.min\) return null/,
     'no pane in this chrome, or no travel in either direction, means no divider element')
@@ -1200,9 +1201,10 @@ test('a divider only exists when it can move something', () => {
   const columns = core.paneGeometry('columns', { width: 700, height: 400 }, core.normalizePanes(null), { diff: 150 })
   assert.ok(columns.limits.diff !== undefined && columns.limits.diff.max > columns.limits.diff.min,
     'the columns chrome hands out a real diff window')
+  assert.deepEqual(core.PANE_CHROME_KEYS.stack, ['tree', 'changes'],
+    'the stacked chrome puts history and diff in one tabbed window (v0.26.1)')
   const stacked = core.paneGeometry('stack', { width: 700, height: 800 }, core.normalizePanes(null), { diff: 150 })
-  assert.ok(stacked.limits.diff !== undefined && stacked.limits.diff.max > stacked.limits.diff.min,
-    'while the stacked chrome hands out a real diff window')
+  assert.equal(stacked.limits.diff, undefined, 'so it hands out no diff divider at all')
 
   // The columns diff divides the body HEIGHT, not the chrome's own width
   // dimension: 0.5 of a 400px-tall body lands at 200px even in a 1000px-wide
@@ -1210,6 +1212,20 @@ test('a divider only exists when it can move something', () => {
   const wide = core.paneGeometry('columns', { width: 1000, height: 400 },
     core.normalizePanes({ panes: { 'columns:wide': { diff: 0.5 } } }), { diff: 150 })
   assert.equal(wide.overrides.diff, 200, 'a columns diff ratio converts against the body height')
+})
+
+test('the changes header keeps its count right after the title (v0.26.2)', () => {
+  // User report: the number after "变更" floated in the middle of the header row.
+  // `.dig-count` pins itself to the right edge (that is right for the branch /
+  // folder groups), so the changes head opts back out of that for its own badge.
+  assert.match(client, /'\.dig-count\{margin-left:auto;opacity:\.6;font-weight:400\}'/,
+    'the shared badge still right-aligns in the group rows')
+  assert.match(client, /'\.dig-changes-head \.dig-count\{margin-left:0\}'/,
+    'the changes header pulls its own count back beside the title')
+  const head = client.slice(client.indexOf("const head = props.hideHeader === true ? null : E('div', { className: 'dig-section-head dig-changes-head' }"),
+    client.indexOf("const head = props.hideHeader === true ? null : E('div', { className: 'dig-section-head dig-changes-head' }") + 700)
+  assert.match(head, /E\('span', \{ className: 'dig-count' \}, String\(total\)\)/,
+    'and the header badge is the changes total it sits beside')
 })
 
 test('a rail switch writes exactly its own field, and a refused write rolls back', () => {
@@ -2086,4 +2102,57 @@ test('upstream management: bind, drop and create-tracking from menus (v0.20.0, i
   for (const key of ['action.setUpstream', 'action.unsetUpstream', 'action.createLocalBranch', 'prompt.createTracking', 'more.setUpstreamHead', 'more.unsetUpstreamHead']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
   }
+})
+
+test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
+  // User report (right column): clicking a changed file did nothing visible.
+  // The row handler only selected, and the compact chrome had no diff pane at
+  // all, so the patch that was already fetched had nowhere to render.
+  assert.match(client, /if \(group !== 'ignored' && props\.onDiff !== undefined\) props\.onDiff\(item, group\)/,
+    'a plain click on a changed file opens its diff')
+  assert.match(client, /'dig-diff-pane' \+ \(fill === true \? ' dig-diff-pane-fill' : ''\)/,
+    'the compact chrome can render a filling diff pane')
+  assert.match(client, /const diffActive = splitTab === 'diff' && fillDiff !== null/,
+    'the compact diff is a tab beside the history window (v0.26.0)')
+  // v0.26.3: switching tabs must not unmount the history list — it used to lose
+  // its scroll position and the commit detail its expanded state.
+  assert.match(client, /const tabPane = \(active, node\) => node === null \? null : E\('div', \{ className: 'dig-tab-pane' \+ \(active === true \? '' : ' dig-tab-pane-hidden'\) \}, node\)/,
+    'both tab bodies stay mounted, the inactive one just hides')
+  assert.match(client, /'\.dig-tab-pane\{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0\}'/,
+    'the pane wrapper fills the tab window')
+  assert.match(client, /'\.dig-tab-pane-hidden\{display:none\}'/,
+    'and the hidden pane keeps its scrollTop')
+  assert.match(client, /'data-action': 'diff-tab'/, 'the compact chrome has a diff tab')
+  assert.match(client, /'data-action': 'history-tab'/, 'and a history tab next to it')
+  assert.match(client, /E\('div', \{ className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle\('changes'\) \}, changesPane\)/,
+    'the changes list keeps the top of the compact chrome')
+  assert.match(client, /compact: \['tree', 'changes'\]/,
+    'the compact chrome hands its divider to the changes list, not the tabbed diff')
+  // v0.26.1: the stacked chrome (400–600px, the native right sidebar's bread and
+  // butter) got the same treatment — the diff is a TAB there too, not a window
+  // squeezed in at the bottom under a shrinking history list.
+  assert.match(client, /stack: \['tree', 'changes'\]/,
+    'the stacked chrome hands its divider to the changes list as well')
+  assert.match(client, /dig-body-stack[\s\S]{0,1400}splitTabs\(false, false\)/,
+    'the stacked chrome renders the shared tab strip above the history window')
+  assert.equal((client.match(/className: 'dig-pane dig-pane-main' \}, historyPane, diffGutter, diffPane/g) || []).length, 1,
+    'only the three-column chrome still splits the diff out under the history')
+  assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
+    'the split pane still consumes the stored size')
+  assert.match(client, /setSelectedPath\(seed\.path === undefined \? null : seed\.path\)/,
+    'the inline diff header names the file it shows')
+})
+
+test('the diff request is single-flight, and untracked files keep their patch (v0.26.3)', () => {
+  // v0.25.1 made the row's single click open the diff, but the row still had
+  // onDoubleClick wired to the same handler: a double click fired three
+  // requests and the responses raced (an older patch could land last and paint
+  // the wrong file under the new title).
+  assert.match(client, /const diffSeq = useRef\(0\)/, 'each diff request gets a stamp')
+  assert.match(client, /if \(key === diffLast\.current\.key && now - diffLast\.current\.at < 400\) return/,
+    'the burst a double click produces is deduped')
+  assert.equal((client.match(/if \(diffSeq\.current !== run\) return/g) || []).length, 2,
+    'a stale response may not write the patch nor the error')
+  assert.match(client, /if \(diffSeq\.current === run\) setPatchLoading\(false\)/,
+    'and only the newest request clears the spinner')
 })

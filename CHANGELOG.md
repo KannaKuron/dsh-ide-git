@@ -3,6 +3,60 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.26.3 — 2026-11-04
+
+**类型**:fix(代码审查 v0.25.0–v0.26.2:重复 diff 请求与页签卸载)
+
+- **重复请求与竞态**:v0.25.1 让变更行的单击就打开 diff,但行上仍绑着 `onDoubleClick` → 一次双击发三次 `diff` 请求,而 `openDiff` 没有请求序号:`setPatch(data.patch)` 谁最后回来算谁,慢响应会把 文件 A 的 patch 画到 文件 B 的标题下。现在 `openDiff` 记 `diffSeq` 序号,只有最新一次请求能写 `patch` / `error` / `patchLoading`;另加 `diffLast`(key + 时间戳,400ms 窗口)吞掉双击/连点产生的连发。
+- **页签切换会卸载历史列表**:v0.26.0/0.26.1 的页签窗是「三元式换元素」,切到差异就把 `historyPane`(以及 `CommitDetail`)从树上摘掉 → 滚动位置、虚拟列表窗口、详情展开状态全丢。现在两种纵向布局都渲染两个常驻窗格(`.dig-tab-pane`),非激活的那个只加 `.dig-tab-pane-hidden`(`display:none`);Chromium 实测 `display:none` 来回切换后 `scrollTop` 保留(300 → 0(读) → 300)。隐藏的 diff 高 0,被 `measurePanes` 的 `live > 0` 过滤,几何不受污染。
+- **未跟踪文件点开是空白(已知问题,本轮未改)**:`showDiff` 构造宿主 payload 时没带 `untracked`,未跟踪文件会走普通 `git diff -- <path>`(无索引条目 → 空 patch),差异页签置灰;宿主 `diff` 对 `untracked: true` 有 `--no-index /dev/null <file>` 分支。这是 v0.13.x 起就有的问题,不属于本轮的回归,按指示不动。
+- **验证**:`npm test` 127/127(新增 1 条 v0.26.3 测试:序号守卫 ×2、双击去重;既有的页签断言改到常驻窗格的新形状);`node --check` 通过;`/tmp/scroll-probe.mjs`(headless_shell + 裸 CDP)确认隐藏窗格保滚动。
+- 审查未改的小瑕疵:页签条只有 `data-active`,没有 `role="tablist"` / `aria-selected`;diff 失败后没有重试入口;`paneGeometry` 在分支树折叠时仍按 2 条分隔条扣高度(v0.24 之前就有)。
+
+## v0.26.2 — 2026-11-04
+
+**类型**:fix(变更头的数字回到「变更」字样后面)
+
+- **背景**:变更区标题行的计数徽标用的是共享的 `.dig-count`(带 `margin-left:auto`),于是 `变更` 在左、数字被推到行中间偏右(分支/文件夹分组行里这个右对齐是想要的,变更头不是)。用户反馈「变更后面的数字不要放中间,放到变更后面」。
+- **改动**:新增作用域覆盖 `.dig-changes-head .dig-count{margin-left:0}`,变更头里的数字紧贴标题;分支树、文件夹分组行不受影响(它们不在 `.dig-changes-head` 里)。
+- **验证**:`npm test` 126/126(新增 1 条测试:共享规则仍在、变更头覆盖存在、徽标绑的就是 `total`);纯 CSS 改动,需重启 App 后目测。
+
+## v0.26.1 — 2026-11-04
+
+**类型**:fix(堆叠布局的「历史 / 差异」也做成页签)
+
+- **背景**:v0.26.0 只把紧凑 chrome(宽 < 400px)改成页签;右侧栏最常用的「窄而高」堆叠布局(`stack`,400–600px)仍是历史列表 + 底部 diff 分屏——点变更文件时 diff 从下面挤出来,历史被压走。用户反馈「改错了」指的就是这块:提交框下面的区域应该就是「提交历史 / 差异对比」两个页签。
+- **布局**:`stack` 与 `compact` 现在共用同一个页签条构造器 `splitTabs(withCount, withTree)`(`.dig-split-tabs`)。页签「历史 | 差异」;没有 patch 时「差异」置灰并用 `title` 说明原因;点变更文件自动切到「差异」,关掉 diff 自动落回「历史」。紧凑 chrome 额外把「变更 N」计数与树开关放在这条里(它的变更头是隐藏的),堆叠 chrome 只放页签。
+- **面板几何**:`PANE_CHROME_KEYS.stack` 由 `['tree','changes','diff']` 改为 `['tree','changes']`,删掉 `stack:diff` 限制;diff 不再是一个独立窗格,而是填满页签主体(`.dig-diff-pane-fill`)。三栏 chrome 保持原样:中间栏仍是历史在上、diff 在下,分隔条可拖。
+- **同时更新**:两份 README 的布局表/功能表、`scripts/dock-probe.mjs` 的探针选择器(`.dig-compact-tabs` → `.dig-split-tabs`)、smoke 测试里「堆叠 chrome 有独立 diff 窗格」的断言改为页签断言。
+- **验证**:`npm test` 125/125(改 3 条、增 3 条断言:堆叠 chrome 的页签、pane key、diff 只剩三栏一份);`node --check src/client.js`。纯布局改动,headless 量不到真机像素,需要重启 App 后目测。
+
+## v0.26.0 — 2026-11-04
+
+**类型**:feat(窄栏改成「变更在上、历史/差异页签在下」)
+
+- **背景**:v0.25.1 让窄栏点变更文件立即出 diff,但那一版是「整块替换」——diff 一出来,变更列表就没了,历史也被顶走,想回去还得再点一次分段开关。
+- **布局**:紧凑 chrome(宽 < 400px)改成上下两段。上段是变更列表(`.dig-pane-changes-stack`,分隔条可拖、双击复位,比例与其它面板同存 `dsh-ide-git.panes.v1`);下段是 `.dig-compact-tabs` 页签条 + 内容:「历史」/「差异」两个页签,页签条左侧保留原来的「变更 {n}」计数(变更头在这个 chrome 里是隐藏的)。没有 diff 时「差异」页签置灰(`title` 给出原因);点变更文件自动切到「差异」;关掉 diff(头部 ×)自动落回「历史」。
+- **面板几何**:`PANE_CHROME_KEYS.compact` 由 `['tree','diff']` 改成 `['tree','changes']`,`PANE_LIMITS` / `PANE_DEFAULTS` 新增 `compact:changes` 并删掉 `compact:diff`,body 分隔条计数 1 → 2。旧存储里的 `compact:*` diff 比例会被 `normalizePanes()` 丢弃,不影响其它 chrome 的尺寸。
+- **同时更新**:客户端顶部那段「chrome 说明」注释、`scripts/dock-probe.mjs` 里定位树开关的选择器(`.dig-compact-bar` → `.dig-compact-tabs`)、两份 README 的布局表与功能表。
+- **验证**:`npm test` 125/125(改了 2 条旧断言,新增 4 条:差异/历史页签存在、变更列表置顶、pane key 集合);`node --check src/client.js`。纯布局改动,headless 量不到真机像素,需要重启 App 后目测。
+
+## v0.25.2 — 2026-11-04
+
+**类型**:fix(窄栏历史的时间列与上方输入框没对齐)
+
+- **fix 提交行左侧补内边距**:`.dig-commit` 的左内边距一直是 0,时间列与图谱 lane 顶着面板左缘;而上方的筛选条(文本/分支/作者/日期 `.dig-filters`)和窄栏的分段条都是 `4px 6px` 内边距——输入框左缘在 6px,提交行在 0,肉眼就是「时间没和输入框对齐」。现在提交行左内边距取同一个 6px(`padding:1px 8px 1px 6px`),时间列、图谱 lane 与输入框左缘齐平,三种 chrome(compact / stack / columns)一起生效。
+- **验证**:`npm test` 125/125;`node --check src/client.js`。纯样式改动,headless 无法测量真实像素,真机效果以重启后肉眼为准。
+
+## v0.25.1 — 2026-11-04
+
+**类型**:fix + feat(右侧栏点变更文件看不到差异)
+
+- **fix 右栏「变更」页终于有 diff 面板**:用户报告「点击变更文件没有立即展示差异」。根因是窄栏(compact)chrome 的「变更」分段只渲染变更列表——`view === 'changes'` 那一支根本没有 diff 面板,于是 patch 已经取回、状态已经更新,屏幕上却没有任何东西。现在窄栏在 `patch !== '' || patchLoading === true` 时把列表换成填满主体的 diff 面板(`.dig-diff-pane-fill`,不受 55% 分栏高度限制),头部保留文件路径与关闭按钮,关掉即回到列表;分段条仍可切到「历史」。
+- **feat 单击变更文件即打开差异**:按用户要求,变更列表的**纯单击**从「只选中」改为「选中 + 打开该文件 diff」——窄栏里列表会把整块内容换掉,只高亮一行看起来像「点了没反应」。Ctrl/Cmd/Shift 点击维持原状(只做多选,批量暂存/丢弃不受影响),忽略组(`ignored`)的行不触发 diff。
+- **fix 内嵌 diff 头部显示文件名**:`showDiff` 的内嵌分支此前没写 `selectedPath`,工作区 diff 的头部路径一直是空的;现在打开时一并写入,关闭时按原逻辑清空。
+- **验证**:`npm test` 125/125(新增一条冒烟测试锁定「单击开 diff / 窄栏渲染填充式 diff 面板 / 分栏仍消费存储尺寸 / 头部写路径」);`node --check src/client.js`。窄栏渲染由 SSR 自检覆盖不到(需要真数据),本轮未起隔离实例截图。
+
 ## v0.25.0 — 2026-11-04
 
 **类型**:feat(图标悬停显示操作名)
