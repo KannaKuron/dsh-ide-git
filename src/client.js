@@ -12027,10 +12027,12 @@ window.__ModuleLoader__.load({
           return
         }
         anchorRef.current = key
-        /* Plain click only SELECTS (single-replace, the branch tree's model):
-           the diff moved to DOUBLE-click — a stray click mid-multi-select must
-           not yank the pane away (v0.18.3). */
+        /* Plain click SELECTS and shows the diff (v0.25.1, user request): in the
+           narrow right column the list replaces the pane, so a click that only
+           highlighted the row looked like "nothing happened". Modifier clicks
+           above stay pure multi-select; ignored rows have no diff to show. */
         setSelection((previous) => previous.size === 1 && previous.has(key) === true ? previous : new Set([key]))
+        if (group !== 'ignored' && props.onDiff !== undefined) props.onDiff(item, group)
       }, [setSelection, anchorRef, props.onDiff])
       /* Rubber-band selection now comes from the shared useRubberBand hook
          (see its comment): the fixed row heights + the prefix-sum offsets
@@ -13939,6 +13941,9 @@ window.__ModuleLoader__.load({
          file menu, working-diff shortcut): external first, inline fallback. */
       const showDiff = useCallback((seed) => {
         if (previewDiff(seed) === true) return
+        /* The pane header names the file; its close button clears the selection
+           again, so the inline path owns selectedPath here too. */
+        setSelectedPath(seed.path === undefined ? null : seed.path)
         if (seed.hash !== undefined && seed.hash !== null) {
           setDiffContext({ kind: 'commit', hash: seed.hash, subject: seed.subject || '' })
           void openDiff({ hash: seed.hash, path: seed.path })
@@ -14846,7 +14851,10 @@ window.__ModuleLoader__.load({
             request: request,
           })
 
-      const diffPane = patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
+      /* The compact chrome renders the diff INSTEAD of the changes list (the
+         narrow right column has no neighbour to show it beside), so it needs a
+         filling variant; every other chrome keeps the 55%-tall split pane. */
+      const diffPaneOf = (fill) => patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane' + (fill === true ? ' dig-diff-pane-fill' : ''), 'data-pane': 'diff', style: fill === true ? null : paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
         E('div', { className: 'dig-diff-head' },
           E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
           E('button', {
@@ -14856,6 +14864,7 @@ window.__ModuleLoader__.load({
             onClick: () => { setPatch(''); setSelectedPath(null); setDiffContext(null) },
           }, E(Icon, { name: 'close', size: 12 }))),
         E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
+      const diffPane = diffPaneOf(false)
 
       /* ---------- rail (IDE-style left action strip) ---------- */
 
@@ -15427,7 +15436,9 @@ window.__ModuleLoader__.load({
             }, E(Icon, { name: treeOpen ? 'eye' : 'eyeOff' }))),
           treeOpen ? E('div', { className: 'dig-compact-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
           treeOpen ? gutter('tree', 'prev') : null,
-          view === 'changes' ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
+          view === 'changes'
+            ? (patch === '' && patchLoading === false ? changesPane : E('div', { className: 'dig-pane dig-pane-main' }, diffPaneOf(true)))
+            : E('div', { className: 'dig-pane dig-pane-main' }, historyPane, diffGutter, diffPane))
       } else if (columns) {
         body = E('div', { className: 'dig-body dig-body-columns', ref: bodyRef },
           treeOpen ? E('div', { className: 'dig-pane dig-pane-tree', 'data-pane': 'tree', style: paneStyle('tree') }, E(BranchTree, { t: t, branches: branches, favorites: favorites, onCheckout: checkout, onBrowse: browseBranch, onBranchMenu: branchMenu, onDeleteEntries: deleteBranchEntries, onCopyValues: copyValues, onPicksChange: onBranchPicks, clearSignal: pickEpochs.tree })) : null,
@@ -16176,6 +16187,7 @@ window.__ModuleLoader__.load({
       '.dig-detail-files{display:flex;flex-direction:column}',
       '.dig-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}',
       '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-diff-pane-fill{flex:1;max-height:none;border-top:none}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
       '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
       '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:calc(12px + var(--dsh-code-font-delta, 0px));line-height:1.5;font-weight:500;min-height:0}',

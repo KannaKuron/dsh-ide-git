@@ -1189,7 +1189,7 @@ test('a divider only exists when it can move something', () => {
   // diff pane, so its diff window (fixed max-height:55%) could not be resized
   // at all — user report. Every chrome now hands out a real diff window; the
   // diff keeps measuring HEIGHT even where the chrome runs sideways.
-  assert.match(client, /className: 'dig-diff-pane', 'data-pane': 'diff', style: paneStyle\('diff'\)/,
+  assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
     'the diff pane must actually consume the stored size')
   assert.match(client, /if \(limit === undefined \|\| limit\.max <= limit\.min\) return null/,
     'no pane in this chrome, or no travel in either direction, means no divider element')
@@ -2086,4 +2086,20 @@ test('upstream management: bind, drop and create-tracking from menus (v0.20.0, i
   for (const key of ['action.setUpstream', 'action.unsetUpstream', 'action.createLocalBranch', 'prompt.createTracking', 'more.setUpstreamHead', 'more.unsetUpstreamHead']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21, '21 gates carry ' + key)
   }
+})
+
+test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
+  // User report (right column): clicking a changed file did nothing visible.
+  // The row handler only selected, and the compact chrome had no diff pane at
+  // all, so the patch that was already fetched had nowhere to render.
+  assert.match(client, /if \(group !== 'ignored' && props\.onDiff !== undefined\) props\.onDiff\(item, group\)/,
+    'a plain click on a changed file opens its diff')
+  assert.match(client, /'dig-diff-pane' \+ \(fill === true \? ' dig-diff-pane-fill' : ''\)/,
+    'the compact chrome can render a filling diff pane')
+  assert.match(client, /view === 'changes'\n\s+\? \(patch === '' && patchLoading === false \? changesPane/,
+    'the compact changes tab swaps to the diff when a patch is loaded')
+  assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
+    'the split pane still consumes the stored size')
+  assert.match(client, /setSelectedPath\(seed\.path === undefined \? null : seed\.path\)/,
+    'the inline diff header names the file it shows')
 })
