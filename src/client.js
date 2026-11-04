@@ -16073,6 +16073,11 @@ window.__ModuleLoader__.load({
       '.dig-folder-head:hover{color:var(--dsw-alias-label-primary)}',
       '.dig-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
       '.dig-count{margin-left:auto;opacity:.6;font-weight:400}',
+      /* v0.26.2: the changes head is the one count that belongs to the WORD, not
+         to the right edge — .dig-count pushes itself to the far right (fine for the
+         branch groups), so the changes header opts back in to sitting right after
+         its title (user report: the number floated in the middle of the row). */
+      '.dig-changes-head .dig-count{margin-left:0}',
       '.dig-chevron{display:inline-flex;transform:rotate(-90deg);transition:transform .12s ease}',
       '.dig-chevron-open{transform:rotate(0deg)}',
       '.dig-row{display:flex;align-items:center;gap:5px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden}',

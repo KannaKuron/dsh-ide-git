@@ -1214,6 +1214,20 @@ test('a divider only exists when it can move something', () => {
   assert.equal(wide.overrides.diff, 200, 'a columns diff ratio converts against the body height')
 })
 
+test('the changes header keeps its count right after the title (v0.26.2)', () => {
+  // User report: the number after "变更" floated in the middle of the header row.
+  // `.dig-count` pins itself to the right edge (that is right for the branch /
+  // folder groups), so the changes head opts back out of that for its own badge.
+  assert.match(client, /'\.dig-count\{margin-left:auto;opacity:\.6;font-weight:400\}'/,
+    'the shared badge still right-aligns in the group rows')
+  assert.match(client, /'\.dig-changes-head \.dig-count\{margin-left:0\}'/,
+    'the changes header pulls its own count back beside the title')
+  const head = client.slice(client.indexOf("const head = props.hideHeader === true ? null : E('div', { className: 'dig-section-head dig-changes-head' }"),
+    client.indexOf("const head = props.hideHeader === true ? null : E('div', { className: 'dig-section-head dig-changes-head' }") + 700)
+  assert.match(head, /E\('span', \{ className: 'dig-count' \}, String\(total\)\)/,
+    'and the header badge is the changes total it sits beside')
+})
+
 test('a rail switch writes exactly its own field, and a refused write rolls back', () => {
   // task-30. Three shapes are locked here because each one produced a switch
   // that lied about the Host's document:
