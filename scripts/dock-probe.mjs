@@ -139,7 +139,7 @@ async function readPanel() {
       pressed: node.getAttribute('aria-pressed'),
       label: node.getAttribute('title'),
       disabled: node.disabled === true,
-      inHeader: node.closest('.dig-compact-bar') !== null,
+      inHeader: node.closest('.dig-compact-tabs') !== null,
     }))
     const tree = root.querySelector('[data-pane="tree"]')
     return {
@@ -268,13 +268,13 @@ try {
   const narrow = await readPanel()
   log('narrow: panel ' + narrow.panel[2] + ' chrome=' + narrow.chrome + ' header tree=' + JSON.stringify(action(narrow, 'tree').filter((entry) => entry.inHeader)))
   check(narrow.chrome === 'compact', 'the panel is in the compact chrome (' + narrow.chrome + ')')
-  const headerButton = page.locator('.dig-root:visible .dig-compact-bar [data-action="tree"]').first()
+  const headerButton = page.locator('.dig-root:visible .dig-compact-tabs [data-action="tree"]').first()
   check(await headerButton.count() === 1, 'the compact header carries a tree control')
   await headerButton.click({ timeout: 6000 })
   await settle(1200)
   const headerFolded = await readPanel()
   check(headerFolded.tree === null, 'it folded the tree')
-  const stillThere = page.locator('.dig-root:visible .dig-compact-bar [data-action="tree"]').first()
+  const stillThere = page.locator('.dig-root:visible .dig-compact-tabs [data-action="tree"]').first()
   check(await stillThere.count() === 1, 'and it is STILL THERE while the tree is folded (the deadlock that made a folded tree unrecoverable)')
   check(action(headerFolded, 'tree').filter((entry) => entry.inHeader)[0].pressed === 'false', 'reporting the folded state')
   await stillThere.click({ timeout: 6000 })

@@ -911,7 +911,7 @@ test('the tree toggle is reachable again after it was folded', () => {
   // was OPEN left a folded tree with no way back (a workspace could only be
   // repaired by clearing localStorage). The header button is two-way now, and the
   // rail carries the action for the chromes that have no header button.
-  const bar = client.slice(client.indexOf("className: 'dig-compact-bar'"), client.indexOf("className: 'dig-compact-bar'") + 1400)
+  const bar = client.slice(client.indexOf("className: 'dig-compact-tabs'"), client.indexOf("className: 'dig-compact-tabs'") + 1800)
   assert.match(bar, /'data-action': 'tree'/, 'the compact header keeps a tree control')
   assert.match(bar, /onClick: \(\) => foldTree\(!treeOpen\)/, 'and it toggles BOTH ways')
   assert.match(bar, /'aria-pressed': treeOpen \? 'true' : 'false'/)
@@ -2096,8 +2096,14 @@ test('clicking a changed file shows its diff in every chrome (v0.25.1)', () => {
     'a plain click on a changed file opens its diff')
   assert.match(client, /'dig-diff-pane' \+ \(fill === true \? ' dig-diff-pane-fill' : ''\)/,
     'the compact chrome can render a filling diff pane')
-  assert.match(client, /view === 'changes'\n\s+\? \(patch === '' && patchLoading === false \? changesPane/,
-    'the compact changes tab swaps to the diff when a patch is loaded')
+  assert.match(client, /splitTab === 'diff' && fillDiff !== null \? fillDiff : historyPane/,
+    'the compact diff is a tab beside the history window (v0.26.0)')
+  assert.match(client, /'data-action': 'diff-tab'/, 'the compact chrome has a diff tab')
+  assert.match(client, /'data-action': 'history-tab'/, 'and a history tab next to it')
+  assert.match(client, /E\('div', \{ className: 'dig-pane dig-pane-changes-stack', 'data-pane': 'changes', style: paneStyle\('changes'\) \}, changesPane\)/,
+    'the changes list keeps the top of the compact chrome')
+  assert.match(client, /compact: \['tree', 'changes'\]/,
+    'the compact chrome hands its divider to the changes list, not the tabbed diff')
   assert.match(client, /const diffPaneOf = \(fill\) => [^\n]*style: fill === true \? null : paneStyle\('diff'\)/,
     'the split pane still consumes the stored size')
   assert.match(client, /setSelectedPath\(seed\.path === undefined \? null : seed\.path\)/,

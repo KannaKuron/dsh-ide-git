@@ -3,6 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.26.0 — 2026-11-04
+
+**类型**:feat(窄栏改成「变更在上、历史/差异页签在下」)
+
+- **背景**:v0.25.1 让窄栏点变更文件立即出 diff,但那一版是「整块替换」——diff 一出来,变更列表就没了,历史也被顶走,想回去还得再点一次分段开关。
+- **布局**:紧凑 chrome(宽 < 400px)改成上下两段。上段是变更列表(`.dig-pane-changes-stack`,分隔条可拖、双击复位,比例与其它面板同存 `dsh-ide-git.panes.v1`);下段是 `.dig-compact-tabs` 页签条 + 内容:「历史」/「差异」两个页签,页签条左侧保留原来的「变更 {n}」计数(变更头在这个 chrome 里是隐藏的)。没有 diff 时「差异」页签置灰(`title` 给出原因);点变更文件自动切到「差异」;关掉 diff(头部 ×)自动落回「历史」。
+- **面板几何**:`PANE_CHROME_KEYS.compact` 由 `['tree','diff']` 改成 `['tree','changes']`,`PANE_LIMITS` / `PANE_DEFAULTS` 新增 `compact:changes` 并删掉 `compact:diff`,body 分隔条计数 1 → 2。旧存储里的 `compact:*` diff 比例会被 `normalizePanes()` 丢弃,不影响其它 chrome 的尺寸。
+- **同时更新**:客户端顶部那段「chrome 说明」注释、`scripts/dock-probe.mjs` 里定位树开关的选择器(`.dig-compact-bar` → `.dig-compact-tabs`)、两份 README 的布局表与功能表。
+- **验证**:`npm test` 125/125(改了 2 条旧断言,新增 4 条:差异/历史页签存在、变更列表置顶、pane key 集合);`node --check src/client.js`。纯布局改动,headless 量不到真机像素,需要重启 App 后目测。
+
 ## v0.25.2 — 2026-11-04
 
 **类型**:fix(窄栏历史的时间列与上方输入框没对齐)
