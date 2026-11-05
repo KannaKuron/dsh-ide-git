@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.29.0 — 2026-11-05
+
+**类型**:feat(合并 PR #27:提交列表日期列相对/绝对时间切换)+ fix(收尾)
+
+- **日期格式(issue #26 / PR #27,作者 @Serendipity-55428)**:提交列表的日期列默认仍显示相对时间(如 `4h`),可在插件设置 →「历史列表」切换到绝对时间;同年显示 `MM-DD HH:mm`,跨年显示 `YYYY/MM/DD HH:mm`。列里只显示一种形态,悬停的 `title` 给出另一种,所以切到绝对时间也不会丢掉「多久以前」。
+- **行 Config**:新增 `dateFormat` 字符串字段(默认 `relative`,可写 `absolute`),直接 `.volatile()`;设置卡通过现有的 `selectRow` 写入,21 门词典同步 `settings.date.label/relative/absolute`。
+- **收尾**:日期行从「面板放置」节移出,放进独立的「历史列表」节(21 门新增 `settings.history.title`),节标题与行语义一致;修正波兰语 absolute 为 `Absolutny`、俄语改为「Относительное время / Абсолютное время」,中文括号统一为 ASCII。
+- **非法时间戳**:`commitDateText()` 返回空串时,单元格保持空白且不再生成 ` · ` 拼接的 tooltip;正常时间戳的绝对/相对互补提示不变。
+- **文档**:两份 README 的提交列表行与设置面说明补上日期格式;AGENTS.md 新增不变量 17(格式化入口、非法值、21 门文案同步)。
+- **验证**:`npm test` 142/142(0 fail / 0 skip;新增 PR 自带的 102 行日期测试与 1 条非法时间戳断言);`node --check src/client.js src/host/config.js`; `scripts/ssr-check.mjs` 四项 OK。相关:issue [#26](https://github.com/KannaKuron/dsh-ide-git/issues/26)、PR [#27](https://github.com/KannaKuron/dsh-ide-git/pull/27)。
+
 ## v0.28.0 — 2026-11-05
 
 **类型**:breaking(兼容下限抬到 dsh >=0.2.2-rc.1)+ feat(动作条排序持久化)

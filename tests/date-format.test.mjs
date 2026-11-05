@@ -83,20 +83,26 @@ test('the row Config declares dateFormat volatile with the shipped default', () 
 
 test('the history list wires the format through to the date cell', () => {
   assert.match(source, /commitDateText\(commit\.date, props\.dateFormat\)/)
-  assert.match(source, /'data-format': props\.dateFormat === 'absolute' \? 'absolute' : 'relative'/)
+  assert.match(source, /'data-format': absoluteDate \? 'absolute' : 'relative'/)
   assert.match(source, /dateFormat: readDateFormat\(\)/)
   assert.match(source, /'\.dig-commit-date\[data-format="absolute"\]\{width:116px\}'/)
 })
 
-test('the settings card offers the format row through the select writer', () => {
-  assert.match(source, /selectRow\(field, 'settings\.date\.label'/)
+test('the settings card puts the format row in its own history section', () => {
+  assert.match(source, /fold\('settings\.history\.title',[\s\S]{0,900}selectRow\(field, 'settings\.date\.label'/)
   assert.match(source, /'settings\.date\.relative'/)
   assert.match(source, /'settings\.date\.absolute'/)
 })
 
 test('every dictionary carries the new date-format keys', () => {
-  for (const key of ['settings.date.label', 'settings.date.relative', 'settings.date.absolute']) {
+  for (const key of ['settings.history.title', 'settings.date.label', 'settings.date.relative', 'settings.date.absolute']) {
     const entries = source.split("'" + key + "': '").length - 1
     assert.equal(entries, 21, key + ' must ship in ZH + EN + every LOCALES entry, saw ' + entries)
   }
+})
+
+test('an unreadable timestamp keeps an empty cell and gets no tooltip', () => {
+  assert.match(source, /const dateText = commitDateText\(commit\.date, props\.dateFormat\)/)
+  assert.match(source, /const dateTitle = dateText === ''/)
+  assert.match(source, /title: dateTitle/)
 })

@@ -93,6 +93,9 @@
 15. **删除 / 覆盖类方法必须留下撤回句柄**。删除记对象 id(`pushUndo()`),覆盖工作区内容记**文件字节快照**(`snapshotForUndo()` 在动手前读、`snapshotState()` 记下操作后的样子),响应里统一返回 `undo: { id, kind, label }`;撤回逻辑集中在 `undoApply` 里按 `kind` 分支,不要另开方法。**快照不成立时不许假装能撤回**:符号链接 / 特殊文件 / 超过 `UNDO_MAX_FILES`(400)或 `UNDO_MAX_SNAPSHOT_BYTES`(4 MB)时返回 `undoBlocked: true` 而**不返回** `undo`,客户端如实提示「未保留撤回」。写回前必须逐个比对目标是否仍是操作后的样子(内容 sha1),有一个不一致就返回 `undo-conflict` 并且**一个文件都不写**。撤回是**一次性**的:成功后必须把数组写回(`undoStacks.set(root, list)`)——`undoEntriesOf()` 返回的是 `filter` 出来的新数组,v0.3.0 就因此漏过写回,导致同一个句柄重放时走到 `undo-conflict` 而不是 `undo-gone`。句柄有 TTL 与条数上限。
 16. **会改仓库的方法必须登记进 `WRITE_METHODS`**。路由按这个 Set 把写请求放进 per-repo 队列(`withRepoLock`),漏登记就等于重新打开并发写窗口;只读方法不要加进去,否则白白排队。
 
+
+17. **提交列表的日期格式是行 Config 的 `dateFormat`**(默认 `relative`,可写 `absolute`)。格式化只走 `commitDateText()`:同年 `MM-DD HH:mm`、跨年 `YYYY/MM/DD HH:mm`;非法时间戳返回空串且不生成 tooltip,绝对/相对的另一形态放在 `title`。设置卡在独立的「历史列表」节写入,新增文案时 21 门词典的 `settings.history.title` 与 `settings.date.*` 必须同步。
+
 ## 文档规范
 
 - **README 顶部顺序:标题 → 收录徽章 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
