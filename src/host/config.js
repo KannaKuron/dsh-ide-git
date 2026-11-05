@@ -63,6 +63,11 @@ function railConfigSchema(schema) {
      dsh-better-sidebar or the native preview seat is installed. OFF hands the
      preview back to those external tabs, exactly the pre-0.23 behaviour. */
   shape.inlineDiff = schema.boolean().default(true).volatile()
+  /* History date column format (issue #26): 'relative' is the shipped default so
+     an existing document keeps the old labels, 'absolute' shows the timestamp.
+     A string row — declare it volatile() or the Host refuses the settings-card
+     write (see the composerStatus note above). */
+  shape.dateFormat = schema.string().default('relative').volatile()
   return schema.object(shape)
 }
 

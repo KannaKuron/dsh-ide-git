@@ -317,6 +317,9 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': '关闭后仍可从右侧栏或底部面板打开。',
       'settings.placement.immersive': '沉浸模式(占满全高,隐藏输入框)',
       'settings.placement.immersiveHint': '开启后 Git 标签页占满整个会话区高度,输入框自动收起;审批与提问仍会正常显示。',
+      'settings.date.label': '日期格式',
+      'settings.date.relative': '相对时间（4h / 22h）',
+      'settings.date.absolute': '绝对时间（11-05 10:42）',
       'settings.diff.inline': '在面板内预览差异',
       'settings.diff.inlineHint': '开启后差异在 Git 面板内打开，可使用左右分栏与自动换行；关闭后交给侧边栏的 diff 预览。',
       'preview.openFile': '打开文件预览',
@@ -705,6 +708,9 @@ window.__ModuleLoader__.load({
       'settings.placement.tabHint': 'Off, the panel stays reachable from the right sidebar and the bottom panel.',
       'settings.placement.immersive': 'Immersive mode (full height, hidden composer)',
       'settings.placement.immersiveHint': 'On, the Git tab fills the whole conversation area and the composer steps aside; approvals and questions still show.',
+      'settings.date.label': 'Date format',
+      'settings.date.relative': 'Relative (4h / 22h)',
+      'settings.date.absolute': 'Absolute (11-05 10:42)',
       'settings.diff.inline': 'Preview diffs in the panel',
       'settings.diff.inlineHint': 'On, diffs open inside the Git panel with split view and line wrap. Off, the sidebar\'s diff preview takes over.',
       'preview.openFile': 'Open in the file preview',
@@ -1101,6 +1107,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'settings.date.label': '日期格式',
+        'settings.date.relative': '相對時間（4h / 22h）',
+        'settings.date.absolute': '絕對時間（11-05 10:42）',
         'settings.diff.inline': '喺面板內預覽差異',
         'settings.diff.inlineHint': '開啟之後差異喺 Git 面板內開啟，可以用左右分欄同自動換行；關閉之後交畀側邊欄嘅 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
@@ -1489,6 +1498,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個對話區高度,輸入框自動收起;審核與提問仍會正常顯示。',
+        'settings.date.label': '日期格式',
+        'settings.date.relative': '相對時間（4h / 22h）',
+        'settings.date.absolute': '絕對時間（11-05 10:42）',
         'settings.diff.inline': '在面板內預覽差異',
         'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
@@ -1877,6 +1889,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '關閉之後仍可從右側欄或底部面板開啟。',
         'settings.placement.immersive': '沉浸模式(佔滿全高,隱藏輸入框)',
         'settings.placement.immersiveHint': '開啟之後 Git 分頁會佔滿整個會話區高度,輸入框自動收起;審批與提問仍會正常顯示。',
+        'settings.date.label': '日期格式',
+        'settings.date.relative': '相對時間（4h / 22h）',
+        'settings.date.absolute': '絕對時間（11-05 10:42）',
         'settings.diff.inline': '在面板內預覽差異',
         'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
@@ -2265,6 +2280,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'オフにしても右サイドバーと下部パネルから開けます。',
         'settings.placement.immersive': '没入モード(全高表示・入力欄を非表示)',
         'settings.placement.immersiveHint': 'オンにすると Git タブが会話エリアの高さいっぱいに広がり、入力欄は引っ込みます。承認や質問は通常どおり表示されます。',
+        'settings.date.label': '日付形式',
+        'settings.date.relative': '相対（4h / 22h）',
+        'settings.date.absolute': '絶対（11-05 10:42）',
         'settings.diff.inline': 'パネル内で差分をプレビュー',
         'settings.diff.inlineHint': 'オンの場合、差分は Git パネル内で開き、左右分割と折り返しを使用できます。オフの場合はサイドバーの差分プレビューに任せます。',
         'preview.openFile': 'ファイルプレビューを開く',
@@ -2653,6 +2671,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': '꺼도 오른쪽 사이드바와 하단 패널에서 열 수 있습니다.',
         'settings.placement.immersive': '몰입 모드(전체 높이, 입력창 숨김)',
         'settings.placement.immersiveHint': '켜면 Git 탭이 대화 영역 전체 높이를 차지하고 입력창은 숨겨집니다. 승인과 질문은 정상적으로 표시됩니다.',
+        'settings.date.label': '날짜 형식',
+        'settings.date.relative': '상대 (4h / 22h)',
+        'settings.date.absolute': '절대 (11-05 10:42)',
         'settings.diff.inline': '패널에서 차이 미리보기',
         'settings.diff.inlineHint': '켜면 차이가 Git 패널 안에서 열리고 좌우 분할과 자동 줄바꿈을 사용할 수 있습니다. 끄면 사이드바의 차이 미리보기로 넘깁니다.',
         'preview.openFile': '파일 미리보기로 열기',
@@ -3041,6 +3062,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Ausgeschaltet bleibt das Panel über rechte Seitenleiste und unteres Panel erreichbar.',
         'settings.placement.immersive': 'Immersiver Modus (volle Höhe, ausgeblendetes Eingabefeld)',
         'settings.placement.immersiveHint': 'Eingeschaltet füllt der Git-Tab die gesamte Gesprächshöhe und das Eingabefeld weicht zurück; Freigaben und Rückfragen bleiben sichtbar.',
+        'settings.date.label': 'Datumsformat',
+        'settings.date.relative': 'Relativ (4h / 22h)',
+        'settings.date.absolute': 'Absolut (11-05 10:42)',
         'settings.diff.inline': 'Diffs im Panel anzeigen',
         'settings.diff.inlineHint': 'Ein: Diffs öffnen im Git-Panel, mit geteilter Ansicht und Zeilenumbruch. Aus: Die Diff-Vorschau der Seitenleiste übernimmt.',
         'preview.openFile': 'In der Dateivorschau öffnen',
@@ -3429,6 +3453,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Désactivé, le panneau reste accessible depuis la barre latérale droite et le panneau inférieur.',
         'settings.placement.immersive': 'Mode immersif (pleine hauteur, zone de saisie masquée)',
         'settings.placement.immersiveHint': 'Activé, l’onglet Git occupe toute la hauteur de la conversation et la zone de saisie s’efface ; approbations et questions restent visibles.',
+        'settings.date.label': 'Format de date',
+        'settings.date.relative': 'Relatif (4h / 22h)',
+        'settings.date.absolute': 'Absolu (11-05 10:42)',
         'settings.diff.inline': 'Aperçu des diffs dans le panneau',
         'settings.diff.inlineHint': 'Activé, les diffs s’ouvrent dans le panneau Git, avec vue scindée et retour à la ligne. Désactivé, l’aperçu diff de la barre latérale prend le relais.',
         'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
@@ -3817,6 +3844,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'В выключенном виде панель доступна из правой боковой панели и нижней панели.',
         'settings.placement.immersive': 'Полноэкранный режим (во всю высоту, без поля ввода)',
         'settings.placement.immersiveHint': 'Во включённом виде вкладка Git занимает всю высоту области диалога, поле ввода скрывается; подтверждения и вопросы остаются на виду.',
+        'settings.date.label': 'Формат даты',
+        'settings.date.relative': 'Относительно (4h / 22h)',
+        'settings.date.absolute': 'Абсолютно (11-05 10:42)',
         'settings.diff.inline': 'Просмотр различий в панели',
         'settings.diff.inlineHint': 'Включено: различия открываются в панели Git с разделённым видом и переносом строк. Выключено: показ переходит к боковой панели.',
         'preview.openFile': 'Открыть в предпросмотре файла',
@@ -4205,6 +4235,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Desligado, o painel continua disponível na barra lateral direita e no painel inferior.',
         'settings.placement.immersive': 'Modo imersivo (altura total, campo de entrada oculto)',
         'settings.placement.immersiveHint': 'Ativado, a aba Git ocupa toda a altura da conversa e o campo de entrada fica de lado; aprovações e perguntas continuam visíveis.',
+        'settings.date.label': 'Formato de data',
+        'settings.date.relative': 'Relativo (4h / 22h)',
+        'settings.date.absolute': 'Absoluto (11-05 10:42)',
         'settings.diff.inline': 'Pré-visualizar diferenças no painel',
         'settings.diff.inlineHint': 'Ligado, as diferenças abrem no painel Git, com vista dividida e quebra de linha. Desligado, a pré-visualização da barra lateral assume.',
         'preview.openFile': 'Abrir na pré-visualização do arquivo',
@@ -4593,6 +4626,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Da spento, il pannello resta raggiungibile dalla barra laterale destra e dal pannello inferiore.',
         'settings.placement.immersive': 'Modalità immersiva (altezza piena, input nascosto)',
         'settings.placement.immersiveHint': 'Attiva, la scheda Git occupa tutta l’altezza della conversazione e la barra di input resta nascosta; approvazioni e domande restano visibili.',
+        'settings.date.label': 'Formato data',
+        'settings.date.relative': 'Relativo (4h / 22h)',
+        'settings.date.absolute': 'Assoluto (11-05 10:42)',
         'settings.diff.inline': 'Anteprima delle differenze nel pannello',
         'settings.diff.inlineHint': 'Attivo: le differenze si aprono nel pannello Git, con vista affiancata e ritorno a capo. Disattivo: subentra l’anteprima della barra laterale.',
         'preview.openFile': 'Apri nell’anteprima del file',
@@ -4981,6 +5017,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Uitgeschakeld blijft het paneel bereikbaar via de rechterzijbalk en het onderpaneel.',
         'settings.placement.immersive': 'Meeslepende modus (volledige hoogte, verborgen invoerveld)',
         'settings.placement.immersiveHint': 'Aan: het Git-tabblad vult de hele gespreksruimte en het invoerveld wijkt; goedkeuringen en vragen blijven zichtbaar.',
+        'settings.date.label': 'Datumnotatie',
+        'settings.date.relative': 'Relatief (4h / 22h)',
+        'settings.date.absolute': 'Absoluut (11-05 10:42)',
         'settings.diff.inline': 'Diffs in het paneel bekijken',
         'settings.diff.inlineHint': 'Aan: diffs openen in het Git-paneel, met gesplitste weergave en regelterugloop. Uit: de diff-voorvertoning in de zijbalk neemt het over.',
         'preview.openFile': 'Openen in de bestandsvoorbeeld',
@@ -5369,6 +5408,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Po wyłączeniu panel pozostaje dostępny z prawego paska bocznego i dolnego panelu.',
         'settings.placement.immersive': 'Tryb immersyjny (pełna wysokość, ukryte pole wpisywania)',
         'settings.placement.immersiveHint': 'Po włączeniu karta Git wypełnia całą wysokość rozmowy, a pole wpisywania się chowa; zatwierdzenia i pytania pozostają widoczne.',
+        'settings.date.label': 'Format daty',
+        'settings.date.relative': 'Względny (4h / 22h)',
+        'settings.date.absolute': 'Bezwzględny (11-05 10:42)',
         'settings.diff.inline': 'Podgląd różnic w panelu',
         'settings.diff.inlineHint': 'Włączone: różnice otwierają się w panelu Git, z widokiem dzielonym i zawijaniem wierszy. Wyłączone: podgląd różnic w pasku bocznym przejmuje.',
         'preview.openFile': 'Otwórz w podglądzie pliku',
@@ -5757,6 +5799,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Avstängd finns panelen kvar via höger sidopanel och nedre panelen.',
         'settings.placement.immersive': 'Uppslukande läge (full höjd, dolt inmatningsfält)',
         'settings.placement.immersiveHint': 'På: Git-fliken fyller hela konversationsytan och inmatningsfältet träder åt sidan; godkännanden och frågor visas fortfarande.',
+        'settings.date.label': 'Datumformat',
+        'settings.date.relative': 'Relativt (4h / 22h)',
+        'settings.date.absolute': 'Absolut (11-05 10:42)',
         'settings.diff.inline': 'Förhandsgranska diffar i panelen',
         'settings.diff.inlineHint': 'På: diffar öppnas i Git-panelen med delad vy och radbrytning. Av: sidopanelens diff-förhandsgranskning tar över.',
         'preview.openFile': 'Öppna i filförhandsvisningen',
@@ -6145,6 +6190,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Kapatıldığında panel sağ kenar çubuğundan ve alt panelden açılabilir.',
         'settings.placement.immersive': 'Odaklanma modu (tam yükseklik, gizli giriş alanı)',
         'settings.placement.immersiveHint': 'Açıkken Git sekmesi tüm konuşma alanını kaplar ve giriş alanı gizlenir; onaylar ve sorular yine de görünür.',
+        'settings.date.label': 'Tarih biçimi',
+        'settings.date.relative': 'Göreli (4h / 22h)',
+        'settings.date.absolute': 'Mutlak (11-05 10:42)',
         'settings.diff.inline': 'Farkları panelde önizle',
         'settings.diff.inlineHint': 'Açık: farklar Git panelinde açılır; bölünmüş görünüm ve satır kaydırma kullanılabilir. Kapalı: kenar çubuğundaki fark önizlemesi devralır.',
         'preview.openFile': 'Dosya önizlemesinde aç',
@@ -6533,6 +6581,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Dimatikan, panel tetap bisa dibuka dari bilah sisi kanan dan panel bawah.',
         'settings.placement.immersive': 'Mode imersif (tinggi penuh, kolom masukan tersembunyi)',
         'settings.placement.immersiveHint': 'Aktif: tab Git memenuhi seluruh tinggi area percakapan dan kolom masukan mengalah; persetujuan dan pertanyaan tetap tampil.',
+        'settings.date.label': 'Format tanggal',
+        'settings.date.relative': 'Relatif (4h / 22h)',
+        'settings.date.absolute': 'Absolut (11-05 10:42)',
         'settings.diff.inline': 'Pratinjau diff di panel',
         'settings.diff.inlineHint': 'Aktif: diff terbuka di panel Git, dengan tampilan terbagi dan pelipatan baris. Nonaktif: pratinjau diff bilah sisi mengambil alih.',
         'preview.openFile': 'Buka di pratinjau berkas',
@@ -6921,6 +6972,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'Tắt rồi, bảng vẫn mở được từ thanh bên phải và bảng dưới.',
         'settings.placement.immersive': 'Chế độ đắm chìm (chiều cao đầy đủ, ẩn ô nhập)',
         'settings.placement.immersiveHint': 'Bật: thẻ Git chiếm toàn bộ chiều cao vùng hội thoại và ô nhập thu vào; phê duyệt và câu hỏi vẫn hiển thị bình thường.',
+        'settings.date.label': 'Định dạng ngày',
+        'settings.date.relative': 'Tương đối (4h / 22h)',
+        'settings.date.absolute': 'Tuyệt đối (11-05 10:42)',
         'settings.diff.inline': 'Xem trước khác biệt trong bảng',
         'settings.diff.inlineHint': 'Bật: khác biệt mở trong bảng Git, có chế độ chia đôi và tự động xuống dòng. Tắt: phần xem trước ở thanh bên đảm nhận.',
         'preview.openFile': 'Mở trong xem trước tệp',
@@ -7309,6 +7363,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'عند الإيقاف تبقى اللوحة متاحة من الشريط الجانبي الأيمن واللوحة السفلية.',
         'settings.placement.immersive': 'الوضع الغامر (ارتفاع كامل، إخفاء صندوق الكتابة)',
         'settings.placement.immersiveHint': 'عند التشغيل يملأ تبويب Git منطقة المحادثة بكامل ارتفاعها ويتراجع صندوق الكتابة؛ تظل الموافقات والأسئلة ظاهرة كالمعتاد.',
+        'settings.date.label': 'تنسيق التاريخ',
+        'settings.date.relative': 'نسبي (4h / 22h)',
+        'settings.date.absolute': 'مطلق (11-05 10:42)',
         'settings.diff.inline': 'معاينة الفروق داخل اللوحة',
         'settings.diff.inlineHint': 'عند التشغيل تفتح الفروق داخل لوحة Git مع العرض المنقسم والتفاف الأسطر. عند الإيقاف تتولاها معاينة الفروق في الشريط الجانبي.',
         'preview.openFile': 'افتح في معاينة الملف',
@@ -7697,6 +7754,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'बंद करने पर भी पैनल दाएँ साइडबार और निचले पैनल से खुलता है।',
         'settings.placement.immersive': 'इमर्सिव मोड (पूरी ऊँचाई, छिपा इनपुट बॉक्स)',
         'settings.placement.immersiveHint': 'चालू होने पर Git टैब पूरे संवाद क्षेत्र की ऊँचाई घेर लेता है और इनपुट बॉक्स हट जाता है; अनुमोदन और प्रश्न फिर भी दिखते हैं।',
+        'settings.date.label': 'दिनांक प्रारूप',
+        'settings.date.relative': 'सापेक्ष (4h / 22h)',
+        'settings.date.absolute': 'निरपेक्ष (11-05 10:42)',
         'settings.diff.inline': 'पैनल में अंतर देखें',
         'settings.diff.inlineHint': 'चालू: अंतर Git पैनल में खुलते हैं, स्प्लिट व्यू और लाइन रैप के साथ। बंद: साइडबार का अंतर पूर्वावलोकन संभालता है।',
         'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
@@ -8085,6 +8145,9 @@ window.__ModuleLoader__.load({
         'settings.placement.tabHint': 'ปิดแล้วยังเปิดแผงจากแถบข้างขวาหรือแผงล่างได้',
         'settings.placement.immersive': 'โหมดดื่มด่ำ (เต็มความสูง, ซ่อนกล่องพิมพ์)',
         'settings.placement.immersiveHint': 'เมื่อเปิด แท็บ Git จะกินพื้นที่สูงทั้งหมดของบทสนทนาและกล่องพิมพ์จะถอยออก; การอนุมัติและคำถามยังแสดงตามปกติ',
+        'settings.date.label': 'รูปแบบวันที่',
+        'settings.date.relative': 'สัมพัทธ์ (4h / 22h)',
+        'settings.date.absolute': 'สัมบูรณ์ (11-05 10:42)',
         'settings.diff.inline': 'ดูตัวอย่างความแตกต่างในแผง',
         'settings.diff.inlineHint': 'เปิด: ความแตกต่างเปิดในแผง Git พร้อมมุมมองแยกและตัดบรรทัดอัตโนมัติ ปิด: ตัวอย่างความแตกต่างในแถบข้างจะรับหน้าที่',
         'preview.openFile': 'เปิดในตัวอย่างไฟล์',
@@ -9001,6 +9064,17 @@ window.__ModuleLoader__.load({
       return { model: text('commitModel', 120), reasoning: text('commitReasoning', 60), prompt: text('commitPrompt', 2000) }
     }
 
+    /* The history list's date column format (issue #26), read from the same row
+       Config document as the AI-commit settings. An absent or unknown value is
+       the shipped default, so a document written by an older version keeps
+       rendering relative labels. */
+    function readDateFormat() {
+      const ready = railFormReady()
+      if (ready === null) return 'relative'
+      const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.dateFormat : undefined
+      return value === 'absolute' ? 'absolute' : 'relative'
+    }
+
     function railFormReady() {
       if (railForm === null) return null
       const snapshot = railForm.getSnapshot()
@@ -9472,6 +9546,25 @@ window.__ModuleLoader__.load({
       const months = Math.round(days / 30)
       if (months < 12) return months + 'mo'
       return Math.round(months / 12) + 'y'
+    }
+
+    /* Absolute date for the history list's date column (issue #26). `MM-DD HH:mm`
+       inside the current year, `YYYY/MM/DD HH:mm` outside it: the year only where
+       it disambiguates, and one fixed shape per row keeps the tabular column
+       aligned. `now` is a parameter so the pure-function test does not depend on
+       the wall clock; every caller omits it. */
+    function commitDateText(iso, mode, now) {
+      if (mode !== 'absolute') return relativeTime(iso)
+      if (typeof iso !== 'string' || iso === '') return ''
+      const at = new Date(iso)
+      if (Number.isNaN(at.getTime())) return ''
+      const pad = (value) => (value < 10 ? '0' + value : String(value))
+      const clock = pad(at.getHours()) + ':' + pad(at.getMinutes())
+      const current = now === undefined ? new Date() : new Date(now)
+      if (at.getFullYear() !== current.getFullYear()) {
+        return at.getFullYear() + '/' + pad(at.getMonth() + 1) + '/' + pad(at.getDate()) + ' ' + clock
+      }
+      return pad(at.getMonth() + 1) + '-' + pad(at.getDate()) + ' ' + clock
     }
 
     function shortDate(iso) {
@@ -11528,6 +11621,21 @@ window.__ModuleLoader__.load({
               E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'diff', size: 13 })),
               E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.diff.inline'))),
             E('div', { className: 'dig-settings-subnote' }, t('settings.diff.inlineHint')))
+        })(),
+        (() => {
+          /* Date format (issue #26): the history list's date column shows either
+             the shipped relative labels or absolute timestamps. A string row, so
+             it writes through the same select helper the AI-commit rows use. */
+          const field = 'dateFormat'
+          const accepted = values[field] === 'absolute' ? 'absolute' : 'relative'
+          const shown = Object.prototype.hasOwnProperty.call(textDraft, field)
+            && (textDraft[field] === 'absolute' || textDraft[field] === 'relative')
+            ? textDraft[field]
+            : accepted
+          return selectRow(field, 'settings.date.label', shown, [
+            E('option', { key: 'relative', value: 'relative' }, t('settings.date.relative')),
+            E('option', { key: 'absolute', value: 'absolute' }, t('settings.date.absolute')),
+          ], readOnly === true, null)
         })()),
         /* Section 3 — the AI commit message (issue #6): model, reasoning and the
            prompt template. */
@@ -13120,7 +13228,13 @@ window.__ModuleLoader__.load({
         onDoubleClick: () => props.onOpenDetail(commit),
         onContextMenu: (event) => { event.preventDefault(); props.onMenu(event, commit) },
       },
-        E('span', { className: 'dig-commit-date', title: shortDate(commit.date) }, relativeTime(commit.date)),
+        E('span', {
+          className: 'dig-commit-date',
+          'data-format': props.dateFormat === 'absolute' ? 'absolute' : 'relative',
+          /* The column shows one form and the tooltip carries the other, so the
+             absolute reading never loses the "how long ago" it replaced. */
+          title: props.dateFormat === 'absolute' ? shortDate(commit.date) + ' · ' + relativeTime(commit.date) : shortDate(commit.date),
+        }, commitDateText(commit.date, props.dateFormat)),
         E('span', { className: 'dig-commit-author', title: commit.author }, commit.author),
         E(GraphCell, { row: props.row, height: 26 }),
         shown.map((decoration, index) => E('span', {
@@ -13555,6 +13669,7 @@ window.__ModuleLoader__.load({
           visibleRows.map((row) => E(CommitRow, {
             key: row.commit.hash,
             commit: row.commit, row: row, t: t,
+            dateFormat: props.dateFormat === 'absolute' ? 'absolute' : 'relative',
             selected: props.selectedHash === row.commit.hash
               || (props.pickedHashes !== undefined && props.pickedHashes.has(row.commit.hash) === true),
             onRowClick: handleRowClick, onOpenDetail: props.onSelect, onMenu: props.onMenu, openMenuAt: props.openMenuAt,
@@ -15454,6 +15569,9 @@ window.__ModuleLoader__.load({
           })
         : E(HistoryList, {
             t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
+            /* Read per render: the row Config subscription re-renders this
+               component, so a settings-card change applies without a reload. */
+            dateFormat: readDateFormat(),
             hideSearch: compact, pathFilter: pathFilter, openMenuAt: openMenuAt,
             branches: branches, scope: browseRev, onScopeChange: setHistoryScope,
             onPathFilter: (value) => setPathFilter(value),
@@ -16841,6 +16959,9 @@ window.__ModuleLoader__.load({
          class only marks them for tests/probes. */
       '.dig-graph{flex:none}',
       '.dig-commit-date{color:var(--dsw-alias-label-tertiary);flex:none;width:54px;font-variant-numeric:tabular-nums;font-weight:500}',
+      /* Absolute mode (#26): `YYYY/MM/DD HH:mm` is the widest shape, and a fixed
+         width keeps every row's author/graph columns aligned. */
+      '.dig-commit-date[data-format="absolute"]{width:116px}',
       '.dig-commit-author{color:var(--dsw-alias-label-secondary);flex:none;width:96px;overflow:hidden;text-overflow:ellipsis;font-weight:500}',
       '.dig-commit-subject{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}',
       '.dig-commit-fill{flex:1 1 0;min-width:0}',
