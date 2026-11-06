@@ -96,6 +96,8 @@
 
 17. **提交列表的日期格式是行 Config 的 `dateFormat`**(默认 `relative`,可写 `absolute`)。格式化只走 `commitDateText()`:同年 `MM-DD HH:mm`、跨年 `YYYY/MM/DD HH:mm`;非法时间戳返回空串且不生成 tooltip,绝对/相对的另一形态放在 `title`。设置卡在独立的「历史列表」节写入,新增文案时 21 门词典的 `settings.history.title` 与 `settings.date.*` 必须同步。
 
+18. **「在右侧栏打开」只属于内嵌 diff,且是第二视图而不是替换**(issue #28)。按钮在外层 `dig-diff-head` 的路径右侧、关闭左侧,不进 `LineDiff` 的 split/wrap 工具条;右侧栏自己的 diff tab 不显示它(避免递归)。多文件补丁的路径以 `LineDiff` 的 `onActiveFile` 上报为准(`diffPath`),外层头部与按钮都跟随它。better-sidebar 的原生 diff 页按会话单实例复用,标题必须是通用 `diff.codeLabel`——传文件名会在下一个目标时留下旧文件名;commit 文件优先原生 hash+path,worktree 优先 better-sidebar,二者都不可用时提示 `diff.sidebar.failed`。文案四键(`diff.sidebar.open/unavailable/loading/failed`)必须 21 门同步。
+
 ## 文档规范
 
 - **README 顶部顺序:标题 → 收录徽章 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。

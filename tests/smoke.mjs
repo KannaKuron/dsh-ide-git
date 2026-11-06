@@ -418,8 +418,8 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   // v0.14: the open verbs moved into ONE funnel, showDiff (external preview
   // first, inline pane as the fallback). The context contract survives
   // verbatim inside the funnel's inline legs.
-  assert.match(client, /setDiffContext\(\{ kind: 'worktree', staged: seed\.staged === true \}\)/,
-    'the worktree pane remembers whether it shows staged or unstaged (showDiff inline leg)')
+  assert.match(client, /setDiffContext\(\{ kind: 'worktree', staged: seed\.staged === true, untracked: seed\.untracked === true \}\)/,
+    'the worktree pane remembers whether it shows staged, unstaged or untracked (showDiff inline leg)')
   assert.match(client, /setDiffContext\(\{ kind: 'commit', hash: seed\.hash, subject: seed\.subject \|\| '' \}\)/,
     'the commit-detail pane carries hash + subject at open time (showDiff inline leg)')
   // The funnel itself: external channel first (seat onOpenDiff, then the
@@ -2131,6 +2131,43 @@ test('the diff request is single-flight, and untracked files keep their patch (v
     'a stale response may not write the patch nor the error')
   assert.match(client, /if \(diffSeq\.current === run\) setPatchLoading\(false\)/,
     'and only the newest request clears the spinner')
+})
+
+test('the inline diff can add a right-sidebar view without closing itself (issue #28)', () => {
+  // The inline pane stays mounted: this is a second view of the SAME diff, not
+  // a replacement for the panel's own split / wrap surface (#22).
+  assert.match(client, /function hasRightSidebar\(ctx\)/, 'the button needs one capability probe')
+  assert.match(client, /const openDiffInSidebar = useCallback\(\(\) => \{/, 'the hand-off is one action, not a toggle')
+  assert.match(client, /services\.betterSidebar\.openTab\(\{[\s\S]*?target: 'right'/,
+    'better-sidebar tabs are pinned to the right dock, not the click container')
+  assert.match(client, /services\.betterSidebar\.openTab\(\{[\s\S]*?title: t\('diff\.codeLabel'\)/,
+    'the reused right-dock page gets a generic title, never the first file\'s stale name')
+  assert.match(client, /previewStore\.set\(nativePreviewSeedOf\(target, scopeObject\)\)/,
+    'the native preview tab gets the same target seed')
+  // better-sidebar's diff ref has no file slot: a commit FILE must go native
+  // first, or the tab would silently widen to the whole commit.
+  assert.match(client, /target\.commitHash !== null && target\.path !== ''[\s\S]*?openNative\(\) \|\| openBetter\(\)/,
+    'a commit file prefers the native hash+path tab')
+  assert.match(client, /: \(openBetter\(\) \|\| openNative\(\)\)/,
+    'a worktree file prefers the richer better-sidebar diff surface')
+  // The header follows the file the multi-file selector is showing, and the
+  // effect runs before LineDiff's early returns so hook order stays legal.
+  assert.match(client, /const shownDiffPath = diffPath === null \? \(selectedPath === null \? '' : selectedPath\) : diffPath/,
+    'the header path mirrors the active file')
+  assert.match(client, /E\('span', \{ className: 'dig-mono dig-diff-path' \}, shownDiffPath\)/,
+    'the header renders the mirrored path')
+  assert.match(client, /props\.onActiveFile\(file\.path\)/, 'LineDiff reports the active file, not the row that opened it')
+  assert.match(client, /onActiveFile: setDiffPath/, 'the inline DiffBody forwards that report')
+  // Disabled, never a silent failure: the wrapper carries the reason so a
+  // disabled button (which cannot show a native title) still explains itself.
+  assert.match(client, /className: 'dig-diff-action', title: sidebarBlocked === null \? t\('diff\.sidebar\.open'\) : sidebarBlocked/,
+    'the wrapper title carries either the action or the reason')
+  assert.match(client, /disabled: sidebarBlocked !== null/, 'unavailable and loading both disable the button')
+  assert.ok(client.includes("'.dig-diff-action{display:inline-flex;flex:none;align-items:center}'"), 'the action sits flush in the head row')
+  for (const key of ['diff.sidebar.open', 'diff.sidebar.unavailable', 'diff.sidebar.loading', 'diff.sidebar.failed']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
+      '21 gates carry ' + key)
+  }
 })
 
 test('repo and branch switchers search on type and fold slash namespaces (v0.27.0)', () => {

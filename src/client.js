@@ -324,6 +324,10 @@ window.__ModuleLoader__.load({
       'settings.diff.inline': '在面板内预览差异',
       'settings.diff.inlineHint': '开启后差异在 Git 面板内打开，可使用左右分栏与自动换行；关闭后交给侧边栏的 diff 预览。',
       'preview.openFile': '打开文件预览',
+      'diff.sidebar.open': '在右侧栏打开',
+      'diff.sidebar.unavailable': '当前环境没有可用的右侧栏',
+      'diff.sidebar.loading': '差异加载完成后才能打开',
+      'diff.sidebar.failed': '无法在右侧栏打开这个差异',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
       'lf.selectFile': '选择要查看的文件',
@@ -716,6 +720,10 @@ window.__ModuleLoader__.load({
       'settings.diff.inline': 'Preview diffs in the panel',
       'settings.diff.inlineHint': 'On, diffs open inside the Git panel with split view and line wrap. Off, the sidebar\'s diff preview takes over.',
       'preview.openFile': 'Open in the file preview',
+      'diff.sidebar.open': 'Open in the right sidebar',
+      'diff.sidebar.unavailable': 'No right sidebar is available',
+      'diff.sidebar.loading': 'Wait for the diff to finish loading',
+      'diff.sidebar.failed': 'Could not open this diff in the right sidebar',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
       'lf.selectFile': 'Choose the file to review',
@@ -1116,6 +1124,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': '喺面板內預覽差異',
         'settings.diff.inlineHint': '開啟之後差異喺 Git 面板內開啟，可以用左右分欄同自動換行；關閉之後交畀側邊欄嘅 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
+        'diff.sidebar.open': '喺右側欄開啟',
+        'diff.sidebar.unavailable': '而家嘅環境冇可用嘅右側欄',
+        'diff.sidebar.loading': '差異載入完成後先可以開啟',
+        'diff.sidebar.failed': '無法喺右側欄開啟呢個差異',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看嘅檔案',
@@ -1508,6 +1520,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': '在面板內預覽差異',
         'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
+        'diff.sidebar.open': '在右側欄開啟',
+        'diff.sidebar.unavailable': '目前環境沒有可用的右側欄',
+        'diff.sidebar.loading': '差異載入完成後才能開啟',
+        'diff.sidebar.failed': '無法在右側欄開啟這個差異',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看的檔案',
@@ -1900,6 +1916,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': '在面板內預覽差異',
         'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
         'preview.openFile': '開啟檔案預覽',
+        'diff.sidebar.open': '喺右側欄開啟',
+        'diff.sidebar.unavailable': '而家嘅環境冇可用嘅右側欄',
+        'diff.sidebar.loading': '差異載入完成後先可以開啟',
+        'diff.sidebar.failed': '無法喺右側欄開啟呢個差異',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看嘅檔案',
@@ -2292,6 +2312,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'パネル内で差分をプレビュー',
         'settings.diff.inlineHint': 'オンの場合、差分は Git パネル内で開き、左右分割と折り返しを使用できます。オフの場合はサイドバーの差分プレビューに任せます。',
         'preview.openFile': 'ファイルプレビューを開く',
+        'diff.sidebar.open': '右サイドバーで開く',
+        'diff.sidebar.unavailable': '利用できる右サイドバーがありません',
+        'diff.sidebar.loading': '差分の読み込みが完了してから開けます',
+        'diff.sidebar.failed': 'この差分を右サイドバーで開けませんでした',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'レビューするファイルを選択',
@@ -2684,6 +2708,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': '패널에서 차이 미리보기',
         'settings.diff.inlineHint': '켜면 차이가 Git 패널 안에서 열리고 좌우 분할과 자동 줄바꿈을 사용할 수 있습니다. 끄면 사이드바의 차이 미리보기로 넘깁니다.',
         'preview.openFile': '파일 미리보기로 열기',
+        'diff.sidebar.open': '오른쪽 사이드바에서 열기',
+        'diff.sidebar.unavailable': '사용 가능한 오른쪽 사이드바가 없습니다',
+        'diff.sidebar.loading': '차이 불러오기가 끝난 후 열 수 있습니다',
+        'diff.sidebar.failed': '이 차이를 오른쪽 사이드바에서 열 수 없습니다',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '검토할 파일 선택',
@@ -3076,6 +3104,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Diffs im Panel anzeigen',
         'settings.diff.inlineHint': 'Ein: Diffs öffnen im Git-Panel, mit geteilter Ansicht und Zeilenumbruch. Aus: Die Diff-Vorschau der Seitenleiste übernimmt.',
         'preview.openFile': 'In der Dateivorschau öffnen',
+        'diff.sidebar.open': 'In der rechten Seitenleiste öffnen',
+        'diff.sidebar.unavailable': 'Keine rechte Seitenleiste verfügbar',
+        'diff.sidebar.loading': 'Warten, bis der Diff geladen ist',
+        'diff.sidebar.failed': 'Dieser Diff konnte nicht in der rechten Seitenleiste geöffnet werden',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Zu prüfende Datei wählen',
@@ -3468,6 +3500,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Aperçu des diffs dans le panneau',
         'settings.diff.inlineHint': 'Activé, les diffs s’ouvrent dans le panneau Git, avec vue scindée et retour à la ligne. Désactivé, l’aperçu diff de la barre latérale prend le relais.',
         'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
+        'diff.sidebar.open': 'Ouvrir dans la barre latérale droite',
+        'diff.sidebar.unavailable': 'Aucune barre latérale droite disponible',
+        'diff.sidebar.loading': 'Attendez la fin du chargement du diff',
+        'diff.sidebar.failed': 'Impossible d’ouvrir ce diff dans la barre latérale droite',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Choisir le fichier à examiner',
@@ -3860,6 +3896,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Просмотр различий в панели',
         'settings.diff.inlineHint': 'Включено: различия открываются в панели Git с разделённым видом и переносом строк. Выключено: показ переходит к боковой панели.',
         'preview.openFile': 'Открыть в предпросмотре файла',
+        'diff.sidebar.open': 'Открыть в правой боковой панели',
+        'diff.sidebar.unavailable': 'Правая боковая панель недоступна',
+        'diff.sidebar.loading': 'Дождитесь загрузки различий',
+        'diff.sidebar.failed': 'Не удалось открыть эти различия в правой боковой панели',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Выберите файл для просмотра',
@@ -4252,6 +4292,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Pré-visualizar diferenças no painel',
         'settings.diff.inlineHint': 'Ligado, as diferenças abrem no painel Git, com vista dividida e quebra de linha. Desligado, a pré-visualização da barra lateral assume.',
         'preview.openFile': 'Abrir na pré-visualização do arquivo',
+        'diff.sidebar.open': 'Abrir na barra lateral direita',
+        'diff.sidebar.unavailable': 'Nenhuma barra lateral direita disponível',
+        'diff.sidebar.loading': 'Aguarde o diff terminar de carregar',
+        'diff.sidebar.failed': 'Não foi possível abrir este diff na barra lateral direita',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Escolher o arquivo para revisar',
@@ -4644,6 +4688,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Anteprima delle differenze nel pannello',
         'settings.diff.inlineHint': 'Attivo: le differenze si aprono nel pannello Git, con vista affiancata e ritorno a capo. Disattivo: subentra l’anteprima della barra laterale.',
         'preview.openFile': 'Apri nell’anteprima del file',
+        'diff.sidebar.open': 'Apri nella barra laterale destra',
+        'diff.sidebar.unavailable': 'Nessuna barra laterale destra disponibile',
+        'diff.sidebar.loading': 'Attendi il caricamento del diff',
+        'diff.sidebar.failed': 'Impossibile aprire questo diff nella barra laterale destra',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Scegli il file da esaminare',
@@ -5036,6 +5084,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Diffs in het paneel bekijken',
         'settings.diff.inlineHint': 'Aan: diffs openen in het Git-paneel, met gesplitste weergave en regelterugloop. Uit: de diff-voorvertoning in de zijbalk neemt het over.',
         'preview.openFile': 'Openen in de bestandsvoorbeeld',
+        'diff.sidebar.open': 'Openen in de rechterzijbalk',
+        'diff.sidebar.unavailable': 'Geen rechterzijbalk beschikbaar',
+        'diff.sidebar.loading': 'Wacht tot de diff is geladen',
+        'diff.sidebar.failed': 'Deze diff kon niet in de rechterzijbalk worden geopend',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Kies het te bekijken bestand',
@@ -5428,6 +5480,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Podgląd różnic w panelu',
         'settings.diff.inlineHint': 'Włączone: różnice otwierają się w panelu Git, z widokiem dzielonym i zawijaniem wierszy. Wyłączone: podgląd różnic w pasku bocznym przejmuje.',
         'preview.openFile': 'Otwórz w podglądzie pliku',
+        'diff.sidebar.open': 'Otwórz w prawym pasku bocznym',
+        'diff.sidebar.unavailable': 'Prawy pasek boczny niedostępny',
+        'diff.sidebar.loading': 'Poczekaj na wczytanie różnic',
+        'diff.sidebar.failed': 'Nie udało się otworzyć tych różnic w prawym pasku bocznym',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Wybierz plik do przeglądu',
@@ -5820,6 +5876,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Förhandsgranska diffar i panelen',
         'settings.diff.inlineHint': 'På: diffar öppnas i Git-panelen med delad vy och radbrytning. Av: sidopanelens diff-förhandsgranskning tar över.',
         'preview.openFile': 'Öppna i filförhandsvisningen',
+        'diff.sidebar.open': 'Öppna i höger sidofält',
+        'diff.sidebar.unavailable': 'Inget höger sidofält tillgängligt',
+        'diff.sidebar.loading': 'Vänta tills diffen har laddats',
+        'diff.sidebar.failed': 'Det gick inte att öppna den här diffen i höger sidofält',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Välj filen att granska',
@@ -6212,6 +6272,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Farkları panelde önizle',
         'settings.diff.inlineHint': 'Açık: farklar Git panelinde açılır; bölünmüş görünüm ve satır kaydırma kullanılabilir. Kapalı: kenar çubuğundaki fark önizlemesi devralır.',
         'preview.openFile': 'Dosya önizlemesinde aç',
+        'diff.sidebar.open': 'Sağ kenar çubuğunda aç',
+        'diff.sidebar.unavailable': 'Kullanılabilir sağ kenar çubuğu yok',
+        'diff.sidebar.loading': 'Fark yüklenene kadar bekleyin',
+        'diff.sidebar.failed': 'Bu fark sağ kenar çubuğunda açılamadı',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'İncelenecek dosyayı seçin',
@@ -6604,6 +6668,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Pratinjau diff di panel',
         'settings.diff.inlineHint': 'Aktif: diff terbuka di panel Git, dengan tampilan terbagi dan pelipatan baris. Nonaktif: pratinjau diff bilah sisi mengambil alih.',
         'preview.openFile': 'Buka di pratinjau berkas',
+        'diff.sidebar.open': 'Buka di bilah sisi kanan',
+        'diff.sidebar.unavailable': 'Bilah sisi kanan tidak tersedia',
+        'diff.sidebar.loading': 'Tunggu diff selesai dimuat',
+        'diff.sidebar.failed': 'Tidak dapat membuka diff ini di bilah sisi kanan',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Pilih berkas untuk ditinjau',
@@ -6996,6 +7064,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'Xem trước khác biệt trong bảng',
         'settings.diff.inlineHint': 'Bật: khác biệt mở trong bảng Git, có chế độ chia đôi và tự động xuống dòng. Tắt: phần xem trước ở thanh bên đảm nhận.',
         'preview.openFile': 'Mở trong xem trước tệp',
+        'diff.sidebar.open': 'Mở trong thanh bên phải',
+        'diff.sidebar.unavailable': 'Không có thanh bên phải khả dụng',
+        'diff.sidebar.loading': 'Chờ diff tải xong',
+        'diff.sidebar.failed': 'Không thể mở diff này trong thanh bên phải',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Chọn tệp để xem',
@@ -7388,6 +7460,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'معاينة الفروق داخل اللوحة',
         'settings.diff.inlineHint': 'عند التشغيل تفتح الفروق داخل لوحة Git مع العرض المنقسم والتفاف الأسطر. عند الإيقاف تتولاها معاينة الفروق في الشريط الجانبي.',
         'preview.openFile': 'افتح في معاينة الملف',
+        'diff.sidebar.open': 'الفتح في الشريط الجانبي الأيمن',
+        'diff.sidebar.unavailable': 'لا يتوفر شريط جانبي أيمن',
+        'diff.sidebar.loading': 'انتظر حتى يكتمل تحميل الفروق',
+        'diff.sidebar.failed': 'تعذّر فتح هذه الفروق في الشريط الجانبي الأيمن',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'اختر الملف للمراجعة',
@@ -7780,6 +7856,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'पैनल में अंतर देखें',
         'settings.diff.inlineHint': 'चालू: अंतर Git पैनल में खुलते हैं, स्प्लिट व्यू और लाइन रैप के साथ। बंद: साइडबार का अंतर पूर्वावलोकन संभालता है।',
         'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
+        'diff.sidebar.open': 'दाएँ साइडबार में खोलें',
+        'diff.sidebar.unavailable': 'कोई दायाँ साइडबार उपलब्ध नहीं है',
+        'diff.sidebar.loading': 'अंतर लोड होने की प्रतीक्षा करें',
+        'diff.sidebar.failed': 'यह अंतर दाएँ साइडबार में नहीं खोला जा सका',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'समीक्षा की फ़ाइल चुनें',
@@ -8172,6 +8252,10 @@ window.__ModuleLoader__.load({
         'settings.diff.inline': 'ดูตัวอย่างความแตกต่างในแผง',
         'settings.diff.inlineHint': 'เปิด: ความแตกต่างเปิดในแผง Git พร้อมมุมมองแยกและตัดบรรทัดอัตโนมัติ ปิด: ตัวอย่างความแตกต่างในแถบข้างจะรับหน้าที่',
         'preview.openFile': 'เปิดในตัวอย่างไฟล์',
+        'diff.sidebar.open': 'เปิดในแถบด้านขวา',
+        'diff.sidebar.unavailable': 'ไม่มีแถบด้านขวาที่ใช้ได้',
+        'diff.sidebar.loading': 'รอให้โหลดความต่างเสร็จก่อน',
+        'diff.sidebar.failed': 'ไม่สามารถเปิดความต่างนี้ในแถบด้านขวา',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'เลือกไฟล์ที่จะตรวจสอบ',
@@ -10249,6 +10333,7 @@ window.__ModuleLoader__.load({
         loading: props.loading,
         t: props.t,
         onOpenFile: props.onOpenFile,
+        onActiveFile: props.onActiveFile,
       })
     }
 
@@ -10610,6 +10695,13 @@ window.__ModuleLoader__.load({
       const [menuOpen, setMenuOpen] = useState(false)
       const index = active < files.length ? active : 0
       const file = files[index]
+      /* The pane header and the right-sidebar hand-off must name the file the
+         body is actually showing, not the row that opened the pane: a
+         multi-file patch lets the selector switch files in place (issue #28). */
+      useEffect(() => {
+        if (file === undefined || typeof props.onActiveFile !== 'function') return
+        props.onActiveFile(file.path)
+      }, [file, props.onActiveFile])
       const language = useMemo(() => (languageForPathSeed === null || file === undefined || file.path === '') ? undefined : languageForPathSeed(file.path), [file])
       const highlighter = useCodeHighlighterSeed === null ? undefined : useCodeHighlighterSeed(language)
       const cut = useMemo(() => {
@@ -10786,6 +10878,10 @@ window.__ModuleLoader__.load({
       // dock actions (official right sidebar): lift a panel out, drop it back into
       // the dock, split the pane, and the full-screen pair reuses expand/collapse.
       float: ['M2.5 6.5v7h7v-3', 'M6 10 13.2 2.8', 'M9.4 2.8h3.8v3.8'],
+      /* "Open in the right sidebar": a dock outline with the destination pane
+         marked and an arrow crossing into it. The official seed only ships a
+         LEFT-panel glyph; this one has to read as the right-hand dock. */
+      panelRight: ['M2.5 3h11v10h-11z', 'M9.5 3v10', 'M5 8h3.2', 'M6.8 6.5 8.3 8l-1.5 1.5'],
       dock: ['M2.5 3h11v10h-11z', 'M8 5.2v5.6', 'M5.4 8.2 8 10.8l2.6-2.6'],
       split: ['M2.5 3h11v10h-11z', 'M8 3v10'],
       expand: ['M4.5 6.2 8 9.7l3.5-3.5', 'M3 12.4h10'],
@@ -13822,6 +13918,58 @@ window.__ModuleLoader__.load({
 
     /* ============================== panel ============================== */
 
+    /* One diff target for the right-hand docks (issue #28): the inline pane
+       and the external chain must build the same ref/id/title, or a second
+       click from the inline button would stack a near-duplicate tab. */
+    function diffTargetOf(repoRoot, seed) {
+      if (repoRoot === null || repoRoot === undefined || seed === null || seed === undefined) return null
+      const commitHash = seed.hash !== undefined && seed.hash !== null ? String(seed.hash) : null
+      const subject = seed.subject === undefined || seed.subject === null ? '' : String(seed.subject)
+      const path = seed.path === undefined || seed.path === null ? '' : String(seed.path)
+      const staged = seed.staged === true
+      const untracked = seed.untracked === true
+      const ref = commitHash !== null
+        ? { kind: 'commit', hash: commitHash.slice(0, 7), hashFull: commitHash, subject: subject, worktree: repoRoot, repoRoot: repoRoot }
+        : { kind: 'worktree', path: path, staged: staged, untracked: untracked ? true : undefined, worktree: repoRoot, repoRoot: repoRoot }
+      const title = commitHash !== null
+        ? commitHash.slice(0, 7) + (subject ? ' ' + subject : '')
+        : baseName(path)
+      const id = commitHash !== null
+        ? 'diff:c:' + encodeURIComponent(repoRoot) + ':' + commitHash
+        : 'diff:w:' + encodeURIComponent(repoRoot) + ':' + (staged ? 's' : 'u') + ':' + path
+      return { commitHash: commitHash, subject: subject, path: path, staged: staged, untracked: untracked, ref: ref, title: title, id: id, repoRoot: repoRoot }
+    }
+
+    /* The right-sidebar doors, in the same order the external chain uses:
+       better-sidebar with targetedOpen, then the native sidebarRight tab. */
+    function sidebarServicesOf(ctx) {
+      let betterSidebar
+      let sidebarRight
+      try { betterSidebar = ctx === undefined || ctx === null ? undefined : ctx.get('betterSidebar') } catch (error) { void error }
+      try { sidebarRight = ctx === undefined || ctx === null ? undefined : ctx.get('sidebarRight') } catch (error) { void error }
+      return { betterSidebar: betterSidebar, sidebarRight: sidebarRight }
+    }
+
+    function betterSidebarTargets(service) {
+      if (service === undefined || service === null || typeof service.openTab !== 'function') return false
+      const capabilities = service.capabilities
+      return capabilities === undefined || capabilities === null
+        || (Array.isArray(capabilities) && capabilities.indexOf('targetedOpen') >= 0)
+    }
+
+    function hasRightSidebar(ctx) {
+      const services = sidebarServicesOf(ctx)
+      return betterSidebarTargets(services.betterSidebar)
+        || (services.sidebarRight !== undefined && services.sidebarRight !== null && typeof services.sidebarRight.openTab === 'function')
+    }
+
+    function nativePreviewSeedOf(target, scopeObject) {
+      const scopeValue = scopeObject === undefined || scopeObject === null ? {} : scopeObject
+      return target.commitHash !== null
+        ? { hash: target.commitHash, subject: target.subject, path: target.path, cwd: scopeValue.cwd, repoRoot: target.repoRoot, sessionId: scopeValue.sessionId }
+        : { path: target.path, staged: target.staged, untracked: target.untracked ? true : undefined, cwd: scopeValue.cwd, repoRoot: target.repoRoot, sessionId: scopeValue.sessionId }
+    }
+
     function Panel(props) {
       const scope = props.scope
       const t = props.t
@@ -13862,6 +14010,11 @@ window.__ModuleLoader__.load({
       const [detail, setDetail] = useState(null)
       const [selectedHash, setSelectedHash] = useState(null)
       const [selectedPath, setSelectedPath] = useState(null)
+      /* The path the inline diff is actually showing. selectedPath is the row
+         the user clicked; a multi-file patch lets LineDiff switch files inside
+         the pane, and the header + the right-sidebar hand-off must follow that
+         switch (issue #28). */
+      const [diffPath, setDiffPath] = useState(null)
       const [patch, setPatch] = useState('')
       const [patchLoading, setPatchLoading] = useState(false)
       /* The compact chrome's lower window is tabbed (history | diff) instead of
@@ -13894,6 +14047,7 @@ window.__ModuleLoader__.load({
         setPatch('')
         setPatchLoading(false)
         setDiffContext(null)
+        setDiffPath(null)
       }, [])
       /* ---- multi-select (issue #13): the change list's selection lives here
          so the right-click menu, the keyboard and the selection bar act on one
@@ -14697,6 +14851,7 @@ window.__ModuleLoader__.load({
         /* The pane header names the file; its close button clears the selection
            again, so the inline path owns selectedPath here too. */
         setSelectedPath(seed.path === undefined ? null : seed.path)
+        setDiffPath(seed.path === undefined || seed.path === null ? null : seed.path)
         /* Compact chrome: the diff lives in a tab, so opening a file shows it. */
         setSplitTab('diff')
         if (seed.hash !== undefined && seed.hash !== null) {
@@ -14704,9 +14859,59 @@ window.__ModuleLoader__.load({
           void openDiff({ hash: seed.hash, path: seed.path })
           return
         }
-        setDiffContext({ kind: 'worktree', staged: seed.staged === true })
-        void openDiff({ path: seed.path, staged: seed.staged === true })
+        setDiffContext({ kind: 'worktree', staged: seed.staged === true, untracked: seed.untracked === true })
+        void openDiff({ path: seed.path, staged: seed.staged === true, untracked: seed.untracked === true })
       }, [previewDiff, openDiff])
+
+      /* Inline pane → right sidebar (issue #28): keep the inline pane and add a
+         second view of the same diff. better-sidebar's DiffTab handles a
+         worktree ref with its path; a commit ref there is whole-commit only, so
+         a commit FILE goes through the native preview tab (hash + path) first.
+         Both open a tab; neither touches the inline selection. */
+      const openDiffInSidebar = useCallback(() => {
+        if (repoRoot === null || diffContext === null) return
+        const target = diffTargetOf(repoRoot, diffContext.kind === 'commit'
+          ? { hash: diffContext.hash, subject: diffContext.subject, path: diffPath }
+          : { path: diffPath, staged: diffContext.staged === true, untracked: diffContext.untracked === true })
+        if (target === null) return
+        const services = sidebarServicesOf(props.ctx)
+        const scopeObject = scope === undefined || scope === null ? {} : scope
+        const openNative = () => {
+          const sidebarRight = services.sidebarRight
+          if (sidebarRight === undefined || sidebarRight === null || typeof sidebarRight.openTab !== 'function') return false
+          try {
+            previewStore.set(nativePreviewSeedOf(target, scopeObject))
+            sidebarRight.openTab(NATIVE_PREVIEW_KIND)
+            return true
+          } catch (error) { void error; return false }
+        }
+        const openBetter = () => {
+          if (betterSidebarTargets(services.betterSidebar) !== true) return false
+          try {
+            services.betterSidebar.openTab({
+              type: 'diff',
+              /* One right-dock diff page per session (better-sidebar's native
+                 type is not a multiple-tab kind), so the page is reused and
+                 only its body follows the latest target. A file-specific title
+                 would be captured once and then name the previous file while
+                 the body shows the new one; the generic label is true for
+                 every target and the pane itself names the path. */
+              title: t('diff.codeLabel'),
+              id: target.id,
+              diff: target.ref,
+              target: 'right',
+            }, { sessionId: scopeObject.sessionId, cwd: scopeObject.cwd })
+            return true
+          } catch (error) { void error; return false }
+        }
+        /* A commit file must keep its path: better-sidebar's diff ref has no
+           file slot, so the native tab is the only exact target. Worktree files
+           are exact in both, and better-sidebar's diff surface is richer. */
+        const opened = target.commitHash !== null && target.path !== ''
+          ? (openNative() || openBetter())
+          : (openBetter() || openNative())
+        if (opened !== true) setNote(t('diff.sidebar.failed'))
+      }, [repoRoot, diffContext, diffPath, props.ctx, scope, setNote, t])
 
       const selectCommit = useCallback(async (commit) => {
         setSelectedHash(commit.hash)
@@ -15620,16 +15825,33 @@ window.__ModuleLoader__.load({
       /* The compact chrome renders the diff INSTEAD of the changes list (the
          narrow right column has no neighbour to show it beside), so it needs a
          filling variant; every other chrome keeps the 55%-tall split pane. */
+      /* One extra view of the SAME diff in the right-hand dock. The inline pane
+         stays mounted, so a reader can keep both open and switch freely; the
+         button is a plain action, not a toggle. No dock → disabled with the
+         reason on the wrapper (a native title on a disabled button is not
+         reliably announced). */
+      const sidebarBlocked = hasRightSidebar(props.ctx)
+        ? (patchLoading === true ? t('diff.sidebar.loading') : null)
+        : t('diff.sidebar.unavailable')
+      const shownDiffPath = diffPath === null ? (selectedPath === null ? '' : selectedPath) : diffPath
       const diffPaneOf = (fill) => patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane' + (fill === true ? ' dig-diff-pane-fill' : ''), 'data-pane': 'diff', style: fill === true ? null : paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
         E('div', { className: 'dig-diff-head' },
-          E('span', { className: 'dig-mono dig-diff-path' }, selectedPath === null ? '' : selectedPath),
+          E('span', { className: 'dig-mono dig-diff-path' }, shownDiffPath),
+          E('span', { className: 'dig-diff-action', title: sidebarBlocked === null ? t('diff.sidebar.open') : sidebarBlocked },
+            E('button', {
+              type: 'button',
+              className: 'dig-icon-btn',
+              'aria-label': sidebarBlocked === null ? t('diff.sidebar.open') : sidebarBlocked,
+              disabled: sidebarBlocked !== null,
+              onClick: () => { openDiffInSidebar() },
+            }, E(Icon, { name: 'panelRight', size: 14 }))),
           E('button', {
             type: 'button',
             className: 'dig-icon-btn',
             title: t('toast.close'),
             onClick: () => { resetDiff(); setSelectedPath(null); setSplitTab('history') },
           }, E(Icon, { name: 'close', size: 12 }))),
-        E(DiffBody, { patch: patch, loading: patchLoading, t: t }))
+        E(DiffBody, { patch: patch, loading: patchLoading, t: t, onActiveFile: setDiffPath }))
       const diffPane = diffPaneOf(false)
 
       /* ---------- rail (IDE-style left action strip) ---------- */
@@ -17090,6 +17312,7 @@ window.__ModuleLoader__.load({
       '.dig-diff-pane-fill{flex:1;max-height:none;border-top:none}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
       '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
+      '.dig-diff-action{display:inline-flex;flex:none;align-items:center}',
       '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:calc(12px + var(--dsh-code-font-delta, 0px));line-height:1.5;font-weight:500;min-height:0}',
       '.dig-diff-line{display:flex;gap:8px;padding:0 6px;white-space:pre}',
       '.dig-diff-gutter{width:32px;flex:none;text-align:right;color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-tertiary));user-select:none}',

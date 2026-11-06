@@ -3,6 +3,19 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.30.0 — 2026-11-06
+
+**类型**:feat(issue #28:内嵌 diff 增加「在右侧栏打开」)
+
+- **同一份差异的第二视图**:内嵌 diff 头部、路径右侧、关闭左侧新增「在右侧栏打开」按钮(24px 图标按钮,自绘右栏图标)。点击后右侧栏出现同一份差异,内嵌面板保持打开;可随时在两侧之间切换,不是替换、不是 toggle,也不会清掉当前文件。
+- **右侧栏复用页**:better-sidebar 优先走 `target: 'right'` 的 diff tab;右侧栏收起时会自动展开。原生 `sidebarRight` 预览作为回退;两侧都不可用时按钮禁用并在悬停/无障碍名称里说明原因,差异仍在加载时同样禁用。打开失败会在面板内显示提示,不会静默。
+- **标题不跟随旧文件**:better-sidebar 的原生 diff 页按会话单实例复用,标题只在首次创建时捕获;因此使用通用标题「差异」(`diff.codeLabel`),内容随目标更新,不再出现「标题是 list.js、内容是 toolbar.js」。commit 文件优先原生 hash+path(避免整个提交),worktree 文件优先 better-sidebar 的 diff 面;同一目标重复点击只复用右栏页,不堆 tab。
+- **多文件补丁路径同步**:`LineDiff` 上报当前文件,外层头部与按钮都跟随 `diffPath`;内嵌 diff 的 worktree 上下文补上 `untracked`,未跟踪文件也能精确打开。右侧栏自己的 diff tab 不再显示该按钮,避免递归。
+- **文案**:21 门词典新增 `diff.sidebar.open` / `unavailable` / `loading` / `failed`;中英文与所有 `LOCALES` 同步。
+- **文档**:中英文 README 的 diff 窗行说明按钮与禁用原因;AGENTS.md 新增不变量 18(按钮位置、路径来源、通用标题、两侧优先级、四键同步)。
+- **验证**:`npm test` 143/143(0 fail / 0 skip;含 issue #28 的 helper/路由/路径/禁用/词典断言);`node --check src/client.js src/host/config.js`;`scripts/ssr-check.mjs` 四项 OK。隔离实例(dsh-better-sidebar 0.30.1,dsh 0.2.2-rc.1)真机:打开 list.js/toolbar.js 的差异,右栏出现「差异」Tab,内嵌保留,标题不串文件,重复点击不重复开 tab,收起右栏后再点会重新展开,零 pageerror。
+- 相关:issue [#28](https://github.com/KannaKuron/dsh-ide-git/issues/28)。
+
 ## v0.29.0 — 2026-11-05
 
 **类型**:feat(合并 PR #27:提交列表日期列相对/绝对时间切换)+ fix(收尾)
