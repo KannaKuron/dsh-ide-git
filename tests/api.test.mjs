@@ -288,6 +288,54 @@ test('diff renders untracked files as a new-file patch and fences --no-index esc
   assert.equal(relEscape.body.ok, false)
 })
 
+test('a non-ASCII file keeps its literal path in the patch header (issue #31)', async () => {
+  const name = '原型.txt'
+  const absolute = join(repo, name)
+  writeFileSync(absolute, '原型\n')
+  try {
+    const { body } = await call('diff', { cwd: repo, path: name, untracked: true })
+    assert.equal(body.ok, true)
+    // The HOST must neutralise core.quotePath for every git call: a quoted
+    // header ("b/5-\345\216\237.txt") breaks every downstream consumer that
+    // treats the header as a path.
+    assert.match(body.data.patch, /^\+\+\+ b\/原型\.txt$/m)
+    assert.doesNotMatch(body.data.patch, /\\[0-7]{3}/, 'the header must not be C-escaped')
+  } finally {
+    rmSync(absolute, { force: true })
+  }
+})
+
+test('diff renders a merge commit against its first parent (issue #32)', async () => {
+  const mergeRepo = mkdtempSync(join(tmpdir(), 'dsh-ide-git-merge-'))
+  const run = (...args) => execFileSync('git', args, { cwd: mergeRepo, encoding: 'utf8' })
+  try {
+    run('init', '-q', '-b', 'main')
+    run('config', 'user.name', 'Check')
+    run('config', 'user.email', 'check@example.com')
+    writeFileSync(join(mergeRepo, 'base.txt'), 'base\n')
+    run('add', '-A')
+    run('commit', '-q', '-m', 'base')
+    run('checkout', '-q', '-b', 'side')
+    writeFileSync(join(mergeRepo, 'side.txt'), 'from side\n')
+    run('add', '-A')
+    run('commit', '-q', '-m', 'side work')
+    run('checkout', '-q', 'main')
+    writeFileSync(join(mergeRepo, 'main.txt'), 'from main\n')
+    run('add', '-A')
+    run('commit', '-q', '-m', 'main work')
+    run('merge', '-q', '--no-ff', '-m', 'merge side', 'side')
+    const hash = run('rev-parse', 'HEAD').trim()
+    const { body } = await call('diff', { cwd: mergeRepo, hash })
+    assert.equal(body.ok, true)
+    // Git prints no patch for a merge without -m; the first-parent diff is
+    // the change the merge introduced relative to the checked-out line.
+    assert.ok(body.data.patch.includes('side.txt'))
+    assert.ok(body.data.patch.includes('+from side'))
+  } finally {
+    rmSync(mergeRepo, { recursive: true, force: true })
+  }
+})
+
 test('stage, unstage and commit move files through the index', async () => {
   const staged = await call('stage', { cwd: repo, paths: ['a.txt'] })
   assert.equal(staged.body.ok, true)
@@ -316,6 +364,40 @@ test('branch and tag lifecycle works and compare reports the delta', async () =>
   const compared = await call('compare', { cwd: repo, base: 'main', head: 'feature' })
   assert.deepEqual(compared.body.data.files.map((file) => file.path), ['c.txt'])
   assert.equal(compared.body.data.commits.length, 1)
+})
+
+test('branchDelete asks for a second confirmation on unmerged branches', async () => {
+  git('checkout', '-q', '-b', 'unmerged-api')
+  writeFileSync(join(repo, 'unmerged.txt'), 'kept only on this branch\n')
+  git('add', 'unmerged.txt')
+  git('commit', '-q', '-m', 'unmerged work')
+  git('checkout', '-q', 'main')
+  const refused = await call('branchDelete', { cwd: repo, name: 'unmerged-api' })
+  assert.equal(refused.status, 409)
+  assert.equal(refused.body.error.code, 'branch-unmerged')
+  assert.notEqual(git('branch', '--list', 'unmerged-api').trim(), '', 'the refused delete leaves the branch alone')
+  const forced = await call('branchDelete', { cwd: repo, name: 'unmerged-api', force: true, confirm: true })
+  assert.equal(forced.status, 200)
+  assert.equal(forced.body.data.force, true)
+  assert.equal(git('branch', '--list', 'unmerged-api').trim(), '')
+})
+
+test('a batch with one unmerged branch refuses before deleting any of them', async () => {
+  git('branch', 'merged-api', 'HEAD')
+  git('checkout', '-q', '-b', 'batch-unmerged-api')
+  writeFileSync(join(repo, 'batch-unmerged.txt'), 'only here\n')
+  git('add', 'batch-unmerged.txt')
+  git('commit', '-q', '-m', 'batch unmerged work')
+  git('checkout', '-q', 'main')
+  const refused = await call('branchDelete', { cwd: repo, names: ['merged-api', 'batch-unmerged-api'] })
+  assert.equal(refused.status, 409)
+  assert.equal(refused.body.error.code, 'branch-unmerged')
+  assert.notEqual(git('branch', '--list', 'merged-api').trim(), '', 'the merged entry is not deleted before the refusal')
+  assert.notEqual(git('branch', '--list', 'batch-unmerged-api').trim(), '', 'the unmerged entry survives the refusal')
+  const forced = await call('branchDelete', { cwd: repo, names: ['merged-api', 'batch-unmerged-api'], force: true, confirm: true })
+  assert.equal(forced.status, 200)
+  assert.equal(git('branch', '--list', 'merged-api').trim(), '')
+  assert.equal(git('branch', '--list', 'batch-unmerged-api').trim(), '')
 })
 
 test('stash push / list / apply / drop round-trips', async () => {
@@ -1245,6 +1327,48 @@ test('commit-message: a lock file is not a describable change, and says so', asy
  * freshness test is `Date.now() - at < REPOS_CACHE_TTL_MS` — an entry whose
  * `at` already lies past the window behaves exactly like a TTL of 0, where
  * every write expires immediately and every call rescans. */
+
+test('repos reports the enclosing checkout when cwd is a subdirectory (issue #30)', async () => {
+  const top = git('rev-parse', '--show-toplevel').trim()
+  const { body } = await call('repos', { cwd: join(repo, 'sub') })
+  assert.equal(body.ok, true)
+  assert.equal(body.data.isRepo, true, 'a cwd inside the worktree is still a repository member')
+  const workspace = body.data.repos.find((row) => row.kind === 'workspace')
+  assert.ok(workspace !== undefined, 'the checkout itself is listed, not just the subdirectory')
+  assert.equal(workspace.path, top, 'the workspace row carries the top level, which is what diff paths are relative to')
+})
+
+test('openRepo validates an absolute checkout and extraPaths appends one manual row (issue #29)', async () => {
+  const other = mkdtempSync(join(tmpdir(), 'dsh-ide-git-manual-'))
+  const plain = mkdtempSync(join(tmpdir(), 'dsh-ide-git-notrepo-'))
+  const run = (...args) => execFileSync('git', args, { cwd: other, encoding: 'utf8' })
+  try {
+    run('init', '-q', '-b', 'main')
+    run('config', 'user.name', 'Check')
+    run('config', 'user.email', 'check@example.com')
+    writeFileSync(join(other, 'manual.txt'), 'manual\n')
+    run('add', '-A')
+    run('commit', '-q', '-m', 'manual repo')
+    const top = run('rev-parse', '--show-toplevel').trim()
+    const opened = await call('openRepo', { path: other })
+    assert.equal(opened.status, 200)
+    assert.equal(opened.body.data.repo.kind, 'manual')
+    assert.equal(opened.body.data.repo.path, top)
+    assert.equal(opened.body.data.repo.branch, 'main')
+    const invalid = await call('openRepo', { path: plain })
+    assert.equal(invalid.status, 409)
+    assert.equal(invalid.body.error.code, 'not-a-repo')
+    const listed = await call('repos', { cwd: repo, extraPaths: [other, other] })
+    assert.equal(listed.body.ok, true)
+    const manual = listed.body.data.repos.filter((row) => row.kind === 'manual')
+    assert.equal(manual.length, 1, 'the same manual path is appended once')
+    assert.equal(manual[0].path, top)
+    assert.equal(listed.body.data.isRepo, true, 'isRepo still describes cwd, not the extra row')
+  } finally {
+    rmSync(other, { recursive: true, force: true })
+    rmSync(plain, { recursive: true, force: true })
+  }
+})
 
 test('repos serves a warm cache entry as-is and marks the answer cached', async () => {
   const ghost = { path: '/ghost/from-cache', name: 'from-cache', label: 'from-cache', branch: null, kind: 'workspace' }

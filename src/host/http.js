@@ -20,7 +20,7 @@ import {
 
 import { undoList, undoApply } from './undo.js'
 
-import { repos, version } from './repos.js'
+import { repos, openRepo, version } from './repos.js'
 
 import { commitMessage, commitModels, commitEfforts } from './commit-message.js'
 
@@ -36,6 +36,7 @@ const METHODS = {
   'commit-models': commitModels,
   'commit-efforts': commitEfforts,
   repos,
+  openRepo,
   summary,
   stats,
   branches,

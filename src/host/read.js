@@ -310,7 +310,11 @@ async function diff(payload) {
   if (payload.staged === true) args.push('--cached')
   if (typeof payload.hash === 'string' && payload.hash.trim() !== '') {
     args.length = 0
-    args.push('show', '--no-color', '--no-ext-diff', '-U3', '--format=', requireRef(payload.hash, 'hash'))
+    /* Merge commits carry no patch by default (`git show` prints only the
+       header), which made the diff pane blank for them. `-m --first-parent`
+       asks for the diff against the first parent and is a no-op on the usual
+       single-parent commit. This matches commitDetail() below (issue #32). */
+    args.push('show', '-m', '--first-parent', '--no-color', '--no-ext-diff', '-U3', '--format=', requireRef(payload.hash, 'hash'))
   }
   if (typeof payload.path === 'string' && payload.path.trim() !== '') args.push('--', requireRelativePath(payload.path))
   const out = await git(root, args)

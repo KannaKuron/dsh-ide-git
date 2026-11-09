@@ -769,7 +769,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -806,6 +806,7 @@ test('host half serialises writes and refuses the dangerous cases', () => {
     "const PROTECTED_BRANCHES = new Set(['main', 'master', 'trunk'])",
     "refusing to delete the checked-out branch",
     "'deleting \"' + name + '\" requires confirm: true'",
+    "new PanelError('branch-unmerged'",
     'function pushUndo(root, entry) {',
     'async function operationOf(root) {',
   ]) {
@@ -823,6 +824,9 @@ test('client half offers an undo toast and a safe confirm', () => {
     "request('undoApply'",
     'function isProtectedBranch(name) {',
     'requireText: guarded ? dialog.name : undefined,',
+    "result.error.code === 'branch-unmerged'",
+    "kind: 'deleteBranchForce'",
+    "t('delete.unmerged')",
   ]) {
     assert.ok(client.includes(needle), 'missing client guard: ' + needle)
   }
@@ -2229,6 +2233,34 @@ test('repo and branch switchers search on type and fold slash namespaces (v0.27.
   assert.match(pickSearch, /background:transparent/, 'the sticky search strip paints no extra surface')
   const pickInput = cssRule('.dig-pick-input')
   assert.match(pickInput, /background:transparent/, 'the search field is glass over the menu, not a white box')
+})
+
+test('repo binding and patch headers resolve the workspace checkout and quoted paths (issues #30/#31)', () => {
+  const coreBetween = (startMarker, endMarker) => {
+    const start = client.indexOf(startMarker)
+    const end = client.indexOf(endMarker)
+    assert.ok(start >= 0 && end > start, 'markers must survive: ' + startMarker)
+    return client.slice(start, end)
+  }
+  const repoCore = new Function(coreBetween('/* ---- workspace repo pick core ----', '/* ---- end workspace repo pick core ----')
+    + '; return workspaceRepoOf')()
+  // A cwd inside a checkout reports the CHECKOUT row, not its own path:
+  // binding the panel to the subdirectory made every patch path relative to
+  // the wrong root and the diff pane went blank (issue #30).
+  assert.equal(repoCore({ cwd: '/repo/sub', isRepo: true, repos: [{ kind: 'nested', path: '/repo/sub' }, { kind: 'workspace', path: '/repo' }] }), '/repo')
+  assert.equal(repoCore({ cwd: '/repo/sub', isRepo: true, repos: [{ kind: 'nested', path: '/repo/sub' }] }), null)
+  assert.equal(repoCore({ repos: [{ kind: 'workspace', path: '' }] }), null)
+  assert.equal((client.match(/const workspace = workspaceRepoOf\(data\)/g) || []).length, 3, 'prewarm, panel and composer all bind through the workspace row')
+  assert.equal((client.match(/extraPaths: readManualRepos\(sessionId\)/g) || []).length, 3, 'every repos request carries the session manual list')
+  const patchCore = new Function(coreBetween('/* ---- patch path core ----', '/* ---- end patch path core ----')
+    + '; return unquotePatchPath')()
+  assert.equal(patchCore('b/plain.txt'), 'b/plain.txt', 'an unquoted path is untouched')
+  assert.equal(patchCore('"b/5-\\345\\216\\237\\345\\236\\213.txt"'), 'b/5-原型.txt', 'octal runs decode as UTF-8 bytes')
+  assert.equal(patchCore('"b/a\\tb"'), 'b/a\tb', 'C escapes decode')
+  assert.equal(patchCore('"b/a\\"b"'), 'b/a"b', 'an escaped quote decodes')
+  assert.equal(patchCore('"b/a\\\\b"'), 'b/a\\b', 'an escaped backslash decodes')
+  assert.match(client, /const raw = unquotePatchPath\(line\.slice\(4\)\)/, 'splitPatchFiles decodes the +++ header before stripping b/')
+  assert.match(client, /current\.path = raw === '\/dev\/null'/, 'the /dev/null sentinel still wins after decoding')
 })
 
 test('closing a diff invalidates the in-flight response and the dedupe window (v0.27.0)', () => {

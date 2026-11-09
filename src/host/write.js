@@ -14,7 +14,7 @@ import {
 
 import {
 
-  git, runGit, gitFailure, repoRootOf, currentBranchOf, worktreesOf, sameDirectory,
+  git, runGit, gitFailure, repoRootOf, currentBranchOf, upstreamOf, worktreesOf, sameDirectory,
 
   FIELD_SEP, RECORD_SEP, NETWORK_TIMEOUT_MS,
 
@@ -226,7 +226,25 @@ async function branchDelete(payload) {
     const head = (await git(root, ['rev-parse', '--verify', 'refs/heads/' + name])).trim()
     branches.push({ name: name, hash: head })
   }
-  // -d (the default) refuses to drop an unmerged branch: git is the guard here.
+  /* -d (the default) refuses to drop an unmerged branch: git is the guard here.
+     The panel answers that refusal with a second confirmation instead of a dead
+     end, so when force is off we classify first: a branch merged into neither
+     HEAD nor its upstream is exactly what -d would reject. Refusing before the
+     git call also keeps a batch atomic (git may delete the merged entries before
+     failing on an unmerged one). */
+  if (!force) {
+    const unmerged = []
+    for (const name of names) {
+      const upstream = await upstreamOf(root, name)
+      const base = upstream === null ? 'HEAD' : upstream
+      const result = await runGit(root, ['merge-base', '--is-ancestor', 'refs/heads/' + name, base])
+      if (result.code !== 0) unmerged.push(name)
+    }
+    if (unmerged.length > 0) {
+      const listed = unmerged.length === 1 ? 'branch "' + unmerged[0] + '"' : 'branches ' + unmerged.join(', ')
+      throw new PanelError('branch-unmerged', listed + ' not fully merged; deleting it can discard commits' + (unmerged.length === 1 ? '' : ' on those branches'), 409)
+    }
+  }
   await git(root, ['branch', force ? '-D' : '-d', ...names])
   const label = names.length === 1 ? names[0] : names.length + ' branches'
   const undo = pushUndo(root, {

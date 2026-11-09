@@ -4,7 +4,7 @@ import { existsSync, realpathSync, readdirSync } from 'node:fs'
 
 import path from 'node:path'
 
-import { cwdOf } from './core.js'
+import { PanelError, badRequest, cwdOf, requireAbsolute } from './core.js'
 
 import { runGit, originNameOf } from './git.js'
 
@@ -194,6 +194,35 @@ async function branchOrNull(root) {
   return name === '' ? null : name
 }
 
+/** Resolve one user-supplied absolute path to its repository top level and
+ *  decorate that row like a scanned checkout. Throws a 409 when the path is
+ *  not inside any working tree; `repos` below tolerates that per entry. */
+async function resolveManualRepo(value) {
+  const dir = requireAbsolute(value, 'path')
+  const result = await runGit(dir, ['rev-parse', '--show-toplevel'])
+  if (result.code !== 0) throw new PanelError('not-a-repo', 'not a git repository: ' + dir, 409)
+  const top = result.stdout.trim()
+  const row = repoRow(top === '' ? dir : top, undefined, 'manual')
+  const [branch, origin] = await Promise.all([branchOrNull(row.path), originNameOf(row.path)])
+  row.branch = branch
+  row.origin = origin
+  return row
+}
+
+/** Optional remembered manual paths: bad entries are ignored, not fatal — a
+ *  deleted checkout must not break discovery for the whole workspace. */
+function extraPathList(payload) {
+  if (payload === undefined || payload.extraPaths === undefined || payload.extraPaths === null) return []
+  if (!Array.isArray(payload.extraPaths)) throw badRequest('extraPaths must be an array')
+  return payload.extraPaths.filter((entry) => typeof entry === 'string' && entry.trim() !== '').slice(0, 20)
+}
+
+/** Read-only route behind “open another repository…”: validates a typed
+ *  absolute path, resolves its top level, and returns the selectable row. */
+async function openRepo(payload) {
+  return { repo: await resolveManualRepo(payload === undefined ? undefined : payload.path) }
+}
+
 /**
  * Repositories this panel may bind to: the session workspace itself when it is
  * one, repositories nested inside it (a sandbox holding many checkouts), and
@@ -207,9 +236,25 @@ async function branchOrNull(root) {
 async function repos(payload) {
   const cwd = cwdOf(payload)
   const { cached, rows } = await scanRepos(cwd)
+  /* Manually opened checkouts are merged AFTER the cached scan and never
+     written into the cache: the scan describes the workspace, while this list
+     belongs to one session's remembered picks. Invalid paths disappear quietly
+     and a path already found by the scan keeps its scanned row (the workspace
+     or nested badge is more informative than “manual”). */
+  const manualRows = (await Promise.all(extraPathList(payload).map(async (value) => {
+    try { return await resolveManualRepo(value) } catch { return null }
+  }))).filter((row) => row !== null)
+  const merged = rows.map((row) => ({ ...row }))
+  const seen = new Set(merged.map((row) => pathIdentity(row.path)))
+  for (const row of manualRows) {
+    const identity = pathIdentity(row.path)
+    if (seen.has(identity)) continue
+    seen.add(identity)
+    merged.push(row)
+  }
   /* `cached: true` rides a cache hit only; the client ignores it today, it just
      makes the answer say where it came from. */
-  return { cwd, isRepo: rows.some((row) => row.kind === 'workspace'), repos: rows, ...(cached ? { cached: true } : {}) }
+  return { cwd, isRepo: rows.some((row) => row.kind === 'workspace'), repos: merged, ...(cached ? { cached: true } : {}) }
 }
 
 async function version() {
@@ -219,4 +264,4 @@ async function version() {
   return { git: match === null ? raw : match[1], available: result.code === 0 }
 }
 
-export { repos, version }
+export { repos, openRepo, version }

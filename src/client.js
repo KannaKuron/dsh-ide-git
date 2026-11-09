@@ -71,6 +71,12 @@ window.__ModuleLoader__.load({
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
+    /* Manually opened checkouts, per session: the host only scans the
+       workspace tree, so these paths ride every `repos` request as
+       `extraPaths`. Kept separate from REPO_KEY (the last pick) so clearing
+       one never loses the other. */
+    const MANUAL_REPO_KEY = 'dsh-ide-git.manualRepos.v1'
+    const MANUAL_REPO_LIMIT = 8
     const COMPACT_MAX_WIDTH = 400
     /* Branch rows sit one step right of their SECTION header, and each namespace
        folder adds another step. Without the base step the rows started at 8px —
@@ -94,6 +100,10 @@ window.__ModuleLoader__.load({
       'picker.empty': '没有匹配项',
       'repo.empty': '这个工作区下没有找到 Git 仓库',
       'repo.switch': '切换仓库',
+        'repo.manual': '手动',
+        'repo.manualOpen': '打开其他仓库…',
+        'repo.manualPlaceholder': '输入仓库绝对路径',
+        'repo.manualAdd': '打开',
       'branch.switch': '切换分支',
       'seg.changes': '变更 {n}',
       'seg.history': '历史',
@@ -471,7 +481,8 @@ window.__ModuleLoader__.load({
       'counts.conflicted': '冲突 {n}',
       'push.confirm': '将 {branch} 推送到 {upstream}?',
       'push.confirmMany': "将推送 {n} 个分支:{names}。确定?",
-      'delete.confirm': '删除分支 {name}?删除后浮窗里可以撤回(未合并的分支 git 会拒绝删除)。',
+      'delete.confirm': '删除分支 {name}?删除后浮窗里可以撤回(若分支还有未合并提交,会再确认一次)。',
+      'delete.unmerged': '分支 {name} 还有未合并(可能也未推送)的提交。删除后只能从浮窗撤回。仍要强制删除吗?',
       'discard.confirm': '丢弃 {path} 的更改?工作区内容会被覆盖,丢弃后浮窗里可以撤回。',
       'resetHard.confirm': '硬重置到 {hash}?未提交的更改会丢失。',
       'resetSoft.confirm': '将 HEAD 重置到 {hash}(保留工作区更改)?',
@@ -490,6 +501,10 @@ window.__ModuleLoader__.load({
       'picker.empty': 'No matches',
       'repo.empty': 'No Git repository found in this workspace',
       'repo.switch': 'Switch repository',
+        'repo.manual': 'manual',
+        'repo.manualOpen': 'Open another repository…',
+        'repo.manualPlaceholder': 'Enter an absolute repository path',
+        'repo.manualAdd': 'Open',
       'branch.switch': 'Switch branch',
       'seg.changes': 'Changes {n}',
       'seg.history': 'History',
@@ -867,7 +882,8 @@ window.__ModuleLoader__.load({
       'counts.conflicted': 'Conflicts {n}',
       'push.confirm': 'Push {branch} to {upstream}?',
       'push.confirmMany': "Push {n} branch(es): {names}?",
-      'delete.confirm': 'Delete branch {name}? A toast will offer to bring it back (git still refuses unmerged branches).',
+      'delete.confirm': 'Delete branch {name}? A toast will offer to bring it back (unmerged commits get one more confirmation).',
+      'delete.unmerged': 'Branch {name} still has commits that are not merged (and may not be pushed). They can only be recovered from the toast. Delete anyway?',
       'discard.confirm': 'Discard changes in {path}? The working-tree content is overwritten — a toast will offer to bring it back.',
       'resetHard.confirm': 'Hard reset to {hash}? Uncommitted changes are lost.',
       'resetSoft.confirm': 'Move HEAD to {hash} (working tree kept)?',
@@ -894,6 +910,10 @@ window.__ModuleLoader__.load({
         'picker.empty': '冇相符項目',
         'repo.empty': '呢個工作區搵唔到 Git 存放庫',
         'repo.switch': '切換存放庫',
+        'repo.manual': '手動',
+        'repo.manualOpen': '開啟其他存放庫…',
+        'repo.manualPlaceholder': '輸入存放庫絕對路徑',
+        'repo.manualAdd': '開啟',
         'branch.switch': '切換分支',
         'seg.changes': '變更 {n}',
         'seg.history': '歷史',
@@ -1271,7 +1291,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
         'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
-        'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(git 仍然會拒絕未合併嘅分支)。',
+        'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(如果分支還未合併,會再確認一次)。',
+        'delete.unmerged': '分支 {name} 仲有未合併(可能亦未推送)嘅提交。刪除後只可以喺提示條撤回。仍要強制刪除嗎?',
         'discard.confirm': '丟棄 {path} 嘅變更?工作區內容會被覆寫 —— 之後可以喺提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
@@ -1290,6 +1311,10 @@ window.__ModuleLoader__.load({
         'picker.empty': '沒有相符項目',
         'repo.empty': '這個工作區找不到 Git 版本庫',
         'repo.switch': '切換版本庫',
+        'repo.manual': '手動',
+        'repo.manualOpen': '開啟其他版本庫…',
+        'repo.manualPlaceholder': '輸入版本庫絕對路徑',
+        'repo.manualAdd': '開啟',
         'branch.switch': '切換分支',
         'seg.changes': '變更 {n}',
         'seg.history': '歷史',
@@ -1667,7 +1692,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
         'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
-        'delete.confirm': '刪除分支 {name}?之後可從提示條撤回(git 仍會拒絕未合併的分支)。',
+        'delete.confirm': '刪除分支 {name}?之後可從提示條撤回(若分支仍有未合併提交,會再確認一次)。',
+        'delete.unmerged': '分支 {name} 仍有未合併(可能也未推送)的提交。刪除後只能從提示條撤回。仍要強制刪除嗎?',
         'discard.confirm': '丟棄 {path} 的變更?工作區內容會被覆寫 —— 之後可從提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交的變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
@@ -1686,6 +1712,10 @@ window.__ModuleLoader__.load({
         'picker.empty': '冇相符項目',
         'repo.empty': '呢個工作區搵唔到 Git 存放庫',
         'repo.switch': '切換存放庫',
+        'repo.manual': '手動',
+        'repo.manualOpen': '開啟其他存放庫…',
+        'repo.manualPlaceholder': '輸入存放庫絕對路徑',
+        'repo.manualAdd': '開啟',
         'branch.switch': '切換分支',
         'seg.changes': '變更 {n}',
         'seg.history': '歷史',
@@ -2063,7 +2093,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': '衝突 {n}',
         'push.confirm': '將 {branch} 推送到 {upstream}?',
         'push.confirmMany': "將推送 {n} 個分支:{names}。確定?",
-        'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(git 仍然會拒絕未合併嘅分支)。',
+        'delete.confirm': '刪除分支 {name}?之後可以喺提示條撤回(如果分支還未合併,會再確認一次)。',
+        'delete.unmerged': '分支 {name} 仲有未合併(可能亦未推送)嘅提交。刪除後只可以喺提示條撤回。仍要強制刪除嗎?',
         'discard.confirm': '丟棄 {path} 嘅變更?工作區內容會被覆寫 —— 之後可以喺提示條撤回。',
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
@@ -2082,6 +2113,10 @@ window.__ModuleLoader__.load({
         'picker.empty': '一致する項目がありません',
         'repo.empty': 'このワークスペースに Git リポジトリが見つかりません',
         'repo.switch': 'リポジトリを切り替え',
+        'repo.manual': '手動',
+        'repo.manualOpen': '別のリポジトリを開く…',
+        'repo.manualPlaceholder': 'リポジトリの絶対パスを入力',
+        'repo.manualAdd': '開く',
         'branch.switch': 'ブランチを切り替え',
         'seg.changes': '変更 {n}',
         'seg.history': '履歴',
@@ -2459,7 +2494,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': '競合 {n}',
         'push.confirm': '{branch} を {upstream} にプッシュしますか?',
         'push.confirmMany': "{n} 個のブランチをプッシュします:{names}。よろしいですか?",
-        'delete.confirm': 'ブランチ {name} を削除しますか?その後トーストから復元できます(git は未マージのブランチを引き続き拒否します)。',
+        'delete.confirm': 'ブランチ {name} を削除しますか?その後トーストから復元できます(未マージのコミットがある場合はもう一度確認します)。',
+        'delete.unmerged': 'ブランチ {name} には未マージ(未プッシュの可能性あり)のコミットが残っています。削除後はトーストからのみ復元できます。強制削除しますか?',
         'discard.confirm': '{path} の変更を破棄しますか?ワークツリーの内容が上書きされます —— その後トーストから復元できます。',
         'resetHard.confirm': '{hash} にハードリセットしますか?未コミットの変更は失われます。',
         'resetSoft.confirm': 'HEAD を {hash} に移動しますか(ワークツリーは保持)?',
@@ -2478,6 +2514,10 @@ window.__ModuleLoader__.load({
         'picker.empty': '일치하는 항목이 없습니다',
         'repo.empty': '이 워크스페이스에서 Git 저장소를 찾을 수 없습니다',
         'repo.switch': '저장소 전환',
+        'repo.manual': '수동',
+        'repo.manualOpen': '다른 저장소 열기…',
+        'repo.manualPlaceholder': '저장소의 절대 경로 입력',
+        'repo.manualAdd': '열기',
         'branch.switch': '브랜치 전환',
         'seg.changes': '변경 {n}',
         'seg.history': '기록',
@@ -2855,7 +2895,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': '충돌 {n}',
         'push.confirm': '{branch}을(를) {upstream}에 푸시할까요?',
         'push.confirmMany': "{n}개 브랜치를 푸시합니다: {names}. 확입니까?",
-        'delete.confirm': '브랜치 {name}을(를) 삭제할까요? 이후 토스트에서 복원할 수 있습니다(git은 병합되지 않은 브랜치를 계속 거부합니다).',
+        'delete.confirm': '브랜치 {name}을(를) 삭제할까요? 이후 토스트에서 복원할 수 있습니다(병합되지 않은 커밋이 있으면 한 번 더 확인합니다).',
+        'delete.unmerged': '브랜치 {name}에 아직 병합되지 않은(푸시되지 않았을 수도 있는) 커밋이 있습니다. 삭제 후에는 토스트에서만 복원할 수 있습니다. 강제 삭제할까요?',
         'discard.confirm': '{path}의 변경 사항을 버릴까요? 워크트리 내용이 덮어써집니다 —— 이후 토스트에서 복원할 수 있습니다.',
         'resetHard.confirm': '{hash}로 하드 리셋할까요? 커밋하지 않은 변경 사항은 사라집니다.',
         'resetSoft.confirm': 'HEAD를 {hash}로 옮길까요(워크트리 유지)?',
@@ -2874,6 +2915,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Keine Treffer',
         'repo.empty': 'In diesem Arbeitsbereich wurde kein Git-Repository gefunden',
         'repo.switch': 'Repository wechseln',
+        'repo.manual': 'manuell',
+        'repo.manualOpen': 'Anderes Repository öffnen…',
+        'repo.manualPlaceholder': 'Absoluten Repository-Pfad eingeben',
+        'repo.manualAdd': 'Öffnen',
         'branch.switch': 'Branch wechseln',
         'seg.changes': 'Änderungen {n}',
         'seg.history': 'Verlauf',
@@ -3251,7 +3296,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Konflikte {n}',
         'push.confirm': '{branch} nach {upstream} pushen?',
         'push.confirmMany': "{n} Branch(es) pushen: {names}?",
-        'delete.confirm': 'Branch {name} löschen? Ein Hinweis kann ihn danach zurückholen (git verweigert weiterhin nicht gemergte Branches).',
+        'delete.confirm': 'Branch {name} löschen? Ein Hinweis kann ihn danach zurückholen (bei nicht gemergten Commits folgt eine zweite Bestätigung).',
+        'delete.unmerged': 'Branch {name} enthält noch nicht gemergte (möglicherweise nicht gepushte) Commits. Sie lassen sich nur noch über den Hinweis wiederherstellen. Trotzdem löschen?',
         'discard.confirm': 'Änderungen in {path} verwerfen? Der Arbeitsbaum wird überschrieben —— ein Hinweis kann sie danach zurückholen.',
         'resetHard.confirm': 'Hart auf {hash} zurücksetzen? Nicht committete Änderungen gehen verloren.',
         'resetSoft.confirm': 'HEAD auf {hash} verschieben (Arbeitsbaum bleibt)?',
@@ -3270,6 +3316,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Aucun résultat',
         'repo.empty': 'Aucun dépôt Git trouvé dans cet espace de travail',
         'repo.switch': 'Changer de dépôt',
+        'repo.manual': 'manuel',
+        'repo.manualOpen': 'Ouvrir un autre dépôt…',
+        'repo.manualPlaceholder': 'Saisir le chemin absolu du dépôt',
+        'repo.manualAdd': 'Ouvrir',
         'branch.switch': 'Changer de branche',
         'seg.changes': 'Modifications {n}',
         'seg.history': 'Historique',
@@ -3647,7 +3697,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Conflits {n}',
         'push.confirm': 'Pousser {branch} vers {upstream} ?',
         'push.confirmMany': "Pousser {n} branche(s) : {names} ?",
-        'delete.confirm': 'Supprimer la branche {name} ? Une notification peut ensuite la rétablir (git refuse toujours les branches non fusionnées).',
+        'delete.confirm': 'Supprimer la branche {name} ? Une notification peut ensuite la rétablir (les commits non fusionnés demandent une seconde confirmation).',
+        'delete.unmerged': 'La branche {name} contient encore des commits non fusionnés (et peut-être non poussés). Ils ne pourront être récupérés que via la notification. Supprimer quand même ?',
         'discard.confirm': 'Abandonner les modifications de {path} ? Le contenu de l’arbre de travail est écrasé —— une notification peut ensuite le rétablir.',
         'resetHard.confirm': 'Réinitialisation dure sur {hash} ? Les modifications non validées sont perdues.',
         'resetSoft.confirm': 'Déplacer HEAD sur {hash} (arbre de travail conservé) ?',
@@ -3666,6 +3717,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Нет совпадений',
         'repo.empty': 'В этой рабочей области репозиторий Git не найден',
         'repo.switch': 'Сменить репозиторий',
+        'repo.manual': 'вручную',
+        'repo.manualOpen': 'Открыть другой репозиторий…',
+        'repo.manualPlaceholder': 'Введите абсолютный путь к репозиторию',
+        'repo.manualAdd': 'Открыть',
         'branch.switch': 'Сменить ветку',
         'seg.changes': 'Изменения {n}',
         'seg.history': 'История',
@@ -4043,7 +4098,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Конфликты {n}',
         'push.confirm': 'Отправить {branch} в {upstream}?',
         'push.confirmMany': "Отправить ветки ({n}): {names}?",
-        'delete.confirm': 'Удалить ветку {name}? Уведомление затем сможет её вернуть (git по-прежнему откажет для несмёрженных веток).',
+        'delete.confirm': 'Удалить ветку {name}? Уведомление затем сможет её вернуть (для несмёрженных коммитов будет ещё одно подтверждение).',
+        'delete.unmerged': 'В ветке {name} остались несмёрженные (возможно, неотправленные) коммиты. После удаления их можно вернуть только через уведомление. Всё равно удалить?',
         'discard.confirm': 'Отменить изменения в {path}? Содержимое рабочего дерева будет перезаписано —— уведомление затем сможет его вернуть.',
         'resetHard.confirm': 'Жёсткий сброс на {hash}? Незакоммиченные изменения будут потеряны.',
         'resetSoft.confirm': 'Переместить HEAD на {hash} (рабочее дерево сохранится)?',
@@ -4062,6 +4118,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Nenhum resultado',
         'repo.empty': 'Nenhum repositório Git encontrado nesta área de trabalho',
         'repo.switch': 'Trocar de repositório',
+        'repo.manual': 'manual',
+        'repo.manualOpen': 'Abrir outro repositório…',
+        'repo.manualPlaceholder': 'Digite o caminho absoluto do repositório',
+        'repo.manualAdd': 'Abrir',
         'branch.switch': 'Trocar de branch',
         'seg.changes': 'Alterações {n}',
         'seg.history': 'Histórico',
@@ -4439,7 +4499,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Conflitos {n}',
         'push.confirm': 'Enviar {branch} para {upstream}?',
         'push.confirmMany': "Enviar {n} branch(es): {names}?",
-        'delete.confirm': 'Excluir a branch {name}? Um aviso ainda poderá trazê-la de volta (o git continua recusando branches não mescladas).',
+        'delete.confirm': 'Excluir a branch {name}? Um aviso ainda poderá trazê-la de volta (commits não mesclados pedem uma segunda confirmação).',
+        'delete.unmerged': 'A branch {name} ainda tem commits não mesclados (e talvez não enviados). Eles só poderão ser recuperados pelo aviso. Excluir mesmo assim?',
         'discard.confirm': 'Descartar as alterações em {path}? O conteúdo da árvore de trabalho será sobrescrito —— um aviso ainda poderá trazê-lo de volta.',
         'resetHard.confirm': 'Redefinição forçada para {hash}? Alterações não commitadas serão perdidas.',
         'resetSoft.confirm': 'Mover HEAD para {hash} (árvore de trabalho mantida)?',
@@ -4458,6 +4519,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Nessuna corrispondenza',
         'repo.empty': 'Nessun repository Git trovato in questa area di lavoro',
         'repo.switch': 'Cambia repository',
+        'repo.manual': 'manuale',
+        'repo.manualOpen': 'Apri un altro repository…',
+        'repo.manualPlaceholder': 'Inserisci il percorso assoluto del repository',
+        'repo.manualAdd': 'Apri',
         'branch.switch': 'Cambia branch',
         'seg.changes': 'Modifiche {n}',
         'seg.history': 'Cronologia',
@@ -4835,7 +4900,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Conflitti {n}',
         'push.confirm': 'Inviare {branch} a {upstream}?',
         'push.confirmMany': "Eseguire il push di {n} branch: {names}?",
-        'delete.confirm': 'Eliminare il branch {name}? Un avviso potrà comunque riportarlo indietro (git continua a rifiutare i branch non uniti).',
+        'delete.confirm': 'Eliminare il branch {name}? Un avviso potrà comunque riportarlo indietro (i commit non uniti richiedono una seconda conferma).',
+        'delete.unmerged': 'Il branch {name} contiene ancora commit non uniti (e forse non inviati). Potranno essere recuperati solo dall\'avviso. Eliminare comunque?',
         'discard.confirm': 'Scartare le modifiche in {path}? Il contenuto dell’albero di lavoro viene sovrascritto —— un avviso potrà comunque riportarlo indietro.',
         'resetHard.confirm': 'Reset forzato a {hash}? Le modifiche non committate andranno perse.',
         'resetSoft.confirm': 'Spostare HEAD a {hash} (albero di lavoro mantenuto)?',
@@ -4854,6 +4920,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Geen resultaten',
         'repo.empty': 'Geen Git-repository gevonden in deze werkruimte',
         'repo.switch': 'Wissel van repository',
+        'repo.manual': 'handmatig',
+        'repo.manualOpen': 'Een andere repository openen…',
+        'repo.manualPlaceholder': 'Voer het absolute pad van de repository in',
+        'repo.manualAdd': 'Openen',
         'branch.switch': 'Wissel van branch',
         'seg.changes': 'Wijzigingen {n}',
         'seg.history': 'Geschiedenis',
@@ -5231,7 +5301,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Conflicten {n}',
         'push.confirm': '{branch} naar {upstream} pushen?',
         'push.confirmMany': "{n} branch(es) pushen: {names}?",
-        'delete.confirm': 'Branch {name} verwijderen? Een melding kan hem daarna nog terugbrengen (git weigert nog steeds niet-samengevoegde branches).',
+        'delete.confirm': 'Branch {name} verwijderen? Een melding kan hem daarna nog terugbrengen (niet-samengevoegde commits vragen een tweede bevestiging).',
+        'delete.unmerged': 'Branch {name} bevat nog niet-samengevoegde (en mogelijk niet-gepushte) commits. Ze zijn alleen via de melding terug te halen. Toch verwijderen?',
         'discard.confirm': 'Wijzigingen in {path} weggooien? De inhoud van de werkboom wordt overschreven —— een melding kan die daarna nog terugbrengen.',
         'resetHard.confirm': 'Hard resetten naar {hash}? Niet-gecommitte wijzigingen gaan verloren.',
         'resetSoft.confirm': 'HEAD naar {hash} verplaatsen (werkboom behouden)?',
@@ -5250,6 +5321,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Brak dopasowań',
         'repo.empty': 'W tym obszarze roboczym nie znaleziono repozytorium Git',
         'repo.switch': 'Zmień repozytorium',
+        'repo.manual': 'ręcznie',
+        'repo.manualOpen': 'Otwórz inne repozytorium…',
+        'repo.manualPlaceholder': 'Wpisz bezwzględną ścieżkę repozytorium',
+        'repo.manualAdd': 'Otwórz',
         'branch.switch': 'Zmień gałąź',
         'seg.changes': 'Zmiany {n}',
         'seg.history': 'Historia',
@@ -5627,7 +5702,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Konflikty {n}',
         'push.confirm': 'Wypchnąć {branch} do {upstream}?',
         'push.confirmMany': "Wysłać gałęzie ({n}): {names}?",
-        'delete.confirm': 'Usunąć gałąź {name}? Powiadomienie może ją potem przywrócić (git nadal odmawia dla niescalonych gałęzi).',
+        'delete.confirm': 'Usunąć gałąź {name}? Powiadomienie może ją potem przywrócić (niescalone commity wymagają drugiego potwierdzenia).',
+        'delete.unmerged': 'Gałąź {name} nadal zawiera niescalone (być może niewypchnięte) commity. Po usunięciu można je odzyskać tylko z powiadomienia. Usunąć mimo to?',
         'discard.confirm': 'Odrzucić zmiany w {path}? Zawartość drzewa roboczego zostanie nadpisana —— powiadomienie może ją potem przywrócić.',
         'resetHard.confirm': 'Twarde przywrócenie do {hash}? Niezapisane zmiany przepadną.',
         'resetSoft.confirm': 'Przenieść HEAD do {hash} (drzewo robocze zachowane)?',
@@ -5646,6 +5722,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Inga träffar',
         'repo.empty': 'Inget Git-arkiv hittades i den här arbetsytan',
         'repo.switch': 'Byt arkiv',
+        'repo.manual': 'manuell',
+        'repo.manualOpen': 'Öppna ett annat arkiv…',
+        'repo.manualPlaceholder': 'Ange arkivets absoluta sökväg',
+        'repo.manualAdd': 'Öppna',
         'branch.switch': 'Byt gren',
         'seg.changes': 'Ändringar {n}',
         'seg.history': 'Historik',
@@ -6023,7 +6103,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Konflikter {n}',
         'push.confirm': 'Pusha {branch} till {upstream}?',
         'push.confirmMany': "Pusha {n} gren(ar): {names}?",
-        'delete.confirm': 'Ta bort grenen {name}? En avisering kan sedan fortfarande återställa den (git nekar fortfarande till ej sammanfogade grenar).',
+        'delete.confirm': 'Ta bort grenen {name}? En avisering kan sedan fortfarande återställa den (ej sammanfogade commits kräver en andra bekräftelse).',
+        'delete.unmerged': 'Grenen {name} har fortfarande commits som inte är sammanfogade (och kanske inte pushade). De kan bara återställas via aviseringen. Ta bort ändå?',
         'discard.confirm': 'Förkasta ändringar i {path}? Arbetsträdets innehåll skrivs över —— en avisering kan sedan fortfarande återställa det.',
         'resetHard.confirm': 'Hård återställning till {hash}? Ej committade ändringar går förlorade.',
         'resetSoft.confirm': 'Flytta HEAD till {hash} (arbetsträdet behålls)?',
@@ -6042,6 +6123,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Eşleşme yok',
         'repo.empty': 'Bu çalışma alanında Git deposu bulunamadı',
         'repo.switch': 'Depoyu değiştir',
+        'repo.manual': 'elle',
+        'repo.manualOpen': 'Başka bir depo aç…',
+        'repo.manualPlaceholder': 'Deponun mutlak yolunu girin',
+        'repo.manualAdd': 'Aç',
         'branch.switch': 'Dalı değiştir',
         'seg.changes': 'Değişiklikler {n}',
         'seg.history': 'Geçmiş',
@@ -6419,7 +6504,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Çakışmalar {n}',
         'push.confirm': '{branch} dalı {upstream} deposuna gönderilsin mi?',
         'push.confirmMany': "{n} dal gönderilecek: {names}. Emin misiniz?",
-        'delete.confirm': '{name} dalı silinsin mi? Ardından bir bildirim onu geri getirebilir (git birleştirilmemiş dalları yine de reddeder).',
+        'delete.confirm': '{name} dalı silinsin mi? Ardından bir bildirim onu geri getirebilir (birleştirilmemiş commit\'ler için ikinci bir onay gerekir).',
+        'delete.unmerged': '{name} dalında hâlâ birleştirilmemiş (ve belki de gönderilmemiş) commit\'ler var. Silindikten sonra yalnızca bildirimden kurtarılabilir. Yine de silinsin mi?',
         'discard.confirm': '{path} içindeki değişiklikler atılsın mı? Çalışma ağacının içeriği üzerine yazılır —— ardından bir bildirim onu geri getirebilir.',
         'resetHard.confirm': '{hash} sürümüne zorla sıfırlansın mı? Commit’lenmemiş değişiklikler kaybolur.',
         'resetSoft.confirm': 'HEAD {hash} sürümüne taşınsın mı (çalışma ağacı korunur)?',
@@ -6438,6 +6524,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Tidak ada kecocokan',
         'repo.empty': 'Tidak ada repositori Git di ruang kerja ini',
         'repo.switch': 'Ganti repositori',
+        'repo.manual': 'manual',
+        'repo.manualOpen': 'Buka repositori lain…',
+        'repo.manualPlaceholder': 'Masukkan jalur absolut repositori',
+        'repo.manualAdd': 'Buka',
         'branch.switch': 'Ganti branch',
         'seg.changes': 'Perubahan {n}',
         'seg.history': 'Riwayat',
@@ -6815,7 +6905,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Konflik {n}',
         'push.confirm': 'Push {branch} ke {upstream}?',
         'push.confirmMany': "Push {n} branch: {names}?",
-        'delete.confirm': 'Hapus branch {name}? Notifikasi masih bisa mengembalikannya (git tetap menolak branch yang belum digabung).',
+        'delete.confirm': 'Hapus branch {name}? Notifikasi masih bisa mengembalikannya (commit yang belum digabung akan meminta konfirmasi kedua).',
+        'delete.unmerged': 'Branch {name} masih memiliki commit yang belum digabung (dan mungkin belum di-push). Commit itu hanya bisa dipulihkan dari notifikasi. Tetap hapus?',
         'discard.confirm': 'Buang perubahan di {path}? Isi worktree ditimpa —— notifikasi masih bisa mengembalikannya.',
         'resetHard.confirm': 'Reset keras ke {hash}? Perubahan yang belum di-commit akan hilang.',
         'resetSoft.confirm': 'Pindahkan HEAD ke {hash} (worktree dipertahankan)?',
@@ -6834,6 +6925,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'Không có kết quả phù hợp',
         'repo.empty': 'Không tìm thấy kho Git trong không gian làm việc này',
         'repo.switch': 'Chuyển kho',
+        'repo.manual': 'thủ công',
+        'repo.manualOpen': 'Mở kho khác…',
+        'repo.manualPlaceholder': 'Nhập đường dẫn tuyệt đối của kho',
+        'repo.manualAdd': 'Mở',
         'branch.switch': 'Chuyển nhánh',
         'seg.changes': 'Thay đổi {n}',
         'seg.history': 'Lịch sử',
@@ -7211,7 +7306,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'Xung đột {n}',
         'push.confirm': 'Push {branch} lên {upstream}?',
         'push.confirmMany': "Push {n} nhánh: {names}?",
-        'delete.confirm': 'Xoá nhánh {name}? Thông báo sau đó vẫn có thể khôi phục (git vẫn từ chối nhánh chưa hợp nhất).',
+        'delete.confirm': 'Xoá nhánh {name}? Thông báo sau đó vẫn có thể khôi phục (commit chưa hợp nhất sẽ cần xác nhận lần hai).',
+        'delete.unmerged': 'Nhánh {name} vẫn còn commit chưa hợp nhất (và có thể chưa được đẩy lên). Chúng chỉ có thể được khôi phục từ thông báo. Vẫn xoá?',
         'discard.confirm': 'Bỏ thay đổi trong {path}? Nội dung worktree sẽ bị ghi đè —— thông báo sau đó vẫn có thể khôi phục.',
         'resetHard.confirm': 'Đặt lại cứng về {hash}? Thay đổi chưa commit sẽ mất.',
         'resetSoft.confirm': 'Chuyển HEAD về {hash} (giữ worktree)?',
@@ -7230,6 +7326,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'لا توجد نتائج مطابقة',
         'repo.empty': 'لم يُعثر على مستودع Git في مساحة العمل هذه',
         'repo.switch': 'تبديل المستودع',
+        'repo.manual': 'يدوي',
+        'repo.manualOpen': 'فتح مستودع آخر…',
+        'repo.manualPlaceholder': 'أدخل المسار المطلق للمستودع',
+        'repo.manualAdd': 'فتح',
         'branch.switch': 'تبديل الفرع',
         'seg.changes': 'التغييرات {n}',
         'seg.history': 'السجل',
@@ -7607,7 +7707,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'التعارضات {n}',
         'push.confirm': 'دفع {branch} إلى {upstream}?',
         'push.confirmMany': "دفع {n} فروع: {names}؟",
-        'delete.confirm': 'حذف الفرع {name}? يمكن لإشعار بعد ذلك أن يعيده (سيظل git يرفض الفروع غير المدمجة).',
+        'delete.confirm': 'حذف الفرع {name}؟ يمكن لإشعار بعد ذلك أن يعيده (ستُطلب موافقة ثانية إذا كانت هناك التزامات غير مدمجة).',
+        'delete.unmerged': 'لا يزال الفرع {name} يحتوي على التزامات غير مدمجة (وربما غير مدفوعة). لا يمكن استعادتها إلا من الإشعار. هل تريد الحذف على أي حال؟',
         'discard.confirm': 'تجاهل التغييرات في {path}? سيُستبدل محتوى شجرة العمل —— ويمكن لإشعار بعد ذلك أن يعيده.',
         'resetHard.confirm': 'إعادة تعيين قسرية إلى {hash}? ستفقد التغييرات غير الملتزَم بها.',
         'resetSoft.confirm': 'نقل HEAD إلى {hash} (مع الاحتفاظ بشجرة العمل)?',
@@ -7626,6 +7727,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'कोई मेल नहीं',
         'repo.empty': 'इस कार्यक्षेत्र में कोई Git रिपॉज़िटरी नहीं मिली',
         'repo.switch': 'रिपॉज़िटरी बदलें',
+        'repo.manual': 'मैन्युअल',
+        'repo.manualOpen': 'दूसरा रिपॉज़िटरी खोलें…',
+        'repo.manualPlaceholder': 'रिपॉज़िटरी का पूर्ण पथ दर्ज करें',
+        'repo.manualAdd': 'खोलें',
         'branch.switch': 'शाखा बदलें',
         'seg.changes': 'परिवर्तन {n}',
         'seg.history': 'इतिहास',
@@ -8003,7 +8108,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'टकराव {n}',
         'push.confirm': '{branch} को {upstream} पर पुश करें?',
         'push.confirmMany': "{n} शाखाएँ पुश करें: {names}?",
-        'delete.confirm': 'शाखा {name} हटाएँ? बाद में एक सूचना इसे वापस ला सकती है (git अब भी अनमर्ज्ड शाखाओं से इनकार करता है)।',
+        'delete.confirm': 'शाखा {name} हटाएँ? बाद में एक सूचना इसे वापस ला सकती है (अनमर्ज्ड कमिट के लिए एक और पुष्टि होगी)।',
+        'delete.unmerged': 'शाखा {name} में अभी भी अनमर्ज्ड (और शायद अनपुश्ड) कमिट हैं। हटाने के बाद उन्हें केवल सूचना से वापस पाया जा सकता है। फिर भी हटाएँ?',
         'discard.confirm': '{path} में परिवर्तन छोड़ें? वर्कट्री की सामग्री अधिलेखित हो जाएगी —— बाद में एक सूचना इसे वापस ला सकती है।',
         'resetHard.confirm': '{hash} पर हार्ड रीसेट करें? बिना कमिट किए परिवर्तन खो जाएँगे।',
         'resetSoft.confirm': 'HEAD को {hash} पर ले जाएँ (वर्कट्री सुरक्षित)?',
@@ -8022,6 +8128,10 @@ window.__ModuleLoader__.load({
         'picker.empty': 'ไม่มีรายการที่ตรงกัน',
         'repo.empty': 'ไม่พบรีโพซิทอรี Git ในเวิร์กสเปซนี้',
         'repo.switch': 'สลับรีโพซิทอรี',
+        'repo.manual': 'ด้วยตนเอง',
+        'repo.manualOpen': 'เปิดที่เก็บอื่น…',
+        'repo.manualPlaceholder': 'ป้อนพาธแบบเต็มของที่เก็บ',
+        'repo.manualAdd': 'เปิด',
         'branch.switch': 'สลับแบรนช์',
         'seg.changes': 'การเปลี่ยนแปลง {n}',
         'seg.history': 'ประวัติ',
@@ -8399,7 +8509,8 @@ window.__ModuleLoader__.load({
         'counts.conflicted': 'ความขัดแย้ง {n}',
         'push.confirm': 'พุช {branch} ไปที่ {upstream}?',
         'push.confirmMany': "จะ Push {n} สาขา: {names} ใช่หรือไม่?",
-        'delete.confirm': 'ลบแบรนช์ {name}? จากนั้นยังกู้คืนได้ผ่านการแจ้งเตือน (git ยังคงปฏิเสธแบรนช์ที่ยังไม่รวม)',
+        'delete.confirm': 'ลบแบรนช์ {name}? จากนั้นยังกู้คืนได้ผ่านการแจ้งเตือน (คอมมิตที่ยังไม่รวมจะมีการยืนยันอีกครั้ง)',
+        'delete.unmerged': 'แบรนช์ {name} ยังมีคอมมิตที่ยังไม่รวม (และอาจยังไม่ถูกพุช) หลังลบจะกู้คืนได้จากการแจ้งเตือนเท่านั้น ดำเนินการลบต่อหรือไม่?',
         'discard.confirm': 'ทิ้งการเปลี่ยนแปลงใน {path}? เนื้อหาของเวิร์กทรีจะถูกเขียนทับ —— จากนั้นยังกู้คืนได้ผ่านการแจ้งเตือน',
         'resetHard.confirm': 'ฮาร์ดรีเซ็ตไปที่ {hash}? การเปลี่ยนแปลงที่ยังไม่คอมมิตจะหายไป',
         'resetSoft.confirm': 'ย้าย HEAD ไปที่ {hash} (เก็บเวิร์กทรีไว้)?',
@@ -8767,6 +8878,19 @@ window.__ModuleLoader__.load({
     let prewarmTimer = null
     let prewarmGeneration = 0
 
+    /* ---- workspace repo pick core ---- */
+    /* The repository the WORKSPACE belongs to, not necessarily `data.cwd`:
+       when the session cwd is a subdirectory, the host reports the enclosing
+       checkout as a `kind: 'workspace'` row while `isRepo` is true for any cwd
+       inside it. Binding the panel to `cwd` made every path relative to the
+       subdirectory, so the diff was empty (issue #30). */
+    function workspaceRepoOf(data) {
+      const repos = data !== null && typeof data === 'object' && Array.isArray(data.repos) ? data.repos : []
+      const workspace = repos.find((row) => row !== null && typeof row === 'object' && row.kind === 'workspace' && typeof row.path === 'string' && row.path !== '')
+      return workspace === undefined ? null : workspace.path
+    }
+    /* ---- end workspace repo pick core ---- */
+
     /* The panel's own repo pick order (see the repos effect in Panel): the
        session's remembered repo, the workspace's last-viewed root, the
        workspace itself when it is a repository, then the first row. Picking
@@ -8777,7 +8901,8 @@ window.__ModuleLoader__.load({
       if (remembered !== undefined && paths.indexOf(remembered) >= 0) return remembered
       const painted = readPaintRoot(cwd)
       if (painted !== undefined && paths.indexOf(painted) >= 0) return painted
-      if (data.isRepo === true) return data.cwd
+      const workspace = workspaceRepoOf(data)
+      if (workspace !== null) return workspace
       if (paths.length > 0) return paths[0]
       return null
     }
@@ -8839,7 +8964,7 @@ window.__ModuleLoader__.load({
       try {
         let data = readPaintRepos(cwd)
         if (data === undefined) {
-          data = await request('repos', { cwd: cwd })
+          data = await request('repos', { cwd: cwd, extraPaths: readManualRepos(sessionId) })
           /* A newer switch arrived while this scan ran: drop the stale
              result on the floor instead of writing and fetching on. */
           if (generation !== prewarmGeneration) return
@@ -9008,6 +9133,32 @@ window.__ModuleLoader__.load({
         const next = parsed !== null && typeof parsed === 'object' ? parsed : {}
         next[sessionId] = repoPath
         window.localStorage.setItem(REPO_KEY, JSON.stringify(next))
+      } catch (error) { void error }
+    }
+
+    /** Paths this session opened by hand, newest first (issue #29). */
+    function readManualRepos(sessionId) {
+      try {
+        const raw = window.localStorage.getItem(MANUAL_REPO_KEY)
+        if (raw === null || raw === '') return []
+        const parsed = JSON.parse(raw)
+        if (parsed === null || typeof parsed !== 'object') return []
+        const list = parsed[sessionId]
+        if (!Array.isArray(list)) return []
+        return list.filter((entry) => typeof entry === 'string' && entry !== '').slice(0, MANUAL_REPO_LIMIT)
+      } catch (error) { void error }
+      return []
+    }
+
+    function rememberManualRepo(sessionId, repoPath) {
+      if (typeof repoPath !== 'string' || repoPath === '') return
+      try {
+        const raw = window.localStorage.getItem(MANUAL_REPO_KEY)
+        const parsed = raw === null || raw === '' ? {} : JSON.parse(raw)
+        const next = parsed !== null && typeof parsed === 'object' ? parsed : {}
+        const current = Array.isArray(next[sessionId]) ? next[sessionId] : []
+        next[sessionId] = [repoPath].concat(current.filter((entry) => entry !== repoPath)).slice(0, MANUAL_REPO_LIMIT)
+        window.localStorage.setItem(MANUAL_REPO_KEY, JSON.stringify(next))
       } catch (error) { void error }
     }
 
@@ -10393,6 +10544,52 @@ window.__ModuleLoader__.load({
       return out
     }
 
+    /* ---- patch path core ---- */
+    /* git quotes a diff header path when core.quotePath is true (the default)
+       and the name holds non-ASCII bytes, C-escaping each UTF-8 byte as octal:
+       `"b/5-\345\216\237..."`. Taking that literal made the sidebar ask the
+       host for a path that does not exist (issue #31). Decode the quoted form
+       first, then strip the a/ b/ prefix. Octal runs are decoded as bytes, not
+       code points, so the original UTF-8 name comes back intact. */
+    function unquotePatchPath(value) {
+      const text = String(value === undefined || value === null ? '' : value)
+      if (text.length < 2 || text.charAt(0) !== '"' || text.charAt(text.length - 1) !== '"') return text
+      const body = text.slice(1, -1)
+      let out = ''
+      let bytes = []
+      const flushBytes = () => {
+        if (bytes.length === 0) return
+        try { out += new TextDecoder().decode(Uint8Array.from(bytes)) } catch (error) { out += String.fromCharCode.apply(null, bytes) }
+        bytes = []
+      }
+      for (let index = 0; index < body.length; index += 1) {
+        const char = body.charAt(index)
+        if (char !== '\\') { flushBytes(); out += char; continue }
+        const next = body.charAt(index + 1)
+        if (next === '') { flushBytes(); out += '\\'; break }
+        if (next >= '0' && next <= '7') {
+          let digits = ''
+          let cursor = index + 1
+          while (digits.length < 3 && cursor < body.length) {
+            const digit = body.charAt(cursor)
+            if (digit < '0' || digit > '7') break
+            digits += digit
+            cursor += 1
+          }
+          bytes.push(Number.parseInt(digits, 8))
+          index = cursor - 1
+          continue
+        }
+        flushBytes()
+        const escapes = { n: '\n', t: '\t', r: '\r', b: '\b', f: '\f', v: '\v', a: '\u0007', '\\': '\\', '"': '"' }
+        out += Object.prototype.hasOwnProperty.call(escapes, next) ? escapes[next] : next
+        index += 1
+      }
+      flushBytes()
+      return out
+    }
+    /* ---- end patch path core ---- */
+
     /* One file segment of a (possibly multi-file) patch: path, hunks, ±
        counts, and the file-level facts FileDiff's notes need. */
     function splitPatchFiles(patch) {
@@ -10407,8 +10604,13 @@ window.__ModuleLoader__.load({
           continue
         }
         if (current === null) continue
-        if (line.indexOf('+++ ') === 0) current.path = line.slice(4) === '/dev/null' ? current.path : line.slice(4).replace(/^b\//, '')
-        else if (current.path === '' && line.indexOf('--- a/') === 0) current.path = line.slice(6)
+        if (line.indexOf('+++ ') === 0) {
+          const raw = unquotePatchPath(line.slice(4))
+          current.path = raw === '/dev/null' ? current.path : raw.replace(/^b\//, '')
+        } else if (current.path === '' && line.indexOf('--- ') === 0) {
+          const raw = unquotePatchPath(line.slice(4))
+          if (raw !== '/dev/null') current.path = raw.replace(/^a\//, '')
+        }
         if (line.indexOf('Binary files') === 0 || line.indexOf('Binary file') === 0) current.binary = true
         if (line.indexOf('new file mode') === 0) current.created = true
         if (line.indexOf('deleted file mode') === 0) current.removed = true
@@ -11196,7 +11398,8 @@ window.__ModuleLoader__.load({
             onKeyDown: onKeyDown,
           })),
         E('div', { className: 'dig-pick-list', ref: listRef, role: 'listbox' },
-          rowsView.length === 0 ? E('div', { className: 'dig-pick-empty' }, t('picker.empty')) : rowsView))
+          rowsView.length === 0 ? E('div', { className: 'dig-pick-empty' }, t('picker.empty')) : rowsView),
+        mode === 'repo' ? E(ManualRepoEntry, { t: t, onOpen: props.onOpenRepo, onClose: props.onClose }) : null)
     }
 
     /* Lets the user choose which actions the rail shows and in which order. The
@@ -12185,6 +12388,78 @@ window.__ModuleLoader__.load({
       })
     }
 
+    /* “Open another repository…” (issue #29): the host only scans the
+       workspace tree, so a checkout elsewhere needs one typed absolute path.
+       The host resolves the path to its top level and the caller merges the
+       resulting row into the picker. Local busy/error state keeps a bad path
+       next to the field instead of closing the menu over a banner. */
+    function ManualRepoEntry(props) {
+      const t = props.t
+      const [open, setOpen] = useState(false)
+      const [value, setValue] = useState('')
+      const [busy, setBusy] = useState(false)
+      const [error, setError] = useState('')
+      const inputRef = useRef(null)
+      useEffect(() => {
+        const input = inputRef.current
+        if (open === true && input !== null && typeof input.focus === 'function') input.focus({ preventScroll: true })
+      }, [open])
+      if (typeof props.onOpen !== 'function') return null
+      const submit = async () => {
+        const typed = value.trim()
+        if (typed === '' || busy === true) return
+        setBusy(true)
+        setError('')
+        try {
+          await props.onOpen(typed)
+          setValue('')
+          setOpen(false)
+        } catch (caught) {
+          setError(caught instanceof Error ? caught.message : String(caught))
+        } finally { setBusy(false) }
+      }
+      const onKeyDown = (event) => {
+        if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); void submit(); return }
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          if (open === true) { setOpen(false); setError(''); return }
+          if (typeof props.onClose === 'function') props.onClose()
+        }
+      }
+      if (open !== true) {
+        return E('div', { className: 'dig-pick-manual' },
+          E('button', {
+            type: 'button', className: 'dig-pick-manual-open',
+            onClick: () => { setOpen(true); setError('') },
+          }, E(Icon, { name: 'folder', size: 12 }), E('span', null, t('repo.manualOpen'))))
+      }
+      return E('div', { className: 'dig-pick-manual' },
+        E('div', { className: 'dig-pick-manual-form' },
+          E('input', {
+            ref: inputRef,
+            className: 'dig-input dig-input-compact dig-pick-manual-input',
+            value: value,
+            spellCheck: false,
+            placeholder: t('repo.manualPlaceholder'),
+            'aria-label': t('repo.manualPlaceholder'),
+            disabled: busy === true,
+            onChange: (event) => { setValue(event.target.value); setError('') },
+            onKeyDown: onKeyDown,
+          }),
+          E('button', {
+            type: 'button', className: 'dig-btn dig-btn-small',
+            disabled: busy === true || value.trim() === '',
+            onClick: () => { void submit() },
+          }, busy === true ? t('status.loading') : t('repo.manualAdd')),
+          E('button', {
+            type: 'button', className: 'dig-btn dig-btn-small',
+            disabled: busy === true,
+            onClick: () => { setOpen(false); setError('') },
+          }, t('confirm.cancel'))),
+        error === '' ? null : E('div', { className: 'dig-pick-manual-error' }, error))
+    }
+
     function RepoSelect(props) {
       const t = props.t
       /* While the workspace is still being scanned the panel used to print "no
@@ -12197,8 +12472,11 @@ window.__ModuleLoader__.load({
           E(Icon, { name: 'folder', size: 12 }),
           E('span', { className: 'dig-repo-name' }, t('status.loading')))
       }
-      if (props.repos.length <= 1) {
-        const only = props.repos.length === 1 ? props.repos[0] : null
+      /* A single repository still opens the switcher: its menu now carries
+         "open another repository", which is the only way out of a workspace
+         scan that found exactly one checkout. */
+      if (props.repos.length === 0) {
+        const only = null
         return E('span', { className: 'dig-repo-static', title: only === null ? '' : only.path },
           E(Icon, { name: 'folder', size: 12 }),
           E('span', { className: 'dig-repo-name' }, only === null ? t('repo.empty') : only.name))
@@ -12254,8 +12532,9 @@ window.__ModuleLoader__.load({
           E('span', { className: 'dig-picker-icon' }, E(Icon, { name: 'folder', size: 13 })),
           E('span', { className: 'dig-picker-name' }, repo.name),
           repo.branch === null || repo.branch === undefined ? null : E('span', { className: 'dig-badge' }, repo.branch),
-          E('span', { className: 'dig-picker-kind' }, repo.kind === 'workspace' ? t('repo.workspace') : t('repo.nested')),
-          E('span', { className: 'dig-picker-path' }, repo.path))))
+          E('span', { className: 'dig-picker-kind' }, repo.kind === 'workspace' ? t('repo.workspace') : repo.kind === 'manual' ? t('repo.manual') : t('repo.nested')),
+          E('span', { className: 'dig-picker-path' }, repo.path))),
+        E(ManualRepoEntry, { t: t, onOpen: props.onOpenRepo }))
     }
 
     /* ============================== branch tree ============================== */
@@ -14398,8 +14677,11 @@ window.__ModuleLoader__.load({
           let pick = null
           if (remembered !== undefined && paths.indexOf(remembered) >= 0) pick = remembered
           else if (cachedPick !== undefined && paths.indexOf(cachedPick) >= 0) pick = cachedPick
-          else if (data.isRepo === true) pick = data.cwd
-          else if (paths.length > 0) pick = paths[0]
+          else {
+            const workspace = workspaceRepoOf(data)
+            if (workspace !== null) pick = workspace
+            else if (paths.length > 0) pick = paths[0]
+          }
           setRepoRoot(pick)
           rememberPaintRoot(cwd, pick)
           return pick
@@ -14408,7 +14690,7 @@ window.__ModuleLoader__.load({
         if (cached !== undefined) apply(cached, readPaintRoot(cwd))
         void (async () => {
           try {
-            const data = await request('repos', { cwd: cwd })
+            const data = await request('repos', { cwd: cwd, extraPaths: readManualRepos(sessionId) })
             if (cancelled) return
             writePaintRepos(cwd, data)
             apply(data, readPaintRoot(cwd))
@@ -14724,6 +15006,25 @@ window.__ModuleLoader__.load({
         setView('history')
         setPathFilter('')
       }, [sessionId, resetDiff])
+
+      /* “Open another repository…” resolves the typed path host-side, then
+         joins the row to the current discovery so the selectors and the
+         remembered-manual list both know it. The host has already validated
+         the path; a bad one rejects and stays as an inline picker error. */
+      const openManualRepo = useCallback(async (path) => {
+        const result = await request('openRepo', { path: path })
+        const row = result !== null && typeof result === 'object' ? result.repo : null
+        if (row === null || typeof row.path !== 'string' || row.path === '') throw new Error('the host did not return a repository')
+        setRepoState((state) => {
+          if (state === null || !Array.isArray(state.repos)) return state
+          const rest = state.repos.filter((entry) => entry.path !== row.path)
+          return Object.assign({}, state, { repos: rest.concat([row]) })
+        })
+        rememberManualRepo(sessionId, row.path)
+        pickRepo(row.path)
+        setPicker(null)
+        return row
+      }, [sessionId, pickRepo])
 
       /* The composer status pill and this panel are separate trees; when the
          pill (or any other seat) switches the repository or the branch, this
@@ -15305,22 +15606,8 @@ window.__ModuleLoader__.load({
         if (locals.length === 0 && remotes.length === 0 && tags.length === 0) return
         setDialog({ kind: 'deleteRefs', locals: locals, remotes: remotes, tags: tags })
       }
-      /* Batch local delete with the same undo toast the single delete has.
-         Plain function on purpose (invariant 12): a useCallback here would
-         evaluate `undoAction` in its dep array — declared further below. */
-      const deleteBranches = async (names) => {
-        const data = await run('branchDelete', { names: names, confirm: true })
-        if (data === undefined) return
-        if (data.undo === undefined) return
-        pushToast({
-          text: fill(t('toast.branchesDeleted'), { n: names.length }),
-          icon: 'trash',
-          tone: 'warn',
-          undoId: data.undo.id,
-          actionLabel: t('toast.undo'),
-          onAction: () => { void undoAction(data.undo.id) },
-        })
-      }
+      /* Batch local delete lives beside the single delete below so both take
+         the same branch-unmerged second confirmation path. */
 
       const branchMenu = useCallback((event, entry, picked) => {
         const current = branches === null ? '' : branches.branch
@@ -15601,19 +15888,64 @@ window.__ModuleLoader__.load({
         pushToast({ text: t('toast.restored') + ' · ' + data.label, icon: 'check', tone: 'ok', ttl: 6000 })
       }, [base, guard, refresh, pushToast, t])
 
-      const deleteBranch = useCallback(async (name) => {
-        const data = await run('branchDelete', { name: name, confirm: true })
-        if (data === undefined) return
+      /* Deleting a local branch that is not fully merged is a two-step
+         decision: the host answers the plain delete with branch-unmerged, and
+         this opens a second confirmation that force-deletes on top of the undo
+         toast. The quiet attempt deliberately bypasses guard(): the first
+         refusal is a question, not an error banner. */
+      const attemptBranchDelete = useCallback(async (payload) => {
+        setBusy(true)
+        setError(null)
+        setErrorCode(null)
+        try {
+          return { data: await request('branchDelete', Object.assign({}, base, payload)) }
+        } catch (caught) {
+          const failure = caught instanceof Error ? caught : new Error(String(caught))
+          return { error: failure }
+        } finally {
+          setBusy(false)
+        }
+      }, [base])
+
+      const finishBranchDelete = useCallback(async (data, names) => {
+        await refresh()
+        if (repoRoot !== null) notifyBranchSwitched(sessionId, repoRoot, 'panel')
         if (data.undo === undefined) return
+        const single = names.length === 1
         pushToast({
-          text: fill(t('toast.branchDeleted'), { name: name }),
+          text: single ? fill(t('toast.branchDeleted'), { name: names[0] }) : fill(t('toast.branchesDeleted'), { n: names.length }),
           icon: 'trash',
           tone: 'warn',
           undoId: data.undo.id,
           actionLabel: t('toast.undo'),
           onAction: () => { void undoAction(data.undo.id) },
         })
-      }, [run, pushToast, undoAction, t])
+      }, [refresh, repoRoot, sessionId, pushToast, undoAction, t])
+
+      const deleteBranchNames = useCallback(async (names, force) => {
+        const payload = force === true
+          ? { names: names, confirm: true, force: true }
+          : { names: names, confirm: true }
+        const result = await attemptBranchDelete(payload)
+        if (result.error !== undefined) {
+          if (force !== true && result.error.code === 'branch-unmerged') {
+            setDialog({ kind: 'deleteBranchForce', names: names })
+            return
+          }
+          setError(result.error.message)
+          setErrorCode(typeof result.error.code === 'string' ? result.error.code : null)
+          return
+        }
+        await finishBranchDelete(result.data, names)
+      }, [attemptBranchDelete, finishBranchDelete])
+
+      const deleteBranch = useCallback((name) => deleteBranchNames([name], false), [deleteBranchNames])
+
+      /* Batch local delete keeps the same two-step path; the old plain-function
+         shape stays (invariant 12) so the delete-refs dialog can call it. */
+      const deleteBranches = async (names) => {
+        await deleteBranchNames(names, false)
+      }
 
       const dropStash = useCallback(async (ref) => {
         const data = await run('stashDrop', { ref: ref, confirm: true })
@@ -16426,7 +16758,7 @@ window.__ModuleLoader__.load({
         body = E('div', { className: 'dig-body', ref: bodyRef }, E('div', { className: 'dig-empty' }, t('status.loading')))
       } else if (repoRoot === null) {
         body = E('div', { className: 'dig-body', ref: bodyRef }, E(RepoPicker, {
-          t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo,
+          t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo, onOpenRepo: openManualRepo,
         }))
       } else if (view === 'worktrees') {
         body = E('div', { className: 'dig-body dig-body-worktrees', ref: bodyRef }, E(WorktreesPane, {
@@ -16507,6 +16839,7 @@ window.__ModuleLoader__.load({
             repos: picker.kind === 'repo' ? headerRepos : [],
             branches: picker.kind === 'branch' ? branchList : [],
             current: picker.kind === 'repo' ? repoRoot : (branches === null ? '' : branches.branch),
+            onOpenRepo: picker.kind === 'repo' ? openManualRepo : undefined,
             onPick: (value, row) => {
               setPicker(null)
               if (picker.kind === 'repo') {
@@ -16703,6 +17036,23 @@ window.__ModuleLoader__.load({
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => { const name = dialog.name; setDialog(null); void deleteBranch(name) },
+        }))
+      }
+      /* The plain delete was refused because the branch still carries commits
+         that are not fully merged. Offer the deliberate force path instead of
+         leaving the user at an error banner; the undo toast is still attached
+         to the forced delete. */
+      if (dialog !== null && dialog.kind === 'deleteBranchForce') {
+        const names = dialog.names
+        const listed = names.length <= 5 ? names.join('、') : names.slice(0, 5).join('、') + ' …'
+        overlays.push(E(ConfirmDialog, {
+          key: 'deleteBranchForce',
+          t: t,
+          title: t('confirm.title'),
+          text: fill(t('delete.unmerged'), { name: listed }),
+          okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
+          onCancel: () => setDialog(null),
+          onConfirm: () => { setDialog(null); void deleteBranchNames(names, true) },
         }))
       }
       if (dialog !== null && dialog.kind === 'stashDrop') {
@@ -17112,6 +17462,14 @@ window.__ModuleLoader__.load({
       '.dig-pick-note{flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px}',
       '.dig-pick-count{margin-left:auto;flex:none;color:var(--dsw-alias-label-tertiary);font-size:11px;font-variant-numeric:tabular-nums}',
       '.dig-pick-empty{padding:10px 8px;color:var(--dsw-alias-label-tertiary);font-size:12px}',
+      /* v0.31 manual checkout entry: one collapsed button, then a small form
+         pinned under the scrolling list. */
+      '.dig-pick-manual{margin-top:4px;padding-top:6px;border-top:1px solid var(--dsw-alias-border-l2);flex:none}',
+      '.dig-pick-manual-open{display:flex;align-items:center;gap:6px;width:100%;padding:4px 8px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:12px;text-align:left;cursor:pointer}',
+      '.dig-pick-manual-open:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
+      '.dig-pick-manual-form{display:flex;align-items:center;gap:4px;min-width:0}',
+      '.dig-pick-manual-input{flex:1;min-width:0}',
+      '.dig-pick-manual-error{margin-top:4px;color:var(--dsw-alias-state-error-primary,var(--dsw-alias-state-warn-primary));font-size:11px;overflow-wrap:anywhere}',
       '.dig-cs-menu.dig-cs-picker{width:300px;min-width:260px;max-width:340px;max-height:360px;padding:4px;overflow:hidden;background-color:var(--dsh-any-op-menu-cordis,var(--dsw-static-neutral-bluish-00,#fff));background-image:linear-gradient(var(--dsh-any-op-menu-cordis,transparent),var(--dsh-any-op-menu-cordis,transparent))}',
       /* position:relative: the marquee box paints against this wrapper (the
          scroll container is offset by the search field — same rule as
@@ -17754,7 +18112,8 @@ window.__ModuleLoader__.load({
       const remembered = readRememberedRepo(sessionId)
       const paths = data.repos.map((repo) => repo.path)
       if (remembered !== undefined && paths.indexOf(remembered) >= 0) return remembered
-      if (data.isRepo === true) return data.cwd
+      const workspace = workspaceRepoOf(data)
+      if (workspace !== null) return workspace
       if (paths.length > 0) return paths[0]
       return null
     }
@@ -18098,7 +18457,7 @@ window.__ModuleLoader__.load({
         if (seeded !== undefined) applyRepos(seeded)
         void (async () => {
           try {
-            const data = await request('repos', { cwd: cwd })
+            const data = await request('repos', { cwd: cwd, extraPaths: readManualRepos(sessionId) })
             if (cancelled === true) return
             writePaintRepos(cwd, data)
             applyRepos(data)
@@ -18203,7 +18562,9 @@ window.__ModuleLoader__.load({
       const data = repoState
       if (data === null || (data.isRepo !== true && (data.repos === undefined || data.repos.length === 0))) return null
       const repoPaths = data.repos.map((repo) => repo.path)
-      const singleRepo = repoPaths.length <= 1
+      /* Keep the menu reachable for a single checkout: it holds the manual
+         path entry that opens a repository outside the workspace scan. */
+      const singleRepo = repoPaths.length === 0
       /* The pill shows the repository's OWN name — the origin URL's leaf
          (summary.origin) — so a clone renamed on disk still reads as the
          repo it came from; the folder basename is only the fallback for
@@ -18274,6 +18635,21 @@ window.__ModuleLoader__.load({
         rememberRepoShared(sessionId, path)
       }
 
+      /* Same manual-open flow as the panel, scoped to the pill's own menu. */
+      const openManualRepo = async (path) => {
+        const result = await request('openRepo', { path: path })
+        const row = result !== null && typeof result === 'object' ? result.repo : null
+        if (row === null || typeof row.path !== 'string' || row.path === '') throw new Error('the host did not return a repository')
+        setRepoState((state) => {
+          if (state === null || !Array.isArray(state.repos)) return state
+          const rest = state.repos.filter((entry) => entry.path !== row.path)
+          return Object.assign({}, state, { repos: rest.concat([row]) })
+        })
+        rememberManualRepo(sessionId, row.path)
+        pickRepoRoot(row.path)
+        return row
+      }
+
       return E('div', { ref: rootRef, className: 'dig-cs-root', 'data-dsh-ide-git-status': '' },
         E('button', {
           type: 'button',
@@ -18328,6 +18704,7 @@ window.__ModuleLoader__.load({
               }
             }),
             current: repoRoot,
+            onOpenRepo: openManualRepo,
             onPick: (path) => pickRepoRoot(path),
             onClose: () => setMenu(null),
           }))

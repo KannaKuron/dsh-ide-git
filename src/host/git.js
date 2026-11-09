@@ -50,13 +50,30 @@ function gitBinary() {
  * can decide whether a non-zero status is data (e.g. `git diff --quiet`) or an
  * error; `git()` below is the throwing form.
  */
+/** Environment for every git child: no optional locks, no credential prompt,
+ *  and unquoted non-ASCII paths in diff headers (issue #31). git's default
+ *  core.quotePath=true C-escapes those headers, which made the client's
+ *  header-derived path unusable for `git show <hash> -- <path>`. GIT_CONFIG_*
+ *  is honoured by git >= 2.31; the client still decodes quoted headers so an
+ *  older git keeps working. A caller that already owns GIT_CONFIG_COUNT keeps
+ *  its own configuration instead of having it overwritten here. */
+function gitEnv() {
+  const env = { ...process.env, GIT_OPTIONAL_LOCKS: '0', GIT_TERMINAL_PROMPT: '0' }
+  if (process.env.GIT_CONFIG_COUNT === undefined) {
+    env.GIT_CONFIG_COUNT = '1'
+    env.GIT_CONFIG_KEY_0 = 'core.quotePath'
+    env.GIT_CONFIG_VALUE_0 = 'false'
+  }
+  return env
+}
+
 function runGit(cwd, args, options = {}) {
   const timeoutMs = options.timeoutMs === undefined ? DEFAULT_TIMEOUT_MS : options.timeoutMs
   const startedAt = Date.now()
   return new Promise((resolve, reject) => {
     let child
     try {
-      child = spawn(gitBinary(), args, { cwd, windowsHide: true, env: { ...process.env, GIT_OPTIONAL_LOCKS: '0', GIT_TERMINAL_PROMPT: '0' } })
+      child = spawn(gitBinary(), args, { cwd, windowsHide: true, env: gitEnv() })
     } catch (error) {
       reject(new PanelError('git-missing', 'cannot start git: ' + messageOf(error), 500))
       return

@@ -97,6 +97,8 @@
 17. **提交列表的日期格式是行 Config 的 `dateFormat`**(默认 `relative`,可写 `absolute`)。格式化只走 `commitDateText()`:同年 `MM-DD HH:mm`、跨年 `YYYY/MM/DD HH:mm`;非法时间戳返回空串且不生成 tooltip,绝对/相对的另一形态放在 `title`。设置卡在独立的「历史列表」节写入,新增文案时 21 门词典的 `settings.history.title` 与 `settings.date.*` 必须同步。
 
 18. **「在右侧栏打开」只属于内嵌 diff,且是第二视图而不是替换**(issue #28)。按钮在外层 `dig-diff-head` 的路径右侧、关闭左侧,不进 `LineDiff` 的 split/wrap 工具条;右侧栏自己的 diff tab 不显示它(避免递归)。多文件补丁的路径以 `LineDiff` 的 `onActiveFile` 上报为准(`diffPath`),外层头部与按钮都跟随它。better-sidebar 的原生 diff 页按会话单实例复用,标题必须是通用 `diff.codeLabel`——传文件名会在下一个目标时留下旧文件名;commit 文件优先原生 hash+path,worktree 优先 better-sidebar,二者都不可用时提示 `diff.sidebar.failed`。文案四键(`diff.sidebar.open/unavailable/loading/failed`)必须 21 门同步。
+19. **仓库绑定的根必须是仓库顶层,不是会话 cwd**(issue #30)。宿主的 `isRepo` 只说明 cwd 落在某个工作树内;cwd 可能是仓库子目录。客户端三处仓库选择(`prewarmPickOf`、Panel apply、`composerPickRepoOf`)统一走 `workspaceRepoOf(data)`,取 `repos` 里 `kind === 'workspace'` 的 `path`;只有没有该行时才回退,不要把 `data.cwd` 当根,否则差异路径相对子目录生成,patch 恒为空。三处 `repos` 请求都要带 `extraPaths: readManualRepos(sessionId)`;手动入口走宿主 `openRepo`(校验绝对路径 + `git rev-parse --show-toplevel`),成功后作为 `kind: 'manual'` 行合并进当前列表并选中,按会话记在 `dsh-ide-git.manualRepos.v1`(去重、最多 8 条);扫描已发现的同一路径保留原 workspace / nested 行,不重复 append。单仓库(0 个或 1 个)也不能藏掉手动入口。
+20. **未合并分支的删除是两次确认,不是拒绝**(user m00683)。宿主 `branchDelete` 在非 force 时先按 git 的口径预检:有 upstream 用 upstream,否则用 `HEAD`,对每个 name 跑 `git merge-base --is-ancestor refs/heads/<name> <base>`;任一不祖先就抛 `PanelError('branch-unmerged', …, 409)` 且一个分支都不删(批量保持原子)。客户端不能用 `guard` 把这次 409 直接显示成错误横幅,要捕获 code 后弹第二个 ConfirmDialog(`delete.unmerged`),确认后以 `{names, confirm: true, force: true}` 再调,成功后照常 refresh / notify / 保留 undo toast。直接 force 的路径仍必须 `confirm: true`(不变量 4)。
 
 ## 文档规范
 
