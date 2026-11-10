@@ -16,6 +16,7 @@ DSH 自带的 Git 面板覆盖「暂存 / 提交 / 还原 / 看历史」;`dsh-id
 - **想指给 AI 一段代码**:在 diff 窗里选中几行、右键,把「哪个文件哪几行」(附提交或工作区上下文)直接发进当前会话的输入框。
 - **想比较分支**:分支右键即可与当前分支比较,结果按文件与提交数汇报。
 - **操作要够全**:签出、从任意分支/提交新建分支、重命名、删除、合并到当前(默认 / `--no-ff` / `--squash` / `--no-ff --no-commit`)、变基当前到此、新建标签、cherry-pick、还原提交、重置(保留/丢弃)、fetch / pull --ff-only / push(确认后);留下待提交的合并后,可在「更多操作 → 提交 → 中止合并」退出。
+- **卡住时知道卡在哪**:面板加载超过 2 秒会出现诊断条——分段进度(fetch / summary / stats / branches / log)、当前活动 git 子命令与已运行时长;宿主 2.5 秒不应答时提示「宿主无响应」,并可一键复制诊断 JSON。正常加载与后台轮询不显示诊断条。
 - **输入框里就能看 Git**:输入框工具条上有仓库与分支胶囊(着色的未提交 / 可拉取 / 待推送计数),点击弹出可搜索的切换器——仓库按名称/路径过滤,分支按 `/` 折成文件夹树(`fix/xxx` 一眼看清),输入即滤、方向键 + Enter 可选;多仓库工作区两边都能切,切换与面板实时联动,设置里可关(默认开);选择器里还有「打开其他仓库…」,输入绝对路径即可把工作区外的仓库加入并按会话记住。切到新会话也不用等——插件会在你点开会话时就预热首屏数据,面板秒开。
 
 ## 效果
@@ -153,7 +154,7 @@ dsh plugin --profile web add dsh-better-sidebar
      └─ 会话工作区 = cwd(客户端 scope.cwd 传入)
 ```
 
-- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 53 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
+- **宿主半**:一个前缀路由 `/dsh-ide-git/api`,方法表 54 个(`summary` / `branches` / `log` / `commitDetail` / `diff` / `compare` / `stage` / … / `push` / `tagDelete` / `version`)。所有 git 调用都是 **argv 数组 + `spawn`**(没有 shell 字符串、没有 `exec`),参数先过校验(绝对路径、ref 不以 `-` 开头、无控制字符、路径不越出仓库)。
 - **客户端半**:无构建、单文件、`window.__ModuleLoader__.load({ id, factory })` 包装,只 `require('react')`(DSH 客户端基线模块白名单内)。
 - **信任围栏**:路由挂在 DSH 自己的 web server 上,天然同源;只有 Host 为 loopback,或浏览器标记 `Sec-Fetch-Site: same-origin/same-site` 的请求才会被服务。
 - **破坏性操作**:`push` / 硬重置 / 强制删分支 / 丢弃未跟踪文件 / 删除 stash 都必须显式 `confirm: true`,UI 侧一律弹二次确认。

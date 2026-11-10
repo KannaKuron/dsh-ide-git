@@ -70,6 +70,15 @@ window.__ModuleLoader__.load({
     const GRAPH_MAX_LANES = 7
     const LANE_COLORS = ['#4d6bfe', '#e2a03f', '#3fb950', '#d2679b', '#59b0d6', '#b083f0', '#d2694a', '#8a9aa8']
     const AUTO_REFRESH_MS = 12000
+    /* The load trace stays invisible through a normal local round-trip and
+       only materialises once a phase has outlived this budget. It then polls
+       the host's active-git registry once a second: a named command proves
+       the wait is inside git, an empty registry proves the plugin/host code
+       is the one not answering. */
+    const LOAD_TRACE_SLOW_MS = 2000
+    const LOAD_TRACE_POLL_MS = 1000
+    const LOAD_TRACE_CLOCK_MS = 500
+    const LOAD_TRACE_TIMEOUT_MS = 2500
     const REPO_KEY = 'dsh-ide-git.repo.v1'
     /* Manually opened checkouts, per session: the host only scans the
        workspace tree, so these paths ride every `repos` request as
@@ -474,6 +483,19 @@ window.__ModuleLoader__.load({
       'error.pullDirty': '拉取会覆盖本地未提交的更改：请先提交或贮藏这些更改。',
       'status.loading': '正在读取...',
       'status.busy': '处理中...',
+      'load.slow': '加载较慢',
+      'load.repos': '查找仓库',
+      'load.fetch': '拉取远程',
+      'load.summary': '读取变更',
+      'load.stats': '统计增删行',
+      'load.branches': '读取分支',
+      'load.log': '读取历史',
+      'load.git': 'git {command} 已运行 {n}s',
+      'load.host': '宿主处理中',
+      'load.unresponsive': '宿主无响应',
+      'load.copy': '复制诊断',
+      'load.copied': '已复制',
+      'load.elapsed': '已等待 {n}s',
       'counts.staged': '已暂存 {n}',
       'counts.ignored': '忽略 {n}',
       'counts.unstaged': '更改 {n}',
@@ -875,6 +897,19 @@ window.__ModuleLoader__.load({
       'error.pullDirty': 'Pull would overwrite uncommitted local changes. Commit or stash them first.',
       'status.loading': 'Reading...',
       'status.busy': 'Working...',
+      'load.slow': 'Slow load',
+      'load.repos': 'Scanning repositories',
+      'load.fetch': 'Fetching remote',
+      'load.summary': 'Reading changes',
+      'load.stats': 'Counting changed lines',
+      'load.branches': 'Reading branches',
+      'load.log': 'Reading history',
+      'load.git': 'git {command} running for {n}s',
+      'load.host': 'Host is processing',
+      'load.unresponsive': 'Host is not responding',
+      'load.copy': 'Copy diagnostics',
+      'load.copied': 'Copied',
+      'load.elapsed': 'Waiting {n}s',
       'counts.staged': 'Staged {n}',
       'counts.ignored': 'Ignored {n}',
       'counts.unstaged': 'Changes {n}',
@@ -1284,6 +1319,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': '拉取會覆蓋本地未提交嘅改動:請先提交或者貯藏呢啲改動。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
+        'load.slow': '載入較慢',
+        'load.repos': '搵緊存放庫',
+        'load.fetch': '拉取遠端',
+        'load.summary': '讀取變更',
+        'load.stats': '統計增刪行',
+        'load.branches': '讀取分支',
+        'load.log': '讀取歷史',
+        'load.git': 'git {command} 已執行 {n} 秒',
+        'load.host': '宿主處理緊',
+        'load.unresponsive': '宿主無回應',
+        'load.copy': '複製診斷',
+        'load.copied': '已複製',
+        'load.elapsed': '已等 {n} 秒',
         'counts.staged': '已暫存 {n}',
         'counts.ignored': '已忽略 {n}',
         'counts.unstaged': '變更 {n}',
@@ -1685,6 +1733,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': '拉取會覆蓋本機未提交的變更：請先提交或貯藏這些變更。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
+        'load.slow': '載入較慢',
+        'load.repos': '正在尋找版本庫',
+        'load.fetch': '拉取遠端',
+        'load.summary': '讀取變更',
+        'load.stats': '統計增刪行',
+        'load.branches': '讀取分支',
+        'load.log': '讀取歷史',
+        'load.git': 'git {command} 已執行 {n} 秒',
+        'load.host': '宿主處理中',
+        'load.unresponsive': '宿主無回應',
+        'load.copy': '複製診斷',
+        'load.copied': '已複製',
+        'load.elapsed': '已等待 {n} 秒',
         'counts.staged': '已暫存 {n}',
         'counts.ignored': '已忽略 {n}',
         'counts.unstaged': '變更 {n}',
@@ -2086,6 +2147,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': '拉取會覆蓋本地未提交嘅改動:請先提交或者貯藏呢啲改動。',
         'status.loading': '讀取中...',
         'status.busy': '處理中...',
+        'load.slow': '載入較慢',
+        'load.repos': '搵緊存放庫',
+        'load.fetch': '拉取遠端',
+        'load.summary': '讀取變更',
+        'load.stats': '統計增刪行',
+        'load.branches': '讀取分支',
+        'load.log': '讀取歷史',
+        'load.git': 'git {command} 已執行 {n} 秒',
+        'load.host': '宿主處理緊',
+        'load.unresponsive': '宿主無回應',
+        'load.copy': '複製診斷',
+        'load.copied': '已複製',
+        'load.elapsed': '已等 {n} 秒',
         'counts.staged': '已暫存 {n}',
         'counts.ignored': '已忽略 {n}',
         'counts.unstaged': '變更 {n}',
@@ -2487,6 +2561,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'プルするとローカルの未コミット変更が上書きされます。先にコミットするかスタッシュしてください。',
         'status.loading': '読み込み中...',
         'status.busy': '処理中...',
+        'load.slow': '読み込みが遅い',
+        'load.repos': 'リポジトリを検索中',
+        'load.fetch': 'リモートを取得中',
+        'load.summary': '変更を読み込み中',
+        'load.stats': '増減行を集計中',
+        'load.branches': 'ブランチを読み込み中',
+        'load.log': '履歴を読み込み中',
+        'load.git': 'git {command} を {n} 秒実行中',
+        'load.host': 'ホストで処理中',
+        'load.unresponsive': 'ホストが応答しません',
+        'load.copy': '診断をコピー',
+        'load.copied': 'コピーしました',
+        'load.elapsed': '{n} 秒待機中',
         'counts.staged': 'ステージ済み {n}',
         'counts.ignored': '無視 {n}',
         'counts.unstaged': '変更 {n}',
@@ -2888,6 +2975,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': '풀을 하면 로컬의 커밋되지 않은 변경이 덮어써집니다. 먼저 커밋하거나 스태시하세요.',
         'status.loading': '읽는 중...',
         'status.busy': '처리 중...',
+        'load.slow': '로드가 느림',
+        'load.repos': '저장소 찾는 중',
+        'load.fetch': '원격 가져오는 중',
+        'load.summary': '변경 사항 읽는 중',
+        'load.stats': '증감 줄 집계 중',
+        'load.branches': '브랜치 읽는 중',
+        'load.log': '기록 읽는 중',
+        'load.git': 'git {command} 실행 중 {n}초',
+        'load.host': '호스트 처리 중',
+        'load.unresponsive': '호스트 응답 없음',
+        'load.copy': '진단 복사',
+        'load.copied': '복사됨',
+        'load.elapsed': '{n}초 대기 중',
         'counts.staged': '스테이지됨 {n}',
         'counts.ignored': '무시됨 {n}',
         'counts.unstaged': '변경 {n}',
@@ -3289,6 +3389,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull würde lokale, nicht committete Änderungen überschreiben. Zuerst committen oder stashen.',
         'status.loading': 'Wird gelesen...',
         'status.busy': 'Arbeitet...',
+        'load.slow': 'Langsames Laden',
+        'load.repos': 'Repository wird gesucht',
+        'load.fetch': 'Remote wird abgerufen',
+        'load.summary': 'Änderungen werden gelesen',
+        'load.stats': 'Zeilenstatistik wird berechnet',
+        'load.branches': 'Branches werden gelesen',
+        'load.log': 'Verlauf wird gelesen',
+        'load.git': 'git {command} läuft seit {n}s',
+        'load.host': 'Host verarbeitet',
+        'load.unresponsive': 'Host antwortet nicht',
+        'load.copy': 'Diagnose kopieren',
+        'load.copied': 'Kopiert',
+        'load.elapsed': '{n}s gewartet',
         'counts.staged': 'Vorgemerkt {n}',
         'counts.ignored': 'Ignoriert {n}',
         'counts.unstaged': 'Änderungen {n}',
@@ -3690,6 +3803,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Le pull écraserait des modifications locales non validées. Validez-les ou remisez-les d\'abord.',
         'status.loading': 'Lecture...',
         'status.busy': 'En cours...',
+        'load.slow': 'Chargement lent',
+        'load.repos': 'Recherche du dépôt',
+        'load.fetch': 'Récupération du distant',
+        'load.summary': 'Lecture des modifications',
+        'load.stats': 'Calcul des lignes modifiées',
+        'load.branches': 'Lecture des branches',
+        'load.log': 'Lecture de l’historique',
+        'load.git': 'git {command} en cours depuis {n}s',
+        'load.host': 'Traitement par l’hôte',
+        'load.unresponsive': 'L’hôte ne répond pas',
+        'load.copy': 'Copier le diagnostic',
+        'load.copied': 'Copié',
+        'load.elapsed': 'Attente de {n}s',
         'counts.staged': 'Indexé {n}',
         'counts.ignored': 'Ignoré {n}',
         'counts.unstaged': 'Modifications {n}',
@@ -4091,6 +4217,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull перезапишет незакоммиченные локальные изменения. Сначала закоммитьте или спрячьте их.',
         'status.loading': 'Чтение...',
         'status.busy': 'Работа...',
+        'load.slow': 'Медленная загрузка',
+        'load.repos': 'Поиск репозитория',
+        'load.fetch': 'Получение remote',
+        'load.summary': 'Чтение изменений',
+        'load.stats': 'Подсчёт изменённых строк',
+        'load.branches': 'Чтение веток',
+        'load.log': 'Чтение истории',
+        'load.git': 'git {command} выполняется {n} с',
+        'load.host': 'Обработка на хосте',
+        'load.unresponsive': 'Хост не отвечает',
+        'load.copy': 'Копировать диагностику',
+        'load.copied': 'Скопировано',
+        'load.elapsed': 'Ожидание {n} с',
         'counts.staged': 'В индексе {n}',
         'counts.ignored': 'Игнорируется {n}',
         'counts.unstaged': 'Изменения {n}',
@@ -4492,6 +4631,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'O pull sobrescreveria alterações locais não commitadas. Faça commit ou stash primeiro.',
         'status.loading': 'Lendo...',
         'status.busy': 'Trabalhando...',
+        'load.slow': 'Carregamento lento',
+        'load.repos': 'A procurar repositório',
+        'load.fetch': 'A obter remoto',
+        'load.summary': 'A ler alterações',
+        'load.stats': 'A calcular linhas alteradas',
+        'load.branches': 'A ler ramos',
+        'load.log': 'A ler histórico',
+        'load.git': 'git {command} em execução há {n}s',
+        'load.host': 'O host está a processar',
+        'load.unresponsive': 'O host não responde',
+        'load.copy': 'Copiar diagnóstico',
+        'load.copied': 'Copiado',
+        'load.elapsed': 'À espera de {n}s',
         'counts.staged': 'Preparado {n}',
         'counts.ignored': 'Ignorado {n}',
         'counts.unstaged': 'Alterações {n}',
@@ -4893,6 +5045,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Il pull sovrascriverebbe modifiche locali non committate. Esegui prima commit o stash.',
         'status.loading': 'Lettura...',
         'status.busy': 'In corso...',
+        'load.slow': 'Caricamento lento',
+        'load.repos': 'Ricerca del repository',
+        'load.fetch': 'Recupero del remoto',
+        'load.summary': 'Lettura delle modifiche',
+        'load.stats': 'Conteggio righe modificate',
+        'load.branches': 'Lettura dei branch',
+        'load.log': 'Lettura della cronologia',
+        'load.git': 'git {command} in esecuzione da {n}s',
+        'load.host': 'Elaborazione dell’host',
+        'load.unresponsive': 'L’host non risponde',
+        'load.copy': 'Copia diagnostica',
+        'load.copied': 'Copiato',
+        'load.elapsed': 'In attesa da {n}s',
         'counts.staged': 'In stage {n}',
         'counts.ignored': 'Ignorati {n}',
         'counts.unstaged': 'Modifiche {n}',
@@ -5294,6 +5459,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull zou niet-gecommitte lokale wijzigingen overschrijven. Commit of stash ze eerst.',
         'status.loading': 'Lezen...',
         'status.busy': 'Bezig...',
+        'load.slow': 'Traag laden',
+        'load.repos': 'Repository zoeken',
+        'load.fetch': 'Remote ophalen',
+        'load.summary': 'Wijzigingen lezen',
+        'load.stats': 'Gewijzigde regels tellen',
+        'load.branches': 'Branches lezen',
+        'load.log': 'Geschiedenis lezen',
+        'load.git': 'git {command} draait al {n}s',
+        'load.host': 'Host verwerkt',
+        'load.unresponsive': 'Host reageert niet',
+        'load.copy': 'Diagnose kopiëren',
+        'load.copied': 'Gekopieerd',
+        'load.elapsed': '{n}s gewacht',
         'counts.staged': 'Gestaged {n}',
         'counts.ignored': 'Genegeerd {n}',
         'counts.unstaged': 'Wijzigingen {n}',
@@ -5695,6 +5873,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull nadpisałby niezatwierdzone zmiany lokalne. Najpierw je zatwierdź lub schowaj.',
         'status.loading': 'Wczytywanie...',
         'status.busy': 'Praca...',
+        'load.slow': 'Wolne ładowanie',
+        'load.repos': 'Wyszukiwanie repozytorium',
+        'load.fetch': 'Pobieranie zdalnego',
+        'load.summary': 'Odczyt zmian',
+        'load.stats': 'Liczenie zmienionych linii',
+        'load.branches': 'Odczyt gałęzi',
+        'load.log': 'Odczyt historii',
+        'load.git': 'git {command} działa od {n}s',
+        'load.host': 'Przetwarzanie na hoście',
+        'load.unresponsive': 'Host nie odpowiada',
+        'load.copy': 'Kopiuj diagnostykę',
+        'load.copied': 'Skopiowano',
+        'load.elapsed': 'Czekam {n}s',
         'counts.staged': 'W indeksie {n}',
         'counts.ignored': 'Ignorowane {n}',
         'counts.unstaged': 'Zmiany {n}',
@@ -6096,6 +6287,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull skulle skriva över lokala ej commit:ade ändringar. Commit:a eller stash:a dem först.',
         'status.loading': 'Läser...',
         'status.busy': 'Arbetar...',
+        'load.slow': 'Långsam laddning',
+        'load.repos': 'Söker repository',
+        'load.fetch': 'Hämtar remote',
+        'load.summary': 'Läser ändringar',
+        'load.stats': 'Räknar ändrade rader',
+        'load.branches': 'Läser grenar',
+        'load.log': 'Läser historik',
+        'load.git': 'git {command} har körts i {n}s',
+        'load.host': 'Värden bearbetar',
+        'load.unresponsive': 'Värden svarar inte',
+        'load.copy': 'Kopiera diagnostik',
+        'load.copied': 'Kopierat',
+        'load.elapsed': 'Väntat {n}s',
         'counts.staged': 'Klädda {n}',
         'counts.ignored': 'Ignorerade {n}',
         'counts.unstaged': 'Ändringar {n}',
@@ -6497,6 +6701,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull, commit\'lenmemiş yerel değişikliklerin üzerine yazar. Önce commit\'leyin veya stash\'leyin.',
         'status.loading': 'Okunuyor...',
         'status.busy': 'Çalışıyor...',
+        'load.slow': 'Yavaş yükleme',
+        'load.repos': 'Depo aranıyor',
+        'load.fetch': 'Uzak getiriliyor',
+        'load.summary': 'Değişiklikler okunuyor',
+        'load.stats': 'Değişen satırlar sayılıyor',
+        'load.branches': 'Dallar okunuyor',
+        'load.log': 'Geçmiş okunuyor',
+        'load.git': 'git {command} {n} sn’dir çalışıyor',
+        'load.host': 'Ana makine işliyor',
+        'load.unresponsive': 'Ana makine yanıt vermiyor',
+        'load.copy': 'Tanılamayı kopyala',
+        'load.copied': 'Kopyalandı',
+        'load.elapsed': '{n} sn bekleniyor',
         'counts.staged': 'Hazırlanan {n}',
         'counts.ignored': 'Yok sayılan {n}',
         'counts.unstaged': 'Değişiklikler {n}',
@@ -6898,6 +7115,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull akan menimpa perubahan lokal yang belum di-commit. Commit atau stash dulu.',
         'status.loading': 'Membaca...',
         'status.busy': 'Bekerja...',
+        'load.slow': 'Pemuatan lambat',
+        'load.repos': 'Mencari repositori',
+        'load.fetch': 'Mengambil remote',
+        'load.summary': 'Membaca perubahan',
+        'load.stats': 'Menghitung baris berubah',
+        'load.branches': 'Membaca cabang',
+        'load.log': 'Membaca riwayat',
+        'load.git': 'git {command} berjalan {n} dtk',
+        'load.host': 'Host memproses',
+        'load.unresponsive': 'Host tidak merespons',
+        'load.copy': 'Salin diagnostik',
+        'load.copied': 'Disalin',
+        'load.elapsed': 'Menunggu {n} dtk',
         'counts.staged': 'Ter-stage {n}',
         'counts.ignored': 'Diabaikan {n}',
         'counts.unstaged': 'Perubahan {n}',
@@ -7299,6 +7529,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull sẽ ghi đè thay đổi local chưa commit. Hãy commit hoặc stash trước.',
         'status.loading': 'Đang đọc...',
         'status.busy': 'Đang xử lý...',
+        'load.slow': 'Tải chậm',
+        'load.repos': 'Đang tìm kho',
+        'load.fetch': 'Đang lấy remote',
+        'load.summary': 'Đang đọc thay đổi',
+        'load.stats': 'Đang đếm dòng thay đổi',
+        'load.branches': 'Đang đọc nhánh',
+        'load.log': 'Đang đọc lịch sử',
+        'load.git': 'git {command} đang chạy {n} giây',
+        'load.host': 'Máy chủ đang xử lý',
+        'load.unresponsive': 'Máy chủ không phản hồi',
+        'load.copy': 'Sao chép chẩn đoán',
+        'load.copied': 'Đã sao chép',
+        'load.elapsed': 'Đã chờ {n} giây',
         'counts.staged': 'Đã stage {n}',
         'counts.ignored': 'Bị bỏ qua {n}',
         'counts.unstaged': 'Thay đổi {n}',
@@ -7700,6 +7943,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'سيؤدي pull إلى الكتابة فوق تغييرات محلية غير مثبتة. ثبّتها أو خزّنها أولًا.',
         'status.loading': 'جارٍ القراءة...',
         'status.busy': 'جارٍ العمل...',
+        'load.slow': 'تحميل بطيء',
+        'load.repos': 'البحث عن المستودع',
+        'load.fetch': 'جلب البعيد',
+        'load.summary': 'قراءة التغييرات',
+        'load.stats': 'حساب الأسطر المتغيرة',
+        'load.branches': 'قراءة الفروع',
+        'load.log': 'قراءة السجل',
+        'load.git': 'git {command} قيد التشغيل منذ {n} ث',
+        'load.host': 'المضيف يعالج',
+        'load.unresponsive': 'المضيف لا يستجيب',
+        'load.copy': 'نسخ التشخيص',
+        'load.copied': 'تم النسخ',
+        'load.elapsed': 'الانتظار {n} ث',
         'counts.staged': 'مُجهَّز {n}',
         'counts.ignored': 'متجاهَل {n}',
         'counts.unstaged': 'التغييرات {n}',
@@ -8101,6 +8357,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'pull लोकल की uncommitted changes को overwrite करेगा। पहले commit या stash करें।',
         'status.loading': 'पढ़ा जा रहा है...',
         'status.busy': 'कार्य जारी...',
+        'load.slow': 'धीमी लोडिंग',
+        'load.repos': 'रिपॉज़िटरी खोजी जा रही है',
+        'load.fetch': 'रिमोट लाया जा रहा है',
+        'load.summary': 'बदलाव पढ़े जा रहे हैं',
+        'load.stats': 'बदली पंक्तियाँ गिनी जा रही हैं',
+        'load.branches': 'शाखाएँ पढ़ी जा रही हैं',
+        'load.log': 'इतिहास पढ़ा जा रहा है',
+        'load.git': 'git {command} {n} से चल रहा है',
+        'load.host': 'होस्ट संसाधित कर रहा है',
+        'load.unresponsive': 'होस्ट जवाब नहीं दे रहा',
+        'load.copy': 'निदान कॉपी करें',
+        'load.copied': 'कॉपी किया गया',
+        'load.elapsed': '{n} से प्रतीक्षा',
         'counts.staged': 'स्टेज्ड {n}',
         'counts.ignored': 'अनदेखा {n}',
         'counts.unstaged': 'परिवर्तन {n}',
@@ -8502,6 +8771,19 @@ window.__ModuleLoader__.load({
         'error.pullDirty': 'Pull จะเขียนทับการเปลี่ยนแปลง local ที่ยังไม่ commit: ให้ commit หรือ stash ก่อน',
         'status.loading': 'กำลังอ่าน...',
         'status.busy': 'กำลังทำงาน...',
+        'load.slow': 'โหลดช้า',
+        'load.repos': 'กำลังค้นหาที่เก็บ',
+        'load.fetch': 'กำลังดึง remote',
+        'load.summary': 'กำลังอ่านการเปลี่ยนแปลง',
+        'load.stats': 'กำลังนับบรรทัดที่เปลี่ยน',
+        'load.branches': 'กำลังอ่านสาขา',
+        'load.log': 'กำลังอ่านประวัติ',
+        'load.git': 'git {command} กำลังทำงาน {n} วินาที',
+        'load.host': 'โฮสต์กำลังประมวลผล',
+        'load.unresponsive': 'โฮสต์ไม่ตอบสนอง',
+        'load.copy': 'คัดลอกข้อมูลวินิจฉัย',
+        'load.copied': 'คัดลอกแล้ว',
+        'load.elapsed': 'รอมา {n} วินาที',
         'counts.staged': 'สเตจแล้ว {n}',
         'counts.ignored': 'เพิกเฉย {n}',
         'counts.unstaged': 'การเปลี่ยนแปลง {n}',
@@ -12388,6 +12670,159 @@ window.__ModuleLoader__.load({
       })
     }
 
+    /* “This is taking too long” (load diagnostics): a normal load finishes in
+       well under two seconds, so nothing is rendered until the current trace
+       crosses LOAD_TRACE_SLOW_MS. From then on the strip names the phase that
+       is still running and asks the host which git children are alive:
+       - a command here means git itself is slow (large status, network fetch,
+         a Windows git.exe spawn storm);
+       - an empty registry means the wait is in the plugin/host JS, not in git;
+       - no answer at all means the host event loop is blocked.
+       The phase segments are the progress bar: green done, pulsing active,
+       faint waiting/skipped, red failed. */
+    const LOAD_PHASE_KEYS = {
+      fetch: 'load.fetch',
+      summary: 'load.summary',
+      stats: 'load.stats',
+      branches: 'load.branches',
+      log: 'load.log',
+      repos: 'load.repos',
+    }
+
+    function LoadTrace(props) {
+      const t = props.t
+      const trace = props.trace
+      const [now, setNow] = useState(() => Date.now())
+      const [diag, setDiag] = useState(null)
+      const [copied, setCopied] = useState(false)
+      const copyTimer = useRef(0)
+      const done = trace === null || trace.done === true
+
+      useEffect(() => {
+        if (done) return undefined
+        setNow(Date.now())
+        const timer = setInterval(() => setNow(Date.now()), LOAD_TRACE_CLOCK_MS)
+        return () => clearInterval(timer)
+      }, [trace, done])
+
+      useEffect(() => {
+        setDiag(null)
+        setCopied(false)
+      }, [trace])
+
+      useEffect(() => () => {
+        if (copyTimer.current !== 0) clearTimeout(copyTimer.current)
+      }, [])
+
+      const elapsed = trace === null ? 0 : Math.max(0, now - trace.startedAt)
+      const slow = trace !== null && trace.done !== true && elapsed >= LOAD_TRACE_SLOW_MS
+
+      useEffect(() => {
+        if (slow !== true) return undefined
+        let cancelled = false
+        let inFlight = false
+        const poll = async () => {
+          if (inFlight) return
+          inFlight = true
+          let settled = false
+          /* A blocked host event loop cannot answer this route either: the
+             request simply never settles, so the wait itself is the signal.
+             The timer is a diagnosis, not a cancellation — a late answer still
+             replaces it. */
+          const timer = setTimeout(() => {
+            if (!cancelled && !settled) setDiag({ data: null, at: Date.now(), error: 'diagnostics timed out' })
+          }, LOAD_TRACE_TIMEOUT_MS)
+          try {
+            const data = await request('diagnostics', {})
+            settled = true
+            if (timer !== 0) clearTimeout(timer)
+            if (!cancelled) setDiag({ data: data, at: Date.now(), error: null })
+          } catch (caught) {
+            settled = true
+            if (timer !== 0) clearTimeout(timer)
+            if (!cancelled) setDiag({ data: null, at: Date.now(), error: caught instanceof Error ? caught.message : String(caught) })
+          } finally {
+            inFlight = false
+          }
+        }
+        void poll()
+        const timer = setInterval(() => { void poll() }, LOAD_TRACE_POLL_MS)
+        return () => { cancelled = true; clearInterval(timer) }
+      }, [slow, props.request])
+
+      if (done || slow !== true) return null
+
+      const order = trace.kind === 'repos'
+        ? ['repos']
+        : trace.withFetch === true
+          ? ['fetch', 'summary', 'stats', 'branches', 'log']
+          : ['summary', 'stats', 'branches', 'log']
+      const stateOf = (name) => {
+        const phase = trace.phases[name]
+        return phase === undefined ? 'waiting' : phase.state
+      }
+      const completed = order.filter((name) => {
+        const state = stateOf(name)
+        return state === 'done' || state === 'skipped' || state === 'error'
+      }).length
+      const percent = order.length === 0 ? 0 : Math.round((completed / order.length) * 100)
+      const activePhases = order.filter((name) => stateOf(name) === 'active').map((name) => t(LOAD_PHASE_KEYS[name]))
+      const activeCalls = diag !== null && diag.data !== null && Array.isArray(diag.data.active) ? diag.data.active : []
+      const slowest = activeCalls.length === 0 ? null : activeCalls[0]
+      const hostText = t('load.host')
+      let gitText
+      if (diag !== null && diag.error !== null) gitText = t('load.unresponsive')
+      else if (slowest !== null) gitText = fill(t('load.git'), { command: slowest.command, n: (slowest.elapsedMs / 1000).toFixed(1) })
+      else gitText = hostText
+      const phaseText = activePhases.length === 0 ? hostText : activePhases.join(' · ')
+      const detail = phaseText === hostText ? gitText : phaseText + ' · ' + gitText
+
+      const copy = () => {
+        const phases = {}
+        for (const name of order) phases[name] = stateOf(name)
+        const report = {
+          at: new Date().toISOString(),
+          kind: trace.kind,
+          elapsedMs: elapsed,
+          phases: phases,
+          active: activeCalls,
+          diagnostics: diag === null ? null : { at: new Date(diag.at).toISOString(), error: diag.error },
+          cwd: props.cwd === undefined ? null : props.cwd,
+          repoRoot: props.repoRoot === null ? null : props.repoRoot,
+        }
+        copyText(JSON.stringify(report, null, 2))
+        setCopied(true)
+        if (copyTimer.current !== 0) clearTimeout(copyTimer.current)
+        copyTimer.current = setTimeout(() => setCopied(false), 1500)
+      }
+
+      return E('div', { className: 'dig-loadtrace', role: 'status' },
+        E('div', { className: 'dig-loadtrace-head' },
+          E('span', { className: 'dig-loadtrace-title' }, t('load.slow')),
+          E('span', { className: 'dig-loadtrace-elapsed' }, fill(t('load.elapsed'), { n: (elapsed / 1000).toFixed(1) })),
+          E('span', { className: 'dig-topbar-spacer' }),
+          E('button', {
+            type: 'button',
+            className: 'dig-btn dig-btn-small dig-loadtrace-copy',
+            onClick: copy,
+          }, copied ? t('load.copied') : t('load.copy'))),
+        E('div', {
+          className: 'dig-loadbar',
+          role: 'progressbar',
+          'aria-valuemin': 0,
+          'aria-valuemax': 100,
+          'aria-valuenow': percent,
+          title: detail,
+        }, order.map((name) => E('span', {
+          key: name,
+          className: 'dig-loadseg',
+          'data-phase': name,
+          'data-state': stateOf(name),
+          title: t(LOAD_PHASE_KEYS[name]),
+        }))),
+        E('div', { className: 'dig-loadtrace-detail', title: detail }, detail))
+    }
+
     /* “Open another repository…” (issue #29): the host only scans the
        workspace tree, so a checkout elsewhere needs one typed absolute path.
        The host resolves the path to its top level and the caller merges the
@@ -14374,6 +14809,11 @@ window.__ModuleLoader__.load({
       const [railSettings, setRailSettings] = useState(false)
       const [railBox, setRailBox] = useState({ width: 0, height: 0 })
       const [toasts, setToasts] = useState([])
+      /* Load trace: the current phase map lives in a ref (the polling child
+         reads it every 500ms), while traceTick makes React repaint when a
+         phase starts or settles. */
+      const traceRef = useRef(null)
+      const [traceTick, setTraceTick] = useState(0)
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
@@ -14653,6 +15093,44 @@ window.__ModuleLoader__.load({
           setBusy(false)
         }
       }, [])
+      /* ---- load trace (slow-load diagnostics) ----
+         beginTrace returns the trace object so every settlement can prove it
+         still owns the current trace; a newer refresh must not have an older
+         request's finally mark it done. */
+      const beginTrace = useCallback((kind, withFetch) => {
+        const names = kind === 'repos'
+          ? ['repos']
+          : withFetch === true
+            ? ['fetch', 'summary', 'stats', 'branches', 'log']
+            : ['summary', 'stats', 'branches', 'log']
+        const phases = {}
+        for (const name of names) phases[name] = { state: 'waiting', startedAt: undefined, endedAt: undefined }
+        const trace = { kind: kind, withFetch: withFetch === true, startedAt: Date.now(), phases: phases, done: false }
+        traceRef.current = trace
+        setTraceTick((value) => value + 1)
+        return trace
+      }, [])
+      const tracePhase = useCallback((trace, name, state) => {
+        if (traceRef.current !== trace) return
+        const phase = trace.phases[name]
+        if (phase === undefined || phase.state === state) return
+        const at = Date.now()
+        if (state === 'active') phase.startedAt = at
+        if (state === 'done' || state === 'error' || state === 'skipped') phase.endedAt = at
+        phase.state = state
+        setTraceTick((value) => value + 1)
+      }, [])
+      const endTrace = useCallback((trace) => {
+        if (traceRef.current !== trace) return
+        const at = Date.now()
+        for (const phase of Object.values(trace.phases)) {
+          if (phase.state === 'waiting') phase.state = 'skipped'
+          else if (phase.state === 'active') { phase.state = 'done'; phase.endedAt = at }
+        }
+        trace.done = true
+        trace.endedAt = at
+        setTraceTick((value) => value + 1)
+      }, [])
 
       const favorites = useMemo(() => (repoRoot === null ? [] : readFavorites(repoRoot)), [repoRoot, favTick])
       const toggleFavoriteBranch = useCallback((name) => {
@@ -14688,6 +15166,10 @@ window.__ModuleLoader__.load({
         }
         const cached = readPaintRepos(cwd)
         if (cached !== undefined) apply(cached, readPaintRoot(cwd))
+        /* A cache hit paints the picker at once, so the background re-scan is
+           not a user-visible wait and does not open a trace. A cold scan does:
+           it is the first thing between an empty panel and a repository. */
+        const trace = cached === undefined ? beginTrace('repos', false) : null
         void (async () => {
           try {
             const data = await request('repos', { cwd: cwd, extraPaths: readManualRepos(sessionId) })
@@ -14696,10 +15178,12 @@ window.__ModuleLoader__.load({
             apply(data, readPaintRoot(cwd))
           } catch (caught) {
             if (!cancelled) { setErrorCode(null); setError(caught instanceof Error ? caught.message : String(caught)) }
+          } finally {
+            if (trace !== null) endTrace(trace)
           }
         })()
         return () => { cancelled = true }
-      }, [cwd, sessionId, tick])
+      }, [cwd, sessionId, tick, beginTrace, endTrace])
 
       /* Changes view state, lifted out of ChangesPanel so the "..." menu (a
          rail action, invariant 14) can drive the same groupBy and the sort
@@ -14769,19 +15253,36 @@ window.__ModuleLoader__.load({
         })
       }
 
-      const loadSummary = useCallback(async () => {
+      const loadSummary = useCallback(async (onPhase) => {
         /* Two-phase (issue #11): the rows land first (`stats: false` skips the
            two numstat passes), then the +/- numbers merge in behind them. The
            panel is usable the moment the rows arrive; the numbers are exact
-           when they arrive — nothing is approximated or dropped. */
-        const data = await request('summary', Object.assign({}, base, { ignored: showIgnored, stats: false }))
-        setSummary(data)
-        if (data.statsDeferred === true) {
-          const merged = applyStats(data, await request('stats', base))
-          setSummary(merged)
-          return merged
+           when they arrive — nothing is approximated or dropped. `onPhase`
+           is optional: the slow-load trace uses it, the 12s poll does not. */
+        const phase = typeof onPhase === 'function' ? onPhase : null
+        let summaryDone = false
+        if (phase !== null) phase('summary', 'active')
+        try {
+          const data = await request('summary', Object.assign({}, base, { ignored: showIgnored, stats: false }))
+          setSummary(data)
+          summaryDone = true
+          if (phase !== null) phase('summary', 'done')
+          if (data.statsDeferred === true) {
+            if (phase !== null) phase('stats', 'active')
+            const merged = applyStats(data, await request('stats', base))
+            setSummary(merged)
+            if (phase !== null) phase('stats', 'done')
+            return merged
+          }
+          if (phase !== null) phase('stats', 'skipped')
+          return data
+        } catch (caught) {
+          if (phase !== null) {
+            phase(summaryDone ? 'stats' : 'summary', 'error')
+            if (!summaryDone) phase('stats', 'skipped')
+          }
+          throw caught
         }
-        return data
       }, [base, showIgnored])
 
       const loadBranches = useCallback(async () => {
@@ -14838,13 +15339,28 @@ window.__ModuleLoader__.load({
       const refresh = useCallback(async (opts) => {
         if (repoRoot === null) return
         const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReady === true
+        const traced = opts !== null && typeof opts === 'object' && opts.trace === true
+        const trace = traced ? beginTrace('refresh', withFetch) : null
+        const phase = trace === null ? null : (name, state) => { tracePhase(trace, name, state) }
         if (withFetch === true) setRefreshSpinning(true)
         try {
           await guard(async () => {
             if (withFetch === true) {
-              try { await request('fetch', Object.assign({}, base, { prune: true })) } catch (error) { void error }
+              if (phase !== null) phase('fetch', 'active')
+              try { await request('fetch', Object.assign({}, base, { prune: true })) } catch (error) { void error } finally { if (phase !== null) phase('fetch', 'done') }
             }
-            const [summaryData, branchesData, page] = await Promise.all([loadSummary(), loadBranches(), loadCommits(0)])
+            /* Start branches and history in the same tick as summary; each
+               wrapper settles only its own segment, so one slow arm leaves
+               the others green and names the one still running. */
+            const branchesWork = (async () => {
+              if (phase !== null) phase('branches', 'active')
+              try { return await loadBranches() } finally { if (phase !== null) phase('branches', 'done') }
+            })()
+            const commitsWork = (async () => {
+              if (phase !== null) phase('log', 'active')
+              try { return await loadCommits(0) } finally { if (phase !== null) phase('log', 'done') }
+            })()
+            const [summaryData, branchesData, page] = await Promise.all([loadSummary(phase), branchesWork, commitsWork])
             /* Keep the poll's HEAD signature in step (v0.18.7): after an
                in-panel commit/checkout the next tick must not re-pull
                branches + history all over again. */
@@ -14861,9 +15377,10 @@ window.__ModuleLoader__.load({
             if (browseRev === '') writePaintPage(repoRoot, { summary: summaryData, branches: branchesData, commits: page.commits, hasMore: page.hasMore })
           })
         } finally {
+          if (trace !== null) endTrace(trace)
           if (withFetch === true) setRefreshSpinning(false)
         }
-      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base, browseRev])
+      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base, browseRev, beginTrace, tracePhase, endTrace])
 
       /* Double-click a branch (or the HEAD row): browse its history. The merge
          anchor comes from the PREVIOUSLY browsed branch — 'merge-point' finds
@@ -14918,7 +15435,7 @@ window.__ModuleLoader__.load({
           if (branches === null && cachedPage.branches !== undefined) setBranches(cachedPage.branches)
           if (commits.length === 0 && Array.isArray(cachedPage.commits)) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore === true) }
         }
-        void refresh()
+        void refresh({ trace: true })
         return undefined
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [repoRoot, refresh, tick])
@@ -16521,7 +17038,7 @@ window.__ModuleLoader__.load({
          The rail renders a user-chosen subset in a user-chosen order. */
       const railActions = RAIL_SPECS.map((spec) => {
         const entry = { id: spec.id, icon: spec.icon, tone: spec.tone, label: t(spec.key), disabled: false, active: false, run: () => {} }
-        if (spec.id === 'refresh') { entry.disabled = refreshSpinning === true; entry.spinning = refreshSpinning === true; entry.run = () => { void refresh({ fetchRemote: true }) } }
+        if (spec.id === 'refresh') { entry.disabled = refreshSpinning === true; entry.spinning = refreshSpinning === true; entry.run = () => { void refresh({ fetchRemote: true, trace: true }) } }
         else if (spec.id === 'newBranch') entry.run = () => setDialog({ kind: 'newBranch' })
         else if (spec.id === 'checkout') {
           // Exactly one picked ref → check THAT out directly (same call the
@@ -17205,6 +17722,7 @@ window.__ModuleLoader__.load({
       }, topBar,
         columns === true || repoRoot === null ? null : renderRail(false),
         banner, noteBanner,
+        E(LoadTrace, { t: t, trace: traceRef.current, tick: traceTick, request: request, cwd: cwd, repoRoot: repoRoot }),
         E('div', { className: 'dig-shell' },
           columns === true && repoRoot !== null ? renderRail(true) : null,
           body),
@@ -17591,6 +18109,22 @@ window.__ModuleLoader__.load({
       '.dig-load-more{margin:6px auto;display:block;padding:3px 12px;border-radius:var(--dsw-radius-sm,8px);border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer}',
       '.dig-load-more:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-empty{padding:14px;text-align:center;color:var(--dsw-alias-label-tertiary);font-weight:500}',
+      /* Slow-load diagnostics: only the first load of a cold repository is
+         traced, and the strip itself waits LOAD_TRACE_SLOW_MS, so a normal
+         sub-second open never sees it. Segments are the progress bar. */
+      '.dig-loadtrace{display:flex;flex-direction:column;gap:4px;padding:6px 8px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2,transparent);color:var(--dsw-alias-label-secondary);font-weight:500}',
+      '.dig-loadtrace-head{display:flex;align-items:center;gap:8px;min-width:0}',
+      '.dig-loadtrace-title{color:var(--dsw-alias-label-primary);font-weight:600;white-space:nowrap}',
+      '.dig-loadtrace-elapsed{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;white-space:nowrap}',
+      '.dig-loadtrace-copy{flex:none}',
+      '.dig-loadbar{display:flex;gap:2px;height:4px;border-radius:var(--dsw-radius-xs,4px);overflow:hidden;background:var(--dsw-alias-border-subtle,var(--dsw-alias-border-l2))}',
+      '.dig-loadseg{flex:1;min-width:4px;background:var(--dsw-alias-border-l2);transition:background .2s}',
+      '.dig-loadseg[data-state="waiting"],.dig-loadseg[data-state="skipped"]{background:var(--dsw-alias-border-l2)}',
+      '.dig-loadseg[data-state="active"]{background:var(--dsw-alias-brand-primary);animation:dig-load-pulse 1.2s ease-in-out infinite}',
+      '.dig-loadseg[data-state="done"]{background:var(--dsw-alias-state-success-primary)}',
+      '.dig-loadseg[data-state="error"]{background:var(--dsw-alias-state-error-primary)}',
+      '.dig-loadtrace-detail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
+      '@keyframes dig-load-pulse{0%,100%{opacity:.45}50%{opacity:1}}',
       '.dig-changes{display:flex;flex-direction:column;min-height:0;flex:1;position:relative}',
       '.dig-changes-body{display:flex;flex-direction:column;min-height:0;flex:1}',
       '.dig-changes-list{flex:1;overflow:auto;min-height:0}',

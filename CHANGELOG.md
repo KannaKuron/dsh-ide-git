@@ -3,6 +3,18 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.32.0 — 2026-11-10
+
+**类型**:feat(issue #33 调查配套:慢加载诊断与进度条)
+
+- **加载诊断**:客户端加载超过 2 秒时,面板顶部出现诊断条,显示已等待时间与分段进度(fetch / summary / stats / branches / log;仓库扫描为 repos)。每段有等待 / 进行中 / 完成 / 跳过 / 失败状态,进度条按已完成段推进;加载完成后自动消失。后台 12 秒轮询不显示,正常刷新不打扰。
+- **卡在哪**:加载期间每秒调用新增的只读宿主方法 `diagnostics`,返回进行中的 git 子命令、cwd 与已运行时长;诊断条优先显示「git status 已运行 N 秒」,没有活动 git 时显示「宿主无响应」,并把当前阶段名拼在末尾。诊断请求 2.5 秒未返回也视为宿主无响应,晚到响应不覆盖超时提示。
+- **复制诊断**:诊断条提供「复制诊断」,复制 JSON(时间、kind、已等待、各阶段状态、活动 git、宿主诊断、cwd / repoRoot),方便贴到 issue;不包含完整 argv、提交信息或远程 URL。
+- **宿主**:`src/host/git.js` 记录 `activeGit`(只在 spawn 成功后登记,timeout / error / close 三条路径清理);`src/host/http.js` 新增只读方法 `diagnostics`(方法表 53→54),未加入 `WRITE_METHODS`。
+- **文案**:21 门词典新增 13 个 `load.*` 键,诊断条与复制按钮全部本地化。
+- **验证**:`npm test` 152/152(新增 diagnostics 路由、活动调用生命周期、诊断条阈值 / 所有权 / 超时 / 复制与 21 门键集断言);`node --check` 三文件;隔离 Web(dsh 0.2.2-rc.1)慢 status 4 秒时 2.3 秒出现诊断条、进度 50%、显示「git status 已运行 2.0s」,4 秒后消失;真实 git 无诊断条;诊断路由被人为延迟 10 秒时显示「宿主无响应」;复制 JSON 含 phases 与 cwd;零 pageerror。macOS 无法覆盖 Windows 慢 `git.exe`,作为环境差异保留。
+- 相关:issue [#33](https://github.com/KannaKuron/dsh-ide-git/issues/33)。
+
 ## v0.31.0 — 2026-11-09
 
 **类型**:feat(issue #29 手动仓库定位;未合并分支删除二次确认)+ fix(issue #30 / #31 / #32)

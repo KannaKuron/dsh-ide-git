@@ -769,7 +769,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version', 'diagnostics']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -779,6 +779,27 @@ test('host half exposes the method table the client calls', () => {
     const method = call.slice(call.indexOf("'") + 1, call.length - 1)
     assert.ok(methods.includes(method), 'client calls an unregistered method: ' + method)
   }
+})
+
+test('slow loads name the stuck phase and the git child (load trace)', () => {
+  // The strip is deliberately late and bounded: a normal <2s open never sees
+  // it, and once shown it polls the host once a second, never in parallel.
+  assert.match(client, /const LOAD_TRACE_SLOW_MS = 2000/)
+  assert.match(client, /const LOAD_TRACE_POLL_MS = 1000/)
+  assert.match(client, /request\('diagnostics'/)
+  assert.match(client, /role: 'progressbar'/)
+  for (const phase of ['repos', 'fetch', 'summary', 'stats', 'branches', 'log']) {
+    assert.ok(client.includes(phase + ": 'load.") || client.includes("'" + phase + "'"), 'missing trace phase: ' + phase)
+  }
+  // The state machine only settles the trace it still owns.
+  assert.match(client, /if \(traceRef\.current !== trace\) return/)
+  assert.ok(client.includes("beginTrace('repos', false)"), 'the cold repository scan opens a trace')
+  assert.ok(client.includes("refresh({ trace: true })"), 'the first panel load opens a trace')
+  // Nothing from argv reaches the UI: the host keeps only the subcommand.
+  assert.match(host, /const command = typeof args\[0\] === 'string'/)
+  assert.match(host, /activeGit\.set\(id, \{ id, cwd, command, startedAt: Date\.now\(\) \}\)/)
+  assert.equal((host.match(/endGitCall\(callId\)/g) || []).length, 3, 'timeout, error and close all settle the registry')
+  assert.match(host, /^  diagnostics,$/m, 'diagnostics is a registered read method')
 })
 
 test('history scope and merge modes follow issue #25', () => {

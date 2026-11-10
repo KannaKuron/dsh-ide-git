@@ -1413,3 +1413,18 @@ test('an expired entry forces a real scan, and the scan repopulates the cache', 
 test('REPOS_CACHE_TTL_MS stays the documented 15-second window', () => {
   assert.equal(REPOS_CACHE_TTL_MS, 15000)
 })
+
+test('diagnostics names live git children and never leaks their argv (load trace)', async () => {
+  await call('summary', { cwd: repo })
+  const { status, body } = await call('diagnostics', {})
+  assert.equal(status, 200)
+  assert.equal(body.ok, true)
+  assert.equal(body.data.pid, process.pid, 'the route runs in the host process')
+  assert.ok(Number.isFinite(body.data.uptimeMs) && body.data.uptimeMs >= 0)
+  assert.ok(Number.isFinite(body.data.now))
+  assert.ok(Array.isArray(body.data.active))
+  assert.equal(body.data.active.length, 0, 'settled git children leave the registry')
+  for (const entry of body.data.active) {
+    assert.deepEqual(Object.keys(entry).sort(), ['command', 'cwd', 'elapsedMs'])
+  }
+})

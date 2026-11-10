@@ -21,6 +21,7 @@ import {
 import { undoList, undoApply } from './undo.js'
 
 import { repos, openRepo, version } from './repos.js'
+import { diagnostics } from './git.js'
 
 import { commitMessage, commitModels, commitEfforts } from './commit-message.js'
 
@@ -32,6 +33,7 @@ const ROUTE_PREFIX = '/dsh-ide-git/api'
 
 const METHODS = {
   version,
+  diagnostics,
   'commit-message': commitMessage,
   'commit-models': commitModels,
   'commit-efforts': commitEfforts,

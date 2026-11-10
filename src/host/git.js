@@ -24,6 +24,35 @@ const MAX_OUTPUT_BYTES = 8 * 1024 * 1024
 const GIT_LOG_MAX_ENTRIES = 200
 const GIT_LOG_TEXT_MAX = 4000
 const gitLog = []
+
+/* Calls currently in spawn-to-close, for the load diagnostics route. This is
+   deliberately tiny (no argv): a commit message or a remote URL in argv must
+   never leak into a UI that only needs to say which git command is running. */
+const activeGit = new Map()
+let activeGitSeq = 0
+function beginGitCall(cwd, args) {
+  activeGitSeq += 1
+  const id = activeGitSeq
+  const command = typeof args[0] === 'string' && args[0] !== '' ? args[0] : 'git'
+  activeGit.set(id, { id, cwd, command, startedAt: Date.now() })
+  return id
+}
+function endGitCall(id) {
+  activeGit.delete(id)
+}
+function activeGitCalls(now = Date.now()) {
+  return [...activeGit.values()]
+    .sort((a, b) => a.startedAt - b.startedAt)
+    .map((call) => ({ command: call.command, cwd: call.cwd, elapsedMs: Math.max(0, now - call.startedAt) }))
+}
+function diagnostics() {
+  return {
+    pid: process.pid,
+    uptimeMs: Math.round(process.uptime() * 1000),
+    now: Date.now(),
+    active: activeGitCalls(),
+  }
+}
 function pushGitLog(entry) {
   gitLog.push(entry)
   if (gitLog.length > GIT_LOG_MAX_ENTRIES) gitLog.splice(0, gitLog.length - GIT_LOG_MAX_ENTRIES)
@@ -78,6 +107,7 @@ function runGit(cwd, args, options = {}) {
       reject(new PanelError('git-missing', 'cannot start git: ' + messageOf(error), 500))
       return
     }
+    const callId = beginGitCall(cwd, args)
     const out = []
     const err = []
     let outBytes = 0
@@ -86,6 +116,7 @@ function runGit(cwd, args, options = {}) {
     const timer = setTimeout(() => {
       if (settled) return
       settled = true
+      endGitCall(callId)
       child.kill('SIGKILL')
       pushGitLog({ at: new Date(startedAt).toISOString(), argv: args.join(' '), code: 'timeout', ms: timeoutMs, out: '', err: 'timed out after ' + String(timeoutMs) + 'ms' })
       reject(new PanelError('git-timeout', 'git ' + args[0] + ' timed out after ' + timeoutMs + 'ms', 504))
@@ -101,12 +132,14 @@ function runGit(cwd, args, options = {}) {
     child.on('error', (error) => {
       if (settled) return
       settled = true
+      endGitCall(callId)
       clearTimeout(timer)
       reject(new PanelError('git-missing', 'cannot run git: ' + messageOf(error), 500))
     })
     child.on('close', (code, signal) => {
       if (settled) return
       settled = true
+      endGitCall(callId)
       clearTimeout(timer)
       pushGitLog({
         at: new Date(startedAt).toISOString(),
@@ -427,7 +460,7 @@ export {
 
   MAX_DIFF_CHARS, NETWORK_TIMEOUT_MS, FIELD_SEP, RECORD_SEP, gitLog, GIT_LOG_MAX_ENTRIES,
 
-  gitBinary, runGit, git, gitFailure,
+  gitBinary, runGit, git, gitFailure, activeGitCalls, diagnostics,
 
   repoRootOf, currentBranchOf, upstreamOf, aheadBehindOf,
 

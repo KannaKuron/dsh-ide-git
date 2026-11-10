@@ -100,6 +100,8 @@
 19. **仓库绑定的根必须是仓库顶层,不是会话 cwd**(issue #30)。宿主的 `isRepo` 只说明 cwd 落在某个工作树内;cwd 可能是仓库子目录。客户端三处仓库选择(`prewarmPickOf`、Panel apply、`composerPickRepoOf`)统一走 `workspaceRepoOf(data)`,取 `repos` 里 `kind === 'workspace'` 的 `path`;只有没有该行时才回退,不要把 `data.cwd` 当根,否则差异路径相对子目录生成,patch 恒为空。三处 `repos` 请求都要带 `extraPaths: readManualRepos(sessionId)`;手动入口走宿主 `openRepo`(校验绝对路径 + `git rev-parse --show-toplevel`),成功后作为 `kind: 'manual'` 行合并进当前列表并选中,按会话记在 `dsh-ide-git.manualRepos.v1`(去重、最多 8 条);扫描已发现的同一路径保留原 workspace / nested 行,不重复 append。单仓库(0 个或 1 个)也不能藏掉手动入口。
 20. **未合并分支的删除是两次确认,不是拒绝**(user m00683)。宿主 `branchDelete` 在非 force 时先按 git 的口径预检:有 upstream 用 upstream,否则用 `HEAD`,对每个 name 跑 `git merge-base --is-ancestor refs/heads/<name> <base>`;任一不祖先就抛 `PanelError('branch-unmerged', …, 409)` 且一个分支都不删(批量保持原子)。客户端不能用 `guard` 把这次 409 直接显示成错误横幅,要捕获 code 后弹第二个 ConfirmDialog(`delete.unmerged`),确认后以 `{names, confirm: true, force: true}` 再调,成功后照常 refresh / notify / 保留 undo toast。直接 force 的路径仍必须 `confirm: true`(不变量 4)。
 
+21. **慢加载诊断是只读旁路,不改变加载结果**(issue #33)。宿主 `diagnostics` 只能返回 `pid / uptimeMs / now` 与进行中的 git 调用;每条活动调用只存子命令(`args[0]`)、`cwd`、`startedAt`,禁止存完整 argv(提交信息、远程 URL、文件列表会泄露),也**不得**加入 `WRITE_METHODS`。`runGit` 只在 spawn 成功后登记,timeout / error / close 三条 settle 路径都必须清理,否则活动列表会残留。客户端诊断条只在**用户可见的加载**超过 2 秒后出现,后台轮询不得触发;诊断请求 2.5 秒未返回按「宿主无响应」处理,晚到响应可以覆盖,但旧 trace 的结束不得关掉新 trace(`traceRef.current === trace`)。新增 `load.*` 文案必须 21 门同步。
+
 ## 文档规范
 
 - **README 顶部顺序:标题 → 收录徽章 → 中英互切链接 → 简介引用块**,语言切换照生态惯例写:`简体中文 | [English](README_EN.md)`(英文页 `[简体中文](README.md) | English`)。
