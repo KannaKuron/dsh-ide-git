@@ -136,6 +136,7 @@ dsh plugin --profile web add dsh-better-sidebar
 - `engines.dsh` 与 `@deepseek-ai/dsh` 的 peerDependencies 自 v0.28.0 起都声明为 **`>=0.2.2-rc.1`**,范围是**开放下界、不封顶**。兼容门禁实际优先读 `engines.dsh`(存在时忽略 peer),peer 同步声明并标 optional,是给包管理器与排障看的第二份声明。
 - 设置面单代:`>=0.2.2-rc.1` 的 `ctx.configForms` 是唯一来源,行 Config 的每个字段都可写;设置卡负责逐动作显隐、面板放置、日期格式与 AI 提交信息,排序由面板齿轮里的编辑器写 `railOrder`。旧的 `localStorage` 配置只在升级时读取一次,写路径已删除;加载中显示加载态,只有表单不可用时才显示不可用。模型徽章等宿主可选数据仍按能力探测,不按版本号分支。
 - **dsh 0.2.2-rc.1(v0.27.3)**:右侧栏新增的 `direction` / `isFloating` 字段与工作区菜单内部迁移不影响本插件使用的能力;`sidebarRight.openTab` / `openResource` / `float` / `dock`、composer 槽与官方 `contextMenus` 均按原契约工作。真机验证 Git 面板、仓库/分支选择器与 composer 菜单正常,129 项测试全绿。
+- **dsh 0.2.2-rc.2**:官方 `Menu` 删除 `getAnchorRect`,改用 `anchorRef`(元素锚点)与 `anchorPoint`(坐标锚点);仓库/分支选择器走的仍是保留的 `anchor` 节点路径,无需改代码。`ui-workspace` 删除的 `openWorkspaceMenu` / `openSessionMenu` 注入本插件未使用,`contextMenus.open` 新增的可选 `{button}` 向后兼容。`sidebarRight`、composer 槽与 `contextMenus` 契约未变;`npm test` 152/152 全绿。
 - 只依赖三样长期契约:宿主半的 `webServer.register({ kind: 'prefix' })` 路由、客户端半的 `window.__ModuleLoader__.load({ id, factory })`、以及客户端的 `slots` 服务。**不引用 `ui-primitives` 图标集**(图标全是自带 SVG),所以宿主删改图标不会波及本插件。
 - 底座是**可选** peer:没装、装坏了、或它自己要等上游修,都不影响本插件挂到原生右侧栏。
 

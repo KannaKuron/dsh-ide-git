@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.33.0 — 2026-11-12
+
+**类型**:chore(适配 dsh 0.2.2-rc.2 的复核)
+
+- **Menu 锚点**:官方 `Menu` 删除了 `getAnchorRect`,改用 `anchorRef`(元素锚点)与 `anchorPoint`(坐标锚点)。仓库/分支选择器继续走保留的 `anchor` 节点路径,右键菜单是自绘实现,两处均无需改代码。
+- **其余契约**:`ui-workspace` 删除的 `openWorkspaceMenu` / `openSessionMenu` 注入本插件未使用;`contextMenus.open` 新增的可选 `{button}` 向后兼容;`sidebarRight` 的 `openTab` / `openResource` / `float` / `dock`、composer 槽与右侧栏 `direction` / `isFloating` 字段均未变化。
+- **验证**:`npm test` **152/152**;源码逐项复核无行为回归。
+
 ## v0.32.0 — 2026-11-10
 
 **类型**:feat(issue #33 调查配套:慢加载诊断与进度条)
