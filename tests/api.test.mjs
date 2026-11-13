@@ -814,6 +814,44 @@ test('discard really reverts staged, staged-new and conflicted rows', async () =
   }
 })
 
+test('discard follows the source side of a staged rename', async () => {
+  // The panel keys a rename by its destination path only. Discarding just that
+  // path removes the addition but leaves the staged deletion of the source, so
+  // the host must expand the row back to both sides. Case-only renames also
+  // share one inode on a case-insensitive filesystem: bringing the source back
+  // and then removing the destination would delete the restored file.
+  const other = mkdtempSync(join(tmpdir(), 'dsh-ide-git-rename-'))
+  const ogit = (...args) => execFileSync('git', args, { cwd: other, encoding: 'utf8' })
+  try {
+    ogit('init', '-q', '-b', 'main')
+    ogit('config', 'user.name', 'Check')
+    ogit('config', 'user.email', 'check@example.com')
+    writeFileSync(join(other, 'case.txt'), 'case\n')
+    ogit('add', '-A')
+    ogit('commit', '-q', '-m', 'base')
+
+    ogit('mv', 'case.txt', 'CASE.txt')
+    assert.match(ogit('status', '--porcelain'), /^R  case\.txt -> CASE\.txt$/m)
+    let result = await call('discard', { cwd: other, paths: ['CASE.txt'], confirm: true })
+    assert.equal(result.status, 200)
+    assert.equal(ogit('status', '--porcelain'), '')
+    assert.equal(readFileSync(join(other, 'case.txt'), 'utf8'), 'case\n')
+    assert.equal(ogit('ls-files'), 'case.txt\n')
+
+    writeFileSync(join(other, 'normal.txt'), 'normal\n')
+    ogit('add', 'normal.txt')
+    ogit('commit', '-q', '-m', 'normal')
+    ogit('mv', 'normal.txt', 'renamed.txt')
+    result = await call('discard', { cwd: other, paths: ['renamed.txt'], confirm: true })
+    assert.equal(result.status, 200)
+    assert.equal(ogit('status', '--porcelain'), '')
+    assert.equal(readFileSync(join(other, 'normal.txt'), 'utf8'), 'normal\n')
+    assert.equal(existsSync(join(other, 'renamed.txt')), false)
+  } finally {
+    rmSync(other, { recursive: true, force: true })
+  }
+})
+
 test('ignored files show up only when the panel asks for them', async () => {
   writeFileSync(join(repo, '.gitignore'), 'ignored-dir/\nignored-note.txt\n')
   mkdirSync(join(repo, 'ignored-dir'), { recursive: true })

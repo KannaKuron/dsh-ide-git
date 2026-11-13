@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.34.2 — 2026-11-13
+
+**类型**:fix(丢弃重命名变更时同时还原源路径,仅大小写重命名不误删文件)
+
+- **重命名的两半是一个变更**:暂存的重命名在变更面板里只有目标路径一行;丢弃这一行原先只还原目标,源路径的删除仍留在索引里,行消失了但改动没退。宿主 `discard` 现在先用 `renameTargetsOf` 读 `git status --porcelain=v1 -z --untracked-files=all`,把命中目标或源路径的 rename 展开成两侧路径,再统一 `restoreTracked`;撤销快照也覆盖两侧。
+- **仅大小写重命名**:`CASE.txt -> case.txt` 在大小写不敏感的文件系统上是同一个 inode。`restoreTracked` 在删除 HEAD 中没有的索引条目之前,用 `sameFile`(比较 dev + ino,ino 为 0 视为不可判定)跳过与已还原文件相同的路径,避免刚恢复的源文件被当成目标删掉。
+- **测试**:`npm test` **156/156**;新增独立临时仓库用例覆盖仅大小写与普通 staged rename,断言丢弃后 status 干净、源文件内容恢复、目标不存在;`node --check src/host/write.js`、SSR 自检 4/4。
+
 ## v0.34.1 — 2026-11-13
 
 **类型**:fix(变更列表的丢弃对所有分组都真正生效:暂存、已暂存新增、冲突文件)

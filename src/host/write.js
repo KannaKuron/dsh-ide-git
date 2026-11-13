@@ -1,6 +1,6 @@
 /** dsh-ide-git host: mutating methods. Every destructive one checks confirm. */
 
-import { existsSync, rmSync } from 'node:fs'
+import { existsSync, rmSync, statSync } from 'node:fs'
 
 import path from 'node:path'
 
@@ -41,6 +41,46 @@ async function unstage(payload) {
   return { unstaged: paths.length }
 }
 
+/* A staged rename has only its destination row in the panel. Discarding that
+   row must restore the source too, or the row vanishes and the deletion it
+   staged stays behind. Copies are left alone: their source is still a separate
+   tracked file that the user did not select. */
+async function renameTargetsOf(root, paths) {
+  const status = await runGit(root, ['status', '--porcelain=v1', '-z', '--untracked-files=all'])
+  if (status.code !== 0) throw new PanelError('git-failed', 'could not read status for discard', 409)
+  const requested = new Set(paths)
+  const targets = paths.slice()
+  const records = status.stdout.split('\u0000')
+  for (let index = 0; index < records.length; index += 1) {
+    const record = records[index]
+    if (record.length < 4) continue
+    if (record[0] !== 'R' && record[1] !== 'R') continue
+    const filePath = record.slice(3)
+    const origPath = records[index + 1]
+    if (origPath === undefined || origPath === '') continue
+    index += 1
+    if (requested.has(filePath) === false && requested.has(origPath) === false) continue
+    for (const candidate of [filePath, origPath]) {
+      if (targets.indexOf(candidate) < 0) targets.push(candidate)
+    }
+  }
+  return targets
+}
+
+/* Two spellings of one path on a case-insensitive filesystem share an inode.
+   Deleting the destination of a case-only rename after the source came back
+   would delete the restored file itself. */
+function sameFile(left, right) {
+  try {
+    const a = statSync(left)
+    const b = statSync(right)
+    if (a.ino === 0 || b.ino === 0) return false
+    return a.dev === b.dev && a.ino === b.ino
+  } catch {
+    return false
+  }
+}
+
 /* Put tracked paths back to HEAD. `checkout HEAD --` resets BOTH the index and
    the worktree, which is what discarding a staged or conflicted row means: plain
    `checkout --` only copies the still-staged index back and leaves a staged file
@@ -67,10 +107,12 @@ async function restoreTracked(root, paths) {
   const removable = missing.filter((entry) => indexed.has(entry))
   if (removable.length === 0) return
   await git(root, ['rm', '--cached', '-f', '--', ...removable])
+  const restored = tracked.map((entry) => path.resolve(root, entry))
   for (const entry of removable) {
     const target = path.resolve(root, entry)
     const rel = path.relative(root, target)
     if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) continue
+    if (restored.some((file) => sameFile(file, target))) continue
     rmSync(target, { force: true })
   }
 }
@@ -84,10 +126,13 @@ async function discard(payload) {
   if (paths.length === 0) throw badRequest('paths is required')
   const untracked = payload.untracked === true
   if (untracked && payload.confirm !== true) throw badRequest('discarding untracked files requires confirm: true')
+  // A staged rename needs its source path too; the destination row alone would
+  // discard the addition and leave the deletion behind.
+  const targets = untracked ? paths : await renameTargetsOf(root, paths)
   // Last chance to keep the bytes: the checkout/clean below is what destroys them.
-  const files = snapshotForUndo(root, paths)
+  const files = snapshotForUndo(root, targets)
   if (untracked) await git(root, ['clean', '-f', '-d', '--', ...paths])
-  else await restoreTracked(root, paths)
+  else await restoreTracked(root, targets)
   // A snapshot the host cannot reproduce faithfully means no handle at all — the
   // panel says so instead of showing an undo that would fail later.
   if (files === null) return { discarded: paths.length, untracked: untracked, undoBlocked: true }

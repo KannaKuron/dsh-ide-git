@@ -16507,10 +16507,10 @@ window.__ModuleLoader__.load({
         })
       }, [run, pushToast, undoAction, t])
 
-      /* SCM ▸ Changes ▸ Discard All Changes: tracked paths go through
-         `checkout --`, untracked through `clean -fd`. Conflicted entries are
-         deliberately NOT touched — a merge conflict needs a decision, not a
-         silent side-taking; the dialog says so. */
+      /* SCM ▸ Changes ▸ Discard All Changes: unstaged tracked paths return to
+         HEAD, untracked through `clean -fd`. Conflicted entries are deliberately
+         NOT touched — a merge conflict needs a decision, not a silent
+         side-taking; the dialog says so. */
       const discardAllChanges = useCallback(async () => {
         const changes = summary === null ? null : summary.changes
         if (changes === null) return
@@ -17653,8 +17653,9 @@ window.__ModuleLoader__.load({
           },
         }))
       }
-      /* Multi-select discard: tracked paths go through `checkout --`, untracked
-         through `clean -fd` — the same two-lane split as Discard All. */
+      /* Multi-select discard: tracked paths (including conflicted) return to
+         HEAD, untracked through `clean -fd` — the same two-lane split as
+         Discard All. */
       if (dialog !== null && dialog.kind === 'discardMany') {
         overlays.push(E(ConfirmDialog, {
           key: 'discardMany',
