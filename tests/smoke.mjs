@@ -1961,6 +1961,53 @@ test('the composer badge splits files added/deleted and lazily sums uncommitted 
   assert.equal((client.match(/'composer\.linesHint':/g) || []).length, 21)
 })
 
+test('the composer change counters open the Git panel on the working-tree diff', () => {
+  const start = client.indexOf('const PANEL_REVEAL_TTL_MS')
+  assert.ok(start >= 0, 'the panel reveal store must exist at module level')
+  const end = client.indexOf('function composerStatusEnabled(', start)
+  assert.ok(end > start, 'the reveal store must sit beside the composer store')
+  const store = new Function(client.slice(start, end) + '; return { requestPanelReveal: requestPanelReveal, takePanelReveal: takePanelReveal, visiblePanelSeatOf: visiblePanelSeatOf, watchers: panelRevealWatchers, seats: panelSeats, PANEL_REVEAL_TTL_MS: PANEL_REVEAL_TTL_MS }')()
+  let notified = 0
+  store.watchers.add(() => { notified += 1 })
+  store.requestPanelReveal('s1', '/repo/a')
+  assert.equal(notified, 1, 'a request wakes the mounted panel tree')
+  assert.equal(store.takePanelReveal('s2'), null, 'another session never eats the request')
+  const taken = store.takePanelReveal('s1')
+  assert.equal(taken === null ? '' : taken.repoRoot, '/repo/a', 'the request carries the repository the pill was showing')
+  assert.equal(store.takePanelReveal('s1'), null, 'a request is consumed once')
+  const realNow = Date.now
+  try {
+    store.requestPanelReveal('s1', '/repo/a')
+    Date.now = () => realNow() + store.PANEL_REVEAL_TTL_MS + 1
+    assert.equal(store.takePanelReveal('s1'), null, 'a stale click never lands on a panel opened much later')
+  } finally {
+    Date.now = realNow
+  }
+  store.requestPanelReveal('', '/repo/a')
+  assert.equal(store.takePanelReveal(''), null, 'a request without a session is dropped')
+  const hiddenSeat = { sessionId: 's1', visible: () => false }
+  store.seats.add(hiddenSeat)
+  assert.equal(store.visiblePanelSeatOf('s1'), null, 'a hidden panel is not a target for the reveal')
+  const shownSeat = { sessionId: 's1', visible: () => true }
+  store.seats.add(shownSeat)
+  assert.equal(store.visiblePanelSeatOf('s1'), shownSeat, 'a visible panel takes the reveal instead of a second seat opening')
+  assert.equal(store.visiblePanelSeatOf('s2'), null, 'seats are scoped to their own session')
+
+  assert.match(client, /className: 'dig-cs-stats'/, 'the counters render as one clickable group')
+  assert.match(client, /title: panelSeat === null \? t\('diff\.sidebar\.unavailable'\) : changesTitle \+ ' · ' \+ t\('action\.showDiff'\)/, 'the tooltip keeps the breakdown and names the verb')
+  assert.match(client, /onClick: panelSeat === null \? undefined : openPanelDiff/, 'clicking the counters is the diff verb')
+  assert.match(client, /if \(visiblePanelSeatOf\(sessionId\) !== null\) \{ requestPanelReveal\(sessionId, repoRoot\); return \}/, 'an already-visible panel takes the request instead of a second seat')
+  assert.match(client, /openTab\(\{ type: TAB_ID, target: 'right' \}/, 'better-sidebar opens the Git tab on the right')
+  assert.match(client, /services\.sidebarRight\.openTab\(NATIVE_KIND\)/, 'the native fallback opens the panel kind')
+  assert.match(client, /panelRevealWatchers\.add\(watcher\)/, 'the panel subscribes to the pill request')
+  assert.match(client, /panelSeats\.add\(seat\)/, 'mounted panels publish their seat')
+  assert.match(client, /if \(request\.repoRoot !== repoRoot\) \{ pickRepo\(request\.repoRoot\); return \}/, 'a request for another repository moves the panel there first')
+  assert.match(client, /revealRootRef\.current !== repoRoot \|\| summary === null/, 'the diff waits for the matching summary')
+  assert.match(client, /revealRootRef\.current = null\n        showWorkingDiff\(\)/, 'the accept reuses the working-tree diff funnel')
+  assert.match(cssRule('.dig-cs-stats'), /cursor:pointer/, 'the counters read as clickable')
+  assert.match(cssRule('.dig-cs-stats:disabled'), /cursor:default/, 'no pointer cursor without a right sidebar')
+})
+
 test('long pill names widen to 260px and scroll only on hover, seamlessly (v0.19.13)', () => {
   // The cap widens 150→260; past it the label switches to a duplicated-chunk
   // structure measured after paint, and ONLY :hover starts the marquee —
