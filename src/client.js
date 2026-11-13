@@ -14814,6 +14814,10 @@ window.__ModuleLoader__.load({
          phase starts or settles. */
       const traceRef = useRef(null)
       const [traceTick, setTraceTick] = useState(0)
+      const [revealTick, setRevealTick] = useState(0)
+      const [revealPending, setRevealPending] = useState(0)
+      const revealRootRef = useRef(null)
+      const revealVisibleRef = useRef(props.visible === true)
 
       const cwd = typeof scope.cwd === 'string' && scope.cwd !== '' ? scope.cwd : undefined
       const sessionId = typeof scope.sessionId === 'string' ? scope.sessionId : 'default'
@@ -15566,6 +15570,31 @@ window.__ModuleLoader__.load({
           composerBranchWatchers.delete(onBranch)
         }
       }, [sessionId, repoRoot, pickRepo, refresh])
+
+      useEffect(() => {
+        const watcher = () => { setRevealTick((value) => value + 1) }
+        panelRevealWatchers.add(watcher)
+        return () => { panelRevealWatchers.delete(watcher) }
+      }, [])
+
+      useEffect(() => {
+        const seat = { sessionId: sessionId, visible: () => revealVisibleRef.current === true }
+        panelSeats.add(seat)
+        return () => { panelSeats.delete(seat) }
+      }, [sessionId])
+      useEffect(() => { revealVisibleRef.current = props.visible === true }, [props.visible])
+
+      useEffect(() => {
+        if (props.visible !== true) return
+        const request = takePanelReveal(sessionId)
+        if (request !== null) {
+          revealRootRef.current = request.repoRoot
+          setView('history')
+          if (request.repoRoot !== repoRoot) { pickRepo(request.repoRoot); return }
+        }
+        if (revealRootRef.current === null || revealRootRef.current !== repoRoot) return
+        setRevealPending((value) => value + 1)
+      }, [revealTick, props.visible, sessionId, repoRoot, pickRepo])
 
       const openDiff = useCallback(async (seed) => {
         const key = JSON.stringify([base, seed])
@@ -16762,6 +16791,13 @@ window.__ModuleLoader__.load({
         }
         setNote(t('note.noChanges'))
       }
+
+      useEffect(() => {
+        if (revealRootRef.current === null) return
+        if (revealRootRef.current !== repoRoot || summary === null) return
+        revealRootRef.current = null
+        showWorkingDiff()
+      }, [revealPending, repoRoot, summary])
 
       const stashMenu = (event) => {
         const count = summary === null ? 0 : summary.stashCount
@@ -18368,6 +18404,9 @@ window.__ModuleLoader__.load({
       '.dig-cs-changes{color:var(--dsw-alias-state-warn-primary)}',
       '.dig-cs-behind{color:var(--dsw-alias-state-business-primary)}',
       '.dig-cs-ahead{color:var(--dsw-alias-state-success-primary)}',
+      '.dig-cs-stats{display:inline-flex;align-items:center;gap:2px;padding:0 4px;margin:0 -4px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:inherit;font:inherit;flex:none;cursor:pointer}',
+      '.dig-cs-stats:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}',
+      '.dig-cs-stats:disabled{cursor:default}',
       /* v0.19.12: file-level add/del split rides INSIDE the ± chip at one
          step down (11px) so the two +/− groups read as two levels — small
          green/red = FILES, full-size green/red = LINES. */
@@ -18576,6 +18615,63 @@ window.__ModuleLoader__.load({
       for (const watcher of composerBranchWatchers) {
         try { watcher(sessionId, repoRoot, source) } catch (error) { void error }
       }
+    }
+
+    const PANEL_REVEAL_TTL_MS = 10000
+    let panelReveal = null
+    const panelRevealWatchers = new Set()
+    const panelSeats = new Set()
+
+    function visiblePanelSeatOf(sessionId) {
+      for (const seat of panelSeats) {
+        if (seat.sessionId === sessionId && seat.visible() === true) return seat
+      }
+      return null
+    }
+
+    function requestPanelReveal(sessionId, repoRoot) {
+      if (typeof sessionId !== 'string' || sessionId === '') return
+      if (typeof repoRoot !== 'string' || repoRoot === '') return
+      panelReveal = { sessionId: sessionId, repoRoot: repoRoot, at: Date.now() }
+      for (const watcher of panelRevealWatchers) {
+        try { watcher() } catch (error) { void error }
+      }
+    }
+
+    function takePanelReveal(sessionId) {
+      const request = panelReveal
+      if (request === null) return null
+      if (request.sessionId !== sessionId) return null
+      panelReveal = null
+      if (Date.now() - request.at > PANEL_REVEAL_TTL_MS) return null
+      return request
+    }
+
+    function gitPanelSeatOf(ctx) {
+      const services = sidebarServicesOf(ctx)
+      const betterSidebar = services.betterSidebar
+      if (betterSidebar !== undefined && betterSidebar !== null && typeof betterSidebar.openTab === 'function') return 'betterSidebar'
+      const sidebarRight = services.sidebarRight
+      if (sidebarRight !== undefined && sidebarRight !== null && typeof sidebarRight.openTab === 'function') return 'native'
+      return null
+    }
+
+    function openGitPanel(ctx, sessionId, cwd, repoRoot) {
+      const seat = gitPanelSeatOf(ctx)
+      if (seat === null) return false
+      requestPanelReveal(sessionId, repoRoot)
+      const services = sidebarServicesOf(ctx)
+      if (seat === 'betterSidebar') {
+        try {
+          services.betterSidebar.openTab({ type: TAB_ID, target: 'right' }, { sessionId: sessionId, cwd: cwd })
+          return true
+        } catch (error) { void error }
+      }
+      try {
+        services.sidebarRight.openTab(NATIVE_KIND)
+        return true
+      } catch (error) { void error }
+      return false
     }
 
     /* The pill's own on/off switch: the same read the conversation tab's
@@ -19125,6 +19221,31 @@ window.__ModuleLoader__.load({
         return title
       })()
 
+      const panelSeat = gitPanelSeatOf(ctx)
+      const openPanelDiff = () => {
+        if (repoRoot === null) return
+        if (visiblePanelSeatOf(sessionId) !== null) { requestPanelReveal(sessionId, repoRoot); return }
+        openGitPanel(ctx, sessionId, cwd, repoRoot)
+      }
+      const statsChildren = []
+      if (changesCount !== null && changesCount > 0) {
+        statsChildren.push(E('span', { className: 'dig-cs-badge dig-cs-changes', key: 'changes' }, '±' + String(changesCount),
+          fileSplit.added > 0 ? E('span', { className: 'dig-cs-split dig-cs-add' }, '+' + String(fileSplit.added)) : null,
+          fileSplit.deleted > 0 ? E('span', { className: 'dig-cs-split dig-cs-del' }, '−' + String(fileSplit.deleted)) : null))
+      }
+      if (linesLive !== null && (linesLive.additions > 0 || linesLive.deletions > 0)) {
+        statsChildren.push(E('span', { className: 'dig-cs-lines', key: 'lines' },
+          linesLive.additions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-add' }, '+' + String(linesLive.additions)) : null,
+          linesLive.deletions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-del' }, '−' + String(linesLive.deletions)) : null))
+      }
+      const statsNode = statsChildren.length === 0 ? null : E('button', {
+        type: 'button',
+        className: 'dig-cs-stats',
+        disabled: panelSeat === null,
+        title: panelSeat === null ? t('diff.sidebar.unavailable') : changesTitle + ' · ' + t('action.showDiff'),
+        onClick: panelSeat === null ? undefined : openPanelDiff,
+      }, statsChildren)
+
       const openBranchMenu = async () => {
         setMenu('branch')
         /* A warm page (panel or prewarm) fills the list this tick; the fetch
@@ -19204,16 +19325,7 @@ window.__ModuleLoader__.load({
           E(Icon, { name: 'branch', size: 13 }),
           E(ComposerMarqueeName, { text: detached === true ? t('composer.detached') : branchName }),
           E(Icon, { name: 'chevron', size: 10 })) : null,
-        changesCount !== null && changesCount > 0
-          ? E('span', { className: 'dig-cs-badge dig-cs-changes', title: changesTitle }, '±' + String(changesCount),
-              fileSplit.added > 0 ? E('span', { className: 'dig-cs-split dig-cs-add' }, '+' + String(fileSplit.added)) : null,
-              fileSplit.deleted > 0 ? E('span', { className: 'dig-cs-split dig-cs-del' }, '−' + String(fileSplit.deleted)) : null)
-          : null,
-        linesLive !== null && (linesLive.additions > 0 || linesLive.deletions > 0)
-          ? E('span', { className: 'dig-cs-lines' },
-              linesLive.additions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-add', title: changesTitle }, '+' + String(linesLive.additions)) : null,
-              linesLive.deletions > 0 ? E('span', { className: 'dig-cs-badge dig-cs-del', title: changesTitle }, '−' + String(linesLive.deletions)) : null)
-          : null,
+        statsNode,
         behind > 0 ? E('span', { className: 'dig-cs-badge dig-cs-behind', title: t('composer.behindHint') }, '↓' + String(behind)) : null,
         ahead > 0 ? E('span', { className: 'dig-cs-badge dig-cs-ahead', title: t('composer.aheadHint') }, '↑' + String(ahead)) : null,
         error !== '' ? E('span', { className: 'dig-cs-error', title: error }, '×') : null,
