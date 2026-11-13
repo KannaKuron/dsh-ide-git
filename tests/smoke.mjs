@@ -872,9 +872,13 @@ test('a discard is reversible through the same undo stack', () => {
     'data.undoBlocked === true',
     "'undo.discard'",
     'void discardChanges(item, group)',
+    "id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, run: () => setDialog({ kind: 'discard', item: item, group: group })",
   ]) {
     assert.ok(client.includes(needle), 'missing client guard: ' + needle)
   }
+  assert.equal(client.includes("disabled: group === 'untracked'"), false,
+    'an untracked file is discardable too — the host already understands clean -fd and undo')
+  assert.match(client, /dialog\.group === 'untracked'\s*\? fill\(t\('discard\.untracked\.confirm'\)/, 'the untracked confirm text is still selected by group')
 })
 
 test('the dock actions exist only where the right sidebar can perform them', () => {
@@ -1998,7 +2002,7 @@ test('the composer change counters open the Git panel on the working-tree diff',
   assert.match(client, /onClick: panelSeat === null \? undefined : openPanelDiff/, 'clicking the counters is the diff verb')
   assert.match(client, /if \(visiblePanelSeatOf\(sessionId\) !== null\) \{ requestPanelReveal\(sessionId, repoRoot\); return \}/, 'an already-visible panel takes the request instead of a second seat')
   assert.match(client, /openTab\(\{ type: TAB_ID, target: 'right' \}/, 'better-sidebar opens the Git tab on the right')
-  assert.match(client, /services\.sidebarRight\.openTab\(NATIVE_KIND\)/, 'the native fallback opens the panel kind')
+  assert.match(client, /sidebarRight\.openTab\(NATIVE_KIND\)/, 'the native fallback opens the panel kind')
   assert.match(client, /panelRevealWatchers\.add\(watcher\)/, 'the panel subscribes to the pill request')
   assert.match(client, /panelSeats\.add\(seat\)/, 'mounted panels publish their seat')
   assert.match(client, /if \(request\.repoRoot !== repoRoot\) \{ pickRepo\(request\.repoRoot\); return \}/, 'a request for another repository moves the panel there first')
@@ -2006,6 +2010,88 @@ test('the composer change counters open the Git panel on the working-tree diff',
   assert.match(client, /revealRootRef\.current = null\n        showWorkingDiff\(\)/, 'the accept reuses the working-tree diff funnel')
   assert.match(cssRule('.dig-cs-stats'), /cursor:pointer/, 'the counters read as clickable')
   assert.match(cssRule('.dig-cs-stats:disabled'), /cursor:default/, 'no pointer cursor without a right sidebar')
+})
+
+test('the composer counters only trust a better-sidebar seat that can really open', () => {
+  const start = client.indexOf('    /* A service that exposes openTab')
+  const end = client.indexOf("    /* The pill's own on/off switch", start)
+  assert.ok(start >= 0 && end > start, 'the panel seat helpers must have stable markers')
+  const targets = (service) => service !== undefined && service !== null && typeof service.openTab === 'function'
+    && (service.capabilities === undefined || service.capabilities === null
+      || (Array.isArray(service.capabilities) && service.capabilities.indexOf('targetedOpen') >= 0))
+  const make = (services) => {
+    const reveals = []
+    const api = new Function('TAB_ID', 'NATIVE_KIND', 'betterSidebarTargets', 'sidebarServicesOf', 'requestPanelReveal',
+      client.slice(start, end) + '; return { gitPanelSeatOf: gitPanelSeatOf, openGitPanel: openGitPanel, betterSidebarPanelOpens: betterSidebarPanelOpens }')(
+      'dsh-ide-git:panel', 'ide-git', targets, () => services, (sessionId, repoRoot) => { reveals.push([sessionId, repoRoot]) })
+    return { api: api, reveals: reveals }
+  }
+
+  let betterCalls = 0
+  const noCapability = make({
+    betterSidebar: { capabilityList: [], capabilities: ['other'], openTab: () => { betterCalls += 1 } },
+    sidebarRight: undefined,
+  })
+  assert.equal(noCapability.api.gitPanelSeatOf({}), null, 'targetedOpen is the capability the reveal needs')
+  assert.equal(noCapability.api.openGitPanel({}, 's1', '/w', '/r'), false, 'no capability means no fake success')
+  assert.equal(betterCalls, 0, 'the untargeted service is never asked to open')
+  assert.deepEqual(noCapability.reveals, [], 'a refused open must not leave a reveal request behind')
+
+  let nativeCalls = 0
+  const disabledTab = make({
+    betterSidebar: {
+      capabilities: ['targetedOpen'],
+      getTab: () => ({ id: 'dsh-ide-git:panel' }),
+      isTabEnabled: () => false,
+      openTab: () => { betterCalls += 1 },
+    },
+    sidebarRight: { openTab: () => { nativeCalls += 1 } },
+  })
+  assert.equal(disabledTab.api.gitPanelSeatOf({}), 'native', 'a disabled better-sidebar tab falls through to the native seat')
+  assert.equal(disabledTab.api.openGitPanel({}, 's1', '/w', '/r'), true, 'the native fallback still opens the panel')
+  assert.equal(nativeCalls, 1, 'the native sidebar receives the open')
+  assert.equal(betterCalls, 0, 'the disabled tab is never asked to no-op')
+  assert.deepEqual(disabledTab.reveals, [['s1', '/r']], 'the reveal is requested only after an open succeeds')
+
+  const unregistered = make({
+    betterSidebar: { capabilities: ['targetedOpen'], getTab: () => undefined, isTabEnabled: () => true, openTab: () => { betterCalls += 1 } },
+    sidebarRight: { openTab: () => { nativeCalls += 1 } },
+  })
+  const nativeBeforeUnregistered = nativeCalls
+  assert.equal(unregistered.api.gitPanelSeatOf({}), 'native', 'an unregistered tab is not a usable better-sidebar seat')
+  assert.equal(unregistered.api.openGitPanel({}, 's1', '/w', '/r'), true, 'the native fallback opens when the tab is missing')
+  assert.equal(nativeCalls, nativeBeforeUnregistered + 1, 'the missing tab does not block the native open')
+
+  let opened = 0
+  const enabled = make({
+    betterSidebar: {
+      capabilities: ['targetedOpen'],
+      getTab: () => ({ id: 'dsh-ide-git:panel' }),
+      isTabEnabled: () => true,
+      openTab: () => { opened += 1 },
+    },
+    sidebarRight: { openTab: () => { nativeCalls += 1 } },
+  })
+  assert.equal(enabled.api.gitPanelSeatOf({}), 'betterSidebar', 'an enabled registered tab wins the seat')
+  assert.equal(enabled.api.openGitPanel({}, 's1', '/w', '/r'), true, 'the better-sidebar open reports success')
+  assert.equal(opened, 1, 'the Git tab is opened once')
+  assert.deepEqual(enabled.reveals, [['s1', '/r']], 'the reveal follows the successful better-sidebar open')
+
+  const throwing = make({
+    betterSidebar: { capabilities: ['targetedOpen'], getTab: () => ({ id: 'dsh-ide-git:panel' }), isTabEnabled: () => true, openTab: () => { throw new Error('boom') } },
+    sidebarRight: { openTab: () => { nativeCalls += 1 } },
+  })
+  const nativeBeforeThrow = nativeCalls
+  assert.equal(throwing.api.openGitPanel({}, 's1', '/w', '/r'), true, 'a throwing better-sidebar open falls back to native')
+  assert.equal(nativeCalls, nativeBeforeThrow + 1, 'the fallback still runs after a throw')
+  assert.deepEqual(throwing.reveals, [['s1', '/r']], 'the fallback owns the reveal request, not the failed attempt')
+
+  const failed = make({
+    betterSidebar: { capabilities: ['targetedOpen'], getTab: () => ({ id: 'dsh-ide-git:panel' }), isTabEnabled: () => true, openTab: () => { throw new Error('boom') } },
+    sidebarRight: undefined,
+  })
+  assert.equal(failed.api.openGitPanel({}, 's1', '/w', '/r'), false, 'no native fallback means the open fails honestly')
+  assert.deepEqual(failed.reveals, [], 'a failed open leaves no request for a panel that never opened')
 })
 
 test('long pill names widen to 260px and scroll only on hover, seamlessly (v0.19.13)', () => {

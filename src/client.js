@@ -16315,7 +16315,7 @@ window.__ModuleLoader__.load({
           group === 'staged'
             ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
             : { id: 'stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
-          { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, disabled: group === 'untracked', reason: t('action.unavailable'), run: () => setDialog({ kind: 'discard', item: item, group: group }) },
+          { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, run: () => setDialog({ kind: 'discard', item: item, group: group }) },
           null,
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
@@ -18647,28 +18647,45 @@ window.__ModuleLoader__.load({
       return request
     }
 
+    /* A service that exposes openTab is not enough: targetedOpen is the
+       capability this plugin actually needs, and a tab the user disabled (or
+       one that never registered) makes openTab a silent no-op. Ask the
+       service before treating it as a seat, so the native sidebar still gets
+       its turn instead of a button that reports success and opens nothing. */
+    function betterSidebarPanelOpens(service) {
+      if (betterSidebarTargets(service) !== true) return false
+      if (typeof service.getTab === 'function') {
+        try { if (service.getTab(TAB_ID) === undefined) return false } catch (error) { return false }
+      }
+      if (typeof service.isTabEnabled === 'function') {
+        try { if (service.isTabEnabled(TAB_ID) !== true) return false } catch (error) { return false }
+      }
+      return true
+    }
+
     function gitPanelSeatOf(ctx) {
       const services = sidebarServicesOf(ctx)
-      const betterSidebar = services.betterSidebar
-      if (betterSidebar !== undefined && betterSidebar !== null && typeof betterSidebar.openTab === 'function') return 'betterSidebar'
+      if (betterSidebarPanelOpens(services.betterSidebar) === true) return 'betterSidebar'
       const sidebarRight = services.sidebarRight
       if (sidebarRight !== undefined && sidebarRight !== null && typeof sidebarRight.openTab === 'function') return 'native'
       return null
     }
 
     function openGitPanel(ctx, sessionId, cwd, repoRoot) {
-      const seat = gitPanelSeatOf(ctx)
-      if (seat === null) return false
-      requestPanelReveal(sessionId, repoRoot)
       const services = sidebarServicesOf(ctx)
+      const seat = gitPanelSeatOf(ctx)
       if (seat === 'betterSidebar') {
         try {
           services.betterSidebar.openTab({ type: TAB_ID, target: 'right' }, { sessionId: sessionId, cwd: cwd })
+          requestPanelReveal(sessionId, repoRoot)
           return true
         } catch (error) { void error }
       }
+      const sidebarRight = services.sidebarRight
+      if (sidebarRight === undefined || sidebarRight === null || typeof sidebarRight.openTab !== 'function') return false
       try {
-        services.sidebarRight.openTab(NATIVE_KIND)
+        sidebarRight.openTab(NATIVE_KIND)
+        requestPanelReveal(sessionId, repoRoot)
         return true
       } catch (error) { void error }
       return false

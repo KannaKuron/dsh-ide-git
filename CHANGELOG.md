@@ -3,14 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
-## Unreleased
+## v0.34.0 — 2026-11-13
 
-**类型**:feat(输入框变化统计可点击,直接打开 Git 面板的差异)
+**类型**:feat(输入框变化统计可点击,直接打开 Git 面板的差异)+ fix(未跟踪文件右键不能丢弃;better-sidebar 座位误判)
 
 - **变化统计即「显示差异」**:输入框工具条 Git 胶囊里的 `±N` / `+N −N` 从纯展示改成按钮——点它就是一次「显示差异」:打开 Git 面板(有 dsh-better-sidebar 时用它的右栏 Git 页签,没有时走原生 `sidebarRight`),把面板切到该仓库并直接给出第一个未提交文件的差异(与左栏动作条的「显示差异」同一条接受路径)。胶囊与面板的仓库/分支联动沿用原有 store。
 - **跨座位交接**:胶囊在宿主输入框、面板在侧栏页签,是两个独立 React 树。点击把 `{ sessionId, repoRoot }` 停在模块级请求里并唤醒已挂载的面板;面板在自己的下一次可见窗口消费:仓库不同先用 `pickRepo` 搬过去,等该仓库的 summary 到位再跑 `showWorkingDiff()`。请求 10 秒未被消费即丢弃,不会在很久以后突然把面板弹出来;别的会话不会吃掉这条请求。
 - **没有右侧栏时**:按钮禁用,悬停说明「当前环境没有可用的右侧栏」(复用 `diff.sidebar.unavailable`),不装作可点。
-- **测试**:`npm test` 153/153(新增 reveal store 的会话隔离 / 一次性消费 / TTL 过期断言,以及按钮接线、`action.showDiff` tooltip、CSS 指针态与面板消费路径断言);`node --check src/client.js`。
+- **右键丢弃不再把未跟踪文件挡在外面**:变更树的单行右键菜单此前对 `untracked` 组硬编码 `disabled`,而未跟踪文件本就可丢弃——宿主用 `git clean -f -d` 删除、删除前先快照,确认框也已有专用文案,toast 还能撤回。现在单行与多选右键都直接可点,不再出现「正常情况能回退却灰着」;多选计数仍按 tracked + untracked 给出。
+- **better-sidebar 座位先确认真能打开**:座位判定不再只看 `openTab` 是否存在,而是同时要求 `targetedOpen` 能力、页签已注册(`getTab`)且未被用户禁用(`isTabEnabled`)。任一条件不满足就回退原生 `sidebarRight`;打开失败不再返回成功,也不再留下一条不会被消费的 reveal 请求。
+- **测试**:`npm test` `154/154`(新增「座位能真正打开才可信」的六种分支、右键丢弃不再 disabled 与未跟踪确认文案断言);`node --check src/client.js`;SSR 自检 4/4。
+- 相关:PR [#34](https://github.com/KannaKuron/dsh-ide-git/pull/34)。
 
 ## v0.33.0 — 2026-11-12
 
