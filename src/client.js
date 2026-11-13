@@ -17826,6 +17826,10 @@ window.__ModuleLoader__.load({
       '.dig-repo-static{display:inline-flex;align-items:center;gap:5px;min-width:0;color:var(--dsw-alias-label-secondary)}',
       '.dig-repo-name{color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:none}',
       '.dig-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:var(--dsw-radius-sm,8px);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}',
+      // The native right-sidebar chip renders the title's children directly in
+      // dockkit's flex row; pin the leading glyph so a long label cannot
+      // shrink it (the row's own 5px gap supplies the spacing).
+      '.dig-tab-title-icon{display:inline-flex;align-items:center;flex:none}',
       '.dig-icon-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}',
       '.dig-icon-btn:disabled{opacity:.4;cursor:default}',
       '.dig-icon-btn-active{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
@@ -19589,6 +19593,31 @@ window.__ModuleLoader__.load({
       return E(LocaleLive, { ctx: props.ctx, scope: scope, t: props.t, visible: true, dock: dock })
     }
 
+    /* The native seat's chip title (v0.34.3): the body slot alone leaves the
+       tab bare next to host tabs that ship a glyph (Files draws its folder).
+       The host's title slot receives the tab information hook; the fragment's
+       children become direct children of dockkit's flex title row, so the
+       icon and the text are spaced by that row's own gap. */
+    function NativeTitle(props) {
+      const info = typeof props.useTabInfo === 'function' ? props.useTabInfo() : null
+      const tab = info === null || info === undefined ? null : info.tab
+      const title = tab === null || tab === undefined || typeof tab.title !== 'string'
+        ? props.t('title')
+        : tab.title
+      return E(Fragment, null, E('span', { className: 'dig-tab-title-icon' }, E(Icon, { name: 'commit', size: 16 })), title)
+    }
+
+    /* The preview tab's chip title: the diff glyph marks what the tab is for,
+       instead of repeating the panel's commit glyph. */
+    function NativePreviewTitle(props) {
+      const info = typeof props.useTabInfo === 'function' ? props.useTabInfo() : null
+      const tab = info === null || info === undefined ? null : info.tab
+      const title = tab === null || tab === undefined || typeof tab.title !== 'string'
+        ? props.t('preview.title')
+        : tab.title
+      return E(Fragment, null, E('span', { className: 'dig-tab-title-icon' }, E(Icon, { name: 'diff', size: 16 })), title)
+    }
+
     /* The native preview tab's body (external diff preview): shows exactly one
        diff — whatever the store holds — fetched fresh from the host route on
        every seed. The seed carries cwd + repoRoot so a multi-root workspace
@@ -19951,6 +19980,10 @@ window.__ModuleLoader__.load({
               { name: 'sidebar.right.pane.tab', key: NATIVE_ID },
               (tabProps) => E(NativePanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
             ))
+            const offTitle = slots.inject('sidebar.right.pane.tab.title', () => slots.register(
+              { name: 'sidebar.right.pane.tab.title', key: NATIVE_ID },
+              (tabProps) => E(NativeTitle, Object.assign({}, tabProps, { t: t })),
+            ))
             /* The preview type has NO guide entry on purpose (start-page
                destinations are the main panel's job): it exists to receive the
                openTab this plugin fires when a diff verb runs without a
@@ -19966,9 +19999,15 @@ window.__ModuleLoader__.load({
               { name: 'sidebar.right.pane.tab', key: NATIVE_PREVIEW_ID },
               (tabProps) => E(NativePreviewPanel, Object.assign({}, tabProps, { t: t, ctx: ctx })),
             ))
+            const offPreviewTitle = slots.inject('sidebar.right.pane.tab.title', () => slots.register(
+              { name: 'sidebar.right.pane.tab.title', key: NATIVE_PREVIEW_ID },
+              (tabProps) => E(NativePreviewTitle, Object.assign({}, tabProps, { t: t })),
+            ))
             return () => {
+              try { offPreviewTitle() } catch (error) { void error }
               try { offPreviewBody() } catch (error) { void error }
               try { offPreviewType() } catch (error) { void error }
+              try { offTitle() } catch (error) { void error }
               try { offBody() } catch (error) { void error }
               try { offType() } catch (error) { void error }
             }

@@ -101,6 +101,7 @@ console.log('ssr-check: workspace-less render ' + empty.length + ' chars - OK')
 let nativeDefinition = null
 let previewDefinition = null
 const nativeBodies = {}
+const nativeTitles = {}
 const sidebarRightTabs = {
   register: (definition) => {
     if (definition.id === 'dsh-ide-git-preview') previewDefinition = definition
@@ -112,6 +113,7 @@ const slots = {
   inject: (name, callback) => callback(),
   register: (options, component) => {
     if (options.name === 'sidebar.right.pane.tab') nativeBodies[options.key] = component
+    if (options.name === 'sidebar.right.pane.tab.title') nativeTitles[options.key] = component
     return () => {}
   },
 }
@@ -135,6 +137,21 @@ const nativeBody = nativeBodies['dsh-ide-git']
 const previewBody = nativeBodies['dsh-ide-git-preview']
 if (nativeBody === null) throw new Error('the native fallback registered no tab body')
 if (previewBody === null) throw new Error('the native fallback registered no preview tab body')
+const nativeTitle = nativeTitles['dsh-ide-git']
+const previewTitle = nativeTitles['dsh-ide-git-preview']
+if (nativeTitle === undefined) throw new Error('the native fallback registered no tab chip title')
+if (previewTitle === undefined) throw new Error('the native fallback registered no preview chip title')
+const titleProps = { t: (key) => key, useTabInfo: () => ({ tab: { title: 'Git' } }) }
+const nativeTitleHtml = renderToStaticMarkup(React.createElement(nativeTitle, titleProps))
+if (nativeTitleHtml.indexOf('dig-icon') < 0 || nativeTitleHtml.indexOf('Git') < 0) {
+  throw new Error('the native chip title lost its glyph or label: ' + nativeTitleHtml)
+}
+const previewTitleHtml = renderToStaticMarkup(React.createElement(previewTitle, Object.assign({}, titleProps, {
+  useTabInfo: () => ({ tab: { title: 'Diff' } }),
+})))
+if (previewTitleHtml.indexOf('dig-icon') < 0 || previewTitleHtml.indexOf('Diff') < 0) {
+  throw new Error('the preview chip title lost its glyph or label: ' + previewTitleHtml)
+}
 const guide = nativeDefinition.guide
 if (typeof nativeDefinition.kind !== 'string' || nativeDefinition.kind === ''
   || !Array.isArray(guide) || guide.length === 0) {

@@ -709,6 +709,8 @@ test('client half has three doors: better-sidebar, native right sidebar, convers
   // no error. ctx.inject() re-registers the moment the services appear.
   assert.match(client, /ctx\.inject\(\['sidebarRightTabs', 'slots'\]/, 'native seats wait for their services')
   assert.match(client, /slots\.inject\('sidebar\.right\.pane\.tab'/)
+  assert.match(client, /slots\.inject\('sidebar\.right\.pane\.tab\.title'/,
+    'the native chip uses the host title seat instead of a bare label')
   assert.match(client, /hostedByBetterSidebar/)
   // The base can be disabled AT RUNTIME: cordis unloads the inject effect,
   // and the cleanup must fall back to the native seats (v0.5.2 — the panel
@@ -742,7 +744,7 @@ test('client half has three doors: better-sidebar, native right sidebar, convers
   assert.doesNotMatch(client, /NATIVE_PREVIEW_ID,\n\s*kind: NATIVE_PREVIEW_KIND,\n\s*title: \(\) => t\('preview\.title'\),\n\s*keepMounted: true,\n\s*guide:/,
     'the preview tab carries no guide entry (it is not a start-page destination)')
   const slotSeats = client.match(/slots\.register\(/g) || []
-  assert.equal(slotSeats.length, 4, 'four keyed-slot seats: native pane, preview pane, settings card, conversation view')
+  assert.equal(slotSeats.length, 6, 'six keyed-slot seats: native pane, preview pane, native chip title, preview chip title, settings card, conversation view')
 })
 
 test('host half is an ESM cordis plugin with argv-only git calls', () => {
@@ -940,6 +942,16 @@ test('the tree toggle is reachable again after it was folded', () => {
   assert.match(client, /body-worktrees/,
     'the worktree view has its own body class for the layout probe and styles')
   assert.match(client, /action\.available !== false/, 'an action this mount cannot perform is not rendered at all')
+})
+
+test('the native chips carry the plugin glyph next to the label', () => {
+  const titles = client.slice(client.indexOf('function NativeTitle(props) {'), client.indexOf('function NativePreviewPanel(props) {'))
+  assert.match(titles, /dig-tab-title-icon/, 'the glyph sits in a non-shrinking wrapper')
+  assert.match(titles, /E\(Icon, \{ name: 'commit', size: 16 \}\)/, 'the Git chip leads with the commit glyph')
+  assert.match(titles, /E\(Icon, \{ name: 'diff', size: 16 \}\)/, 'the preview chip leads with the diff glyph')
+  assert.match(titles, /props\.useTabInfo\(\)/, 'the label comes from the live tab, not a stale title string')
+  assert.match(titles, /props\.t\('title'\)/, 'a missing tab answer still falls back to the translated title')
+  assert.match(titles, /props\.t\('preview\.title'\)/, 'the preview fallback is its own translated title')
 })
 
 test('the dock actions are wired on the native seat only', () => {
