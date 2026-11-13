@@ -1,6 +1,6 @@
 /** dsh-ide-git host: mutating methods. Every destructive one checks confirm. */
 
-import { existsSync } from 'node:fs'
+import { existsSync, rmSync } from 'node:fs'
 
 import path from 'node:path'
 
@@ -41,6 +41,40 @@ async function unstage(payload) {
   return { unstaged: paths.length }
 }
 
+/* Put tracked paths back to HEAD. `checkout HEAD --` resets BOTH the index and
+   the worktree, which is what discarding a staged or conflicted row means: plain
+   `checkout --` only copies the still-staged index back and leaves a staged file
+   staged. A path with no HEAD entry (a staged addition, an add/add conflict, or
+   the deleted side of a modify/delete conflict) has nothing to check out, so its
+   index entries are dropped and the working-tree file is removed instead. */
+async function restoreTracked(root, paths) {
+  const present = new Set()
+  const head = await runGit(root, ['rev-parse', '--verify', '--quiet', 'HEAD'])
+  if (head.code === 0) {
+    const tree = await runGit(root, ['ls-tree', '-r', '-z', '--name-only', 'HEAD', '--', ...paths])
+    if (tree.code !== 0) throw new PanelError('git-failed', 'could not read HEAD for discard', 409)
+    for (const entry of tree.stdout.split('\u0000')) if (entry !== '') present.add(entry)
+  }
+  const tracked = paths.filter((entry) => present.has(entry))
+  if (tracked.length > 0) await git(root, ['checkout', 'HEAD', '--', ...tracked])
+  const missing = paths.filter((entry) => present.has(entry) === false)
+  if (missing.length === 0) return
+  // Only drop index entries that exist; never delete a path the repository did
+  // not track, even if the caller forgot to mark it untracked.
+  const indexed = new Set()
+  const files = await runGit(root, ['ls-files', '-z', '--', ...missing])
+  if (files.code === 0) for (const entry of files.stdout.split('\u0000')) if (entry !== '') indexed.add(entry)
+  const removable = missing.filter((entry) => indexed.has(entry))
+  if (removable.length === 0) return
+  await git(root, ['rm', '--cached', '-f', '--', ...removable])
+  for (const entry of removable) {
+    const target = path.resolve(root, entry)
+    const rel = path.relative(root, target)
+    if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) continue
+    rmSync(target, { force: true })
+  }
+}
+
 async function discard(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
@@ -53,7 +87,7 @@ async function discard(payload) {
   // Last chance to keep the bytes: the checkout/clean below is what destroys them.
   const files = snapshotForUndo(root, paths)
   if (untracked) await git(root, ['clean', '-f', '-d', '--', ...paths])
-  else await git(root, ['checkout', '--', ...paths])
+  else await restoreTracked(root, paths)
   // A snapshot the host cannot reproduce faithfully means no handle at all — the
   // panel says so instead of showing an undo that would fail later.
   if (files === null) return { discarded: paths.length, untracked: untracked, undoBlocked: true }

@@ -3,6 +3,15 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.34.1 — 2026-11-13
+
+**类型**:fix(变更列表的丢弃对所有分组都真正生效:暂存、已暂存新增、冲突文件)
+
+- **右键丢弃不再有看不到的边界**:上一版只解除了未跟踪文件的禁用,继续核查发现宿主的丢弃实现对「已暂存」和「冲突」分组实际无效——普通 `git checkout --` 只把 index 的内容写回工作区,文件仍是已暂存;未合并路径更会直接报 `path ... is unmerged`。现在右键菜单对 tracked / staged / conflicted / untracked 一律可点,不再出现「能回退却不给点」。
+- **宿主丢弃改为回到 HEAD**:`src/host/write.js` 新增 `restoreTracked`:先用 `git ls-tree HEAD` 找出真正存在于 HEAD 的路径,对它们执行 `git checkout HEAD --`,同时重置 index 与工作区(冲突路径也一并解决);HEAD 中没有条目的路径(已暂存的新文件、add/add 或修改/删除冲突)则用 `git rm --cached -f` 摘掉索引项并删除工作区文件。既不在 HEAD、也不在索引里的路径不会被误删。
+- **撤销仍然保留**:丢弃前照旧 `snapshotForUndo`,能快照就返回 undo,快照不了就明确返回 `undoBlocked`,不会给一个点了会失败的撤销句柄。
+- **测试**:`npm test` **155/155**;新增独立临时仓库用例覆盖已暂存修改、已暂存新增、UU 冲突三类路径,并断言 index 与工作区都回到干净状态;`node --check src/host/write.js`、SSR 自检 4/4。
+
 ## v0.34.0 — 2026-11-13
 
 **类型**:feat(输入框变化统计可点击,直接打开 Git 面板的差异)+ fix(未跟踪文件右键不能丢弃;better-sidebar 座位误判)

@@ -766,6 +766,54 @@ test('a discard too large to snapshot still happens, just without an undo handle
   assert.equal(discarded.body.data.undoBlocked, true)
 })
 
+test('discard really reverts staged, staged-new and conflicted rows', async () => {
+  // A row's group changes what git must do: a staged file needs the INDEX reset
+  // too (checkout -- alone leaves it staged), a staged addition has no HEAD blob
+  // to check out, and an unmerged path rejects a plain checkout. Keep this on a
+  // throwaway repo so the shared fixture's history stays untouched.
+  const other = mkdtempSync(join(tmpdir(), 'dsh-ide-git-discard-'))
+  const ogit = (...args) => execFileSync('git', args, { cwd: other, encoding: 'utf8' })
+  try {
+    ogit('init', '-q', '-b', 'main')
+    ogit('config', 'user.name', 'Check')
+    ogit('config', 'user.email', 'check@example.com')
+    writeFileSync(join(other, 'base.txt'), 'base\n')
+    ogit('add', '-A')
+    ogit('commit', '-q', '-m', 'base')
+
+    writeFileSync(join(other, 'base.txt'), 'staged\n')
+    ogit('add', 'base.txt')
+    assert.equal(ogit('status', '--porcelain', '--', 'base.txt'), 'M  base.txt\n')
+    let result = await call('discard', { cwd: other, paths: ['base.txt'], confirm: true })
+    assert.equal(result.status, 200)
+    assert.equal(readFileSync(join(other, 'base.txt'), 'utf8'), 'base\n')
+    assert.equal(ogit('status', '--porcelain', '--', 'base.txt'), '')
+
+    writeFileSync(join(other, 'new.txt'), 'new\n')
+    ogit('add', 'new.txt')
+    assert.equal(ogit('status', '--porcelain', '--', 'new.txt'), 'A  new.txt\n')
+    result = await call('discard', { cwd: other, paths: ['new.txt'], confirm: true })
+    assert.equal(result.status, 200)
+    assert.equal(existsSync(join(other, 'new.txt')), false)
+    assert.equal(ogit('status', '--porcelain', '--', 'new.txt'), '')
+
+    ogit('checkout', '-q', '-b', 'side')
+    writeFileSync(join(other, 'base.txt'), 'side\n')
+    ogit('commit', '-q', '-a', '-m', 'side')
+    ogit('checkout', '-q', 'main')
+    writeFileSync(join(other, 'base.txt'), 'main\n')
+    ogit('commit', '-q', '-a', '-m', 'main')
+    assert.throws(() => ogit('merge', 'side'))
+    assert.equal(ogit('status', '--porcelain', '--', 'base.txt'), 'UU base.txt\n')
+    result = await call('discard', { cwd: other, paths: ['base.txt'], confirm: true })
+    assert.equal(result.status, 200)
+    assert.equal(readFileSync(join(other, 'base.txt'), 'utf8'), 'main\n')
+    assert.equal(ogit('status', '--porcelain', '--', 'base.txt'), '')
+  } finally {
+    rmSync(other, { recursive: true, force: true })
+  }
+})
+
 test('ignored files show up only when the panel asks for them', async () => {
   writeFileSync(join(repo, '.gitignore'), 'ignored-dir/\nignored-note.txt\n')
   mkdirSync(join(repo, 'ignored-dir'), { recursive: true })
