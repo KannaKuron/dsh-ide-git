@@ -1751,13 +1751,84 @@ test('the first-paint cache seeds session switches inside one workspace (v0.13.1
   // never rolls live state back to the stale snapshot.
   const panel = client.slice(client.indexOf('const cachedPage = readPaintPage(repoRoot)'), client.indexOf('void refresh()'))
   assert.match(panel, /if \(summary === null && cachedPage\.summary !== undefined\) setSummary\(/, 'summary only seeds when cold and present')
-  assert.match(panel, /if \(branches === null && cachedPage\.branches !== undefined\) setBranches\(/, 'branches only seed when cold and present')
+  assert.match(panel, /if \(branches === null && cachedPage\.branches !== undefined\) \{/, 'branches only seed when cold and present')
   assert.match(panel, /if \(commits\.length === 0 && Array\.isArray\(cachedPage\.commits\)\) \{ setCommits\(/, 'commits only seed when cold and present')
   // The write side records exactly the FIRST page, from refresh() itself — a
   // paged fetch (skip > 0) must never poison the seed with a concatenated list.
   const refreshFn = client.slice(client.indexOf('const refresh = useCallback'), client.indexOf('], [guard, loadSummary, loadBranches, loadCommits, repoRoot])'))
   assert.match(refreshFn, /loadCommits\(0\)/, 'the cache write rides the first-page refresh')
   assert.match(refreshFn, /writePaintPage\(repoRoot,/, 'refresh writes the cache')
+})
+
+test('overlapping loads keep the busy badge on and do not re-run the mount refresh', () => {
+  /* The badge is driven by a depth ref now: concurrent guards (a second
+     refresh landing on top of the first) must not clear it when the first one
+     settles, or the top bar blinks 处理中. */
+  const guardBlock = client.slice(client.indexOf('const guard = useCallback'), client.indexOf('/* ---- load trace'))
+  assert.match(guardBlock, /busyDepthRef\.current \+= 1/, 'guard counts its entries')
+  assert.match(guardBlock, /if \(busyDepthRef\.current === 0\) setBusy\(false\)/, 'only the last guard clears the badge')
+  assert.doesNotMatch(guardBlock, /\n\s*setBusy\(false\)\n\s*\}\n\s*\}, \[\]\)/, 'no unconditional clear in finally')
+  /* remoteReady is a ref inside refresh: when the first branch load made it a
+     dependency, refresh got a new identity and the mount effect started a
+     second full load immediately. */
+  const refreshBlock = client.slice(client.indexOf('const refresh = useCallback'), client.indexOf('const browseBranch'))
+  assert.match(refreshBlock, /remoteReadyRef\.current === true/, 'manual refresh tests the current remote ref')
+  assert.match(refreshBlock, /\}, \[guard, loadSummary, loadBranches, loadCommits, repoRoot, base, browseRev, beginTrace, tracePhase, endTrace\]\)/, 'remoteReady is not a refresh dependency')
+  assert.doesNotMatch(refreshBlock, /remoteReady[^R]/, 'refresh never closes over the remoteReady state')
+  /* The shared-store watcher compares through a ref instead of calling
+     pickRepo inside a state updater (that re-entered the watcher on render). */
+  const watcherBlock = client.slice(client.indexOf('const onRepo = (sid, root)'), client.indexOf('const onBranch = (sid'))
+  assert.match(watcherBlock, /repoRootRef\.current === root/, 'the watcher compares against the live pick')
+  assert.doesNotMatch(watcherBlock, /setRepoRoot\(/, 'no side effect inside a state updater')
+  assert.match(client, /if \(busy === true && RAIL_VIEW_IDS\.indexOf\(spec\.id\) < 0\) entry\.disabled = true/, 'busy disables refresh too')
+})
+
+test('issue #35: a failed commit keeps the draft; Discard All includes staged paths', async () => {
+  const submitStart = client.indexOf('const submit = async (push) => {')
+  const submitEnd = client.indexOf('const entryRow =', submitStart)
+  assert.ok(submitStart !== -1 && submitEnd > submitStart, 'ChangesPanel submit block found')
+  const submitBlock = client.slice(submitStart, submitEnd)
+  const makeSubmit = (onCommit) => {
+    let message = 'fix: keep me'
+    let amend = true
+    const setMessage = (next) => { message = typeof next === 'function' ? next(message) : next }
+    const setAmend = (next) => { amend = typeof next === 'function' ? next(amend) : next }
+    const submit = new Function('props', 'message', 'amend', 'setMessage', 'setAmend',
+      submitBlock + '\nreturn submit')({ busy: false, onCommit }, message, amend, setMessage, setAmend)
+    return { submit, setMessage, get message() { return message }, get amend() { return amend } }
+  }
+  const ok = makeSubmit(async () => ({ output: 'done' }))
+  assert.equal(await ok.submit(false), true)
+  assert.equal(ok.message, '', 'a successful commit clears the draft')
+  assert.equal(ok.amend, false, 'a successful commit clears amend')
+  const failed = makeSubmit(async () => undefined)
+  assert.equal(await failed.submit(false), false)
+  assert.equal(failed.message, 'fix: keep me', 'a failed commit keeps the draft')
+  assert.equal(failed.amend, true, 'a failed commit keeps amend')
+  let release
+  const inFlight = makeSubmit(() => new Promise((resolve) => { release = resolve }))
+  const pending = inFlight.submit(false)
+  // Simulate the user typing while the commit is in flight.
+  inFlight.setMessage('typed while committing')
+  release({ output: 'done' })
+  await pending
+  assert.equal(inFlight.message, 'typed while committing', 'text typed while committing is never clobbered')
+
+  const discardStart = client.indexOf('const discardAllChanges = useCallback')
+  const discardEnd = client.indexOf('/* SCM ▸ Commit', discardStart)
+  assert.ok(discardStart !== -1 && discardEnd > discardStart, 'discardAllChanges block found')
+  const calls = []
+  const run = async (method, payload) => { calls.push({ method, payload }); return { undo: { id: 'u' } } }
+  const summary = { changes: { staged: [{ path: 'a' }], unstaged: [{ path: 'a' }, { path: 'b' }], untracked: [{ path: 'u' }], conflicted: [{ path: 'c' }] } }
+  const discardAll = new Function('useCallback', 'summary', 'run',
+    client.slice(discardStart, discardEnd) + '\nreturn discardAllChanges')((fn) => fn, summary, run)
+  await discardAll()
+  assert.deepEqual(calls, [
+    { method: 'discard', payload: { paths: ['a', 'b'], confirm: true } },
+    { method: 'discard', payload: { paths: ['u'], untracked: true, confirm: true } },
+  ], 'staged and unstaged tracked paths are deduped; untracked is a separate discard; conflicts are skipped')
+  assert.match(client, /confirm\.discardMany/)
+  assert.match(client, /discardablePaths/)
 })
 
 test('block separators paint on border-l2, not the hairline token (v0.13.1 style)', () => {

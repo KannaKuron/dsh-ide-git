@@ -13541,11 +13541,16 @@ window.__ModuleLoader__.load({
           setAiBusy(false)
         }
       }
-      const submit = (push) => {
+      const submit = async (push) => {
         if (message.trim() === '' || props.busy === true) return false
-        props.onCommit(message, amend, push === true)
-        setMessage('')
-        setAmend(false)
+        const draft = message
+        const amendDraft = amend
+        const data = await props.onCommit(draft, amendDraft, push === true)
+        if (data === undefined) return false
+        /* Only clear what this submit owned: a failed commit keeps the draft,
+           and text typed while the request was in flight is never clobbered. */
+        setMessage((current) => (current === draft ? '' : current))
+        setAmend((current) => (current === amendDraft ? false : current))
         return true
       }
       const entryRow = (key, item, depth) => E(ChangeRow, {
@@ -14705,6 +14710,17 @@ window.__ModuleLoader__.load({
       const [errorCode, setErrorCode] = useState(null)
       const [note, setNote] = useState(null)
       const [busy, setBusy] = useState(false)
+      /* Refs the async plumbing cannot get from state: how many guarded
+         operations overlap (the badge must stay on until the LAST one ends,
+         instead of flickering off when the first finishes), the pick the
+         shared repo/branch watchers compare against synchronously, and the
+         current remote availability (see refresh below). */
+      const busyDepthRef = useRef(0)
+      const repoRootRef = useRef(repoRoot)
+      /* remoteReady is read by refresh(), which must not be re-created when the
+         first branch load flips it: a changing refresh identity re-runs the
+         mount effect and starts a second full load for the same repository. */
+      const remoteReadyRef = useRef(false)
       const [view, setView] = useState('history')
       /* Pane sizes are remembered per surface (see the pane sizing core). The ref
          is the value the pointer handlers write through: a drag updates state for
@@ -15083,6 +15099,7 @@ window.__ModuleLoader__.load({
       }, [repoRoot, columns, compact])
 
       const guard = useCallback(async (work) => {
+        busyDepthRef.current += 1
         setBusy(true)
         setError(null)
         setErrorCode(null)
@@ -15094,7 +15111,12 @@ window.__ModuleLoader__.load({
           setErrorCode(typeof failure.code === 'string' ? failure.code : null)
           return undefined
         } finally {
-          setBusy(false)
+          /* Nested guards are real (a second refresh can land on top of the
+             first); clearing the badge when the FIRST one settles made it
+             blink while the second was still working. Only the last one turns
+             it off. */
+          busyDepthRef.current = Math.max(0, busyDepthRef.current - 1)
+          if (busyDepthRef.current === 0) setBusy(false)
         }
       }, [])
       /* ---- load trace (slow-load diagnostics) ----
@@ -15164,6 +15186,7 @@ window.__ModuleLoader__.load({
             if (workspace !== null) pick = workspace
             else if (paths.length > 0) pick = paths[0]
           }
+          repoRootRef.current = pick
           setRepoRoot(pick)
           rememberPaintRoot(cwd, pick)
           return pick
@@ -15292,6 +15315,7 @@ window.__ModuleLoader__.load({
       const loadBranches = useCallback(async () => {
         const data = await request('branches', base)
         setBranches(data)
+        remoteReadyRef.current = data !== null && Array.isArray(data.remotes) && data.remotes.length > 0
         return data
       }, [base])
 
@@ -15342,7 +15366,7 @@ window.__ModuleLoader__.load({
       const headRef = useRef(null)
       const refresh = useCallback(async (opts) => {
         if (repoRoot === null) return
-        const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReady === true
+        const withFetch = opts !== null && typeof opts === 'object' && opts.fetchRemote === true && remoteReadyRef.current === true
         const traced = opts !== null && typeof opts === 'object' && opts.trace === true
         const trace = traced ? beginTrace('refresh', withFetch) : null
         const phase = trace === null ? null : (name, state) => { tracePhase(trace, name, state) }
@@ -15384,7 +15408,7 @@ window.__ModuleLoader__.load({
           if (trace !== null) endTrace(trace)
           if (withFetch === true) setRefreshSpinning(false)
         }
-      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, remoteReady, base, browseRev, beginTrace, tracePhase, endTrace])
+      }, [guard, loadSummary, loadBranches, loadCommits, repoRoot, base, browseRev, beginTrace, tracePhase, endTrace])
 
       /* Double-click a branch (or the HEAD row): browse its history. The merge
          anchor comes from the PREVIOUSLY browsed branch — 'merge-point' finds
@@ -15436,7 +15460,10 @@ window.__ModuleLoader__.load({
              the branch-tree render (undefined.remotes) — skip that field
              and let refresh() fetch it as usual. */
           if (summary === null && cachedPage.summary !== undefined) setSummary(cachedPage.summary)
-          if (branches === null && cachedPage.branches !== undefined) setBranches(cachedPage.branches)
+          if (branches === null && cachedPage.branches !== undefined) {
+            setBranches(cachedPage.branches)
+            remoteReadyRef.current = cachedPage.branches !== null && Array.isArray(cachedPage.branches.remotes) && cachedPage.branches.remotes.length > 0
+          }
           if (commits.length === 0 && Array.isArray(cachedPage.commits)) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore === true) }
         }
         void refresh({ trace: true })
@@ -15510,12 +15537,18 @@ window.__ModuleLoader__.load({
       }, [run])
 
       const pickRepo = useCallback((path) => {
+        /* Write the ref BEFORE the shared write below: rememberRepoShared calls
+           the watchers synchronously, and they compare against this ref. If it
+           still held the old root, the panel's own watcher would pick the same
+           repository again, recursively. */
+        repoRootRef.current = path
         setRepoRoot(path)
         /* Shared write: the composer status pill watches this store and
            follows, so both seats always name the same repository. */
         rememberRepoShared(sessionId, path)
         setSummary(null)
         setBranches(null)
+        remoteReadyRef.current = false
         setCommits([])
         /* The signature is per-repo: force a fresh baseline for the new one
            so the first poll tick doesn't mistake the repo switch for an
@@ -15556,7 +15589,11 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         const onRepo = (sid, root) => {
           if (sid !== sessionId || typeof root !== 'string' || root === '') return
-          setRepoRoot((current) => (current === root ? current : pickRepo(root)))
+          /* Compare through the ref, not a state updater: pickRepo writes the
+             shared store synchronously, and a side effect inside an updater
+             re-enters this watcher on every React render. */
+          if (repoRootRef.current === root) return
+          pickRepo(root)
         }
         const onBranch = (sid, root, source) => {
           if (sid !== sessionId || source === 'panel') return
@@ -16507,16 +16544,23 @@ window.__ModuleLoader__.load({
         })
       }, [run, pushToast, undoAction, t])
 
-      /* SCM ▸ Changes ▸ Discard All Changes: unstaged tracked paths return to
-         HEAD, untracked through `clean -fd`. Conflicted entries are deliberately
-         NOT touched — a merge conflict needs a decision, not a silent
+      /* SCM ▸ Changes ▸ Discard All Changes: every non-conflicted tracked path
+         (staged AND unstaged) returns to HEAD, untracked goes through
+         `clean -fd`. Dedupe matters: a path can appear in both groups. Conflicted
+         entries stay untouched — a merge conflict needs a decision, not a silent
          side-taking; the dialog says so. */
       const discardAllChanges = useCallback(async () => {
         const changes = summary === null ? null : summary.changes
         if (changes === null) return
-        const tracked = changes.unstaged.map((entry) => entry.path)
+        const tracked = Array.from(new Set([
+          ...changes.staged.map((entry) => entry.path),
+          ...changes.unstaged.map((entry) => entry.path),
+        ]))
         const untracked = changes.untracked.map((entry) => entry.path)
-        if (tracked.length > 0) await run('discard', { paths: tracked, confirm: true })
+        if (tracked.length > 0) {
+          const data = await run('discard', { paths: tracked, confirm: true })
+          if (data === undefined) return
+        }
         if (untracked.length > 0) await run('discard', { paths: untracked, untracked: true, confirm: true })
       }, [run, summary])
 
@@ -16594,6 +16638,14 @@ window.__ModuleLoader__.load({
         }])
       }
       const dirty = summary === null ? 0 : summary.changes.staged.length + summary.changes.unstaged.length + summary.changes.untracked.length + summary.changes.conflicted.length
+      /* Every path "Discard All Changes" will touch: staged and unstaged
+         tracked paths (deduped) plus untracked. Conflicts are excluded. */
+      const discardablePaths = summary === null ? [] : Array.from(new Set([
+        ...summary.changes.staged.map((entry) => entry.path),
+        ...summary.changes.unstaged.map((entry) => entry.path),
+        ...summary.changes.untracked.map((entry) => entry.path),
+      ]))
+      const discardableUntracked = summary === null ? 0 : summary.changes.untracked.length
 
       /* Both header switchers are menu-driven now (see RepoSelect): the
          popovers reuse openMenuAt, so they clamp to the panel box and share
@@ -16910,7 +16962,7 @@ window.__ModuleLoader__.load({
             { id: 'ch-stage', label: t('changes.stageAll'), disabled: stageable.length === 0, reason, run: () => { void run('stage', { paths: stageable.map((entry) => entry.path) }) } },
             { id: 'ch-unstage', label: t('changes.unstageAll'), disabled: stagedPaths.length === 0, reason, run: () => { void run('unstage', { paths: stagedPaths }) } },
             null,
-            { id: 'ch-discard', label: t('more.discardAll'), danger: true, disabled: dirty === 0, reason, run: () => setDialog({ kind: 'discardAll' }) },
+            { id: 'ch-discard', label: t('more.discardAll'), danger: true, disabled: discardablePaths.length === 0, reason, run: () => setDialog({ kind: 'discardAll' }) },
           ] },
           /* —— SCM ▸ Pull, Push ▸ —— */
           { id: 'sub-pullpush', icon: 'pull', tone: 'accent', label: t('more.pullpushGroup'), items: [
@@ -16999,9 +17051,7 @@ window.__ModuleLoader__.load({
         // Commit-and-push carries the confirm flag with it: the button already
         // says exactly what it will publish, so the host guard is satisfied by
         // the click itself rather than by a second dialog.
-        onCommit: (message, amend, push) => {
-          void run('commit', { message: message, amend: amend, push: push === true, confirm: push === true })
-        },
+        onCommit: (message, amend, push) => run('commit', { message: message, amend: amend, push: push === true, confirm: push === true }),
         onStage: (item) => { void run('stage', { paths: [item.path] }) },
         onUnstage: (item) => { void run('unstage', { paths: [item.path] }) },
         onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
@@ -17144,7 +17194,9 @@ window.__ModuleLoader__.load({
           }
         }
         // A running git command greys out the repository actions, never the view.
-        if (busy === true && spec.id !== 'refresh' && RAIL_VIEW_IDS.indexOf(spec.id) < 0) entry.disabled = true
+        // Refresh is an action too: leaving it live stacked another full load on
+        // top of the one already running, which is what made the badge blink.
+        if (busy === true && RAIL_VIEW_IDS.indexOf(spec.id) < 0) entry.disabled = true
         return entry
       })
 
@@ -17500,7 +17552,8 @@ window.__ModuleLoader__.load({
         overlays.push(E(ConfirmDialog, {
           key: 'discardAll', t: t,
           title: t('confirm.title'),
-          text: t('confirm.discardAll'),
+          text: fill(t('confirm.discardMany'), { n: discardablePaths.length })
+            + (discardableUntracked > 0 ? ' ' + fill(t('confirm.discardManyUntracked'), { m: discardableUntracked }) : ''),
           okLabel: t('confirm.ok'), cancelLabel: t('confirm.cancel'),
           onCancel: () => setDialog(null),
           onConfirm: () => { setDialog(null); void discardAllChanges() },
