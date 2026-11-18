@@ -74,7 +74,7 @@ function withRepoLock(key, work) {
 }
 
 const WRITE_METHODS = new Set([
-  'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',
+  'stage', 'unstage', 'discard', 'gitignoreAdd', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',
   'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull',
   'push', 'stashPush', 'stashApply', 'stashDrop', 'stashClear', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'undoApply',
 ])

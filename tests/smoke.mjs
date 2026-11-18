@@ -771,7 +771,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version', 'diagnostics']
+  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'gitignoreAdd', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version', 'diagnostics']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -2267,7 +2267,7 @@ test('upstream management: bind, drop and create-tracking from menus (v0.20.0, i
   assert.match(host, /git\(root, \['branch', '--unset-upstream', branch\]\)/, 'the unset verb uses branch --unset-upstream')
   assert.match(host, /payload\.track === true && start !== undefined\) args\.push\('--track'\)/, 'checkout -b gains --track for remote starts')
   // The write is serialised like every other mutating method.
-  assert.match(host, /'stage', 'unstage', 'discard', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',/, 'branch-upstream is a declared write method')
+  assert.match(host, /'stage', 'unstage', 'discard', 'gitignoreAdd', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream',/, 'branch-upstream is a declared write method')
   // Branch-row menu: local rows bind/drop, remote rows create a local branch.
   assert.match(client, /id: 'setUpstream'/, 'branch rows can set an upstream')
   assert.match(client, /id: 'unsetUpstream'/, 'branch rows can drop an upstream')
@@ -2395,8 +2395,12 @@ test('the inline diff can add a right-sidebar view without closing itself (issue
   // effect runs before LineDiff's early returns so hook order stays legal.
   assert.match(client, /const shownDiffPath = diffPath === null \? \(selectedPath === null \? '' : selectedPath\) : diffPath/,
     'the header path mirrors the active file')
-  assert.match(client, /E\('span', \{ className: 'dig-mono dig-diff-path' \}, shownDiffPath\)/,
-    'the header renders the mirrored path')
+  assert.match(client, /E\('span', \{ className: 'dig-mono dig-diff-path' \}, diffPathCrumbs\)/,
+    'the header renders the mirrored path as per-level crumbs')
+  assert.match(client, /onContextMenu: \(event\) => \{ event\.preventDefault\(\); diffPathMenu\(event, prefix, isFolder\) \}/,
+    'every path level opens the folder/file menu on right-click')
+  assert.match(client, /label: fill\(t\('menu\.discardFolderN'\), \{ n: total \}\)/,
+    'a path level can discard its whole subtree')
   assert.match(client, /props\.onActiveFile\(file\.path\)/, 'LineDiff reports the active file, not the row that opened it')
   assert.match(client, /onActiveFile: setDiffPath/, 'the inline DiffBody forwards that report')
   // Disabled, never a silent failure: the wrapper carries the reason so a
@@ -2406,6 +2410,38 @@ test('the inline diff can add a right-sidebar view without closing itself (issue
   assert.match(client, /disabled: sidebarBlocked !== null/, 'unavailable and loading both disable the button')
   assert.ok(client.includes("'.dig-diff-action{display:inline-flex;flex:none;align-items:center}'"), 'the action sits flush in the head row')
   for (const key of ['diff.sidebar.open', 'diff.sidebar.unavailable', 'diff.sidebar.loading', 'diff.sidebar.failed']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
+      '21 gates carry ' + key)
+  }
+})
+
+test('changes folder heads and the diff path expose folder-scoped verbs', () => {
+  // A folder head used to be a plain collapse toggle: only a single row could
+  // be discarded or ignored. Folder heads, every level of a multi-file diff
+  // path and the row menu now resolve the same repo-relative subtree.
+  assert.match(client, /props\.onFolderMenu\(event, node\.path\.join\('\/'\), key\)/,
+    'a folder head right-click hands over the folder path')
+  assert.match(client, /props\.onFolderMenu\(event, '', key\)/,
+    'the repository root head is a folder target too')
+  assert.match(client, /const changeGroupsUnder = useCallback\(\(folder\) => \{/,
+    'folder verbs resolve every group below one path')
+  assert.match(client, /entry\.path\.startsWith\(folder \+ '\/'\)/,
+    'the subtree match is path-segment safe, not a bare string prefix')
+  assert.match(client, /const folderMenu = useCallback\(\(event, folder, group\) => \{/,
+    'folder heads and diff path levels share one menu builder')
+  assert.match(client, /label: fill\(t\('menu\.discardFolderN'\), \{ n: total \}\), run: \(\) => openDiscardManyDialog\(groups\)/,
+    'discard is scoped to the resolved subtree')
+  assert.match(client, /const groups = scope === undefined \? changeSelectionGroups\(\) : scope/,
+    'the existing multi-select discard dialog accepts that scope')
+  assert.match(client, /addToGitignore\(folder, true\)/, 'folder entries add a directory pattern')
+  assert.match(client, /void run\('gitignoreAdd', \{ path: target, directory: directory === true \}\)/,
+    'the client calls the registered host write method')
+  assert.match(client, /group === 'untracked' \? \[\{ id: 'gitignore', icon: 'eyeOff'/,
+    'only an untracked path gains anything from .gitignore')
+  assert.match(client, /onFolderMenu: folderMenu/, 'the panel wires the folder menu into ChangesPanel')
+  assert.match(client, /diffContext === null \|\| diffContext\.kind !== 'worktree'/,
+    'a commit diff path only copies: discard/gitignore act on the working tree')
+  for (const key of ['menu.addGitignore', 'menu.stageFolderN', 'menu.unstageFolderN', 'menu.discardFolderN', 'menu.copyFolder', 'toast.gitignoreAdded', 'toast.gitignoreExists']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
       '21 gates carry ' + key)
   }

@@ -154,6 +154,13 @@ window.__ModuleLoader__.load({
       'menu.copyHashesN': '复制 {n} 个哈希',
       'menu.copyPathsN': '复制 {n} 个路径',
       'menu.stageN': '暂存 {n} 项',
+      'menu.addGitignore': '添加到 .gitignore',
+      'menu.stageFolderN': '暂存此文件夹下 {n} 项',
+      'menu.unstageFolderN': '取消暂存此文件夹下 {n} 项',
+      'menu.discardFolderN': '丢弃此文件夹下 {n} 项更改…',
+      'menu.copyFolder': '复制文件夹路径',
+      'toast.gitignoreAdded': '已将 {path} 添加到 .gitignore',
+      'toast.gitignoreExists': '{path} 已在 .gitignore 中',
       'menu.unstageN': '取消暂存 {n} 项',
       'menu.discardN': '还原 {n} 项…',
       'menu.cherryN': 'Cherry-pick {n} 个提交',
@@ -568,6 +575,13 @@ window.__ModuleLoader__.load({
       'menu.copyHashesN': 'Copy {n} hashes',
       'menu.copyPathsN': 'Copy {n} paths',
       'menu.stageN': 'Stage {n} items',
+      'menu.addGitignore': 'Add to .gitignore',
+      'menu.stageFolderN': 'Stage {n} in this folder',
+      'menu.unstageFolderN': 'Unstage {n} in this folder',
+      'menu.discardFolderN': 'Discard {n} changes in this folder…',
+      'menu.copyFolder': 'Copy folder path',
+      'toast.gitignoreAdded': 'Added {path} to .gitignore',
+      'toast.gitignoreExists': '{path} is already in .gitignore',
       'menu.unstageN': 'Unstage {n} items',
       'menu.discardN': 'Discard {n} items…',
       'menu.cherryN': 'Cherry-pick {n} commits',
@@ -990,6 +1004,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '複製 {n} 個雜湊',
         'menu.copyPathsN': '複製 {n} 個路徑',
         'menu.stageN': '暫存 {n} 項',
+        'menu.addGitignore': '加入 .gitignore',
+        'menu.stageFolderN': '暫存呢個資料夾下 {n} 項',
+        'menu.unstageFolderN': '取消暫存呢個資料夾下 {n} 項',
+        'menu.discardFolderN': '丟棄呢個資料夾下 {n} 項變更…',
+        'menu.copyFolder': '複製資料夾路徑',
+        'toast.gitignoreAdded': '已將 {path} 加入 .gitignore',
+        'toast.gitignoreExists': '{path} 已經喺 .gitignore 入面',
         'menu.unstageN': '取消暫存 {n} 項',
         'menu.discardN': '還原 {n} 項…',
         'menu.cherryN': 'Cherry-pick {n} 個提交',
@@ -1404,6 +1425,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '複製 {n} 個雜湊',
         'menu.copyPathsN': '複製 {n} 個路徑',
         'menu.stageN': '暫存 {n} 項',
+        'menu.addGitignore': '加入 .gitignore',
+        'menu.stageFolderN': '暫存此資料夾下 {n} 項',
+        'menu.unstageFolderN': '取消暫存此資料夾下 {n} 項',
+        'menu.discardFolderN': '捨棄此資料夾下 {n} 項變更…',
+        'menu.copyFolder': '複製資料夾路徑',
+        'toast.gitignoreAdded': '已將 {path} 加入 .gitignore',
+        'toast.gitignoreExists': '{path} 已在 .gitignore 中',
         'menu.unstageN': '取消暫存 {n} 項',
         'menu.discardN': '還原 {n} 項…',
         'menu.cherryN': 'Cherry-pick {n} 個提交',
@@ -1818,6 +1846,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '複製 {n} 個雜湊',
         'menu.copyPathsN': '複製 {n} 個路徑',
         'menu.stageN': '暫存 {n} 項',
+        'menu.addGitignore': '加入 .gitignore',
+        'menu.stageFolderN': '暫存此資料夾下 {n} 項',
+        'menu.unstageFolderN': '取消暫存此資料夾下 {n} 項',
+        'menu.discardFolderN': '捨棄此資料夾下 {n} 項變更…',
+        'menu.copyFolder': '複製資料夾路徑',
+        'toast.gitignoreAdded': '已將 {path} 加入 .gitignore',
+        'toast.gitignoreExists': '{path} 已在 .gitignore 中',
         'menu.unstageN': '取消暫存 {n} 項',
         'menu.discardN': '還原 {n} 項…',
         'menu.cherryN': 'Cherry-pick {n} 個提交',
@@ -2232,6 +2267,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '{n} 件のハッシュをコピー',
         'menu.copyPathsN': '{n} 件のパスをコピー',
         'menu.stageN': '{n} 件をステージ',
+        'menu.addGitignore': '.gitignore に追加',
+        'menu.stageFolderN': 'このフォルダー内の {n} 件をステージ',
+        'menu.unstageFolderN': 'このフォルダー内の {n} 件をステージ解除',
+        'menu.discardFolderN': 'このフォルダー内の {n} 件の変更を破棄…',
+        'menu.copyFolder': 'フォルダーのパスをコピー',
+        'toast.gitignoreAdded': '{path} を .gitignore に追加しました',
+        'toast.gitignoreExists': '{path} はすでに .gitignore にあります',
         'menu.unstageN': '{n} 件のステージ解除',
         'menu.discardN': '{n} 件を破棄…',
         'menu.cherryN': 'コミット {n} 件をチェリーピック',
@@ -2646,6 +2688,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '해시 {n}개 복사',
         'menu.copyPathsN': '경로 {n}개 복사',
         'menu.stageN': '{n}개 스테이지',
+        'menu.addGitignore': '.gitignore에 추가',
+        'menu.stageFolderN': '이 폴더의 {n}개 항목 스테이지',
+        'menu.unstageFolderN': '이 폴더의 {n}개 항목 스테이지 해제',
+        'menu.discardFolderN': '이 폴더의 {n}개 변경 사항 버리기…',
+        'menu.copyFolder': '폴더 경로 복사',
+        'toast.gitignoreAdded': '{path}을(를) .gitignore에 추가했습니다',
+        'toast.gitignoreExists': '{path}은(는) 이미 .gitignore에 있습니다',
         'menu.unstageN': '{n}개 스테이지 해제',
         'menu.discardN': '{n}개 되돌리기…',
         'menu.cherryN': '커밋 {n}개 체리픽',
@@ -3060,6 +3109,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '{n} Hashes kopieren',
         'menu.copyPathsN': '{n} Pfade kopieren',
         'menu.stageN': '{n} Elemente vormerken',
+        'menu.addGitignore': 'Zu .gitignore hinzufügen',
+        'menu.stageFolderN': '{n} Elemente in diesem Ordner vormerken',
+        'menu.unstageFolderN': '{n} Elemente in diesem Ordner aus dem Index nehmen',
+        'menu.discardFolderN': '{n} Änderungen in diesem Ordner verwerfen…',
+        'menu.copyFolder': 'Ordnerpfad kopieren',
+        'toast.gitignoreAdded': '{path} zu .gitignore hinzugefügt',
+        'toast.gitignoreExists': '{path} ist bereits in .gitignore',
         'menu.unstageN': '{n} Elemente zurücknehmen',
         'menu.discardN': '{n} Elemente verwerfen…',
         'menu.cherryN': '{n} Commits cherry-picken',
@@ -3474,6 +3530,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Copier {n} hachages',
         'menu.copyPathsN': 'Copier {n} chemins',
         'menu.stageN': 'Indexer {n} éléments',
+        'menu.addGitignore': 'Ajouter au .gitignore',
+        'menu.stageFolderN': 'Indexer {n} éléments de ce dossier',
+        'menu.unstageFolderN': 'Désindexer {n} éléments de ce dossier',
+        'menu.discardFolderN': 'Abandonner {n} modifications de ce dossier…',
+        'menu.copyFolder': 'Copier le chemin du dossier',
+        'toast.gitignoreAdded': '{path} ajouté au .gitignore',
+        'toast.gitignoreExists': '{path} est déjà dans .gitignore',
         'menu.unstageN': 'Désindexer {n} éléments',
         'menu.discardN': 'Abandonner {n} éléments…',
         'menu.cherryN': 'Cherry-pick de {n} commits',
@@ -3888,6 +3951,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Копировать хешей: {n}',
         'menu.copyPathsN': 'Копировать путей: {n}',
         'menu.stageN': 'В индекс: {n}',
+        'menu.addGitignore': 'Добавить в .gitignore',
+        'menu.stageFolderN': 'Проиндексировать {n} в этой папке',
+        'menu.unstageFolderN': 'Убрать из индекса {n} в этой папке',
+        'menu.discardFolderN': 'Отменить {n} изменений в этой папке…',
+        'menu.copyFolder': 'Копировать путь папки',
+        'toast.gitignoreAdded': '{path} добавлен в .gitignore',
+        'toast.gitignoreExists': '{path} уже есть в .gitignore',
         'menu.unstageN': 'Из индекса: {n}',
         'menu.discardN': 'Отменить изменения: {n}…',
         'menu.cherryN': 'Cherry-pick {n} коммит(ов)',
@@ -4302,6 +4372,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Copiar {n} hashes',
         'menu.copyPathsN': 'Copiar {n} caminhos',
         'menu.stageN': 'Preparar {n} itens',
+        'menu.addGitignore': 'Adicionar ao .gitignore',
+        'menu.stageFolderN': 'Preparar {n} itens desta pasta',
+        'menu.unstageFolderN': 'Remover {n} itens desta pasta do índice',
+        'menu.discardFolderN': 'Descartar {n} alterações desta pasta…',
+        'menu.copyFolder': 'Copiar caminho da pasta',
+        'toast.gitignoreAdded': '{path} adicionado ao .gitignore',
+        'toast.gitignoreExists': '{path} já está no .gitignore',
         'menu.unstageN': 'Despreparar {n} itens',
         'menu.discardN': 'Descartar {n} itens…',
         'menu.cherryN': 'Cherry-pick de {n} commits',
@@ -4716,6 +4793,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Copia {n} hash',
         'menu.copyPathsN': 'Copia {n} percorsi',
         'menu.stageN': 'Metti in stage {n} elementi',
+        'menu.addGitignore': 'Aggiungi a .gitignore',
+        'menu.stageFolderN': 'Metti in stage {n} elementi di questa cartella',
+        'menu.unstageFolderN': 'Togli dallo stage {n} elementi di questa cartella',
+        'menu.discardFolderN': 'Scarta {n} modifiche di questa cartella…',
+        'menu.copyFolder': 'Copia percorso cartella',
+        'toast.gitignoreAdded': '{path} aggiunto a .gitignore',
+        'toast.gitignoreExists': '{path} è già in .gitignore',
         'menu.unstageN': 'Rimuovi {n} elementi dallo stage',
         'menu.discardN': 'Scarta {n} elementi…',
         'menu.cherryN': 'Cherry-pick di {n} commit',
@@ -5130,6 +5214,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '{n} hashes kopiëren',
         'menu.copyPathsN': '{n} paden kopiëren',
         'menu.stageN': '{n} items stagen',
+        'menu.addGitignore': 'Toevoegen aan .gitignore',
+        'menu.stageFolderN': '{n} items in deze map stagen',
+        'menu.unstageFolderN': '{n} items in deze map unstagen',
+        'menu.discardFolderN': '{n} wijzigingen in deze map verwerpen…',
+        'menu.copyFolder': 'Mappad kopiëren',
+        'toast.gitignoreAdded': '{path} toegevoegd aan .gitignore',
+        'toast.gitignoreExists': '{path} staat al in .gitignore',
         'menu.unstageN': '{n} items unstagen',
         'menu.discardN': '{n} items weggooien…',
         'menu.cherryN': '{n} commits cherry-picken',
@@ -5544,6 +5635,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Kopiuj {n} skrótów',
         'menu.copyPathsN': 'Kopiuj {n} ścieżek',
         'menu.stageN': 'Dodaj {n} do indeksu',
+        'menu.addGitignore': 'Dodaj do .gitignore',
+        'menu.stageFolderN': 'Dodaj {n} elementów z tego folderu do indeksu',
+        'menu.unstageFolderN': 'Usuń {n} elementów z tego folderu z indeksu',
+        'menu.discardFolderN': 'Odrzuć {n} zmian w tym folderze…',
+        'menu.copyFolder': 'Kopiuj ścieżkę folderu',
+        'toast.gitignoreAdded': 'Dodano {path} do .gitignore',
+        'toast.gitignoreExists': '{path} już jest w .gitignore',
         'menu.unstageN': 'Usuń {n} z indeksu',
         'menu.discardN': 'Odrzuć {n}…',
         'menu.cherryN': 'Cherry-pick {n} commit(ów)',
@@ -5958,6 +6056,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Kopiera {n} hashar',
         'menu.copyPathsN': 'Kopiera {n} sökvägar',
         'menu.stageN': 'Klädda {n} objekt',
+        'menu.addGitignore': 'Lägg till i .gitignore',
+        'menu.stageFolderN': 'Klädda {n} objekt i den här mappen',
+        'menu.unstageFolderN': 'Avklädda {n} objekt i den här mappen',
+        'menu.discardFolderN': 'Ångra {n} ändringar i den här mappen…',
+        'menu.copyFolder': 'Kopiera mappsökväg',
+        'toast.gitignoreAdded': '{path} tillagd i .gitignore',
+        'toast.gitignoreExists': '{path} finns redan i .gitignore',
         'menu.unstageN': 'Avklädda {n} objekt',
         'menu.discardN': 'Förkasta {n} objekt…',
         'menu.cherryN': 'Cherry-picka {n} commit(s)',
@@ -6372,6 +6477,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '{n} karmayı kopyala',
         'menu.copyPathsN': '{n} yolu kopyala',
         'menu.stageN': '{n} öğeyi hazırla',
+        'menu.addGitignore': '.gitignore\'a ekle',
+        'menu.stageFolderN': 'Bu klasördeki {n} öğeyi hazırla',
+        'menu.unstageFolderN': 'Bu klasördeki {n} öğeyi hazırlıktan çıkar',
+        'menu.discardFolderN': 'Bu klasördeki {n} değişikliği geri al…',
+        'menu.copyFolder': 'Klasör yolunu kopyala',
+        'toast.gitignoreAdded': '{path} .gitignore\'a eklendi',
+        'toast.gitignoreExists': '{path} zaten .gitignore\'da',
         'menu.unstageN': '{n} öğeyi hazırlıktan çıkar',
         'menu.discardN': '{n} öğeyi at…',
         'menu.cherryN': '{n} commit seçip al',
@@ -6786,6 +6898,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Salin {n} hash',
         'menu.copyPathsN': 'Salin {n} jalur',
         'menu.stageN': 'Stage {n} item',
+        'menu.addGitignore': 'Tambahkan ke .gitignore',
+        'menu.stageFolderN': 'Stage {n} item di folder ini',
+        'menu.unstageFolderN': 'Batalkan stage {n} item di folder ini',
+        'menu.discardFolderN': 'Buang {n} perubahan di folder ini…',
+        'menu.copyFolder': 'Salin jalur folder',
+        'toast.gitignoreAdded': '{path} ditambahkan ke .gitignore',
+        'toast.gitignoreExists': '{path} sudah ada di .gitignore',
         'menu.unstageN': 'Batalkan stage {n} item',
         'menu.discardN': 'Buang {n} item…',
         'menu.cherryN': 'Cherry-pick {n} commit',
@@ -7200,6 +7319,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'Sao chép {n} hash',
         'menu.copyPathsN': 'Sao chép {n} đường dẫn',
         'menu.stageN': 'Stage {n} mục',
+        'menu.addGitignore': 'Thêm vào .gitignore',
+        'menu.stageFolderN': 'Đưa {n} mục trong thư mục này vào stage',
+        'menu.unstageFolderN': 'Bỏ {n} mục trong thư mục này khỏi stage',
+        'menu.discardFolderN': 'Bỏ {n} thay đổi trong thư mục này…',
+        'menu.copyFolder': 'Sao chép đường dẫn thư mục',
+        'toast.gitignoreAdded': 'Đã thêm {path} vào .gitignore',
+        'toast.gitignoreExists': '{path} đã có trong .gitignore',
         'menu.unstageN': 'Bỏ stage {n} mục',
         'menu.discardN': 'Bỏ {n} mục…',
         'menu.cherryN': 'Cherry-pick {n} commit',
@@ -7614,6 +7740,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'انسخ {n} تجزئة',
         'menu.copyPathsN': 'انسخ {n} مسارًا',
         'menu.stageN': 'جهّز {n} عنصرًا',
+        'menu.addGitignore': 'أضف إلى .gitignore',
+        'menu.stageFolderN': 'جهّز {n} عناصر في هذا المجلد',
+        'menu.unstageFolderN': 'ألغِ تجهيز {n} عناصر في هذا المجلد',
+        'menu.discardFolderN': 'تجاهل {n} تغييرات في هذا المجلد…',
+        'menu.copyFolder': 'انسخ مسار المجلد',
+        'toast.gitignoreAdded': 'أُضيف {path} إلى .gitignore',
+        'toast.gitignoreExists': '{path} موجود بالفعل في .gitignore',
         'menu.unstageN': 'ألغِ تجهيز {n} عنصرًا',
         'menu.discardN': 'تجاهل {n} عنصرًا…',
         'menu.cherryN': 'Cherry-pick لـ {n} إيداع',
@@ -8028,6 +8161,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': '{n} हैश कॉपी करें',
         'menu.copyPathsN': '{n} पाथ कॉपी करें',
         'menu.stageN': '{n} आइटम स्टेज करें',
+        'menu.addGitignore': '.gitignore में जोड़ें',
+        'menu.stageFolderN': 'इस फ़ोल्डर के {n} आइटम स्टेज करें',
+        'menu.unstageFolderN': 'इस फ़ोल्डर के {n} आइटम अनस्टेज करें',
+        'menu.discardFolderN': 'इस फ़ोल्डर के {n} बदलाव छोड़ें…',
+        'menu.copyFolder': 'फ़ोल्डर पथ कॉपी करें',
+        'toast.gitignoreAdded': '{path} को .gitignore में जोड़ा गया',
+        'toast.gitignoreExists': '{path} पहले से .gitignore में है',
         'menu.unstageN': '{n} आइटम अनस्टेज करें',
         'menu.discardN': '{n} आइटम छोड़ें…',
         'menu.cherryN': '{n} कमिट चेरी-पिक करें',
@@ -8442,6 +8582,13 @@ window.__ModuleLoader__.load({
         'menu.copyHashesN': 'คัดลอกแฮช {n} รายการ',
         'menu.copyPathsN': 'คัดลอกพาธ {n} รายการ',
         'menu.stageN': 'สเตจ {n} รายการ',
+        'menu.addGitignore': 'เพิ่มไปยัง .gitignore',
+        'menu.stageFolderN': 'สเตจ {n} รายการในโฟลเดอร์นี้',
+        'menu.unstageFolderN': 'ยกเลิกสเตจ {n} รายการในโฟลเดอร์นี้',
+        'menu.discardFolderN': 'ทิ้ง {n} การเปลี่ยนแปลงในโฟลเดอร์นี้…',
+        'menu.copyFolder': 'คัดลอกเส้นทางโฟลเดอร์',
+        'toast.gitignoreAdded': 'เพิ่ม {path} ไปยัง .gitignore แล้ว',
+        'toast.gitignoreExists': '{path} อยู่ใน .gitignore อยู่แล้ว',
         'menu.unstageN': 'ยกเลิกสเตจ {n} รายการ',
         'menu.discardN': 'ทิ้ง {n} รายการ…',
         'menu.cherryN': 'Cherry-pick {n} คอมมิต',
@@ -13618,6 +13765,7 @@ window.__ModuleLoader__.load({
                 type: 'button', className: 'dig-folder-head',
                 style: { paddingLeft: (4 + depth * 12) + 'px' },
                 onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [id]: previous[id] !== true })),
+                onContextMenu: (event) => { event.preventDefault(); props.onFolderMenu(event, node.path.join('/'), key) },
               },
                 E('span', { className: 'dig-chevron' + (open ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
                 E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
@@ -13641,6 +13789,7 @@ window.__ModuleLoader__.load({
               node: E('button', {
                 type: 'button', className: 'dig-folder-head',
                 onClick: () => setFoldedDirs((previous) => Object.assign({}, previous, { [rootId]: previous[rootId] !== true })),
+                onContextMenu: (event) => { event.preventDefault(); props.onFolderMenu(event, '', key) },
               },
                 E('span', { className: 'dig-chevron' + (rootOpen ? ' dig-chevron-open' : '') }, E(Icon, { name: 'chevron', size: 10 })),
                 E('span', { className: 'dig-row-icon dig-tone-accent' }, E(Icon, { name: 'folder', size: 10 })),
@@ -13662,7 +13811,7 @@ window.__ModuleLoader__.load({
         emitGroup('untracked', fill(t('counts.untracked'), { n: untracked.length }), untracked)
         emitGroup('ignored', fill(t('counts.ignored'), { n: ignored.length }), ignored)
         return out
-      }, [conflicted, staged, unstaged, untracked, ignored, groupBy, foldedDirs, sortKey, t, selection, handleRowClick, props.onUnstageAll, props.onStageAll])
+      }, [conflicted, staged, unstaged, untracked, ignored, groupBy, foldedDirs, sortKey, t, selection, handleRowClick, props.onUnstageAll, props.onStageAll, props.onFolderMenu])
       const changeOffsets = useMemo(() => {
         const sums = [0]
         for (const item of changeItems) sums.push(sums[sums.length - 1] + item.h)
@@ -16086,8 +16235,8 @@ window.__ModuleLoader__.load({
         if (groups.staged.length === 0) return
         void run('unstage', { paths: groups.staged })
       }
-      const openDiscardManyDialog = () => {
-        const groups = changeSelectionGroups()
+      const openDiscardManyDialog = (scope) => {
+        const groups = scope === undefined ? changeSelectionGroups() : scope
         if (groups.tracked.length === 0 && groups.untracked.length === 0) return
         setDialog({ kind: 'discardMany', tracked: groups.tracked, untracked: groups.untracked })
       }
@@ -16095,6 +16244,120 @@ window.__ModuleLoader__.load({
         const groups = changeSelectionGroups()
         copyValues(groups.staged.concat(groups.other))
       }
+      /* Everything the folder-level verbs need, resolved from the CURRENT
+         summary: a folder head only knows its own group, while "discard this
+         folder" must cover every group below that path. Conflicted entries stay
+         stageable but are left out of the bulk-discard set — the same rule as
+         Discard All Changes. */
+      const changeGroupsUnder = useCallback((folder) => {
+        const groups = { staged: [], other: [], tracked: [], untracked: [] }
+        if (summary === null) return groups
+        const matches = folder === '' || folder === undefined
+          ? () => true
+          : (entry) => entry.path === folder || entry.path.startsWith(folder + '/')
+        const add = (list, entryPath) => { if (list.indexOf(entryPath) < 0) list.push(entryPath) }
+        for (const entry of summary.changes.conflicted) {
+          if (matches(entry) === false) continue
+          /* A conflict needs an explicit resolution; "discard this folder" must
+             not resolve it silently, matching Discard All Changes. It stays
+             stageable because staging is how a conflict is marked resolved. */
+          add(groups.other, entry.path)
+        }
+        for (const entry of summary.changes.staged) {
+          if (matches(entry) === false) continue
+          add(groups.staged, entry.path)
+          add(groups.tracked, entry.path)
+        }
+        for (const entry of summary.changes.unstaged) {
+          if (matches(entry) === false) continue
+          add(groups.other, entry.path)
+          add(groups.tracked, entry.path)
+        }
+        for (const entry of summary.changes.untracked) {
+          if (matches(entry) === false) continue
+          add(groups.other, entry.path)
+          add(groups.untracked, entry.path)
+        }
+        return groups
+      }, [summary])
+      const groupOfPath = useCallback((target) => {
+        if (summary === null) return null
+        for (const group of ['untracked', 'staged', 'unstaged', 'conflicted']) {
+          if (summary.changes[group].some((entry) => entry.path === target) === true) return group
+        }
+        return null
+      }, [summary])
+      const addToGitignore = useCallback((target, directory) => {
+        if (target === '') return
+        void run('gitignoreAdd', { path: target, directory: directory === true }).then((data) => {
+          if (data === undefined || data === null) return
+          const key = data.added === true ? 'toast.gitignoreAdded' : 'toast.gitignoreExists'
+          pushToast({ text: fill(t(key), { path: data.path }), icon: 'eyeOff', tone: 'ok' })
+        })
+      }, [run, pushToast, t])
+      const folderMenu = useCallback((event, folder, group) => {
+        if (group === 'ignored') {
+          openMenuAt(event, [{ id: 'copy', icon: 'copy', tone: 'secondary', label: t('menu.copyFolder'), run: () => copyText(folder === '' ? '.' : folder) }])
+          return
+        }
+        const groups = changeGroupsUnder(folder)
+        const items = []
+        if (groups.other.length > 0) {
+          items.push({ id: 'stage', icon: 'plus', tone: 'success', label: fill(t('menu.stageFolderN'), { n: groups.other.length }), run: () => { void run('stage', { paths: groups.other }) } })
+        }
+        if (groups.staged.length > 0) {
+          items.push({ id: 'unstage', icon: 'minus', tone: 'warn', label: fill(t('menu.unstageFolderN'), { n: groups.staged.length }), run: () => { void run('unstage', { paths: groups.staged }) } })
+        }
+        const total = groups.tracked.length + groups.untracked.length
+        if (total > 0) {
+          items.push({ id: 'discard', icon: 'undo', tone: 'danger', danger: true, label: fill(t('menu.discardFolderN'), { n: total }), run: () => openDiscardManyDialog(groups) })
+        }
+        /* .gitignore only governs UNTRACKED paths: a folder whose changes are
+           all tracked would keep every row after the append. Offer the verb
+           only when it can actually change what the list shows. */
+        if (folder !== '' && groups.untracked.length > 0) {
+          if (items.length > 0) items.push(null)
+          items.push({ id: 'gitignore', icon: 'eyeOff', tone: 'warn', label: t('menu.addGitignore'), run: () => addToGitignore(folder, true) })
+        }
+        if (items.length > 0) items.push(null)
+        items.push({ id: 'copy', icon: 'copy', tone: 'secondary', label: t('menu.copyFolder'), run: () => copyText(folder === '' ? '.' : folder) })
+        openMenuAt(event, items)
+      }, [changeGroupsUnder, run, t, openDiscardManyDialog, addToGitignore, openMenuAt, copyText])
+      const diffPathMenu = useCallback((event, target, directory) => {
+        /* A commit diff names a path that is not in the working tree: discard
+           and gitignore would have nothing to act on (and the latter could
+           hide a same-named working file), so that view only copies. */
+        if (diffContext === null || diffContext.kind !== 'worktree') {
+          openMenuAt(event, [{ id: 'copy', icon: 'copy', tone: 'secondary', label: t(directory === true ? 'menu.copyFolder' : 'action.copyPath'), run: () => copyText(target) }])
+          return
+        }
+        if (directory === true) {
+          const groups = changeGroupsUnder(target)
+          const total = groups.tracked.length + groups.untracked.length
+          const items = []
+          if (total > 0) {
+            items.push({ id: 'discard', icon: 'undo', tone: 'danger', danger: true, label: fill(t('menu.discardFolderN'), { n: total }), run: () => openDiscardManyDialog(groups) })
+          }
+          if (groups.untracked.length > 0) {
+            items.push({ id: 'gitignore', icon: 'eyeOff', tone: 'warn', label: t('menu.addGitignore'), run: () => addToGitignore(target, true) })
+          }
+          if (items.length > 0) items.push(null)
+          items.push({ id: 'copy', icon: 'copy', tone: 'secondary', label: t('menu.copyFolder'), run: () => copyText(target) })
+          openMenuAt(event, items)
+          return
+        }
+        const group = groupOfPath(target)
+        const items = []
+        if (group !== null) {
+          items.push({ id: 'discard', icon: 'undo', tone: 'danger', danger: true, label: t('action.discard'), run: () => setDialog({ kind: 'discard', item: { path: target }, group: group }) })
+          if (group === 'untracked') {
+            items.push({ id: 'gitignore', icon: 'eyeOff', tone: 'warn', label: t('menu.addGitignore'), run: () => addToGitignore(target, false) })
+          }
+          items.push(null)
+        }
+        items.push({ id: 'copy', icon: 'copy', tone: 'secondary', label: t('action.copyPath'), run: () => copyText(target) })
+        openMenuAt(event, items)
+      }, [diffContext, changeGroupsUnder, groupOfPath, openDiscardManyDialog, addToGitignore, openMenuAt, t, copyText])
       /* A refresh that resolves a selected key away (file staged, discarded,
          renamed) must not keep it selected. */
       useEffect(() => {
@@ -16353,11 +16616,12 @@ window.__ModuleLoader__.load({
             ? { id: 'unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
             : { id: 'stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
           { id: 'discard', icon: 'undo', tone: 'danger', label: t('action.discard'), danger: true, run: () => setDialog({ kind: 'discard', item: item, group: group }) },
+          ...(group === 'untracked' ? [{ id: 'gitignore', icon: 'eyeOff', tone: 'warn', label: t('menu.addGitignore'), run: () => addToGitignore(item.path, false) }] : []),
           null,
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
         openMenuAt(event, items)
-      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer, changeSelection, changeSelectionGroups, openDiscardManyDialog, copyValues])
+      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer, changeSelection, changeSelectionGroups, openDiscardManyDialog, addToGitignore, copyValues])
 
       /* The commit-detail file list shares the working-tree row menu, minus the
          staging verbs: a committed file's diff replays against its commit. */
@@ -16764,9 +17028,28 @@ window.__ModuleLoader__.load({
         ? (patchLoading === true ? t('diff.sidebar.loading') : null)
         : t('diff.sidebar.unavailable')
       const shownDiffPath = diffPath === null ? (selectedPath === null ? '' : selectedPath) : diffPath
+      /* Every directory on the diff header is its own target: hovering shows
+         the level, right-clicking offers the folder-scoped verbs (discard the
+         whole subtree, add it to .gitignore). The accumulating prefix is the
+         repo-relative path the host already understands. */
+      const diffPathCrumbs = []
+      const diffSegments = shownDiffPath === '' ? [] : shownDiffPath.split('/').filter((segment) => segment !== '')
+      let diffPrefix = ''
+      for (let index = 0; index < diffSegments.length; index += 1) {
+        const segment = diffSegments[index]
+        diffPrefix = diffPrefix === '' ? segment : diffPrefix + '/' + segment
+        const prefix = diffPrefix
+        const isFolder = index < diffSegments.length - 1
+        if (index > 0) diffPathCrumbs.push(E('span', { className: 'dig-diff-sep' }, '/'))
+        diffPathCrumbs.push(E('span', {
+          className: 'dig-diff-seg',
+          title: prefix,
+          onContextMenu: (event) => { event.preventDefault(); diffPathMenu(event, prefix, isFolder) },
+        }, segment))
+      }
       const diffPaneOf = (fill) => patch === '' && patchLoading === false ? null : E('div', { className: 'dig-diff-pane' + (fill === true ? ' dig-diff-pane-fill' : ''), 'data-pane': 'diff', style: fill === true ? null : paneStyle('diff'), onContextMenu: onDiffPaneContextMenu },
         E('div', { className: 'dig-diff-head' },
-          E('span', { className: 'dig-mono dig-diff-path' }, shownDiffPath),
+          E('span', { className: 'dig-mono dig-diff-path' }, diffPathCrumbs),
           E('span', { className: 'dig-diff-action', title: sidebarBlocked === null ? t('diff.sidebar.open') : sidebarBlocked },
             E('button', {
               type: 'button',
@@ -17059,6 +17342,7 @@ window.__ModuleLoader__.load({
         onDiscard: (item, group) => setDialog({ kind: 'discard', item: item, group: group }),
         onDiff: (item, group) => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) },
         onChangeMenu: changeMenu,
+        onFolderMenu: folderMenu,
         /* ---- multi-select (issue #13) ---- */
         selection: changeSelection,
         onSelectionChange: onChangeSelection,
@@ -18297,7 +18581,10 @@ window.__ModuleLoader__.load({
       '.dig-diff-pane{flex:none;max-height:55%;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--dsw-alias-border-l2)}',
       '.dig-diff-pane-fill{flex:1;max-height:none;border-top:none}',
       '.dig-diff-head{display:flex;align-items:center;gap:8px;padding:3px 8px;color:var(--dsw-alias-label-tertiary);flex:none;min-width:0}',
-      '.dig-diff-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}',
+      '.dig-diff-path{display:flex;align-items:center;overflow:hidden;flex:1;min-width:0}',
+      '.dig-diff-seg{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 3px;border-radius:var(--dsw-radius-sm,5px);cursor:default}',
+      '.dig-diff-seg:hover{background:var(--dsw-alias-interactive-bg-hover);text-decoration:underline}',
+      '.dig-diff-sep{flex:none;opacity:.5;padding:0 1px}',
       '.dig-diff-action{display:inline-flex;flex:none;align-items:center}',
       '.dig-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:calc(12px + var(--dsh-code-font-delta, 0px));line-height:1.5;font-weight:500;min-height:0}',
       '.dig-diff-line{display:flex;gap:8px;padding:0 6px;white-space:pre}',

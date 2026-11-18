@@ -1514,3 +1514,46 @@ test('diagnostics names live git children and never leaks their argv (load trace
     assert.deepEqual(Object.keys(entry).sort(), ['command', 'cwd', 'elapsedMs'])
   }
 })
+
+test('gitignoreAdd anchors, escapes and stays idempotent', async () => {
+  writeFileSync(join(repo, '.gitignore'), 'first')
+  const added = await call('gitignoreAdd', { cwd: repo, path: 'sub/b.txt' })
+  assert.equal(added.status, 200)
+  assert.deepEqual(added.body.data, { path: '/sub/b.txt', added: true, directory: false })
+  assert.equal(readFileSync(join(repo, '.gitignore'), 'utf8'), 'first\n/sub/b.txt\n',
+    'a file without a trailing newline still gets its own line')
+
+  const duplicate = await call('gitignoreAdd', { cwd: repo, path: 'sub/b.txt' })
+  assert.equal(duplicate.status, 200)
+  assert.equal(duplicate.body.data.added, false)
+  assert.equal(duplicate.body.data.path, '/sub/b.txt')
+  assert.equal(readFileSync(join(repo, '.gitignore'), 'utf8'), 'first\n/sub/b.txt\n',
+    'the same path never lands twice')
+
+  const folder = await call('gitignoreAdd', { cwd: repo, path: 'sub', directory: true })
+  assert.equal(folder.status, 200)
+  assert.deepEqual(folder.body.data, { path: '/sub/', added: true, directory: true })
+
+  const weird = await call('gitignoreAdd', { cwd: repo, path: 'weird#name?.txt' })
+  assert.equal(weird.status, 200)
+  assert.equal(weird.body.data.path, '/weird\\#name\\?.txt')
+  assert.ok(readFileSync(join(repo, '.gitignore'), 'utf8').includes('/weird\\#name\\?.txt\n'))
+
+  const dotted = await call('gitignoreAdd', { cwd: repo, path: './sub//b.txt' })
+  assert.equal(dotted.status, 200)
+  assert.equal(dotted.body.data.added, false, 'the normalized path is the same pattern')
+
+  const absolute = await call('gitignoreAdd', { cwd: repo, path: join(repo, 'x.txt') })
+  assert.equal(absolute.status, 400)
+  assert.equal(absolute.body.ok, false)
+
+  const escaping = await call('gitignoreAdd', { cwd: repo, path: '../outside.txt' })
+  assert.equal(escaping.status, 400)
+  assert.equal(escaping.body.ok, false)
+
+  writeFileSync(join(repo, '.gitignore'), 'a\r\nb\r\n')
+  const crlf = await call('gitignoreAdd', { cwd: repo, path: 'crlf.txt' })
+  assert.equal(crlf.status, 200)
+  assert.equal(readFileSync(join(repo, '.gitignore'), 'utf8'), 'a\r\nb\r\n/crlf.txt\r\n',
+    'a CRLF .gitignore keeps its own line ending')
+})

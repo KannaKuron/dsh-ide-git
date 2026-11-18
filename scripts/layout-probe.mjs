@@ -81,6 +81,9 @@ async function enterSession() {
   await page.goto(url, { waitUntil: 'domcontentloaded' })
   await settle(7000)
   await clickText('继续')
+  /* rc.1 opens a mandatory sign-in dialog on a fresh profile; its X is the only
+     way past it, and it has no text label. */
+  await clickText('关闭')
   await clickText('稍后配置')
   await clickText('新建会话')
   await settle(2000)

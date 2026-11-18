@@ -1,6 +1,6 @@
 /** dsh-ide-git host: mutating methods. Every destructive one checks confirm. */
 
-import { existsSync, rmSync, statSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, rmSync, statSync } from 'node:fs'
 
 import path from 'node:path'
 
@@ -115,6 +115,59 @@ async function restoreTracked(root, paths) {
     if (restored.some((file) => sameFile(file, target))) continue
     rmSync(target, { force: true })
   }
+}
+
+/* Escape one gitignore path segment. Git treats #, !, *, ?, [, ] and spaces
+   specially, and a backslash escapes the next byte; escaping every occurrence is
+   the one spelling that also covers a path whose segment starts with # or !. */
+function gitignoreSegment(segment) {
+  return segment.replace(/[\\*?\[\]\s!#]/g, (character) => '\\' + character)
+}
+
+/* Validate a caller-supplied path as a repository-relative spelling. The panel
+   always sends forward slashes; rejecting backslashes keeps a Windows-style
+   "..\\x" from slipping past the ".." segment check on another host. */
+function gitignoreTarget(payload) {
+  const value = payload.path
+  if (typeof value !== 'string' || value.trim() === '') throw badRequest('path is required')
+  /* Do NOT trim the value: git allows a filename with leading or trailing
+     spaces, and those bytes are part of the pattern too. */
+  if (path.isAbsolute(value) === true) throw badRequest('path must be relative to the repository')
+  if (value.indexOf('\\') >= 0) throw badRequest('path must use forward slashes')
+  if (/[\u0000-\u001f\u007f]/.test(value) === true) throw badRequest('path contains control characters')
+  const segments = value.split('/').filter((entry) => entry !== '' && entry !== '.')
+  if (segments.length === 0 || segments.includes('..')) throw badRequest('path must stay inside the repository')
+  return segments.join('/')
+}
+
+/* Add one path (or directory) to the repository-root .gitignore. A leading slash
+   anchors the pattern to the repository root, so a nested path never depends on
+   where the .gitignore happened to match from. Appending is idempotent: the
+   exact pattern is checked before the file is touched. */
+async function gitignoreAdd(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const target = gitignoreTarget(payload)
+  const directory = payload.directory === true
+  const pattern = '/' + target.split('/').map(gitignoreSegment).join('/') + (directory ? '/' : '')
+  const file = path.join(root, '.gitignore')
+  let existing = ''
+  if (existsSync(file)) {
+    try {
+      existing = readFileSync(file, 'utf8')
+    } catch (error) {
+      throw new PanelError('gitignore-unreadable', 'could not read .gitignore: ' + String(error && error.message ? error.message : error), 409)
+    }
+  }
+  const present = existing.split(/\r?\n/).some((line) => line.trim() === pattern)
+  if (present === false) {
+    /* Keep the file's own line ending: a CRLF .gitignore on Windows must not
+       end up with one LF-only line appended to it. */
+    const eol = existing.includes('\r\n') ? '\r\n' : '\n'
+    const prefix = existing === '' || existing.endsWith('\n') ? '' : eol
+    appendFileSync(file, prefix + pattern + eol, 'utf8')
+  }
+  return { path: pattern, added: present === false, directory: directory }
 }
 
 async function discard(payload) {
@@ -655,7 +708,7 @@ async function clone(payload) {
 
 export {
 
-  stage, unstage, discard, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
+  stage, unstage, discard, gitignoreAdd, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
 
   worktreePrune, branchUpstream, branchRename, branchDelete, merge, mergeAbort, rebase, rebaseAbort,
 

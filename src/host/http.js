@@ -6,7 +6,7 @@ import { summary, stats, branches, log, me, mergePoint, commitDetail, diff, comp
 
 import {
 
-  stage, unstage, discard, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
+  stage, unstage, discard, gitignoreAdd, commit, checkout, branchCreate, worktreeAdd, worktreeRemove,
 
   worktreePrune, branchUpstream, branchRename, branchDelete, merge, mergeAbort, rebase, rebaseAbort,
 
@@ -51,6 +51,7 @@ const METHODS = {
   stage,
   unstage,
   discard,
+  gitignoreAdd,
   commit,
   checkout,
   branchCreate,
