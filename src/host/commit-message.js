@@ -106,6 +106,23 @@ function failureTextOf(failure) {
   return String(failure.code === undefined ? failure : failure.code)
 }
 
+/** Which route the failed call actually used (issue #36).
+    The panel's model capsule writes the SESSION route, while a fixed
+    commitModel in the settings card bypasses it entirely (see commitRouteOf).
+    A bare provider error ("invalid_api_key") then reads as "the model I picked
+    is broken" when the call never went to that model at all, so every failure
+    below names the route and where it came from. */
+function routeTextOf(route) {
+  if (route === null || route === undefined) return ''
+  return route.provider + '/' + route.model + ' (' + route.source + ')'
+}
+
+/** A gateway failure that names the route, keeping the provider text intact
+    (that text is the part a search engine can answer). */
+function routeError(route, code, message) {
+  return gatewayError(code, '[' + routeTextOf(route) + '] ' + message)
+}
+
 /** The no-route fallback: the first provider this host serves that lists at
     least one model, and that provider's first model. Issue #19 — a fresh
     session (no model picked yet) used to fail the panel button with 'no-route'
@@ -315,21 +332,21 @@ async function commitMessage(payload) {
        would turn "the call failed" into "the model said nothing" (假成功). */
     const finish = collected.finish
     if (finish === null || finish === undefined) {
-      throw gatewayError('llm-no-finish', 'the model stream ended without a finish reason; treat the result as unknown, not as success')
+      throw routeError(route, 'llm-no-finish', 'the model stream ended without a finish reason; treat the result as unknown, not as success')
     }
-    if (finish.kind === 'error') throw gatewayError('llm-error', failureTextOf(finish.failure))
-    if (finish.kind === 'aborted') throw gatewayError('llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
+    if (finish.kind === 'error') throw routeError(route, 'llm-error', failureTextOf(finish.failure))
+    if (finish.kind === 'aborted') throw routeError(route, 'llm-aborted', 'the call was aborted: ' + failureTextOf(finish.failure))
     if (finish.kind !== 'stop') {
       /* The max-tokens + no-text + reasoning-delta shape is the exact signature
          of issue #7: the budget (reasoning included) ran out mid-thought. Say
          what happened and what to do, instead of a bare finish kind. */
       if (finish.kind === 'max-tokens' && collected.text.trim() === '' && collected.sawReasoning === true) {
-        throw gatewayError('llm-unfinished', 'the model stopped with "max-tokens" before writing the message: its reasoning spent the whole output budget; lower the reasoning effort in the plugin settings or pick a lighter model')
+        throw routeError(route, 'llm-unfinished', 'the model stopped with "max-tokens" before writing the message: its reasoning spent the whole output budget; lower the reasoning effort in the plugin settings or pick a lighter model')
       }
-      throw gatewayError('llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
+      throw routeError(route, 'llm-unfinished', 'the model stopped with "' + String(finish.kind) + '"; the message may be incomplete')
     }
     const message = cleanupCommitMessage(collected.text)
-    if (message === '') throw gatewayError('empty-output', 'the model returned no text')
+    if (message === '') throw routeError(route, 'empty-output', 'the model returned no text')
     return {
       message: message,
       provider: route.provider,

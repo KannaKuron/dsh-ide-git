@@ -3,6 +3,22 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.36.0 — 2026-11-21
+
+**类型**:feat(issue #28 的三向差异放置与「在右侧栏打开文件」)+ fix(issue #33 的加载语义 / issue #36 的 AI 路由可见性)
+
+- **差异打开位置改成三选一(issue #28)**:原来是「在面板内预览差异」一个布尔量,它同时回答了两个问题——开不开、开在哪。现在设置卡里是一行下拉:**Git 面板内 / 右侧栏 / 底部工作台**,只决定位置。双击变更行或提交详情里的文件时,选「Git 面板内」照旧内嵌;选另外两项则直接落到对应座席(右侧栏走 `betterSidebar.openTab({ target: 'right' })` 或原生预览座位,收起时自动展开;底部工作台只在底座真的挂了 `onOpenDiff` 座席时才走)。老文档里的布尔值仍被识别:早先关掉内嵌等价于「右侧栏」,不会被静默重置成内嵌;宿主行 Config 新增 `diffPlacement` 字符串字段(`inline` / `sidebar` / `dock`,`volatile`),旧的 `inlineDiff` 保留只作迁移读取。
+- **右键「在右侧栏打开文件」(issue #28)**:变更行与提交详情文件行的右键菜单新增一项,走 `betterSidebar.openFile(scope, path, title)`(baseName 作标题,同路径复用同一个编辑器 Tab)。路径是仓库相对路径,渲染时按 repoRoot 解析成绝对路径;当前环境没有能开文件的右侧栏时该项置灰,title 写明原因,点击后失败也会在面板内提示而不是静默。
+- **内嵌 diff 的「打开文件预览」不再静默**:没有原生 `sidebarRight.openResource` 时回落到 `betterSidebar.openFile`;两者都没有则按钮禁用并带说明(原来服务缺失时是 no-op,点了没反应)。顺带修掉 file-address 的文法问题:按官方 `workspace-path` 的 `encodeSegment`(`encodeURIComponent` 后把 `%3A` 还原成 `:`)编码,Windows 盘符路径不再被转义坏。
+- **AI 写提交信息失败时能看出用的是哪条路由(issue #36)**:提交框的模型胶囊写的是**会话路由**,而 AI 写提交信息在设置卡固定了 `commitModel` 时走的是**固定路由**,两者此前完全不连通——用户换了几个会话模型(包括官方),请求仍旧打到同一处并报 `401 invalid_api_key`,看上去像「换了模型还是坏的」。现在宿主的六种失败(`llm-no-finish` / `llm-error` / `llm-aborted` / 两种 `llm-unfinished` / `empty-output`)都会在文案前带上实际使用的 `provider/model (source)`,`source` 是 `session` / `setting` / `fallback` 之一,provider 原文一字不改地保留在后面。
+- **一键改回跟随会话(issue #36)**:失败时若检测到设置卡钉了别的路由,面板会在提示后面加一句「本次用的是设置卡里固定的 {model}」并给一个「改回跟随会话」链接——点了直接清空 `commitModel`(`ConfigFormController.set`),再点一次 AI 按钮即可。窄栏(compact)原先完全没有失败提示行,现在两种布局共用同一行提示。
+- **加载中不再被当成「没有」(issue #33)**:大工程多仓库工作区里,扫描已经回来但 `summary` 还没到时,变更区与历史区原先都直接判定为空并渲染「没有未提交的变更」「这个仓库还没有提交」——观感就是「卡住了还说我没改东西」。现在两者都区分「还没到」与「真的空」:未到时显示「正在读取...」,历史侧新增 `commitsLoaded` 状态(补种缓存页也算已加载,切仓库时复位)。
+- **请求兜底超时(issue #33)**:客户端的 `request()` 加了 `AbortController` 兜底,`REQUEST_TIMEOUT_MS = 200000`——故意高于宿主自己的预算(普通 git spawn 30s,clone / push / pull 180s),这些是真答案必须送达;这条只兜住宿主彻底不回的情况,超时给出 `timeout` 码与明确文案,而不是永远转圈。远端通道回退那段逻辑一字未改。
+- **冷扫在途去重(issue #33)**:`scanRepos` 原来只有 15 秒结果缓存、没有在途合并,客户端 `repos` effect 与预热可能同时触发两次冷扫。现在同一 cwd 的并发冷调用共享同一次遍历(`repoScanInflight`),答案仍是各自独立的深拷贝;缓存语义(`cached` 标记、15 秒 TTL、写方法不失效)完全不变。
+- **文案与文档**:新增 11 个键(`settings.diff.placement` / `placementHint` / `placeInline` / `placeSidebar` / `placeDock`、`action.openInSidebar`、`diff.openFile.unavailable` / `failed`、`changes.aiFixed` / `aiFollow` / `aiFollowed`),ZH / EN 与 19 个 `LOCALES` 共 21 门同步;废弃的 `settings.diff.inline` / `inlineHint` 一并删除(设置卡改成三选一后已无引用)。中英文 README 的 diff 窗与文件右键两节随之重写。
+- **验证**:`npm test` **164/164**(新增 issue #28 的放置与底座降级断言、issue #33 的并发冷扫用例、issue #36 的路由命名用例);SSR 自检 4/4;`node --check` 与 `git diff --check` 通过。
+- **链接**:[issue #28](https://github.com/KannaKuron/dsh-ide-git/issues/28) · [issue #33](https://github.com/KannaKuron/dsh-ide-git/issues/33) · [issue #36](https://github.com/KannaKuron/dsh-ide-git/issues/36)
+
 ## v0.35.0 — 2026-11-18
 
 **类型**:feat(变更面板的目录级操作与 .gitignore 右键)

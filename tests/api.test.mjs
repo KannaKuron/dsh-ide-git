@@ -8,7 +8,7 @@
  */
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, existsSync, chmodSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -1169,6 +1169,25 @@ test('commit-message: an error finish is a failure with the provider text, not a
   assert.match(result.body.error.message, /no API key for provider route/)
 })
 
+/* Issue #36: the panel's model capsule writes the SESSION route, while a fixed
+   commitModel in the settings card bypasses it (commitRouteOf -> 'setting').
+   A bare provider error then reads as "the model I just picked is broken",
+   which is exactly the report that came in. Every failure now names the
+   route it really used and where that route came from. */
+test('commit-message: a failure names the route it used and where it came from (issue #36)', async () => {
+  const failure = { code: 'AUTH', message: '401: {"message":"密钥无效或已失效，请重新登录","type":"authentication_error","code":"invalid_api_key"}', status: 401 }
+  const llm = fakeLlm([{ type: 'finish', reason: { kind: 'error', failure } }])
+  /* A fixed route in the settings card wins over the session route. */
+  const pinned = await withServices(llm, fakeSessions({ provider: 'other', model: 'some-model' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1', model: 'deepseek-official/deepseek-flash' }))
+  assert.equal(pinned.status, 502)
+  assert.equal(pinned.body.error.code, 'llm-error')
+  assert.match(pinned.body.error.message, /^\[deepseek-official\/deepseek-flash \(setting\)\] /, 'the pinned route is named, not the session one')
+  assert.match(pinned.body.error.message, /invalid_api_key/, 'the provider text survives verbatim')
+  /* No pinned model: the session route is named, source 'session'. */
+  const followed = await withServices(llm, fakeSessions({ provider: 'other', model: 'some-model' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
+  assert.match(followed.body.error.message, /^\[other\/some-model \(session\)\] /, 'the session route is named when nothing is pinned')
+})
+
 test('commit-message: aborted, truncated and finish-less streams all fail loud', async () => {
   const aborted = await withServices(fakeLlm([{ type: 'finish', reason: { kind: 'aborted', failure: { code: 'ABORTED', message: 'user cancelled' } } }]), fakeSessions({ provider: 'p', model: 'm' }), (call) => call('commit-message', { cwd: repo, sessionId: 'sess-1' }))
   assert.equal(aborted.body.error.code, 'llm-aborted')
@@ -1498,6 +1517,44 @@ test('an expired entry forces a real scan, and the scan repopulates the cache', 
 
 test('REPOS_CACHE_TTL_MS stays the documented 15-second window', () => {
   assert.equal(REPOS_CACHE_TTL_MS, 15000)
+})
+
+test('concurrent cold scans share one walk instead of scanning the workspace twice (issue #33)', async () => {
+  /* A counting git: every invocation appends one byte to a tally file, so the
+     assertion is about real child processes rather than an internal counter.
+     The tiny sleep keeps a scan in flight long enough for the second caller to
+     arrive while it runs — that overlap is exactly what the in-flight map is
+     there for. */
+  const bin = join(tmpdir(), 'dsh-ide-git-count-' + String(process.pid) + '.sh')
+  const tally = join(tmpdir(), 'dsh-ide-git-tally-' + String(process.pid) + '.txt')
+  writeFileSync(bin, '#!/bin/sh\nprintf x >> "' + tally + '"\nsleep 0.03\nexec git "$@"\n')
+  chmodSync(bin, 0o755)
+  const calls = () => (existsSync(tally) ? readFileSync(tally, 'utf8').length : 0)
+  process.env.DSH_IDE_GIT_BIN = bin
+  try {
+    repoScanCache.delete(repo)
+    if (existsSync(tally)) rmSync(tally)
+    const solo = await call('repos', { cwd: repo })
+    assert.equal(solo.body.ok, true)
+    const onePass = calls()
+    assert.ok(onePass > 0, 'the scan really ran git')
+
+    repoScanCache.delete(repo)
+    if (existsSync(tally)) rmSync(tally)
+    const [first, second] = await Promise.all([call('repos', { cwd: repo }), call('repos', { cwd: repo })])
+    assert.equal(first.body.ok, true)
+    assert.equal(second.body.ok, true)
+    assert.deepEqual(second.body.data.repos, first.body.data.repos, 'both callers get the same answer')
+    /* Either the second request joined the running scan, or it arrived after it
+       finished and hit the fresh cache — both are one pass. Without the
+       in-flight map the overlapping case costs two. */
+    assert.ok(calls() <= onePass, 'a concurrent scan reuses the running one instead of walking twice')
+  } finally {
+    delete process.env.DSH_IDE_GIT_BIN
+    repoScanCache.delete(repo)
+    if (existsSync(bin)) rmSync(bin)
+    if (existsSync(tally)) rmSync(tally)
+  }
 })
 
 test('diagnostics names live git children and never leaks their argv (load trace)', async () => {

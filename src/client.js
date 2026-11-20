@@ -79,6 +79,13 @@ window.__ModuleLoader__.load({
     const LOAD_TRACE_POLL_MS = 1000
     const LOAD_TRACE_CLOCK_MS = 500
     const LOAD_TRACE_TIMEOUT_MS = 2500
+    /* The ceiling on ONE route call (issue #33). It deliberately sits above the
+       host's own limits — every git spawn gives up at 30s and the network
+       commands (clone / push / pull) at 180s — because those answers are real
+       and must reach the caller. What this catches is the case the host can
+       never answer at all: a wedged process or a dropped transport. Without it
+       the panel waited forever with every spinner already settled. */
+    const REQUEST_TIMEOUT_MS = 200000
     const REPO_KEY = 'dsh-ide-git.repo.v1'
     /* Manually opened checkouts, per session: the host only scans the
        workspace tree, so these paths ride every `repos` request as
@@ -185,6 +192,7 @@ window.__ModuleLoader__.load({
       'action.discard': '丢弃更改',
       'action.showDiff': '显示差异',
       'action.copyPath': '复制路径',
+      'action.openInSidebar': '在右侧栏打开文件',
       'action.checkout': '签出',
       'action.float': '浮动本页',
       'action.dock': '收回停靠',
@@ -347,13 +355,18 @@ window.__ModuleLoader__.load({
       'settings.date.label': '日期格式',
       'settings.date.relative': '相对时间 (4h / 22h)',
       'settings.date.absolute': '绝对时间 (11-05 10:42)',
-      'settings.diff.inline': '在面板内预览差异',
-      'settings.diff.inlineHint': '开启后差异在 Git 面板内打开，可使用左右分栏与自动换行；关闭后交给侧边栏的 diff 预览。',
+      'settings.diff.placement': '差异打开位置',
+      'settings.diff.placementHint': '选择双击文件时差异打开的位置：面板内可用分栏与换行，右侧栏可与文件并排阅读，底部工作台适合宽屏。',
+      'settings.diff.placeInline': 'Git 面板内',
+      'settings.diff.placeSidebar': '右侧栏',
+      'settings.diff.placeDock': '底部工作台',
       'preview.openFile': '打开文件预览',
       'diff.sidebar.open': '在右侧栏打开',
       'diff.sidebar.unavailable': '当前环境没有可用的右侧栏',
       'diff.sidebar.loading': '差异加载完成后才能打开',
       'diff.sidebar.failed': '无法在右侧栏打开这个差异',
+      'diff.openFile.unavailable': '当前环境没有能打开文件的右侧栏',
+      'diff.openFile.failed': '无法在右侧栏打开这个文件',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
       'lf.selectFile': '选择要查看的文件',
@@ -390,6 +403,9 @@ window.__ModuleLoader__.load({
       'changes.aiUndo': '撤销,恢复我的草稿',
       'changes.aiFailed': '生成失败:',
       'changes.aiNotice': '部分变更没有发给模型(已截断或丢弃),信息可能不完整。',
+      'changes.aiFixed': '本次用的是设置卡里固定的 {model},不是上面的会话模型。',
+      'changes.aiFollow': '改回跟随会话',
+      'changes.aiFollowed': '已改回跟随会话模型,直接再点一次「AI 写提交信息」就行。',
       'settings.rail.writeFailed': '设置没写进去,已退回原状态;请重试。',
       'settings.rail.readonly': '当前宿主把配置设为只读,开关不可修改。',
       'rail.settingsHint': '拖动或用箭头调整顺序,眼睛图标控制显示',
@@ -606,6 +622,7 @@ window.__ModuleLoader__.load({
       'action.discard': 'Discard changes',
       'action.showDiff': 'Show diff',
       'action.copyPath': 'Copy path',
+      'action.openInSidebar': 'Open the file in the right sidebar',
       'action.checkout': 'Checkout',
       'action.float': 'Float this page',
       'action.dock': 'Dock back',
@@ -768,13 +785,18 @@ window.__ModuleLoader__.load({
       'settings.date.label': 'Date format',
       'settings.date.relative': 'Relative (4h / 22h)',
       'settings.date.absolute': 'Absolute (11-05 10:42)',
-      'settings.diff.inline': 'Preview diffs in the panel',
-      'settings.diff.inlineHint': 'On, diffs open inside the Git panel with split view and line wrap. Off, the sidebar\'s diff preview takes over.',
+      'settings.diff.placement': 'Where diffs open',
+      'settings.diff.placementHint': 'Where a double-click opens a diff: inside the panel (with split view and wrap), the right sidebar (read it beside the file), or the bottom workbench (wide screens).',
+      'settings.diff.placeInline': 'Inside the Git panel',
+      'settings.diff.placeSidebar': 'Right sidebar',
+      'settings.diff.placeDock': 'Bottom workbench',
       'preview.openFile': 'Open in the file preview',
       'diff.sidebar.open': 'Open in the right sidebar',
       'diff.sidebar.unavailable': 'No right sidebar is available',
       'diff.sidebar.loading': 'Wait for the diff to finish loading',
       'diff.sidebar.failed': 'Could not open this diff in the right sidebar',
+      'diff.openFile.unavailable': 'No right sidebar here can open files',
+      'diff.openFile.failed': 'Could not open this file in the right sidebar',
       'lf.added': '+{count}',
       'lf.deleted': '-{count}',
       'lf.selectFile': 'Choose the file to review',
@@ -811,6 +833,9 @@ window.__ModuleLoader__.load({
       'changes.aiUndo': 'Undo, bring my draft back',
       'changes.aiFailed': 'Could not write it:',
       'changes.aiNotice': 'Some changes were not sent to the model (truncated or dropped); the message may be incomplete.',
+      'changes.aiFixed': 'This call used the model pinned in the settings card ({model}), not the session model above.',
+      'changes.aiFollow': 'Follow the session model',
+      'changes.aiFollowed': 'Now following the session model — press the AI button again.',
       'settings.rail.writeFailed': 'The setting did not save; the switch went back. Try again.',
       'settings.rail.readonly': 'This host serves the configuration read-only.',
       'rail.settingsHint': 'Drag or use the arrows to reorder; the eye toggles visibility',
@@ -1035,6 +1060,7 @@ window.__ModuleLoader__.load({
         'action.discard': '丟棄變更',
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
+      'action.openInSidebar': '喺右側欄開啟檔案',
         'action.checkout': '簽出',
         'action.float': '浮動本頁',
         'action.dock': '收回停靠',
@@ -1197,13 +1223,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': '日期格式',
         'settings.date.relative': '相對時間 (4h / 22h)',
         'settings.date.absolute': '絕對時間 (11-05 10:42)',
-        'settings.diff.inline': '喺面板內預覽差異',
-        'settings.diff.inlineHint': '開啟之後差異喺 Git 面板內開啟，可以用左右分欄同自動換行；關閉之後交畀側邊欄嘅 diff 預覽。',
+      'settings.diff.placement': '差異開啟位置',
+      'settings.diff.placementHint': '揀雙擊檔案時差異開啟嘅位置：面板內可以用分欄同換行，右側欄可以同檔案並排睇，底部工作台適合闊螢幕。',
+      'settings.diff.placeInline': 'Git 面板內',
+      'settings.diff.placeSidebar': '右側欄',
+      'settings.diff.placeDock': '底部工作台',
         'preview.openFile': '開啟檔案預覽',
         'diff.sidebar.open': '喺右側欄開啟',
         'diff.sidebar.unavailable': '而家嘅環境冇可用嘅右側欄',
         'diff.sidebar.loading': '差異載入完成後先可以開啟',
         'diff.sidebar.failed': '無法喺右側欄開啟呢個差異',
+      'diff.openFile.unavailable': '而家嘅環境冇可以開啟檔案嘅右側欄',
+      'diff.openFile.failed': '無法喺右側欄開啟呢個檔案',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看嘅檔案',
@@ -1240,6 +1271,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': '撤銷,還原我嘅草稿',
         'changes.aiFailed': '生成失敗:',
         'changes.aiNotice': '有部分變更冇發俾模型(已截斷或丟棄),訊息可能唔完整。',
+        'changes.aiFixed': '今次用咗設定卡固定嘅 {model},唔係上面嗰個工作階段模型。',
+        'changes.aiFollow': '改返做跟隨工作階段',
+        'changes.aiFollowed': '已改返做跟隨工作階段模型,再撳一次「AI 寫提交訊息」就得。',
         'settings.rail.writeFailed': '設定寫唔入,已經退回原狀;請再試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關改唔到。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
@@ -1456,6 +1490,7 @@ window.__ModuleLoader__.load({
         'action.discard': '丟棄變更',
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
+      'action.openInSidebar': '在右側欄開啟檔案',
         'action.checkout': '簽出',
         'action.float': '浮動本頁',
         'action.dock': '收回停靠',
@@ -1618,13 +1653,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': '日期格式',
         'settings.date.relative': '相對時間 (4h / 22h)',
         'settings.date.absolute': '絕對時間 (11-05 10:42)',
-        'settings.diff.inline': '在面板內預覽差異',
-        'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
+      'settings.diff.placement': '差異開啟位置',
+      'settings.diff.placementHint': '選擇雙擊檔案時差異開啟的位置：面板內可用分欄與換行，右側欄可與檔案並排閱讀，底部工作台適合寬螢幕。',
+      'settings.diff.placeInline': 'Git 面板內',
+      'settings.diff.placeSidebar': '右側欄',
+      'settings.diff.placeDock': '底部工作台',
         'preview.openFile': '開啟檔案預覽',
         'diff.sidebar.open': '在右側欄開啟',
         'diff.sidebar.unavailable': '目前環境沒有可用的右側欄',
         'diff.sidebar.loading': '差異載入完成後才能開啟',
         'diff.sidebar.failed': '無法在右側欄開啟這個差異',
+      'diff.openFile.unavailable': '目前環境沒有能開啟檔案的右側欄',
+      'diff.openFile.failed': '無法在右側欄開啟這個檔案',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看的檔案',
@@ -1661,6 +1701,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': '復原,還原我的草稿',
         'changes.aiFailed': '生成失敗:',
         'changes.aiNotice': '部分變更沒有傳給模型(已截斷或捨棄),訊息可能不完整。',
+        'changes.aiFixed': '這次用的是設定卡固定的 {model},不是上方的工作階段模型。',
+        'changes.aiFollow': '改回跟隨工作階段',
+        'changes.aiFollowed': '已改回跟隨工作階段模型,再按一次「AI 寫提交訊息」即可。',
         'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭頭排序;眼睛圖示切換顯示',
@@ -1877,6 +1920,7 @@ window.__ModuleLoader__.load({
         'action.discard': '丟棄變更',
         'action.showDiff': '顯示差異',
         'action.copyPath': '複製路徑',
+      'action.openInSidebar': '在右側欄開啟檔案',
         'action.checkout': '簽出',
         'action.float': '浮動本頁',
         'action.dock': '收回停靠',
@@ -2039,13 +2083,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': '日期格式',
         'settings.date.relative': '相對時間 (4h / 22h)',
         'settings.date.absolute': '絕對時間 (11-05 10:42)',
-        'settings.diff.inline': '在面板內預覽差異',
-        'settings.diff.inlineHint': '開啟後差異在 Git 面板內開啟，可使用左右分欄與自動換行；關閉後交給側邊欄的 diff 預覽。',
+      'settings.diff.placement': '差異開啟位置',
+      'settings.diff.placementHint': '選擇雙擊檔案時差異開啟的位置：面板內可用分欄與換行，右側欄可與檔案並排閱讀，底部工作台適合寬螢幕。',
+      'settings.diff.placeInline': 'Git 面板內',
+      'settings.diff.placeSidebar': '右側欄',
+      'settings.diff.placeDock': '底部工作台',
         'preview.openFile': '開啟檔案預覽',
         'diff.sidebar.open': '喺右側欄開啟',
         'diff.sidebar.unavailable': '而家嘅環境冇可用嘅右側欄',
         'diff.sidebar.loading': '差異載入完成後先可以開啟',
         'diff.sidebar.failed': '無法喺右側欄開啟呢個差異',
+      'diff.openFile.unavailable': '目前環境沒有能開啟檔案的右側欄',
+      'diff.openFile.failed': '無法在右側欄開啟這個檔案',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '選擇要查看嘅檔案',
@@ -2082,6 +2131,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': '復原,還原我的草稿',
         'changes.aiFailed': '生成失敗:',
         'changes.aiNotice': '部分變更沒有傳給模型(已截斷或捨棄),訊息可能不完整。',
+        'changes.aiFixed': '這次用的是設定卡固定的 {model},不是上方的工作階段模型。',
+        'changes.aiFollow': '改回跟隨工作階段',
+        'changes.aiFollowed': '已改回跟隨工作階段模型,再按一次「AI 寫提交訊息」即可。',
         'settings.rail.writeFailed': '設定沒有寫入,已退回原狀態;請重試。',
         'settings.rail.readonly': '目前宿主將設定設為唯讀,開關無法修改。',
         'rail.settingsHint': '拖曳或用箭嘴排序;眼睛圖示切換顯示',
@@ -2298,6 +2350,7 @@ window.__ModuleLoader__.load({
         'action.discard': '変更を破棄',
         'action.showDiff': '差分を表示',
         'action.copyPath': 'パスをコピー',
+      'action.openInSidebar': '右サイドバーでファイルを開く',
         'action.checkout': 'チェックアウト',
         'action.float': 'このページを浮動表示',
         'action.dock': 'ドックに戻す',
@@ -2460,13 +2513,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': '日付形式',
         'settings.date.relative': '相対（4h / 22h）',
         'settings.date.absolute': '絶対（11-05 10:42）',
-        'settings.diff.inline': 'パネル内で差分をプレビュー',
-        'settings.diff.inlineHint': 'オンの場合、差分は Git パネル内で開き、左右分割と折り返しを使用できます。オフの場合はサイドバーの差分プレビューに任せます。',
+      'settings.diff.placement': '差分を開く場所',
+      'settings.diff.placementHint': 'ダブルクリックしたときに差分をどこで開くかを選びます。パネル内（分割表示と折り返し）、右サイドバー（ファイルと並べて読む）、下部ワークベンチ（ワイド画面）。',
+      'settings.diff.placeInline': 'Git パネル内',
+      'settings.diff.placeSidebar': '右サイドバー',
+      'settings.diff.placeDock': '下部ワークベンチ',
         'preview.openFile': 'ファイルプレビューを開く',
         'diff.sidebar.open': '右サイドバーで開く',
         'diff.sidebar.unavailable': '利用できる右サイドバーがありません',
         'diff.sidebar.loading': '差分の読み込みが完了してから開けます',
         'diff.sidebar.failed': 'この差分を右サイドバーで開けませんでした',
+      'diff.openFile.unavailable': 'この環境にはファイルを開ける右サイドバーがありません',
+      'diff.openFile.failed': 'このファイルを右サイドバーで開けませんでした',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'レビューするファイルを選択',
@@ -2503,6 +2561,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': '元に戻す',
         'changes.aiFailed': '生成できませんでした:',
         'changes.aiNotice': '一部の変更はモデルに送られていません(切り詰めまたは除外)。内容が不完全な可能性があります。',
+        'changes.aiFixed': '今回使われたのは設定カードで固定した {model} で、上のセッションモデルではありません。',
+        'changes.aiFollow': 'セッションのモデルに合わせる',
+        'changes.aiFollowed': 'セッションのモデルに切り替えました。もう一度 AI ボタンを押してください。',
         'settings.rail.writeFailed': '設定を保存できませんでした。元の状態に戻しました。もう一度お試しください。',
         'settings.rail.readonly': 'このホストは設定を読み取り専用で提供しています。',
         'rail.settingsHint': 'ドラッグまたは矢印で並べ替え、目のアイコンで表示を切り替え',
@@ -2719,6 +2780,7 @@ window.__ModuleLoader__.load({
         'action.discard': '변경 사항 버리기',
         'action.showDiff': '차이 보기',
         'action.copyPath': '경로 복사',
+      'action.openInSidebar': '오른쪽 사이드바에서 파일 열기',
         'action.checkout': '체크아웃',
         'action.float': '이 페이지 띄우기',
         'action.dock': '도킹으로 복귀',
@@ -2881,13 +2943,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': '날짜 형식',
         'settings.date.relative': '상대 (4h / 22h)',
         'settings.date.absolute': '절대 (11-05 10:42)',
-        'settings.diff.inline': '패널에서 차이 미리보기',
-        'settings.diff.inlineHint': '켜면 차이가 Git 패널 안에서 열리고 좌우 분할과 자동 줄바꿈을 사용할 수 있습니다. 끄면 사이드바의 차이 미리보기로 넘깁니다.',
+      'settings.diff.placement': '차이를 여는 위치',
+      'settings.diff.placementHint': '더블클릭할 때 차이를 어디에서 열지 선택합니다. 패널 안(분할 보기와 줄바꿈), 오른쪽 사이드바(파일과 나란히 보기), 하단 워크벤치(와이드 화면).',
+      'settings.diff.placeInline': 'Git 패널 안',
+      'settings.diff.placeSidebar': '오른쪽 사이드바',
+      'settings.diff.placeDock': '하단 워크벤치',
         'preview.openFile': '파일 미리보기로 열기',
         'diff.sidebar.open': '오른쪽 사이드바에서 열기',
         'diff.sidebar.unavailable': '사용 가능한 오른쪽 사이드바가 없습니다',
         'diff.sidebar.loading': '차이 불러오기가 끝난 후 열 수 있습니다',
         'diff.sidebar.failed': '이 차이를 오른쪽 사이드바에서 열 수 없습니다',
+      'diff.openFile.unavailable': '이 환경에는 파일을 열 수 있는 오른쪽 사이드바가 없습니다',
+      'diff.openFile.failed': '이 파일을 오른쪽 사이드바에서 열 수 없습니다',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': '검토할 파일 선택',
@@ -2924,6 +2991,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': '되돌리기',
         'changes.aiFailed': '생성하지 못했습니다:',
         'changes.aiNotice': '일부 변경이 모델에 전달되지 않았습니다(잘림 또는 제외). 내용이 불완전할 수 있습니다.',
+        'changes.aiFixed': '이번 요청은 설정 카드에 고정된 {model}을 사용했습니다. 위의 세션 모델이 아닙니다.',
+        'changes.aiFollow': '세션 모델 따르기',
+        'changes.aiFollowed': '이제 세션 모델을 따릅니다. AI 버튼을 다시 눌러 주세요.',
         'settings.rail.writeFailed': '설정이 저장되지 않아 원래 상태로 되돌렸습니다. 다시 시도하세요.',
         'settings.rail.readonly': '이 호스트는 설정을 읽기 전용으로 제공합니다.',
         'rail.settingsHint': '끌어서 또는 화살표로 순서를 바꾸고, 눈 아이콘으로 표시를 전환합니다',
@@ -3140,6 +3210,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Änderungen verwerfen',
         'action.showDiff': 'Diff anzeigen',
         'action.copyPath': 'Pfad kopieren',
+      'action.openInSidebar': 'Datei in der rechten Seitenleiste öffnen',
         'action.checkout': 'Auschecken',
         'action.float': 'Diese Seite schweben lassen',
         'action.dock': 'Zurück andocken',
@@ -3302,13 +3373,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Datumsformat',
         'settings.date.relative': 'Relativ (4h / 22h)',
         'settings.date.absolute': 'Absolut (11-05 10:42)',
-        'settings.diff.inline': 'Diffs im Panel anzeigen',
-        'settings.diff.inlineHint': 'Ein: Diffs öffnen im Git-Panel, mit geteilter Ansicht und Zeilenumbruch. Aus: Die Diff-Vorschau der Seitenleiste übernimmt.',
+      'settings.diff.placement': 'Wo Diffs öffnen',
+      'settings.diff.placementHint': 'Legt fest, wo ein Doppelklick einen Diff öffnet: im Panel (geteilte Ansicht und Umbruch), in der rechten Seitenleiste (neben der Datei lesen) oder in der unteren Werkbank (breite Bildschirme).',
+      'settings.diff.placeInline': 'Im Git-Panel',
+      'settings.diff.placeSidebar': 'Rechte Seitenleiste',
+      'settings.diff.placeDock': 'Untere Werkbank',
         'preview.openFile': 'In der Dateivorschau öffnen',
         'diff.sidebar.open': 'In der rechten Seitenleiste öffnen',
         'diff.sidebar.unavailable': 'Keine rechte Seitenleiste verfügbar',
         'diff.sidebar.loading': 'Warten, bis der Diff geladen ist',
         'diff.sidebar.failed': 'Dieser Diff konnte nicht in der rechten Seitenleiste geöffnet werden',
+      'diff.openFile.unavailable': 'Keine rechte Seitenleiste kann hier Dateien öffnen',
+      'diff.openFile.failed': 'Diese Datei konnte nicht in der rechten Seitenleiste geöffnet werden',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Zu prüfende Datei wählen',
@@ -3345,6 +3421,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Rückgängig',
         'changes.aiFailed': 'Konnte nicht schreiben:',
         'changes.aiNotice': 'Einige Änderungen wurden nicht ans Modell gesendet (gekürzt oder verworfen); die Nachricht kann unvollständig sein.',
+        'changes.aiFixed': 'Dieser Aufruf nutzte das in den Einstellungen festgelegte Modell {model}, nicht das Sitzungsmodell oben.',
+        'changes.aiFollow': 'Dem Sitzungsmodell folgen',
+        'changes.aiFollowed': 'Folgt jetzt dem Sitzungsmodell — AI-Schaltfläche erneut drücken.',
         'settings.rail.writeFailed': 'Die Einstellung wurde nicht gespeichert; der Schalter ist zurückgesprungen. Bitte erneut versuchen.',
         'settings.rail.readonly': 'Dieser Host liefert die Konfiguration schreibgeschützt.',
         'rail.settingsHint': 'Ziehen oder Pfeile zum Sortieren, das Auge schaltet die Sichtbarkeit um',
@@ -3561,6 +3640,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Abandonner les modifications',
         'action.showDiff': 'Afficher le diff',
         'action.copyPath': 'Copier le chemin',
+      'action.openInSidebar': 'Ouvrir le fichier dans la barre latérale droite',
         'action.checkout': 'Extraire',
         'action.float': 'Détacher cette page',
         'action.dock': 'Réancrer',
@@ -3723,13 +3803,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Format de date',
         'settings.date.relative': 'Relatif (4h / 22h)',
         'settings.date.absolute': 'Absolu (11-05 10:42)',
-        'settings.diff.inline': 'Aperçu des diffs dans le panneau',
-        'settings.diff.inlineHint': 'Activé, les diffs s’ouvrent dans le panneau Git, avec vue scindée et retour à la ligne. Désactivé, l’aperçu diff de la barre latérale prend le relais.',
+      'settings.diff.placement': 'Où ouvrir les diffs',
+      'settings.diff.placementHint': 'Choisit où un double-clic ouvre un diff : dans le panneau (vue scindée et retour à la ligne), dans la barre latérale droite (à côté du fichier) ou dans le banc inférieur (écrans larges).',
+      'settings.diff.placeInline': 'Dans le panneau Git',
+      'settings.diff.placeSidebar': 'Barre latérale droite',
+      'settings.diff.placeDock': 'Banc inférieur',
         'preview.openFile': 'Ouvrir dans l’aperçu du fichier',
         'diff.sidebar.open': 'Ouvrir dans la barre latérale droite',
         'diff.sidebar.unavailable': 'Aucune barre latérale droite disponible',
         'diff.sidebar.loading': 'Attendez la fin du chargement du diff',
         'diff.sidebar.failed': 'Impossible d’ouvrir ce diff dans la barre latérale droite',
+      'diff.openFile.unavailable': 'Aucune barre latérale droite ne peut ouvrir de fichiers ici',
+      'diff.openFile.failed': 'Impossible d’ouvrir ce fichier dans la barre latérale droite',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Choisir le fichier à examiner',
@@ -3766,6 +3851,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Annuler, reprendre mon brouillon',
         'changes.aiFailed': 'Échec de la rédaction :',
         'changes.aiNotice': 'Certaines modifications n’ont pas été envoyées au modèle (tronquées ou écartées) ; le message peut être incomplet.',
+        'changes.aiFixed': 'Cet appel a utilisé le modèle fixé dans les réglages ({model}), pas le modèle de session ci-dessus.',
+        'changes.aiFollow': 'Suivre le modèle de session',
+        'changes.aiFollowed': 'Suit désormais le modèle de session — relancez le bouton IA.',
         'settings.rail.writeFailed': 'Le réglage n’a pas été enregistré ; l’interrupteur est revenu en place. Réessayez.',
         'settings.rail.readonly': 'Cet hôte fournit la configuration en lecture seule.',
         'rail.settingsHint': 'Glisser ou utiliser les flèches pour réordonner ; l\'œil bascule la visibilité',
@@ -3982,6 +4070,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Отменить изменения',
         'action.showDiff': 'Показать различия',
         'action.copyPath': 'Скопировать путь',
+      'action.openInSidebar': 'Открыть файл в правой боковой панели',
         'action.checkout': 'Переключиться',
         'action.float': 'Открепить страницу',
         'action.dock': 'Вернуть в док',
@@ -4144,13 +4233,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Формат даты',
         'settings.date.relative': 'Относительное время (4h / 22h)',
         'settings.date.absolute': 'Абсолютное время (11-05 10:42)',
-        'settings.diff.inline': 'Просмотр различий в панели',
-        'settings.diff.inlineHint': 'Включено: различия открываются в панели Git с разделённым видом и переносом строк. Выключено: показ переходит к боковой панели.',
+      'settings.diff.placement': 'Где открывать различия',
+      'settings.diff.placementHint': 'Выбирает, где двойной щелчок открывает различия: в панели (разделённый вид и перенос строк), в правой боковой панели (читать рядом с файлом) или на нижней панели (широкие экраны).',
+      'settings.diff.placeInline': 'В панели Git',
+      'settings.diff.placeSidebar': 'Правая боковая панель',
+      'settings.diff.placeDock': 'Нижняя панель',
         'preview.openFile': 'Открыть в предпросмотре файла',
         'diff.sidebar.open': 'Открыть в правой боковой панели',
         'diff.sidebar.unavailable': 'Правая боковая панель недоступна',
         'diff.sidebar.loading': 'Дождитесь загрузки различий',
         'diff.sidebar.failed': 'Не удалось открыть эти различия в правой боковой панели',
+      'diff.openFile.unavailable': 'В этом окружении нет правой панели, умеющей открывать файлы',
+      'diff.openFile.failed': 'Не удалось открыть этот файл в правой боковой панели',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Выберите файл для просмотра',
@@ -4187,6 +4281,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Отменить',
         'changes.aiFailed': 'Не удалось сгенерировать:',
         'changes.aiNotice': 'Часть изменений не отправлена модели (обрезана или отброшена); сообщение может быть неполным.',
+        'changes.aiFixed': 'Здесь использовалась модель {model}, закреплённая в настройках, а не модель сеанса выше.',
+        'changes.aiFollow': 'Следовать модели сеанса',
+        'changes.aiFollowed': 'Теперь используется модель сеанса — нажмите кнопку ИИ ещё раз.',
         'settings.rail.writeFailed': 'Настройка не сохранилась; переключатель вернулся назад. Попробуйте снова.',
         'settings.rail.readonly': 'Этот хост отдаёт конфигурацию только для чтения.',
         'rail.settingsHint': 'Перетаскивайте или используйте стрелки для порядка; значок глаза переключает видимость',
@@ -4403,6 +4500,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Descartar alterações',
         'action.showDiff': 'Mostrar diff',
         'action.copyPath': 'Copiar caminho',
+      'action.openInSidebar': 'Abrir o arquivo na barra lateral direita',
         'action.checkout': 'Checkout',
         'action.float': 'Flutuar esta página',
         'action.dock': 'Reacoplar',
@@ -4565,13 +4663,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Formato de data',
         'settings.date.relative': 'Relativo (4h / 22h)',
         'settings.date.absolute': 'Absoluto (11-05 10:42)',
-        'settings.diff.inline': 'Pré-visualizar diferenças no painel',
-        'settings.diff.inlineHint': 'Ligado, as diferenças abrem no painel Git, com vista dividida e quebra de linha. Desligado, a pré-visualização da barra lateral assume.',
+      'settings.diff.placement': 'Onde abrir os diffs',
+      'settings.diff.placementHint': 'Define onde o duplo clique abre um diff: no painel (vista dividida e quebra de linha), na barra lateral direita (ler ao lado do arquivo) ou na bancada inferior (ecrãs largos).',
+      'settings.diff.placeInline': 'No painel Git',
+      'settings.diff.placeSidebar': 'Barra lateral direita',
+      'settings.diff.placeDock': 'Bancada inferior',
         'preview.openFile': 'Abrir na pré-visualização do arquivo',
         'diff.sidebar.open': 'Abrir na barra lateral direita',
         'diff.sidebar.unavailable': 'Nenhuma barra lateral direita disponível',
         'diff.sidebar.loading': 'Aguarde o diff terminar de carregar',
         'diff.sidebar.failed': 'Não foi possível abrir este diff na barra lateral direita',
+      'diff.openFile.unavailable': 'Nenhuma barra lateral direita aqui abre arquivos',
+      'diff.openFile.failed': 'Não foi possível abrir este arquivo na barra lateral direita',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Escolher o arquivo para revisar',
@@ -4608,6 +4711,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Desfazer',
         'changes.aiFailed': 'Não foi possível gerar:',
         'changes.aiNotice': 'Algumas alterações não foram enviadas ao modelo (truncadas ou descartadas); a mensagem pode ficar incompleta.',
+        'changes.aiFixed': 'Esta chamada usou o modelo fixado nas configurações ({model}), não o modelo da sessão acima.',
+        'changes.aiFollow': 'Seguir o modelo da sessão',
+        'changes.aiFollowed': 'Agora segue o modelo da sessão — clique no botão de IA novamente.',
         'settings.rail.writeFailed': 'A configuração não foi salva; o interruptor voltou ao lugar. Tente de novo.',
         'settings.rail.readonly': 'Este host fornece a configuração somente para leitura.',
         'rail.settingsHint': 'Arraste ou use as setas para reordenar; o olho alterna a visibilidade',
@@ -4824,6 +4930,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Scarta le modifiche',
         'action.showDiff': 'Mostra il diff',
         'action.copyPath': 'Copia percorso',
+      'action.openInSidebar': 'Apri il file nella barra laterale destra',
         'action.checkout': 'Checkout',
         'action.float': 'Fluttua questa pagina',
         'action.dock': 'Riaggancia',
@@ -4986,13 +5093,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Formato data',
         'settings.date.relative': 'Relativo (4h / 22h)',
         'settings.date.absolute': 'Assoluto (11-05 10:42)',
-        'settings.diff.inline': 'Anteprima delle differenze nel pannello',
-        'settings.diff.inlineHint': 'Attivo: le differenze si aprono nel pannello Git, con vista affiancata e ritorno a capo. Disattivo: subentra l’anteprima della barra laterale.',
+      'settings.diff.placement': 'Dove aprire le differenze',
+      'settings.diff.placementHint': 'Sceglie dove il doppio clic apre una differenza: nel pannello (vista affiancata e ritorno a capo), nella barra laterale destra (accanto al file) o nella panchina inferiore (schermi larghi).',
+      'settings.diff.placeInline': 'Nel pannello Git',
+      'settings.diff.placeSidebar': 'Barra laterale destra',
+      'settings.diff.placeDock': 'Panchina inferiore',
         'preview.openFile': 'Apri nell’anteprima del file',
         'diff.sidebar.open': 'Apri nella barra laterale destra',
         'diff.sidebar.unavailable': 'Nessuna barra laterale destra disponibile',
         'diff.sidebar.loading': 'Attendi il caricamento del diff',
         'diff.sidebar.failed': 'Impossibile aprire questo diff nella barra laterale destra',
+      'diff.openFile.unavailable': 'Nessuna barra laterale destra qui può aprire file',
+      'diff.openFile.failed': 'Impossibile aprire questo file nella barra laterale destra',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Scegli il file da esaminare',
@@ -5029,6 +5141,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Annulla',
         'changes.aiFailed': 'Scrittura non riuscita:',
         'changes.aiNotice': 'Alcune modifiche non sono state inviate al modello (troncate o scartate); il messaggio può essere incompleto.',
+        'changes.aiFixed': 'Questa chiamata ha usato il modello fissato nelle impostazioni ({model}), non il modello della sessione qui sopra.',
+        'changes.aiFollow': 'Segui il modello della sessione',
+        'changes.aiFollowed': 'Ora segue il modello della sessione — premi di nuovo il pulsante IA.',
         'settings.rail.writeFailed': 'L’impostazione non è stata salvata; l’interruttore è tornato indietro. Riprova.',
         'settings.rail.readonly': 'Questo host fornisce la configurazione in sola lettura.',
         'rail.settingsHint': 'Trascina o usa le frecce per riordinare; l’occhio attiva o disattiva la visibilità',
@@ -5245,6 +5360,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Wijzigingen weggooien',
         'action.showDiff': 'Diff tonen',
         'action.copyPath': 'Pad kopiëren',
+      'action.openInSidebar': 'Bestand openen in de rechterzijbalk',
         'action.checkout': 'Uitchecken',
         'action.float': 'Deze pagina losmaken',
         'action.dock': 'Terugdokken',
@@ -5407,13 +5523,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Datumnotatie',
         'settings.date.relative': 'Relatief (4h / 22h)',
         'settings.date.absolute': 'Absoluut (11-05 10:42)',
-        'settings.diff.inline': 'Diffs in het paneel bekijken',
-        'settings.diff.inlineHint': 'Aan: diffs openen in het Git-paneel, met gesplitste weergave en regelterugloop. Uit: de diff-voorvertoning in de zijbalk neemt het over.',
+      'settings.diff.placement': 'Waar diffs openen',
+      'settings.diff.placementHint': 'Bepaalt waar een dubbelklik een diff opent: in het paneel (gesplitste weergave en regelterugloop), in de rechterzijbalk (naast het bestand lezen) of in de onderste werkbank (brede schermen).',
+      'settings.diff.placeInline': 'In het Git-paneel',
+      'settings.diff.placeSidebar': 'Rechterzijbalk',
+      'settings.diff.placeDock': 'Onderste werkbank',
         'preview.openFile': 'Openen in de bestandsvoorbeeld',
         'diff.sidebar.open': 'Openen in de rechterzijbalk',
         'diff.sidebar.unavailable': 'Geen rechterzijbalk beschikbaar',
         'diff.sidebar.loading': 'Wacht tot de diff is geladen',
         'diff.sidebar.failed': 'Deze diff kon niet in de rechterzijbalk worden geopend',
+      'diff.openFile.unavailable': 'Geen rechterzijbalk hier kan bestanden openen',
+      'diff.openFile.failed': 'Kon dit bestand niet openen in de rechterzijbalk',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Kies het te bekijken bestand',
@@ -5450,6 +5571,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Ongedaan maken',
         'changes.aiFailed': 'Kon niet schrijven:',
         'changes.aiNotice': 'Sommige wijzigingen zijn niet naar het model gestuurd (afgekapt of overgeslagen); het bericht kan onvolledig zijn.',
+        'changes.aiFixed': 'Deze aanroep gebruikte het in de instellingen vastgezette model {model}, niet het sessiemodel hierboven.',
+        'changes.aiFollow': 'Het sessiemodel volgen',
+        'changes.aiFollowed': 'Volgt nu het sessiemodel — klik nogmaals op de AI-knop.',
         'settings.rail.writeFailed': 'De instelling is niet opgeslagen; de schakelaar sprong terug. Probeer opnieuw.',
         'settings.rail.readonly': 'Deze host levert de configuratie alleen-lezen.',
         'rail.settingsHint': 'Sleep of gebruik de pijlen om te sorteren; het oog schakelt de zichtbaarheid',
@@ -5666,6 +5790,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Odrzuć zmiany',
         'action.showDiff': 'Pokaż różnice',
         'action.copyPath': 'Kopiuj ścieżkę',
+      'action.openInSidebar': 'Otwórz plik na prawym pasku bocznym',
         'action.checkout': 'Przełącz',
         'action.float': 'Odczep tę stronę',
         'action.dock': 'Zadokuj z powrotem',
@@ -5828,13 +5953,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Format daty',
         'settings.date.relative': 'Względny (4h / 22h)',
         'settings.date.absolute': 'Absolutny (11-05 10:42)',
-        'settings.diff.inline': 'Podgląd różnic w panelu',
-        'settings.diff.inlineHint': 'Włączone: różnice otwierają się w panelu Git, z widokiem dzielonym i zawijaniem wierszy. Wyłączone: podgląd różnic w pasku bocznym przejmuje.',
+      'settings.diff.placement': 'Gdzie otwierać różnice',
+      'settings.diff.placementHint': 'Wybiera, gdzie dwuklik otwiera różnice: w panelu (widok dzielony i zawijanie), na prawym pasku bocznym (obok pliku) albo na dolnym warsztacie (szerokie ekrany).',
+      'settings.diff.placeInline': 'W panelu Git',
+      'settings.diff.placeSidebar': 'Prawy pasek boczny',
+      'settings.diff.placeDock': 'Dolny warsztat',
         'preview.openFile': 'Otwórz w podglądzie pliku',
         'diff.sidebar.open': 'Otwórz w prawym pasku bocznym',
         'diff.sidebar.unavailable': 'Prawy pasek boczny niedostępny',
         'diff.sidebar.loading': 'Poczekaj na wczytanie różnic',
         'diff.sidebar.failed': 'Nie udało się otworzyć tych różnic w prawym pasku bocznym',
+      'diff.openFile.unavailable': 'Żaden prawy pasek boczny nie otwiera tu plików',
+      'diff.openFile.failed': 'Nie udało się otworzyć tego pliku na prawym pasku bocznym',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Wybierz plik do przeglądu',
@@ -5871,6 +6001,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Cofnij',
         'changes.aiFailed': 'Nie udało się wygenerować:',
         'changes.aiNotice': 'Część zmian nie trafiła do modelu (przycięta lub pominięta); wiadomość może być niepełna.',
+        'changes.aiFixed': 'To wywołanie użyło modelu {model} przypiętego w ustawieniach, a nie modelu sesji powyżej.',
+        'changes.aiFollow': 'Używaj modelu sesji',
+        'changes.aiFollowed': 'Teraz używany jest model sesji — kliknij ponownie przycisk AI.',
         'settings.rail.writeFailed': 'Ustawienie nie zostało zapisane; przełącznik wrócił na miejsce. Spróbuj ponownie.',
         'settings.rail.readonly': 'Ten host udostępnia konfigurację tylko do odczytu.',
         'rail.settingsHint': 'Przeciągnij lub użyj strzałek, aby zmienić kolejność; oko przełącza widoczność',
@@ -6087,6 +6220,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Förkasta ändringar',
         'action.showDiff': 'Visa diff',
         'action.copyPath': 'Kopiera sökväg',
+      'action.openInSidebar': 'Öppna filen i höger sidopanel',
         'action.checkout': 'Checka ut',
         'action.float': 'Friställ sidan',
         'action.dock': 'Docka tillbaka',
@@ -6249,13 +6383,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Datumformat',
         'settings.date.relative': 'Relativt (4h / 22h)',
         'settings.date.absolute': 'Absolut (11-05 10:42)',
-        'settings.diff.inline': 'Förhandsgranska diffar i panelen',
-        'settings.diff.inlineHint': 'På: diffar öppnas i Git-panelen med delad vy och radbrytning. Av: sidopanelens diff-förhandsgranskning tar över.',
+      'settings.diff.placement': 'Var diffs öppnas',
+      'settings.diff.placementHint': 'Avgör var en dubbelklick öppnar en diff: i panelen (delad vy och radbrytning), i höger sidopanel (läs vid filen) eller i nedre arbetsbänken (breda skärmar).',
+      'settings.diff.placeInline': 'I Git-panelen',
+      'settings.diff.placeSidebar': 'Höger sidopanel',
+      'settings.diff.placeDock': 'Nedre arbetsbänken',
         'preview.openFile': 'Öppna i filförhandsvisningen',
         'diff.sidebar.open': 'Öppna i höger sidofält',
         'diff.sidebar.unavailable': 'Inget höger sidofält tillgängligt',
         'diff.sidebar.loading': 'Vänta tills diffen har laddats',
         'diff.sidebar.failed': 'Det gick inte att öppna den här diffen i höger sidofält',
+      'diff.openFile.unavailable': 'Ingen höger sidopanel kan öppna filer här',
+      'diff.openFile.failed': 'Kunde inte öppna filen i höger sidopanel',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Välj filen att granska',
@@ -6292,6 +6431,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Ångra',
         'changes.aiFailed': 'Kunde inte skriva:',
         'changes.aiNotice': 'Vissa ändringar skickades inte till modellen (kapade eller utelämnade); meddelandet kan vara ofullständigt.',
+        'changes.aiFixed': 'Anropet använde modellen {model} som är låst i inställningarna, inte sessionsmodellen ovan.',
+        'changes.aiFollow': 'Följ sessionsmodellen',
+        'changes.aiFollowed': 'Följer nu sessionsmodellen — tryck på AI-knappen igen.',
         'settings.rail.writeFailed': 'Inställningen sparades inte; reglaget gick tillbaka. Försök igen.',
         'settings.rail.readonly': 'Denna värd tillhandahåller konfigurationen skrivskyddad.',
         'rail.settingsHint': 'Dra eller använd pilarna för att sortera; ögat växlar synlighet',
@@ -6508,6 +6650,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Değişiklikleri at',
         'action.showDiff': 'Farkı göster',
         'action.copyPath': 'Yolu kopyala',
+      'action.openInSidebar': 'Dosyayı sağ kenar çubuğunda aç',
         'action.checkout': 'Çıkar',
         'action.float': 'Bu sayfayı yüzdür',
         'action.dock': 'Yuvaya geri al',
@@ -6670,13 +6813,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Tarih biçimi',
         'settings.date.relative': 'Göreli (4h / 22h)',
         'settings.date.absolute': 'Mutlak (11-05 10:42)',
-        'settings.diff.inline': 'Farkları panelde önizle',
-        'settings.diff.inlineHint': 'Açık: farklar Git panelinde açılır; bölünmüş görünüm ve satır kaydırma kullanılabilir. Kapalı: kenar çubuğundaki fark önizlemesi devralır.',
+      'settings.diff.placement': 'Farkların açılacağı yer',
+      'settings.diff.placementHint': 'Çift tıklamanın farkı nerede açacağını seçer: panelde (bölünmüş görünüm ve satır kaydırma), sağ kenar çubuğunda (dosyanın yanında okuma) veya alt çalışma tezgahında (geniş ekranlar).',
+      'settings.diff.placeInline': 'Git panelinde',
+      'settings.diff.placeSidebar': 'Sağ kenar çubuğu',
+      'settings.diff.placeDock': 'Alt çalışma tezgahı',
         'preview.openFile': 'Dosya önizlemesinde aç',
         'diff.sidebar.open': 'Sağ kenar çubuğunda aç',
         'diff.sidebar.unavailable': 'Kullanılabilir sağ kenar çubuğu yok',
         'diff.sidebar.loading': 'Fark yüklenene kadar bekleyin',
         'diff.sidebar.failed': 'Bu fark sağ kenar çubuğunda açılamadı',
+      'diff.openFile.unavailable': 'Burada dosya açabilen bir sağ kenar çubuğu yok',
+      'diff.openFile.failed': 'Bu dosya sağ kenar çubuğunda açılamadı',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'İncelenecek dosyayı seçin',
@@ -6713,6 +6861,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Geri al',
         'changes.aiFailed': 'Yazılamadı:',
         'changes.aiNotice': 'Bazı değişiklikler modele gönderilmedi (kısaltıldı veya atlandı); mesaj eksik olabilir.',
+        'changes.aiFixed': 'Bu çağrı, yukarıdaki oturum modelini değil, ayarlarda sabitlenen {model} modelini kullandı.',
+        'changes.aiFollow': 'Oturum modelini izle',
+        'changes.aiFollowed': 'Artık oturum modeli kullanılıyor — AI düğmesine yeniden basın.',
         'settings.rail.writeFailed': 'Ayar kaydedilemedi; anahtar eski konumuna döndü. Yeniden deneyin.',
         'settings.rail.readonly': 'Bu ana bilgisayar yapılandırmayı salt okunur sunuyor.',
         'rail.settingsHint': 'Sıralamak için sürükleyin veya okları kullanın; göz simgesi görünürlüğü değiştirir',
@@ -6929,6 +7080,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Buang perubahan',
         'action.showDiff': 'Tampilkan diff',
         'action.copyPath': 'Salin jalur',
+      'action.openInSidebar': 'Buka berkas di bilah sisi kanan',
         'action.checkout': 'Checkout',
         'action.float': 'Apungkan halaman ini',
         'action.dock': 'Kembalikan ke dok',
@@ -7091,13 +7243,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Format tanggal',
         'settings.date.relative': 'Relatif (4h / 22h)',
         'settings.date.absolute': 'Absolut (11-05 10:42)',
-        'settings.diff.inline': 'Pratinjau diff di panel',
-        'settings.diff.inlineHint': 'Aktif: diff terbuka di panel Git, dengan tampilan terbagi dan pelipatan baris. Nonaktif: pratinjau diff bilah sisi mengambil alih.',
+      'settings.diff.placement': 'Tempat diff dibuka',
+      'settings.diff.placementHint': 'Menentukan di mana klik ganda membuka diff: di dalam panel (tampilan terbagi dan pelipatan baris), bilah sisi kanan (membaca di samping berkas), atau meja kerja bawah (layar lebar).',
+      'settings.diff.placeInline': 'Di panel Git',
+      'settings.diff.placeSidebar': 'Bilah sisi kanan',
+      'settings.diff.placeDock': 'Meja kerja bawah',
         'preview.openFile': 'Buka di pratinjau berkas',
         'diff.sidebar.open': 'Buka di bilah sisi kanan',
         'diff.sidebar.unavailable': 'Bilah sisi kanan tidak tersedia',
         'diff.sidebar.loading': 'Tunggu diff selesai dimuat',
         'diff.sidebar.failed': 'Tidak dapat membuka diff ini di bilah sisi kanan',
+      'diff.openFile.unavailable': 'Tidak ada bilah sisi kanan yang bisa membuka berkas di sini',
+      'diff.openFile.failed': 'Berkas ini tidak bisa dibuka di bilah sisi kanan',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Pilih berkas untuk ditinjau',
@@ -7134,6 +7291,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Batalkan',
         'changes.aiFailed': 'Gagal menulis:',
         'changes.aiNotice': 'Sebagian perubahan tidak dikirim ke model (dipotong atau dibuang); pesan bisa tidak lengkap.',
+        'changes.aiFixed': 'Panggilan ini memakai model {model} yang dipatok di pengaturan, bukan model sesi di atas.',
+        'changes.aiFollow': 'Ikuti model sesi',
+        'changes.aiFollowed': 'Sekarang mengikuti model sesi — tekan tombol AI lagi.',
         'settings.rail.writeFailed': 'Pengaturan tidak tersimpan; tombol kembali ke posisi semula. Coba lagi.',
         'settings.rail.readonly': 'Host ini menyajikan konfigurasi hanya-baca.',
         'rail.settingsHint': 'Seret atau pakai panah untuk mengurutkan; ikon mata mengalihkan visibilitas',
@@ -7350,6 +7510,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'Bỏ thay đổi',
         'action.showDiff': 'Xem diff',
         'action.copyPath': 'Sao chép đường dẫn',
+      'action.openInSidebar': 'Mở tệp ở thanh bên phải',
         'action.checkout': 'Checkout',
         'action.float': 'Tách trang này',
         'action.dock': 'Ghép lại vào dock',
@@ -7512,13 +7673,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'Định dạng ngày',
         'settings.date.relative': 'Tương đối (4h / 22h)',
         'settings.date.absolute': 'Tuyệt đối (11-05 10:42)',
-        'settings.diff.inline': 'Xem trước khác biệt trong bảng',
-        'settings.diff.inlineHint': 'Bật: khác biệt mở trong bảng Git, có chế độ chia đôi và tự động xuống dòng. Tắt: phần xem trước ở thanh bên đảm nhận.',
+      'settings.diff.placement': 'Nơi mở khác biệt',
+      'settings.diff.placementHint': 'Chọn nơi nhấp đúp mở khác biệt: trong bảng (chế độ chia đôi và tự động xuống dòng), thanh bên phải (đọc cạnh tệp) hoặc bàn làm việc dưới (màn hình rộng).',
+      'settings.diff.placeInline': 'Trong bảng Git',
+      'settings.diff.placeSidebar': 'Thanh bên phải',
+      'settings.diff.placeDock': 'Bàn làm việc dưới',
         'preview.openFile': 'Mở trong xem trước tệp',
         'diff.sidebar.open': 'Mở trong thanh bên phải',
         'diff.sidebar.unavailable': 'Không có thanh bên phải khả dụng',
         'diff.sidebar.loading': 'Chờ diff tải xong',
         'diff.sidebar.failed': 'Không thể mở diff này trong thanh bên phải',
+      'diff.openFile.unavailable': 'Không có thanh bên phải nào mở được tệp ở đây',
+      'diff.openFile.failed': 'Không mở được tệp này ở thanh bên phải',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'Chọn tệp để xem',
@@ -7555,6 +7721,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'Hoàn tác',
         'changes.aiFailed': 'Không viết được:',
         'changes.aiNotice': 'Một số thay đổi chưa gửi tới mô hình (bị cắt hoặc bỏ); thông điệp có thể chưa đầy đủ.',
+        'changes.aiFixed': 'Lần gọi này dùng mô hình {model} đã ghim trong cài đặt, không phải mô hình phiên ở trên.',
+        'changes.aiFollow': 'Theo mô hình phiên',
+        'changes.aiFollowed': 'Đã theo mô hình phiên — hãy bấm lại nút AI.',
         'settings.rail.writeFailed': 'Cài đặt không lưu được; công tắc đã trở về trạng thái cũ. Hãy thử lại.',
         'settings.rail.readonly': 'Máy chủ này chỉ cung cấp cấu hình ở chế độ chỉ đọc.',
         'rail.settingsHint': 'Kéo hoặc dùng mũi tên để sắp xếp; biểu tượng con mắt bật tắt hiển thị',
@@ -7771,6 +7940,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'تجاهل التغييرات',
         'action.showDiff': 'عرض الفروق',
         'action.copyPath': 'نسخ المسار',
+      'action.openInSidebar': 'افتح الملف في الشريط الجانبي الأيمن',
         'action.checkout': 'تبديل',
         'action.float': 'تعويم هذه الصفحة',
         'action.dock': 'الإرجاع إلى الرصيف',
@@ -7933,13 +8103,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'تنسيق التاريخ',
         'settings.date.relative': 'نسبي (4h / 22h)',
         'settings.date.absolute': 'مطلق (11-05 10:42)',
-        'settings.diff.inline': 'معاينة الفروق داخل اللوحة',
-        'settings.diff.inlineHint': 'عند التشغيل تفتح الفروق داخل لوحة Git مع العرض المنقسم والتفاف الأسطر. عند الإيقاف تتولاها معاينة الفروق في الشريط الجانبي.',
+      'settings.diff.placement': 'مكان فتح الفروق',
+      'settings.diff.placementHint': 'يحدد أين يفتح النقر المزدوج الفروق: داخل اللوحة (العرض المنقسم والتفاف الأسطر)، أو الشريط الجانبي الأيمن (للقراءة بجانب الملف)، أو منضدة العمل السفلية (الشاشات العريضة).',
+      'settings.diff.placeInline': 'داخل لوحة Git',
+      'settings.diff.placeSidebar': 'الشريط الجانبي الأيمن',
+      'settings.diff.placeDock': 'منضدة العمل السفلية',
         'preview.openFile': 'افتح في معاينة الملف',
         'diff.sidebar.open': 'الفتح في الشريط الجانبي الأيمن',
         'diff.sidebar.unavailable': 'لا يتوفر شريط جانبي أيمن',
         'diff.sidebar.loading': 'انتظر حتى يكتمل تحميل الفروق',
         'diff.sidebar.failed': 'تعذّر فتح هذه الفروق في الشريط الجانبي الأيمن',
+      'diff.openFile.unavailable': 'لا يوجد شريط جانبي أيمن يفتح الملفات هنا',
+      'diff.openFile.failed': 'تعذر فتح هذا الملف في الشريط الجانبي الأيمن',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'اختر الملف للمراجعة',
@@ -7976,6 +8151,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'تراجع',
         'changes.aiFailed': 'تعذّرت الكتابة:',
         'changes.aiNotice': 'لم تُرسل بعض التغييرات إلى النموذج (مقتطعة أو متروكة)؛ قد تكون الرسالة ناقصة.',
+        'changes.aiFixed': 'استخدم هذا الطلب النموذج {model} المثبّت في الإعدادات، وليس نموذج الجلسة أعلاه.',
+        'changes.aiFollow': 'اتّباع نموذج الجلسة',
+        'changes.aiFollowed': 'أصبح المتّبع الآن نموذج الجلسة — اضغط زر الذكاء الاصطناعي مرة أخرى.',
         'settings.rail.writeFailed': 'لم يتم حفظ الإعداد؛ عاد المفتاح إلى حاله. حاول مرة أخرى.',
         'settings.rail.readonly': 'يوفّر هذا المضيف الإعدادات للقراءة فقط.',
         'rail.settingsHint': 'اسحب أو استخدم الأسهم لإعادة الترتيب؛ وأيقونة العين تبدّل الظهور',
@@ -8192,6 +8370,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'परिवर्तन छोड़ें',
         'action.showDiff': 'अंतर दिखाएँ',
         'action.copyPath': 'पथ कॉपी करें',
+      'action.openInSidebar': 'फ़ाइल दाएँ साइडबार में खोलें',
         'action.checkout': 'चेकआउट',
         'action.float': 'इस पृष्ठ को तैराएँ',
         'action.dock': 'डॉक पर वापस लाएँ',
@@ -8354,13 +8533,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'दिनांक प्रारूप',
         'settings.date.relative': 'सापेक्ष (4h / 22h)',
         'settings.date.absolute': 'निरपेक्ष (11-05 10:42)',
-        'settings.diff.inline': 'पैनल में अंतर देखें',
-        'settings.diff.inlineHint': 'चालू: अंतर Git पैनल में खुलते हैं, स्प्लिट व्यू और लाइन रैप के साथ। बंद: साइडबार का अंतर पूर्वावलोकन संभालता है।',
+      'settings.diff.placement': 'अंतर कहाँ खुलें',
+      'settings.diff.placementHint': 'तय करता है कि डबल-क्लिक अंतर कहाँ खोले: पैनल में (स्प्लिट व्यू और लाइन रैप), दाएँ साइडबार में (फ़ाइल के साथ पढ़ें), या निचले वर्कबेंच में (चौड़ी स्क्रीन)।',
+      'settings.diff.placeInline': 'Git पैनल में',
+      'settings.diff.placeSidebar': 'दायाँ साइडबार',
+      'settings.diff.placeDock': 'निचला वर्कबेंच',
         'preview.openFile': 'फ़ाइल पूर्वावलोकन में खोलें',
         'diff.sidebar.open': 'दाएँ साइडबार में खोलें',
         'diff.sidebar.unavailable': 'कोई दायाँ साइडबार उपलब्ध नहीं है',
         'diff.sidebar.loading': 'अंतर लोड होने की प्रतीक्षा करें',
         'diff.sidebar.failed': 'यह अंतर दाएँ साइडबार में नहीं खोला जा सका',
+      'diff.openFile.unavailable': 'यहाँ कोई दायाँ साइडबार फ़ाइलें नहीं खोल सकता',
+      'diff.openFile.failed': 'यह फ़ाइल दाएँ साइडबार में नहीं खुल सकी',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'समीक्षा की फ़ाइल चुनें',
@@ -8397,6 +8581,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'पूर्ववत करें',
         'changes.aiFailed': 'लिख नहीं सका:',
         'changes.aiNotice': 'कुछ बदलाव मॉडल को नहीं भेजे गए (काटे या छोड़े गए); संदेश अधूरा हो सकता है।',
+        'changes.aiFixed': 'इस कॉल ने सेटिंग्स में तय मॉडल {model} का उपयोग किया, ऊपर वाले सत्र मॉडल का नहीं।',
+        'changes.aiFollow': 'सत्र मॉडल का पालन करें',
+        'changes.aiFollowed': 'अब सत्र मॉडल का पालन हो रहा है — AI बटन फिर से दबाएँ।',
         'settings.rail.writeFailed': 'सेटिंग सहेजी नहीं गई; स्विच वापस पुरानी स्थिति में आ गया। फिर से कोशिश करें।',
         'settings.rail.readonly': 'यह होस्ट कॉन्फ़िगरेशन को केवल-पढ़ने के लिए देता है।',
         'rail.settingsHint': 'क्रम बदलने के लिए खींचें या तीरों का उपयोग करें; आँख आइकन दृश्यता बदलता है',
@@ -8613,6 +8800,7 @@ window.__ModuleLoader__.load({
         'action.discard': 'ทิ้งการเปลี่ยนแปลง',
         'action.showDiff': 'แสดงความต่าง',
         'action.copyPath': 'คัดลอกพาธ',
+      'action.openInSidebar': 'เปิดไฟล์ในแถบข้างขวา',
         'action.checkout': 'เช็กเอาต์',
         'action.float': 'ลอยหน้านี้',
         'action.dock': 'กลับเข้าด็อก',
@@ -8775,13 +8963,18 @@ window.__ModuleLoader__.load({
         'settings.date.label': 'รูปแบบวันที่',
         'settings.date.relative': 'สัมพัทธ์ (4h / 22h)',
         'settings.date.absolute': 'สัมบูรณ์ (11-05 10:42)',
-        'settings.diff.inline': 'ดูตัวอย่างความแตกต่างในแผง',
-        'settings.diff.inlineHint': 'เปิด: ความแตกต่างเปิดในแผง Git พร้อมมุมมองแยกและตัดบรรทัดอัตโนมัติ ปิด: ตัวอย่างความแตกต่างในแถบข้างจะรับหน้าที่',
+      'settings.diff.placement': 'ตำแหน่งเปิด diff',
+      'settings.diff.placementHint': 'เลือกว่าการดับเบิลคลิกจะเปิด diff ที่ไหน: ในแผง (มุมมองแยกและตัดบรรทัด), แถบข้างขวา (อ่านข้างไฟล์) หรือโต๊ะทำงานด้านล่าง (จอกว้าง)',
+      'settings.diff.placeInline': 'ในแผง Git',
+      'settings.diff.placeSidebar': 'แถบข้างขวา',
+      'settings.diff.placeDock': 'โต๊ะทำงานด้านล่าง',
         'preview.openFile': 'เปิดในตัวอย่างไฟล์',
         'diff.sidebar.open': 'เปิดในแถบด้านขวา',
         'diff.sidebar.unavailable': 'ไม่มีแถบด้านขวาที่ใช้ได้',
         'diff.sidebar.loading': 'รอให้โหลดความต่างเสร็จก่อน',
         'diff.sidebar.failed': 'ไม่สามารถเปิดความต่างนี้ในแถบด้านขวา',
+      'diff.openFile.unavailable': 'ที่นี่ไม่มีแถบข้างขวาที่เปิดไฟล์ได้',
+      'diff.openFile.failed': 'เปิดไฟล์นี้ในแถบข้างขวาไม่ได้',
         'lf.added': '+{count}',
         'lf.deleted': '-{count}',
         'lf.selectFile': 'เลือกไฟล์ที่จะตรวจสอบ',
@@ -8818,6 +9011,9 @@ window.__ModuleLoader__.load({
         'changes.aiUndo': 'เลิกทำ',
         'changes.aiFailed': 'เขียนไม่สำเร็จ:',
         'changes.aiNotice': 'มีการเปลี่ยนแปลงบางส่วนที่ไม่ได้ส่งให้โมเดล (ถูกตัดหรือทิ้ง) ข้อความอาจไม่ครบถ้วน',
+        'changes.aiFixed': 'ครั้งนี้ใช้โมเดล {model} ที่ปักไว้ในการตั้งค่า ไม่ใช่โมเดลของเซสชันด้านบน',
+        'changes.aiFollow': 'ใช้โมเดลของเซสชัน',
+        'changes.aiFollowed': 'ตอนนี้ใช้โมเดลของเซสชันแล้ว กดปุ่ม AI อีกครั้ง',
         'settings.rail.writeFailed': 'บันทึกการตั้งค่าไม่สำเร็จ สวิตช์กลับไปสถานะเดิม ลองอีกครั้ง',
         'settings.rail.readonly': 'โฮสต์นี้ให้บริการการตั้งค่าแบบอ่านอย่างเดียว',
         'rail.settingsHint': 'ลากหรือใช้ลูกศรเพื่อจัดลำดับ; ไอคอนตาใช้สลับการแสดง',
@@ -9121,11 +9317,39 @@ window.__ModuleLoader__.load({
     let viaRemoteChannel = false
 
     async function request(method, payload) {
+      /* Issue #33: a route call that never settles used to strand the panel in
+         its loading state forever — every phase already finished, the list
+         claiming there is nothing to show. The abort below is a last resort,
+         not a racing deadline: it only fires once the host has stopped
+         answering entirely (REQUEST_TIMEOUT_MS outlives every host budget).
+         The flag tells this real timeout apart from any other rejection. */
+      const controller = typeof AbortController === 'function' ? new AbortController() : null
+      let timedOut = false
+      const timer = controller === null ? null : setTimeout(() => { timedOut = true; controller.abort() }, REQUEST_TIMEOUT_MS)
       const init = {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload === undefined ? {} : payload),
       }
+      if (controller !== null) init.signal = controller.signal
+      try {
+        return await send(method, init)
+      } catch (error) {
+        if (timedOut === true) {
+          const failure = new Error('the host did not answer within ' + String(Math.round(REQUEST_TIMEOUT_MS / 1000)) + 's')
+          failure.code = 'timeout'
+          throw failure
+        }
+        throw error
+      } finally {
+        if (timer !== null) clearTimeout(timer)
+      }
+    }
+
+    /* The transport half of request(), split out so the timeout above wraps
+       the whole exchange — including the remote-channel retry — instead of
+       just the first fetch. */
+    async function send(method, init) {
       const direct = API_BASE + '/' + method
       let response = null
       if (viaRemoteChannel === true) {
@@ -10913,6 +11137,7 @@ window.__ModuleLoader__.load({
         loading: props.loading,
         t: props.t,
         onOpenFile: props.onOpenFile,
+        onOpenFileBlocked: props.onOpenFileBlocked,
         onActiveFile: props.onActiveFile,
       })
     }
@@ -11281,10 +11506,13 @@ window.__ModuleLoader__.load({
         'aria-pressed': props.pressed,
         'aria-label': props.label,
         'data-review-tool': props.tool,
-        onClick: props.onClick,
+        /* A tool with no door behind it renders disabled AND explains itself
+           through the wrapper title — a disabled button swallows its own. */
+        disabled: props.disabled === true,
+        onClick: props.disabled === true ? undefined : props.onClick,
       }, props.children)
       if (SeedTooltip === null) {
-        return E('span', { title: props.label }, inner)
+        return E('span', { title: props.title === undefined ? props.label : props.title }, inner)
       }
       return E(SeedTooltip, { label: props.label, side: 'bottom', delayMs: 500 }, inner)
     }
@@ -11413,6 +11641,8 @@ window.__ModuleLoader__.load({
             props.onOpenFile === undefined ? null : E(LineDiffTool, {
               tool: 'open-file', label: t('preview.openFile'),
               onClick: props.onOpenFile,
+              disabled: props.onOpenFileBlocked !== undefined && props.onOpenFileBlocked !== null,
+              title: props.onOpenFileBlocked === undefined ? undefined : props.onOpenFileBlocked,
             }, SeedIcons.IconInspectOutlineRegular === undefined ? E(Icon, { name: 'file', size: 13 }) : E(SeedIcons.IconInspectOutlineRegular)),
           )),
         file.binary === true
@@ -12335,41 +12565,24 @@ window.__ModuleLoader__.load({
             E('div', { className: 'dig-settings-subnote' }, t('settings.composer.hint')))
         })(),
         (() => {
-          /* Inline diff preview (issue #22): ON keeps the panel's own diff pane
-             reachable, including its split / wrap switches. OFF restores the
-             external hand-off to dsh-better-sidebar or the native preview seat.
-             Same optimistic-write contract as the three rows above. */
-          const field = 'inlineDiff'
-          const inputId = 'dig-placement-' + field
-          const shown = placementShown(field)
-          const toggle = (event) => {
-            if (readOnly === true) { setNote(t('settings.rail.readonly')); return }
-            const fromControl = event !== undefined && event !== null && event.target !== null
-              && event.target !== undefined && typeof event.target.checked === 'boolean'
-              ? event.target.checked
-              : null
-            const wanted = placementTarget(field, fromControl)
-            intent.current[field] = wanted
-            dirty.current.set(field, wanted)
-            setPending((now) => Object.assign({}, now, { [field]: wanted }))
-            setNote('')
-            bump()
-            scheduleFlush()
-          }
-          return E('div', { key: field },
-            E('div', { className: 'dig-settings-row', 'data-placement-row': field },
-              E('input', {
-                id: inputId,
-                type: 'checkbox',
-                className: 'dig-settings-check',
-                'aria-labelledby': inputId + '-label',
-                checked: shown,
-                disabled: readOnly === true,
-                onChange: toggle,
-              }),
-              E('span', { className: 'dig-settings-glyph' }, E(Icon, { name: 'diff', size: 13 })),
-              E('span', { id: inputId + '-label', className: 'dig-settings-label', onClick: toggle }, t('settings.diff.inline'))),
-            E('div', { className: 'dig-settings-subnote' }, t('settings.diff.inlineHint')))
+          /* Diff placement (issue #28). The old on/off switch could only say
+             "panel" or "somewhere external", so "double-click → right sidebar"
+             had no way to be expressed. One three-way row now answers WHERE:
+             the panel's own pane (which owns split / wrap), the right dock, or
+             the bottom workbench. A stored value outside the three reads as the
+             default, exactly like diffPlacementOf() decides it at click time —
+             one reader, one answer. */
+          const field = 'diffPlacement'
+          const accepted = diffPlacementOf()
+          const shown = Object.prototype.hasOwnProperty.call(textDraft, field)
+            && (textDraft[field] === 'inline' || textDraft[field] === 'sidebar' || textDraft[field] === 'dock')
+            ? textDraft[field]
+            : accepted
+          return selectRow(field, 'settings.diff.placement', shown, [
+            E('option', { key: 'inline', value: 'inline' }, t('settings.diff.placeInline')),
+            E('option', { key: 'sidebar', value: 'sidebar' }, t('settings.diff.placeSidebar')),
+            E('option', { key: 'dock', value: 'dock' }, t('settings.diff.placeDock')),
+          ], readOnly === true, t('settings.diff.placementHint'))
         })()),
         /* Section 3 — history list display (issue #26): the commit list's date
            column shows relative labels or absolute timestamps. */
@@ -13564,6 +13777,9 @@ window.__ModuleLoader__.load({
       const [aiNote, setAiNote] = useState(null)
       const [aiAsk, setAiAsk] = useState(false)
       const [aiUndo, setAiUndo] = useState(null)
+      /* The fixed route a failed call actually used, when the settings card
+         pinned one (issue #36). Non-null only after a failure. */
+      const [aiFixed, setAiFixed] = useState(null)
       // 'flat' keeps git's own grouping (staged / changes / untracked); 'dir'
       // clusters each group's files under their folder, the way "Group by:
       // Directory" does in an IDE. Folders are addressed by <group>|<dir>, so a
@@ -13660,8 +13876,11 @@ window.__ModuleLoader__.load({
         setAiAsk(false)
         setAiBusy(true)
         setAiNote(null)
+        setAiFixed(null)
+        /* Read outside the try: the failure branch needs it to explain which
+           route the call actually used (issue #36). */
+        const settings = props.commitSettings === undefined ? { model: '', reasoning: '', prompt: '' } : props.commitSettings
         try {
-          const settings = props.commitSettings === undefined ? { model: '', reasoning: '', prompt: '' } : props.commitSettings
           /* `base` carries the picked repository ({ cwd, repoRoot }) exactly like
              every other request: without it the host resolves the repository from
              the session cwd, which need not be one (several sibling repos). */
@@ -13684,9 +13903,27 @@ window.__ModuleLoader__.load({
         } catch (error) {
           const code = error !== null && error !== undefined && typeof error.code === 'string' ? error.code : 'unknown'
           setAiNote(t('changes.aiFailed') + ' [' + code + '] ' + String(error && error.message ? error.message : error))
+          /* Issue #36: a fixed commitModel in the settings card bypasses the
+             session route the capsule above writes, so 'I switched models and
+             it still fails' was the expected outcome, not a surprise. Say it,
+             and offer the way back in the same place. */
+          setAiFixed(typeof settings.model === 'string' && settings.model !== '' ? settings.model : null)
         } finally {
           setAiBusy(false)
         }
+      }
+      /* The way out of the mismatch above: clear the pinned model and let the
+         call follow the session route like the capsule promises. Writes the
+         same row Config the settings card writes (no second store). */
+      const aiFollowSession = () => {
+        setAiFixed(null)
+        const outcome = writeRailField('commitModel', '')
+        const refused = outcome === null || outcome === undefined || outcome.sent !== true
+        setAiNote(refused === true ? t('settings.rail.writeFailed') : t('changes.aiFollowed'))
+        if (refused === true || outcome.settled === undefined) return
+        void outcome.settled.then((accepted) => {
+          if (accepted !== true) setAiNote(t('settings.rail.writeFailed'))
+        })
       }
       const submit = async (push) => {
         if (message.trim() === '' || props.busy === true) return false
@@ -13838,6 +14075,18 @@ window.__ModuleLoader__.load({
         onConfirm: () => { void aiRun() },
         onCancel: () => setAiAsk(false),
       })
+      /* Issue #36: the failure note must also say WHICH route failed when the
+         settings card pinned one, and offer the one-click way back to the
+         session route the capsule above writes. Both branches share this row
+         so the narrow column is not silent about failures any more. */
+      const aiFixedNote = aiFixed === null ? null : E('span', null, fill(t('changes.aiFixed'), { model: aiFixed }))
+      const aiFollowButton = aiFixed === null ? null : E('button', {
+        type: 'button', className: 'dig-link dig-commit-ai-follow', 'data-ai-follow': '',
+        onClick: () => { aiFollowSession() },
+      }, t('changes.aiFollow'))
+      const aiNoticeRow = aiNote === null && aiFixedNote === null ? null : E('div', {
+        className: 'dig-commit-ai-note', 'data-ai-note': '',
+      }, aiNote === null ? null : E('span', null, aiNote), aiFixedNote, aiFollowButton)
       const composer = props.compact === true
         ? E('div', { className: 'dig-commit-box dig-commit-box-compact' },
             E('input', {
@@ -13860,6 +14109,7 @@ window.__ModuleLoader__.load({
               disabled: message.trim() === '' || props.busy === true,
               onClick: () => { submit(false) },
             }, t('changes.commit')),
+            aiNoticeRow,
             E('span', { className: 'dig-commit-ai-hint dig-commit-ai-hint-block' }, t('changes.aiQuota')))
         : E('div', { className: 'dig-commit-box' },
             E('textarea', {
@@ -13882,7 +14132,7 @@ window.__ModuleLoader__.load({
                 type: 'button', className: 'dig-link',
                 onClick: () => { setMessage(aiUndo); setAiUndo(null); setAiNote(null) },
               }, t('changes.aiUndo'))),
-            aiNote === null ? null : E('div', { className: 'dig-commit-ai-note', 'data-ai-note': '' }, aiNote),
+            aiNoticeRow,
             E('div', { className: 'dig-commit-actions' },
               E('label', { className: 'dig-check' },
                 E('input', { type: 'checkbox', checked: amend, onChange: (event) => setAmend(event.target.checked) }),
@@ -13953,7 +14203,12 @@ window.__ModuleLoader__.load({
             },
           },
             collapsed ? null : [
-              total === 0 && ignored.length === 0 ? E('div', { className: 'dig-empty', key: 'empty' }, t('changes.empty')) : null,
+              /* Issue #33: an empty list means two very different things and
+                 the panel used to say the wrong one. Until the first summary
+                 arrives there is nothing to describe — that is a load, not a
+                 clean tree (a cold index over a huge repository can take a
+                 while, and 'no pending changes' read as a hang). */
+              total === 0 && ignored.length === 0 ? E('div', { className: 'dig-empty', key: 'empty' }, summary === null ? t('status.loading') : t('changes.empty')) : null,
               /* Windowed slice: spacers above/below stand in for the unmounted
                  rows (fixed heights, see ITEM_HEIGHTS). */
               winFirst > 0 ? E('div', { key: 'pad-top', style: { height: String(changeOffsets[winFirst]) + 'px' } }) : null,
@@ -14277,6 +14532,10 @@ window.__ModuleLoader__.load({
     function HistoryList(props) {
       const t = props.t
       const commits = props.commits
+      /* Issue #33: the first page of the log may still be on its way. Without
+         this flag an empty array reads as an empty repository, so a cold load
+         over a big workspace claims the project has no commits at all. */
+      const commitsLoaded = props.commitsLoaded === true
       const historyScrollRef = useRef(null)
       const [me, setMe] = useState(() => (props.base !== undefined && gitMeCache.has(props.base.repoRoot) === true ? gitMeCache.get(props.base.repoRoot) : null))
       useEffect(() => {
@@ -14656,7 +14915,9 @@ window.__ModuleLoader__.load({
           },
           onMouseLeave: (event) => event.currentTarget.removeAttribute('data-hover-lane'),
         },
-          rows.length === 0 ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : t('history.empty')) : null,
+          rows.length === 0
+            ? E('div', { className: 'dig-empty' }, dirtyFilter ? t('filter.none') : commitsLoaded ? t('history.empty') : t('status.loading'))
+            : null,
           order === 'asc' ? loadMoreButton : null,
           winStart > 0 ? E('div', { key: 'pad-top', style: { height: String(winStart * HISTORY_ROW_H) + 'px' } }) : null,
           visibleRows.map((row) => E(CommitRow, {
@@ -14818,17 +15079,61 @@ window.__ModuleLoader__.load({
       return { betterSidebar: betterSidebar, sidebarRight: sidebarRight }
     }
 
+    /* better-sidebar publishes its capability list as `features` (v0.32:
+       openFile, targetedOpen, fileActions …); older builds carried the same list
+       under `capabilities`. Read whichever is there — reading only the old name
+       made this gate vacuous (undefined ⇒ "targeted") and shipped a `target`
+       field to a base that could not place it. */
     function betterSidebarTargets(service) {
       if (service === undefined || service === null || typeof service.openTab !== 'function') return false
-      const capabilities = service.capabilities
-      return capabilities === undefined || capabilities === null
-        || (Array.isArray(capabilities) && capabilities.indexOf('targetedOpen') >= 0)
+      const list = Array.isArray(service.features)
+        ? service.features
+        : (Array.isArray(service.capabilities) ? service.capabilities : null)
+      return list === null || list.indexOf('targetedOpen') >= 0
+    }
+
+    /* Opening a FILE (not a diff) in the right dock: better-sidebar's openFile
+       is its editor tab (type 'editor' + path), gated by the 'openFile'
+       feature. The native right sidebar has no editor tab type of its own, so
+       that seat cannot serve this verb — the caller renders a disabled entry
+       with the reason instead of a click that does nothing (issue #28). */
+    function fileDockOf(ctx) {
+      const services = sidebarServicesOf(ctx)
+      const betterSidebar = services.betterSidebar
+      if (betterSidebar === undefined || betterSidebar === null || typeof betterSidebar.openFile !== 'function') return null
+      const list = Array.isArray(betterSidebar.features)
+        ? betterSidebar.features
+        : (Array.isArray(betterSidebar.capabilities) ? betterSidebar.capabilities : null)
+      if (list !== null && list.indexOf('openFile') < 0) return null
+      return betterSidebar
+    }
+
+    /* Repo-relative → the absolute spelling an editor tab wants. Windows roots
+       ride backslashes; the dock's address builder normalizes either way. */
+    function absolutePathOf(root, path) {
+      const leaf = String(path === undefined || path === null ? '' : path)
+      if (leaf === '') return ''
+      if (leaf.charAt(0) === '/' || /^[A-Za-z]:[\\/]/.test(leaf)) return leaf
+      const base = String(root === undefined || root === null ? '' : root).replace(/[\\/]+$/, '')
+      return base === '' ? leaf : base + '/' + leaf
     }
 
     function hasRightSidebar(ctx) {
       const services = sidebarServicesOf(ctx)
       return betterSidebarTargets(services.betterSidebar)
         || (services.sidebarRight !== undefined && services.sidebarRight !== null && typeof services.sidebarRight.openTab === 'function')
+    }
+
+    /* The host's own file-preview address (workspace-path/file-address.ts):
+       `dsh-resource://` + `file/session/<id>/<per-segment encoded path>`, where
+       encodeSegment keeps a drive colon readable ('%3A' → ':'). The plugin used
+       to encode every segment blindly, which is right on POSIX and wrong on
+       Windows — the host then read 'C%3A' as a file name. */
+    function filePreviewAddress(sessionId, path) {
+      const encodeSegment = (segment) => encodeURIComponent(segment).replace(/%3A/gi, ':')
+      const normalized = String(path === undefined || path === null ? '' : path).replace(/\\/g, '/').replace(/^(?:\.\/)+/, '')
+      return 'dsh-resource://file/session/' + encodeSegment(String(sessionId === undefined || sessionId === null ? '' : sessionId))
+        + '/' + normalized.split('/').map(encodeSegment).join('/')
     }
 
     function nativePreviewSeedOf(target, scopeObject) {
@@ -14852,6 +15157,12 @@ window.__ModuleLoader__.load({
       const [showIgnored, setShowIgnored] = useState(false)
       const [branches, setBranches] = useState(null)
       const [commits, setCommits] = useState([])
+      /* Issue #33: an empty commit list is either "this repository has no
+         commits" or "the log has not answered yet", and the panel rendered both
+         as the former. This flag is what tells them apart: it flips once a page
+         of log has actually landed (or a cached page seeded it) and resets on a
+         repository switch. */
+      const [commitsLoaded, setCommitsLoaded] = useState(false)
       const [hasMore, setHasMore] = useState(false)
       const [error, setError] = useState(null)
       /* Named failure code (push-rejected / pull-conflict / ...), kept beside
@@ -15489,6 +15800,7 @@ window.__ModuleLoader__.load({
         const data = await request('log', payload)
         setCommits((previous) => (skip === undefined || skip === 0 ? data.commits : previous.concat(data.commits)))
         setHasMore(data.hasMore)
+        setCommitsLoaded(true)
         return data
       }, [base, pathFilter, browseRev])
 
@@ -15613,7 +15925,13 @@ window.__ModuleLoader__.load({
             setBranches(cachedPage.branches)
             remoteReadyRef.current = cachedPage.branches !== null && Array.isArray(cachedPage.branches.remotes) && cachedPage.branches.remotes.length > 0
           }
-          if (commits.length === 0 && Array.isArray(cachedPage.commits)) { setCommits(cachedPage.commits); setHasMore(cachedPage.hasMore === true) }
+          if (commits.length === 0 && Array.isArray(cachedPage.commits)) {
+            setCommits(cachedPage.commits)
+            setHasMore(cachedPage.hasMore === true)
+            /* A seeded page IS an answer: the log has been read before, so an
+               empty repository stays empty instead of promising a read. */
+            setCommitsLoaded(true)
+          }
         }
         void refresh({ trace: true })
         return undefined
@@ -15699,6 +16017,10 @@ window.__ModuleLoader__.load({
         setBranches(null)
         remoteReadyRef.current = false
         setCommits([])
+        /* A different repository starts unread again (issue #33): its log has
+           not answered yet, so the empty list must say "reading", not "no
+           commits" — the old repository's answer does not carry over. */
+        setCommitsLoaded(false)
         /* The signature is per-repo: force a fresh baseline for the new one
            so the first poll tick doesn't mistake the repo switch for an
            outside HEAD move. */
@@ -15816,11 +16138,12 @@ window.__ModuleLoader__.load({
          repoRoot 并进它自己的 git 调用,多仓库工作区不会落错仓库。 */
       const previewDiff = useCallback((seed) => {
         if (repoRoot === null) return false
-        /* Inline-first (issue #22): the switch defaults to ON, so the panel's
-           own diff pane — and its split / wrap controls — is what a click
-           opens. Turning it off hands the preview to the external chain
-           below, which is the only behaviour older releases had. */
-        if (inlineDiffEnabled() === true) return false
+        /* Placement decides the door (issue #28): 'inline' keeps the click in
+           the panel's own pane — and its split / wrap controls — by refusing
+           here, so the caller's inline leg runs. 'dock' asks the seat channel
+           first; 'sidebar' skips it and aims at the right dock. */
+        const placement = diffPlacementOf()
+        if (placement === 'inline') return false
         const commitHash = seed.hash !== undefined && seed.hash !== null ? String(seed.hash) : null
         const ref = commitHash !== null
           ? { kind: 'commit', hash: commitHash.slice(0, 7), hashFull: commitHash, subject: seed.subject || '', worktree: repoRoot, repoRoot: repoRoot }
@@ -15832,9 +16155,11 @@ window.__ModuleLoader__.load({
           ? 'diff:c:' + encodeURIComponent(repoRoot) + ':' + commitHash
           : 'diff:w:' + encodeURIComponent(repoRoot) + ':' + (seed.staged === true ? 's' : 'u') + ':' + seed.path
         const tab = { id: id, type: 'diff', title: title, diff: ref }
-        /* Seat channel first — the bottom workbench opens its own diff tab,
-           the right column opens it there; placement is the base's call. */
-        if (typeof props.openDiffExternal === 'function') {
+        /* 'dock' means the BOTTOM workbench, and only the seat that owns one
+           hands out openDiffExternal. Trying it under 'sidebar' would let the
+           base's own placement decide, which is exactly what the user just
+           answered in the settings card. */
+        if (placement === 'dock' && typeof props.openDiffExternal === 'function') {
           try {
             props.openDiffExternal(tab)
             return true
@@ -15847,9 +16172,7 @@ window.__ModuleLoader__.load({
         let betterSidebar = undefined
         try { betterSidebar = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('betterSidebar') } catch (error) { void error }
         if (betterSidebar !== undefined && betterSidebar !== null && typeof betterSidebar.openTab === 'function') {
-          const capabilities = betterSidebar.capabilities
-          const targeted = capabilities === undefined || capabilities === null || (Array.isArray(capabilities) && capabilities.indexOf('targetedOpen') >= 0)
-          if (targeted === true) {
+          if (betterSidebarTargets(betterSidebar) === true) {
             try {
               const scopeObject = scope || {}
               betterSidebar.openTab({ type: 'diff', title: title, id: id, diff: ref, target: 'right' }, { sessionId: scopeObject.sessionId, cwd: scopeObject.cwd })
@@ -16593,6 +16916,39 @@ window.__ModuleLoader__.load({
         openMenuAt(event, items)
       }, [run, selectCommit, t, openMenuAt, blocked, sendToComposer, sendGitSummaryToChat, repoLabel, pickedCommits, commits, copyValues])
 
+      /* The dock services are probed once per context, not per menu open: a
+         right-click must not pay four ctx.get() round trips. */
+      const sideDock = useMemo(() => ({
+        openFile: (function () {
+          const dock = fileDockOf(props.ctx)
+          if (dock === null) return null
+          return (absolute) => dock.openFile(scope, absolute)
+        })(),
+      }), [props.ctx, scope])
+
+      /* "Open the file in the right sidebar" (issue #28). The dock is a FILE
+         surface (better-sidebar's editor tab), which is the verb the request
+         asked for — reading the change is what the diff entry above already
+         does. Without that capability the row stays visible but disabled with
+         the reason attached, so a user on the native seat learns why. */
+      const openFileDock = sideDock.openFile
+      const openFileItem = useCallback((path) => {
+        if (openFileDock === null) {
+          return { id: 'openFile', icon: 'file', tone: 'secondary', label: t('action.openInSidebar'), disabled: true, reason: t('diff.openFile.unavailable') }
+        }
+        return {
+          id: 'openFile',
+          icon: 'file',
+          tone: 'primary',
+          label: t('action.openInSidebar'),
+          run: () => {
+            try {
+              openFileDock(absolutePathOf(repoRoot, path))
+            } catch (error) { setNote(t('diff.openFile.failed')) }
+          },
+        }
+      }, [openFileDock, repoRoot, t, setNote])
+
       const changeMenu = useCallback((event, item, group) => {
         /* Multi-select: right-clicking a row that belongs to the selection
            acts on the WHOLE selection (stage N / unstage N / discard N). */
@@ -16610,6 +16966,7 @@ window.__ModuleLoader__.load({
         }
         const items = [
           { id: 'diff', icon: 'file', tone: 'primary', label: t('action.showDiff'), run: () => { showDiff({ path: item.path, staged: group === 'staged', untracked: group === 'untracked' }) } },
+          openFileItem(item.path),
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(item.path) },
           null,
           group === 'staged'
@@ -16621,7 +16978,7 @@ window.__ModuleLoader__.load({
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(item.path) } },
         ]
         openMenuAt(event, items)
-      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer, changeSelection, changeSelectionGroups, openDiscardManyDialog, addToGitignore, copyValues])
+      }, [showDiff, run, t, openMenuAt, sendFileReferenceToChat, sendToComposer, changeSelection, changeSelectionGroups, openDiscardManyDialog, addToGitignore, copyValues, openFileItem])
 
       /* The commit-detail file list shares the working-tree row menu, minus the
          staging verbs: a committed file's diff replays against its commit. */
@@ -16635,12 +16992,12 @@ window.__ModuleLoader__.load({
               path: file.path,
             })
           } },
-          null,
+          openFileItem(file.path),
           { id: 'sendRef', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendFileReferenceToChat(file.path) },
           null,
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyPath'), run: () => { copyText(file.path) } },
         ])
-      }, [detail, showDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t])
+      }, [detail, showDiff, openMenuAt, sendFileReferenceToChat, sendToComposer, t, openFileItem])
 
       /* The diff pane's own context menu (v0.13.5): select text in the diff,
          right-click, send a self-describing line reference to the composer.
@@ -16996,7 +17353,7 @@ window.__ModuleLoader__.load({
             onFileMenu: detailFileMenu,
           })
         : E(HistoryList, {
-            t: t, commits: commits, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
+            t: t, commits: commits, commitsLoaded: commitsLoaded, hasMore: hasMore, busy: busy, selectedHash: selectedHash,
             /* Read per render: the row Config subscription re-renders this
                component, so a settings-card change applies without a reload. */
             dateFormat: readDateFormat(),
@@ -18223,7 +18580,9 @@ window.__ModuleLoader__.load({
       '.dig-commit-ai{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}',
       '.dig-commit-ai-hint{color:var(--dsw-alias-label-tertiary);font-size:11px}',
       '.dig-commit-ai-hint-block{flex:1 0 100%;font-size:11px}',
-      '.dig-commit-ai-note{color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-size:11px;margin-bottom:4px;word-break:break-word}',
+      '.dig-commit-ai-note{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;color:var(--dsw-alias-state-warn-primary,var(--dsw-alias-brand-primary));font-size:11px;margin-bottom:4px;word-break:break-word}',
+      '.dig-commit-ai-follow{margin-left:0;color:var(--dsw-alias-brand-primary);text-decoration:underline;white-space:nowrap}',
+      '.dig-commit-box-compact .dig-commit-ai-note{flex:1 0 100%;margin-bottom:0}',
       '.dig-settings-list{display:flex;flex-direction:column;gap:2px;max-height:min(46vh,360px);overflow:auto;padding:2px;border:1px solid var(--dsw-alias-hairline,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-sm,8px)}',
       '.dig-settings-row{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:calc(var(--dsw-radius-sm,8px) - 2px);cursor:pointer;min-width:0}',
       '.dig-settings-row:hover{background:var(--dsw-alias-interactive-bg-hover)}',
@@ -19046,16 +19405,22 @@ window.__ModuleLoader__.load({
       return value !== false
     }
 
-    /* Inline-first diff preview (issue #22). Default ON: the panel's own diff
-       pane owns the split / wrap switches, so installing dsh-better-sidebar or
-       opening the native preview seat must not silently take that capability
-       away. The settings card flips this field; false restores the external
-       hand-off chain in previewDiff. */
-    function inlineDiffEnabled() {
+    /* Where a diff opens (issue #28). The old boolean could only say "panel" or
+       "somewhere external", so the request for "double-click → right sidebar"
+       had nowhere to live. One string field, three answers:
+         'inline'  – the panel's own pane (default; keeps split / wrap)
+         'sidebar' – the right dock (better-sidebar, else the native preview tab)
+         'dock'    – the bottom workbench seat (props.openDiffExternal)
+       A document written before this field existed carries only `inlineDiff`;
+       false there meant "hand it off", which is today's 'sidebar'. A value the
+       schema does not know falls back to the default rather than to a mystery. */
+    function diffPlacementOf() {
       const ready = railFormReady()
-      if (ready === null) return true
-      const value = ready.value !== null && typeof ready.value === 'object' ? ready.value.inlineDiff : undefined
-      return value !== false
+      if (ready === null) return 'inline'
+      const values = ready.value !== null && typeof ready.value === 'object' ? ready.value : {}
+      const stored = values.diffPlacement
+      if (stored === 'inline' || stored === 'sidebar' || stored === 'dock') return stored
+      return values.inlineDiff === false ? 'sidebar' : 'inline'
     }
 
     const COMPOSER_POLL_MS = 30000
@@ -20036,12 +20401,19 @@ window.__ModuleLoader__.load({
         if (seed === null || seed.path === undefined || seed.path === null || seed.path === '') return
         let sidebarRight = undefined
         try { sidebarRight = props.ctx === undefined || props.ctx === null ? undefined : props.ctx.get('sidebarRight') } catch (error) { void error }
-        if (sidebarRight === undefined || sidebarRight === null || typeof sidebarRight.openResource !== 'function') return
         try {
-          const relative = String(seed.path)
-          const address = 'dsh-resource://file/session/' + encodeURIComponent(String(seed.sessionId || '')) + '/' + relative.split('/').map((segment) => encodeURIComponent(segment)).join('/')
-          sidebarRight.openResource(address)
+          if (sidebarRight !== undefined && sidebarRight !== null && typeof sidebarRight.openResource === 'function') {
+            sidebarRight.openResource(filePreviewAddress(seed.sessionId, seed.path))
+            return
+          }
         } catch (error) { void error }
+        /* No host file-preview channel (the native seat always has one; a base
+           that only ships better-sidebar may not): the same file opens as an
+           editor tab instead of the click dying silently — that silent no-op
+           is exactly what issue #28 reported. */
+        const dock = fileDockOf(props.ctx)
+        if (dock === null) return
+        try { dock.openFile({ sessionId: seed.sessionId, cwd: seed.cwd }, absolutePathOf(seed.repoRoot, seed.path)) } catch (error) { void error }
       }
       return E('div', { className: 'dig-preview-root' },
         E('div', { className: 'dig-preview-head' },

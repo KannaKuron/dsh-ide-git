@@ -123,7 +123,29 @@ async function collectSubmoduleRepos(root) {
 export const repoScanCache = new Map()
 export let REPOS_CACHE_TTL_MS = 15000
 
+/* Issue #33: one cold scan is expensive (a walk plus a git process per
+   checkout), and the panel and the composer pill can ask for the same cwd at
+   the same moment — the cache only helps AFTER the first answer lands, so both
+   callers used to pay for a whole pass over the workspace. This map lets the
+   second caller ride the first scan instead. It is keyed by cwd, cleared on
+   settle (a failed or thrown scan must not poison the next attempt), and it
+   never answers for a different workspace. */
+const repoScanInflight = new Map()
+
 async function scanRepos(cwd) {
+  let running = repoScanInflight.get(cwd)
+  if (running === undefined) {
+    running = scanReposCold(cwd).finally(() => { repoScanInflight.delete(cwd) })
+    repoScanInflight.set(cwd, running)
+  }
+  const answer = await running
+  /* Copy per caller, exactly like the warm path above: rows are handed out to
+     be decorated, and a joined caller must not share objects with the scan it
+     piggybacked on. */
+  return { cached: answer.cached, rows: answer.rows.map((row) => ({ ...row })) }
+}
+
+async function scanReposCold(cwd) {
   const cached = repoScanCache.get(cwd)
   /* Hand back fresh row objects: the cache is shared by every caller, and a
      consumer that decorates or reorders what it received must not write

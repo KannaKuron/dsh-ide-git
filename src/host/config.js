@@ -63,6 +63,13 @@ function railConfigSchema(schema) {
      dsh-better-sidebar or the native preview seat is installed. OFF hands the
      preview back to those external tabs, exactly the pre-0.23 behaviour. */
   shape.inlineDiff = schema.boolean().default(true).volatile()
+  /* Diff placement (issue #28): ONE row now says WHERE a diff opens, instead of
+     the on/off switch that could only express "panel" vs "somewhere external".
+     'inline' keeps the panel pane (default, the shipped behaviour), 'sidebar'
+     aims at the right dock, 'dock' at the bottom workbench. inlineDiff stays
+     declared so documents written by 0.23–0.35 still load; diffPlacementOf()
+     migrates a stored false to 'sidebar'. */
+  shape.diffPlacement = schema.string().default('inline').volatile()
   /* History date column format (issue #26): 'relative' is the shipped default so
      an existing document keeps the old labels, 'absolute' shows the timestamp.
      A string row — declare it volatile() or the Host refuses the settings-card

@@ -428,12 +428,15 @@ test('the diff pane context menu reads the selection before the menu opens (v0.1
   // so a multi-root workspace cannot land the diff in the wrong repository.
   assert.match(client, /if \(previewDiff\(seed\) === true\) return/,
     'every diff verb goes through the preview funnel')
-  // Issue #22: inline-first is the default so the panel's own split / wrap
-  // switches survive installing dsh-better-sidebar; the switch flips it back.
-  assert.match(client, /if \(inlineDiffEnabled\(\) === true\) return false/,
-    'the inline preview switch must gate the external hand-off chain')
-  assert.match(client, /function inlineDiffEnabled\(\) \{/,
-    'the inline preview switch reads one row-Config field')
+  // Issue #22 shipped a boolean switch here; issue #28 replaced it with a
+  // three-way placement (panel / right sidebar / bottom workbench) because one
+  // boolean decided BOTH whether and where a diff opened. Inline-first stays the
+  // default so the panel's own split / wrap switches survive installing
+  // dsh-better-sidebar; only the "inside the panel" answer stops the hand-off.
+  assert.match(client, /if \(placement === 'inline'\) return false/,
+    'the placement setting must gate the external hand-off chain')
+  assert.match(client, /function diffPlacementOf\(\) \{/,
+    'the placement setting is read through one helper')
   assert.match(client, /function reviewRowSpanOf\(body, fromRow, toRow\)/,
     'selections inside the review renderer read the printed line numbers')
   assert.match(client, /span = reviewRowSpanOf\(from\.body, from\.row, to\.row\)/,
@@ -1331,11 +1334,16 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   assert.match(card, /const field = 'composerStatus'/, 'the composer pill switch is backed by its own row-Config field')
   assert.match(host, /shape\.composerStatus = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
     'the host schema declares the composerStatus field with default true')
-  // Issue #22 (inline diff): the fourth placement switch keeps the plugin's own
-  // split / wrap pane reachable when an external diff tab is installed.
-  assert.match(card, /const field = 'inlineDiff'/, 'the inline preview switch is backed by its own row-Config field')
-  assert.match(host, /shape\.inlineDiff = schema\.boolean\(\)\.default\(true\)\.volatile\(\)/,
-    'the host schema declares the inlineDiff field with default true')
+  // Issue #28 turned the boolean inline-diff switch into a three-way placement
+  // row: the card now writes a STRING field, so it goes through selectRow and
+  // the host declares a string schema — the two shapes differ, which is exactly
+  // the v0.19.7 class of bug (write a field the Host schema does not carry).
+  assert.match(card, /selectRow\(field, 'settings\.diff\.placement'/,
+    'the diff placement row is a picker, not a switch')
+  assert.match(card, /const field = 'diffPlacement'/,
+    'the diff placement row is backed by its own row-Config field')
+  assert.match(host, /shape\.diffPlacement = schema\.string\(\)\.default\('inline'\)\.volatile\(\)/,
+    'the host schema declares the diffPlacement string field')
   // Generic guard, so the NEXT field cannot repeat the v0.19.7 bug: every
   // row-Config field the card writes must be declared volatile in the host
   // schema. Rail fields are covered by the RAIL_CONFIG_IDS parity test above.
@@ -1359,15 +1367,19 @@ test('a rail switch writes exactly its own field, and a refused write rolls back
   const cardCode = card.replace(/\/\*[\s\S]*?\*\//g, '')
   assert.doesNotMatch(cardCode, /values\[field\] !== false\) !== true/,
     'the precedence trap must not come back: parenthesize the whole fallback')
-  for (const field of ['conversationTab', 'immersive', 'composerStatus', 'inlineDiff']) {
+  for (const field of ['conversationTab', 'immersive', 'composerStatus']) {
     assert.match(card, new RegExp("const field = '" + field + "'\\n\\s+const inputId = 'dig-placement-' \\+ field\\n\\s+const shown = placementShown\\(field\\)"),
       field + ' must read its switch state through placementShown')
   }
   assert.match(card, /const wanted = placementTarget\(field, fromControl\)/,
     'every placement toggle derives its target from the shared helper')
+  // The diff placement row replaced the fourth switch (issue #28): its label is
+  // a <select>, so it carries no placementShown/placementTarget pair at all.
+  assert.doesNotMatch(card.replace(/\/\*[\s\S]*?\*\//g, ''), /const field = 'inlineDiff'/,
+    'the retired inline-diff switch must not come back beside the placement row')
   for (const key of ['settings.placement.title', 'settings.placement.tab', 'settings.placement.tabHint',
     'settings.placement.immersive', 'settings.placement.immersiveHint',
-    'settings.diff.inline', 'settings.diff.inlineHint']) {
+    'settings.diff.placement', 'settings.diff.placementHint']) {
     const occurrences = client.split("'" + key + "'").length - 1
     assert.ok(occurrences >= 22, key + ' must ship in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
   }
@@ -1752,7 +1764,10 @@ test('the first-paint cache seeds session switches inside one workspace (v0.13.1
   const panel = client.slice(client.indexOf('const cachedPage = readPaintPage(repoRoot)'), client.indexOf('void refresh()'))
   assert.match(panel, /if \(summary === null && cachedPage\.summary !== undefined\) setSummary\(/, 'summary only seeds when cold and present')
   assert.match(panel, /if \(branches === null && cachedPage\.branches !== undefined\) \{/, 'branches only seed when cold and present')
-  assert.match(panel, /if \(commits\.length === 0 && Array\.isArray\(cachedPage\.commits\)\) \{ setCommits\(/, 'commits only seed when cold and present')
+  assert.match(panel, /if \(commits\.length === 0 && Array\.isArray\(cachedPage\.commits\)\) \{\s*setCommits\(/, 'commits only seed when cold and present')
+  // A seeded page counts as an answer (issue #33): the history pane must not
+  // claim "reading" for a list it just restored from the cache.
+  assert.match(panel, /setCommitsLoaded\(true\)/, 'a seeded commit list is already loaded')
   // The write side records exactly the FIRST page, from refresh() itself — a
   // paged fetch (skip > 0) must never poison the seed with a concatenated list.
   const refreshFn = client.slice(client.indexOf('const refresh = useCallback'), client.indexOf('], [guard, loadSummary, loadBranches, loadCommits, repoRoot])'))
@@ -2410,6 +2425,51 @@ test('the inline diff can add a right-sidebar view without closing itself (issue
   assert.match(client, /disabled: sidebarBlocked !== null/, 'unavailable and loading both disable the button')
   assert.ok(client.includes("'.dig-diff-action{display:inline-flex;flex:none;align-items:center}'"), 'the action sits flush in the head row')
   for (const key of ['diff.sidebar.open', 'diff.sidebar.unavailable', 'diff.sidebar.loading', 'diff.sidebar.failed']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
+      '21 gates carry ' + key)
+  }
+})
+
+test('the diff placement is three-way and the dock verbs degrade visibly (issue #28)', () => {
+  // One boolean could only answer "inside or outside", never "where", so the
+  // settings card now writes a string field and ONE helper answers at click
+  // time — the card and the click path must never disagree.
+  assert.match(client, /const stored = values\.diffPlacement/,
+    'the placement helper reads the string field first')
+  assert.match(client, /if \(stored === 'inline' \|\| stored === 'sidebar' \|\| stored === 'dock'\) return stored/,
+    'only the three known placements are accepted')
+  assert.match(client, /return values\.inlineDiff === false \? 'sidebar' : 'inline'/,
+    'a document written before the field existed still migrates (old off = sidebar)')
+  assert.match(client, /if \(placement === 'dock' && typeof props\.openDiffExternal === 'function'\)/,
+    'the bottom workbench is asked only under the dock answer')
+  // better-sidebar publishes its capability list as "features"; reading the
+  // retired "capabilities" name made both gates vacuous.
+  assert.match(client, /Array\.isArray\(service\.features\)/,
+    'the capability gate reads the published list name')
+  assert.match(client, /list\.indexOf\('targetedOpen'\) >= 0/,
+    'a base without targetedOpen never receives a target field')
+  assert.match(client, /if \(list !== null && list\.indexOf\('openFile'\) < 0\) return null/,
+    'opening a file requires the openFile feature')
+  // The dock is an editor tab, so a repo-relative path must become absolute.
+  assert.match(client, /if \(leaf\.charAt\(0\) === '\/' \|\| \/\^\[A-Za-z\]:\[\\\\\/\]\/\.test\(leaf\)\) return leaf/,
+    'an already-absolute path is left alone (POSIX and Windows)')
+  // Host file-preview address grammar (workspace-path/file-address.ts): only the
+  // drive colon survives decoding, every other segment is encoded normally.
+  assert.match(client, /const encodeSegment = \(segment\) => encodeURIComponent\(segment\)\.replace\(\/%3A\/gi, ':'\)/,
+    'the address keeps a Windows drive colon readable')
+  assert.match(client, /'dsh-resource:\/\/file\/session\/' \+ encodeSegment\(/,
+    'the preview address matches the host grammar')
+  // No silent no-op (the exact complaint): a seat without a file-capable dock
+  // renders a disabled entry carrying the reason, and a throwing dock reports.
+  assert.match(client, /disabled: true, reason: t\('diff\.openFile\.unavailable'\)/,
+    'a seat without a file-capable dock shows why, not a dead click')
+  assert.match(client, /catch \(error\) \{ setNote\(t\('diff\.openFile\.failed'\)\) \}/,
+    'a refused open reports instead of swallowing')
+  assert.match(client, /if \(dock === null\) return\n\s+try \{ dock\.openFile\(\{ sessionId: seed\.sessionId, cwd: seed\.cwd \}/,
+    'the preview open-file button falls back to the dock instead of returning silently')
+  for (const key of ['settings.diff.placement', 'settings.diff.placementHint', 'settings.diff.placeInline',
+    'settings.diff.placeSidebar', 'settings.diff.placeDock', 'action.openInSidebar',
+    'diff.openFile.unavailable', 'diff.openFile.failed']) {
     assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
       '21 gates carry ' + key)
   }
