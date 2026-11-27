@@ -3,6 +3,14 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.37.1 — 2026-11-27
+
+**类型**:chore(宿主性能优化,PR #38 by @BearBin1215)
+
+- **分支的领先/落后状态改为一次获取**:`branches()` 不再为每个配置了上游的本地分支分别执行 `git rev-list`,改为复用已有的 `for-each-ref`。在 40 个配置了上游的本地分支上实测,这次请求从 4.2–4.5 s 降到 0.45–0.52 s；`summary()` 不受影响,其它返回字段与顺序不变。
+- **回归测试**:新增用例覆盖未分叉、仅领先、仅落后、分叉与上游消失(`[gone]`),并断言本次请求只调用一次 `for-each-ref`,不再调用 `rev-list`。
+- **验证**:合并后 `npm test` **166/166**;SSR 自检 4/4;`node --check` 与 `git diff --check` 通过;隔离实例(dsh 0.2.2-rc.5,端口 3099)实测五个分支状态:`feature/ahead` 显示 ↑1、`feature/behind` 显示 ↓1、`feature/diverged` 同时显示 ↑1 与 ↓1、`feature/gone` 与 `feature/sync` 无角标,远程分支行无角标,全程 0 pageerror。
+
 ## v0.37.0 — 2026-11-27
 
 **类型**:feat(issue #37 的「全部仓库」总览)

@@ -101,11 +101,24 @@ async function stats(payload) {
   return { unstaged: pack(unstaged), staged: pack(staged) }
 }
 
+/* `%(upstream:track)` is '', '[ahead N]', '[behind N]', '[ahead N, behind M]'
+   or '[gone]'. A deleted upstream ('[gone]') reads 0/0. */
+function trackingOf(text) {
+  const ahead = /\bahead (\d+)/.exec(text)
+  const behind = /\bbehind (\d+)/.exec(text)
+  return {
+    ahead: ahead === null ? 0 : Number.parseInt(ahead[1], 10),
+    behind: behind === null ? 0 : Number.parseInt(behind[1], 10),
+  }
+}
+
 async function branches(payload) {
   const cwd = cwdOf(payload)
   const root = await repoRootOf(cwd, payload)
   const branch = await currentBranchOf(root)
-  const format = ['%(refname)', '%(refname:short)', '%(objectname)', '%(objectname:short)', '%(HEAD)', '%(upstream:short)', '%(committerdate:iso-strict)', '%(contents:subject)', '%(symref)'].join(FIELD_SEP)
+  /* `%(upstream:track)` supplies git's ahead/behind for branches with an
+     upstream; `trackingOf()` below parses it into the row's counters. */
+  const format = ['%(refname)', '%(refname:short)', '%(objectname)', '%(objectname:short)', '%(HEAD)', '%(upstream:short)', '%(committerdate:iso-strict)', '%(contents:subject)', '%(symref)', '%(upstream:track)'].join(FIELD_SEP)
   const out = await git(root, ['for-each-ref', '--format=' + format + RECORD_SEP, 'refs/heads', 'refs/remotes', 'refs/tags'])
   const local = []
   const remote = []
@@ -125,7 +138,10 @@ async function branches(payload) {
     const trimmed = record.replace(/^\n+/, '')
     if (trimmed.trim() === '') continue
     const parts = trimmed.split(FIELD_SEP)
+    /* Keep the guard at 9: a row without the track field still becomes a branch
+       with 0/0, rather than being dropped. */
     if (parts.length < 9) continue
+    const track = parts.length > 9 ? parts[9] : ''
     const entry = {
       name: parts[1],
       hash: parts[2],
@@ -138,7 +154,12 @@ async function branches(payload) {
       ahead: 0,
       behind: 0,
     }
-    if (parts[0].startsWith('refs/heads/')) local.push(entry)
+    if (parts[0].startsWith('refs/heads/')) {
+      const tracking = trackingOf(track)
+      entry.ahead = tracking.ahead
+      entry.behind = tracking.behind
+      local.push(entry)
+    }
     else if (parts[0].startsWith('refs/remotes/')) {
       /* "<remote>/HEAD" is the symbolic pointer at a remote's default branch —
          its %(refname:short) collapses to the BARE remote name, so it is not a
@@ -148,12 +169,6 @@ async function branches(payload) {
       if (/^refs\/remotes\/[^/]+\/HEAD$/.test(parts[0]) === false) remote.push(entry)
     }
     else if (parts[0].startsWith('refs/tags/')) tags.push({ name: entry.name, hash: entry.hash, shortHash: entry.shortHash, date: entry.date, subject: entry.subject })
-  }
-  for (const entry of local) {
-    if (entry.upstream === null) continue
-    const tracking = await aheadBehindOf(root, entry.upstream, entry.name)
-    entry.ahead = tracking.ahead
-    entry.behind = tracking.behind
   }
   local.sort((a, b) => (a.head === b.head ? a.name.localeCompare(b.name) : a.head ? -1 : 1))
   remote.sort((a, b) => a.name.localeCompare(b.name))
