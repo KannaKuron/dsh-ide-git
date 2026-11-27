@@ -15337,12 +15337,8 @@ window.__ModuleLoader__.load({
     }
 
     /* ====================== cross-repository overview ====================== */
-    /* Issue #37: every repository in the workspace, side by side, each card
-       owning its own change list, commit box and diff pane — the Source Control
-       view of a multi-root workspace. Host routes already take { cwd, repoRoot },
-       so nothing below the client changes. Cards keep their own grouping /
-       fold / selection state on purpose: one selection shared between two
-       repositories would act on the wrong files. */
+    /* Keep selection, commit and diff state local to each card so actions cannot
+       target files in another repository. */
 
     const ALL_SUMMARY_CONCURRENCY = 2
 
@@ -15594,7 +15590,7 @@ window.__ModuleLoader__.load({
           [path]: { loading: true, error: null, summary: current[path] === undefined ? null : current[path].summary },
         }))
         try {
-          const data = await request('summary', { cwd: path, repoRoot: path, ignored: false, stats: false })
+          const data = await request('changes', { cwd: path, repoRoot: path })
           if (mountedRef.current !== true || generationRef.current !== generation) return
           setCards((current) => Object.assign({}, current, { [path]: { loading: false, error: null, summary: data } }))
         } catch (caught) {

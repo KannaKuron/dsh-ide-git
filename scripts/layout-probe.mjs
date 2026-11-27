@@ -10,11 +10,16 @@
  *
  *   node scripts/layout-probe.mjs "http://127.0.0.1:3099/?token=…" [out-dir]
  *
- * Playwright is loaded from the DSH checkout (DSH_CHECKOUT overrides the path).
+ * Playwright is loaded from DSH_CHECKOUT, or DIG_PROBE_PLAYWRIGHT (package path).
+ * DIG_PROBE_WORKSPACE and DIG_PROBE_SESSION_ID select an existing session.
+ * DIG_PROBE_OVERVIEW=1 adds temporary repository checks; also set
+ * DIG_PROBE_DESTRUCTIVE=1 for stage/commit/push/discard/undo.
+ * The probe connects to the supplied instance; it does not start DSH.
  */
 import { createRequire } from 'node:module'
 import { mkdirSync, readdirSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
+import { cleanupOverview, installOverviewMonitor, prepareOverview, runOverview } from './overview-probe.mjs'
 
 const url = process.argv[2]
 if (url === undefined || url === '') {
@@ -26,6 +31,8 @@ const outDir = process.argv[3] === undefined || process.argv[3] === '' ? '/tmp/l
 mkdirSync(outDir, { recursive: true })
 
 function loadPlaywright() {
+  const configured = process.env.DIG_PROBE_PLAYWRIGHT
+  if (configured !== undefined && configured !== '') return createRequire(resolve(configured, 'package.json'))('playwright')
   const checkout = process.env.DSH_CHECKOUT === undefined || process.env.DSH_CHECKOUT === ''
     ? '/Users/kanna/project/deepseek-harness'
     : process.env.DSH_CHECKOUT
@@ -50,6 +57,7 @@ const browser = await chromium.launch({ headless: true, channel: process.env.DSH
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 1 })
 
 const log = (message) => console.log('[probe] ' + message)
+let overview = null
 
 // ssr-check only renders the empty state (no repository resolved), so a crash in
 // the data-driven chrome — branch rows, changes, history — only ever shows up on a
@@ -80,10 +88,20 @@ async function clickText(text, options) {
 async function enterSession() {
   await page.goto(url, { waitUntil: 'domcontentloaded' })
   await settle(7000)
-  await clickText('继续')
-  /* rc.1 opens a mandatory sign-in dialog on a fresh profile; its X is the only
-     way past it, and it has no text label. */
-  await clickText('关闭')
+  await clickText('继续', { timeout: 1000, wait: 200 })
+  await clickText('关闭', { timeout: 1000, wait: 200 })
+  const workspace = process.env.DIG_PROBE_WORKSPACE
+  if (workspace !== undefined && workspace !== '') {
+    const workspaceRow = page.locator('[role="treeitem"][data-row-key^="workspace:"]').filter({ hasText: workspace }).first()
+    await workspaceRow.waitFor({ state: 'visible', timeout: 15000 })
+    if (await workspaceRow.getAttribute('aria-expanded') !== 'true') await workspaceRow.click()
+    const sessionId = process.env.DIG_PROBE_SESSION_ID
+    if (sessionId === undefined || sessionId === '') throw new Error('DIG_PROBE_WORKSPACE requires DIG_PROBE_SESSION_ID')
+    const session = page.locator('[role="treeitem"][data-row-key="session:' + sessionId + '"]').first()
+    await session.click({ timeout: 15000 })
+    await page.getByRole('button', { name: '打开右侧边栏', exact: true }).waitFor({ state: 'visible', timeout: 15000 })
+    return
+  }
   await clickText('稍后配置')
   await clickText('新建会话')
   await settle(2000)
@@ -103,6 +121,7 @@ async function enterSession() {
  *  tab id but no description text, so the card is looked up by id first and only
  *  falls back to the old description probe. */
 async function openPanel() {
+  if (await page.locator('.dig-root:visible').count() > 0) return
   await clickText('打开右侧边栏')
   await settle(3000)
   let card = null
@@ -168,8 +187,17 @@ const WIDTHS = [1600, 1440, 1280, 1120, 980, 860, 760, 660, 560, 460, 380]
 const rows = []
 
 try {
+  overview = prepareOverview()
+  const monitor = overview === null ? null : await installOverviewMonitor(page)
   await enterSession()
   await openPanel()
+
+  if (overview !== null) {
+    const overviewReport = await runOverview({ page, fixtures: overview, monitor, outDir, log })
+    if (overviewReport.status !== 'PASS') process.exitCode = 1
+  } else {
+    log('overview NOT RUN: set DIG_PROBE_OVERVIEW=1 for real repository regression')
+  }
 
   for (const width of WIDTHS) {
     await page.setViewportSize({ width: width, height: 1000 })
@@ -208,5 +236,6 @@ try {
     process.exitCode = 1
   }
 } finally {
-  await browser.close()
+  try { await browser.close() }
+  finally { cleanupOverview(overview) }
 }

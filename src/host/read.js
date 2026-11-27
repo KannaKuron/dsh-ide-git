@@ -83,6 +83,29 @@ async function summary(payload) {
   }
 }
 
+/* Overview cards only need status rows. With an explicit repository root this
+   performs one git call, without branch, operation or diffstat reads. */
+async function changes(payload) {
+  const cwd = cwdOf(payload)
+  const root = await repoRootOf(cwd, payload)
+  const statusOut = await git(root, ['status', '--porcelain=v1', '-z', '--untracked-files=all'])
+  const groups = classify(parsePorcelain(statusOut))
+  const emptyStats = new Map()
+  return {
+    cwd,
+    repoRoot: root,
+    changes: {
+      staged: decorate(groups.staged, emptyStats),
+      unstaged: decorate(groups.unstaged, emptyStats),
+      untracked: decorate(groups.untracked, emptyStats),
+      conflicted: decorate(groups.conflicted, emptyStats),
+      ignored: [],
+      ignoredTruncated: false,
+    },
+    statsDeferred: true,
+  }
+}
+
 /* The second phase of the two-phase changes (issue #11): the two numstat
    passes, concurrent, packed as [path, additions, deletions, binary] rows so
    they survive JSON. Paths are post-rename paths — exactly what `summary`
@@ -370,4 +393,4 @@ async function compare(payload) {
   return { base, head, files, commits: parseLog(logOut) }
 }
 
-export { summary, stats, branches, log, me, mergePoint, commitDetail, diff, gitLogs, compare }
+export { summary, changes, stats, branches, log, me, mergePoint, commitDetail, diff, gitLogs, compare }
