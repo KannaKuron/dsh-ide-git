@@ -2475,6 +2475,89 @@ test('the diff placement is three-way and the dock verbs degrade visibly (issue 
   }
 })
 
+test('every repository in the workspace gets its own card (issue #37)', () => {
+  // One bound repository at a time forced a pick → stage → message → commit loop
+  // per repository, and a commit was easy to forget. The overview renders one
+  // card per repository; the host routes already take { cwd, repoRoot }, so each
+  // card drives them on its own and the session binding is never touched.
+  assert.match(client, /const VIEW_MODE_KEY = 'dsh-ide-git\.view\.v1'/,
+    'the mode is remembered per browser, like the tree and pane state')
+  assert.match(client, /return raw === 'all' \? 'all' : 'repo'/,
+    'anything unrecognised falls back to the single-repository view (the default)')
+  assert.match(client, /function writeViewMode\(mode\) \{/,
+    'the key is written in exactly one place')
+  assert.match(client, /const ALL_SUMMARY_CONCURRENCY = 2/,
+    'a dozen repositories must not start a dozen git index reads at once')
+  assert.match(client, /function summaryChangeTotal\(summary\) \{/,
+    'the roll-up count and every per-card count share one total')
+
+  // Per-card state is the whole point: one shared selection would act on files
+  // of the wrong repository, and one shared fold would collapse untouched trees.
+  const card = client.slice(client.indexOf('function RepoCard(props)'), client.indexOf('function AllRepos(props)'))
+  assert.ok(card.length > 0, 'RepoCard sits before AllRepos')
+  assert.match(card, /const base = useMemo\(\(\) => \(\{ cwd: repo\.path, repoRoot: repo\.path \}\)/,
+    'every card drives the host routes on its own checkout')
+  assert.match(card, /const \[groupBy, setGroupBy\] = useState\('flat'\)/, 'grouping is per card')
+  assert.match(card, /const \[selection, setSelection\] = useState\(\(\) => new Set\(\)\)/, 'selection is per card')
+  assert.match(card, /hideHeader: true,/, 'the card brings its own header, so ChangesPanel hides its own')
+  assert.match(card, /onCommit: \(message, amend, push\) => run\('commit', \{ message: message, amend: amend, push: push === true, confirm: push === true \}\)/,
+    'commit-and-push keeps its confirm contract inside a card')
+  assert.match(card, /cardRequest\('diff', \{ path: item\.path, staged: group === 'staged', untracked: group === 'untracked' \}\)/,
+    'a file opens that repository\'s own patch')
+  assert.match(card, /onBulkStage: \(\) => \{ const groups = selectionGroups\(\)/,
+    'bulk verbs resolve the card\'s own selection')
+  assert.ok(card.indexOf('onBulkDiscard') < 0,
+    'multi-discard stays out of a card: a mixed tracked/untracked batch needs the grouped confirm the panel owns')
+  assert.match(card, /props\.onMenu\(event, items\)/, 'card menus reuse the panel\'s clamped overlay surface')
+
+  // A discard inside a card overwrites the working tree just like one in the
+  // panel, so invariant 15 holds there too: the host hands back a snapshot id,
+  // the toast offers to use it, and the undo call goes to THAT repository.
+  assert.match(card, /const cardUndo = async \(undoId\) => \{/,
+    'a card discard keeps the undo handle reachable')
+  assert.match(card, /cardRequest\('undoApply', \{ id: undoId \}\)/,
+    'undo applies against the card\'s own checkout, not the panel binding')
+  assert.match(card, /actionLabel: t\('toast\.undo'\)/, 'the card toast offers the undo verb')
+  assert.match(card, /toast\.discardNoUndo/, 'a declined snapshot is reported instead of promised')
+  assert.match(client, /onToast: pushToast,/, 'cards hand their toasts to the one panel-level stack')
+  assert.match(client, /onUndoDone: dropUndoToast,/, 'undoing from a card retires its toast')
+
+  const all = client.slice(client.indexOf('function AllRepos(props)'), client.indexOf('function Panel(props)'))
+  assert.ok(all.length > 0, 'AllRepos sits before Panel')
+  assert.match(all, /request\('summary', \{ cwd: path, repoRoot: path, ignored: false, stats: false \}\)/,
+    'the overview reads each repository by path')
+  assert.match(all, /jobs\.active < ALL_SUMMARY_CONCURRENCY/, 'the fan-out is bounded')
+  assert.match(all, /jobs\.queued\.indexOf\(path\) >= 0 \|\| jobs\.running\.indexOf\(path\) >= 0/,
+    'a manual refresh and the schedule never double-read one repository')
+  assert.match(all, /if \(mountedRef\.current !== true \|\| generationRef\.current !== generation\) return/,
+    'a stale answer never overwrites a card from a newer generation')
+  assert.match(all, /cleanOut\.push\(repo\)/, 'a clean repository folds into one line instead of an empty card')
+
+  // One top bar per mode; the repository verbs belong to the cards, not the bar.
+  const allBar = client.slice(client.indexOf('const allTopBar ='), client.indexOf('const topBar = allMode'))
+  assert.ok(allBar.length > 0, 'the overview header exists')
+  assert.match(allBar, /dig-all-count/, 'the overview header carries the roll-up count')
+  assert.ok(allBar.indexOf('RepoSelect') < 0, 'the repository switcher is gone in the overview')
+  assert.match(client, /const topBar = allMode === true \? allTopBar : repoTopBar/, 'one top bar per mode')
+  assert.match(client, /columns === true \|\| repoRoot === null \|\| allMode === true \? null : renderRail\(false\)/,
+    'the horizontal rail is hidden while the overview is up')
+  assert.match(client, /columns === true && repoRoot !== null && allMode !== true \? renderRail\(true\) : null/,
+    'and so is the vertical one')
+  assert.match(client, /if \(next === 'repo' && repoRoot !== null\) void refresh\(\)/,
+    'coming back re-reads the bound repository it never refreshed')
+
+  assert.ok(client.includes("'.dig-all-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;align-items:start}'"),
+    'cards flow into as many columns as the width allows')
+  assert.ok(client.includes("'.dig-root-narrow .dig-all-grid{grid-template-columns:1fr}'"),
+    'the narrow sidebar gets exactly one column')
+  assert.ok(client.includes("'.dig-all-card{position:relative;"), 'cards are positioned inside the panel (no fixed overlays)')
+  assert.ok(client.includes("'.dig-all-diff .dig-lf-body{max-height:300px}'"), 'a card diff scrolls inside its own box')
+  for (const key of ['all.show', 'all.back', 'all.summary', 'all.retry', 'all.open']) {
+    assert.equal((client.match(new RegExp("'" + key.replace(/\./g, '\\.') + "':", 'g')) || []).length, 21,
+      '21 gates carry ' + key)
+  }
+})
+
 test('changes folder heads and the diff path expose folder-scoped verbs', () => {
   // A folder head used to be a plain collapse toggle: only a single row could
   // be discarded or ignored. Folder heads, every level of a multi-file diff

@@ -532,6 +532,11 @@ window.__ModuleLoader__.load({
       'resetHard.confirm': '硬重置到 {hash}?未提交的更改会丢失。',
       'resetSoft.confirm': '将 HEAD 重置到 {hash}(保留工作区更改)?',
       'checkoutCommit.confirm': '签出提交 {hash}?(分离头指针)',
+      'all.show': '全部仓库',
+      'all.back': '当前仓库',
+      'all.summary': '{repos} 个仓库 · {changes} 处改动',
+      'all.retry': '重试',
+      'all.open': '打开仓库',
     }
 
     const EN = {
@@ -962,6 +967,11 @@ window.__ModuleLoader__.load({
       'resetHard.confirm': 'Hard reset to {hash}? Uncommitted changes are lost.',
       'resetSoft.confirm': 'Move HEAD to {hash} (working tree kept)?',
       'checkoutCommit.confirm': 'Check out commit {hash}? (detached HEAD)',
+      'all.show': 'All repositories',
+      'all.back': 'Current repository',
+      'all.summary': '{repos} repositories · {changes} changes',
+      'all.retry': 'Retry',
+      'all.open': 'Open repository',
     }
 
     /* Third-language dictionaries, keyed by lowercase BCP-47 tag. Every entry
@@ -1400,6 +1410,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
         'checkoutCommit.confirm': '簽出提交 {hash}?(detached HEAD)',
+        'all.show': '全部倉庫',
+        'all.back': '目前倉庫',
+        'all.summary': '{repos} 個倉庫 · {changes} 處改動',
+        'all.retry': '重試',
+        'all.open': '開啟倉庫',
       },
       /* locale: zh-tw */
       'zh-tw': {
@@ -1830,6 +1845,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '硬重置到 {hash}?未提交的變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
         'checkoutCommit.confirm': '簽出提交 {hash}?(detached HEAD)',
+        'all.show': '全部儲存庫',
+        'all.back': '目前儲存庫',
+        'all.summary': '{repos} 個儲存庫 · {changes} 處變更',
+        'all.retry': '重試',
+        'all.open': '開啟儲存庫',
       },
       /* locale: zh-mo */
       'zh-mo': {
@@ -2260,6 +2280,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '硬重置到 {hash}?未提交嘅變更會遺失。',
         'resetSoft.confirm': '將 HEAD 移到 {hash}(保留工作區)?',
         'checkoutCommit.confirm': '簽出提交 {hash}?(detached HEAD)',
+        'all.show': '全部倉庫',
+        'all.back': '目前倉庫',
+        'all.summary': '{repos} 個倉庫 · {changes} 處改動',
+        'all.retry': '重試',
+        'all.open': '開啟倉庫',
       },
       /* locale: ja */
       'ja': {
@@ -2690,6 +2715,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '{hash} にハードリセットしますか?未コミットの変更は失われます。',
         'resetSoft.confirm': 'HEAD を {hash} に移動しますか(ワークツリーは保持)?',
         'checkoutCommit.confirm': 'コミット {hash} をチェックアウトしますか?(detached HEAD)',
+        'all.show': 'すべてのリポジトリ',
+        'all.back': '現在のリポジトリ',
+        'all.summary': '{repos} 個のリポジトリ · {changes} 件の変更',
+        'all.retry': '再試行',
+        'all.open': 'リポジトリを開く',
       },
       /* locale: ko */
       'ko': {
@@ -3120,6 +3150,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '{hash}로 하드 리셋할까요? 커밋하지 않은 변경 사항은 사라집니다.',
         'resetSoft.confirm': 'HEAD를 {hash}로 옮길까요(워크트리 유지)?',
         'checkoutCommit.confirm': '커밋 {hash}을(를) 체크아웃할까요?(detached HEAD)',
+        'all.show': '모든 저장소',
+        'all.back': '현재 저장소',
+        'all.summary': '저장소 {repos}개 · 변경 {changes}건',
+        'all.retry': '다시 시도',
+        'all.open': '저장소 열기',
       },
       /* locale: de */
       'de': {
@@ -3550,6 +3585,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Hart auf {hash} zurücksetzen? Nicht committete Änderungen gehen verloren.',
         'resetSoft.confirm': 'HEAD auf {hash} verschieben (Arbeitsbaum bleibt)?',
         'checkoutCommit.confirm': 'Commit {hash} auschecken? (detached HEAD)',
+        'all.show': 'Alle Repositorys',
+        'all.back': 'Aktuelles Repository',
+        'all.summary': '{repos} Repositorys · {changes} Änderungen',
+        'all.retry': 'Erneut versuchen',
+        'all.open': 'Repository öffnen',
       },
       /* locale: fr */
       'fr': {
@@ -3980,6 +4020,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Réinitialisation dure sur {hash} ? Les modifications non validées sont perdues.',
         'resetSoft.confirm': 'Déplacer HEAD sur {hash} (arbre de travail conservé) ?',
         'checkoutCommit.confirm': 'Extraire le commit {hash} ? (HEAD détachée)',
+        'all.show': 'Tous les dépôts',
+        'all.back': 'Dépôt actuel',
+        'all.summary': '{repos} dépôts · {changes} modifications',
+        'all.retry': 'Réessayer',
+        'all.open': 'Ouvrir le dépôt',
       },
       /* locale: ru */
       'ru': {
@@ -4410,6 +4455,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Жёсткий сброс на {hash}? Незакоммиченные изменения будут потеряны.',
         'resetSoft.confirm': 'Переместить HEAD на {hash} (рабочее дерево сохранится)?',
         'checkoutCommit.confirm': 'Переключиться на коммит {hash}? (detached HEAD)',
+        'all.show': 'Все репозитории',
+        'all.back': 'Текущий репозиторий',
+        'all.summary': 'Репозиториев: {repos} · изменений: {changes}',
+        'all.retry': 'Повторить',
+        'all.open': 'Открыть репозиторий',
       },
       /* locale: pt */
       'pt': {
@@ -4840,6 +4890,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Redefinição forçada para {hash}? Alterações não commitadas serão perdidas.',
         'resetSoft.confirm': 'Mover HEAD para {hash} (árvore de trabalho mantida)?',
         'checkoutCommit.confirm': 'Fazer checkout do commit {hash}? (HEAD destacado)',
+        'all.show': 'Todos os repositórios',
+        'all.back': 'Repositório atual',
+        'all.summary': '{repos} repositórios · {changes} alterações',
+        'all.retry': 'Tentar de novo',
+        'all.open': 'Abrir repositório',
       },
       /* locale: it */
       'it': {
@@ -5270,6 +5325,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Reset forzato a {hash}? Le modifiche non committate andranno perse.',
         'resetSoft.confirm': 'Spostare HEAD a {hash} (albero di lavoro mantenuto)?',
         'checkoutCommit.confirm': 'Fare checkout del commit {hash}? (HEAD scollegato)',
+        'all.show': 'Tutti i repository',
+        'all.back': 'Repository attuale',
+        'all.summary': '{repos} repository · {changes} modifiche',
+        'all.retry': 'Riprova',
+        'all.open': 'Apri repository',
       },
       /* locale: nl */
       'nl': {
@@ -5700,6 +5760,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Hard resetten naar {hash}? Niet-gecommitte wijzigingen gaan verloren.',
         'resetSoft.confirm': 'HEAD naar {hash} verplaatsen (werkboom behouden)?',
         'checkoutCommit.confirm': 'Commit {hash} uitchecken? (detached HEAD)',
+        'all.show': 'Alle repositories',
+        'all.back': 'Huidige repository',
+        'all.summary': '{repos} repositories · {changes} wijzigingen',
+        'all.retry': 'Opnieuw proberen',
+        'all.open': 'Repository openen',
       },
       /* locale: pl */
       'pl': {
@@ -6130,6 +6195,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Twarde przywrócenie do {hash}? Niezapisane zmiany przepadną.',
         'resetSoft.confirm': 'Przenieść HEAD do {hash} (drzewo robocze zachowane)?',
         'checkoutCommit.confirm': 'Przełączyć na commit {hash}? (detached HEAD)',
+        'all.show': 'Wszystkie repozytoria',
+        'all.back': 'Bieżące repozytorium',
+        'all.summary': 'Repozytoria: {repos} · zmiany: {changes}',
+        'all.retry': 'Ponów',
+        'all.open': 'Otwórz repozytorium',
       },
       /* locale: sv */
       'sv': {
@@ -6560,6 +6630,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Hård återställning till {hash}? Ej committade ändringar går förlorade.',
         'resetSoft.confirm': 'Flytta HEAD till {hash} (arbetsträdet behålls)?',
         'checkoutCommit.confirm': 'Checka ut commiten {hash}? (detached HEAD)',
+        'all.show': 'Alla repon',
+        'all.back': 'Aktuellt repo',
+        'all.summary': '{repos} repon · {changes} ändringar',
+        'all.retry': 'Försök igen',
+        'all.open': 'Öppna repo',
       },
       /* locale: tr */
       'tr': {
@@ -6990,6 +7065,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '{hash} sürümüne zorla sıfırlansın mı? Commit’lenmemiş değişiklikler kaybolur.',
         'resetSoft.confirm': 'HEAD {hash} sürümüne taşınsın mı (çalışma ağacı korunur)?',
         'checkoutCommit.confirm': '{hash} commit’i çıkarılsın mı? (detached HEAD)',
+        'all.show': 'Tüm depolar',
+        'all.back': 'Geçerli depo',
+        'all.summary': '{repos} depo · {changes} değişiklik',
+        'all.retry': 'Yeniden dene',
+        'all.open': 'Depoyu aç',
       },
       /* locale: id */
       'id': {
@@ -7420,6 +7500,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Reset keras ke {hash}? Perubahan yang belum di-commit akan hilang.',
         'resetSoft.confirm': 'Pindahkan HEAD ke {hash} (worktree dipertahankan)?',
         'checkoutCommit.confirm': 'Checkout commit {hash}? (detached HEAD)',
+        'all.show': 'Semua repositori',
+        'all.back': 'Repositori saat ini',
+        'all.summary': '{repos} repositori · {changes} perubahan',
+        'all.retry': 'Coba lagi',
+        'all.open': 'Buka repositori',
       },
       /* locale: vi */
       'vi': {
@@ -7850,6 +7935,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'Đặt lại cứng về {hash}? Thay đổi chưa commit sẽ mất.',
         'resetSoft.confirm': 'Chuyển HEAD về {hash} (giữ worktree)?',
         'checkoutCommit.confirm': 'Checkout commit {hash}? (detached HEAD)',
+        'all.show': 'Tất cả kho lưu trữ',
+        'all.back': 'Kho hiện tại',
+        'all.summary': '{repos} kho · {changes} thay đổi',
+        'all.retry': 'Thử lại',
+        'all.open': 'Mở kho lưu trữ',
       },
       /* locale: ar */
       'ar': {
@@ -8280,6 +8370,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'إعادة تعيين قسرية إلى {hash}? ستفقد التغييرات غير الملتزَم بها.',
         'resetSoft.confirm': 'نقل HEAD إلى {hash} (مع الاحتفاظ بشجرة العمل)?',
         'checkoutCommit.confirm': 'تبديل إلى الالتزام {hash}? (detached HEAD)',
+        'all.show': 'كل المستودعات',
+        'all.back': 'المستودع الحالي',
+        'all.summary': '{repos} مستودعات · {changes} تغييرات',
+        'all.retry': 'إعادة المحاولة',
+        'all.open': 'فتح المستودع',
       },
       /* locale: hi */
       'hi': {
@@ -8710,6 +8805,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': '{hash} पर हार्ड रीसेट करें? बिना कमिट किए परिवर्तन खो जाएँगे।',
         'resetSoft.confirm': 'HEAD को {hash} पर ले जाएँ (वर्कट्री सुरक्षित)?',
         'checkoutCommit.confirm': 'कमिट {hash} चेकआउट करें? (detached HEAD)',
+        'all.show': 'सभी रिपॉज़िटरी',
+        'all.back': 'वर्तमान रिपॉज़िटरी',
+        'all.summary': '{repos} रिपॉज़िटरी · {changes} बदलाव',
+        'all.retry': 'पुनः प्रयास',
+        'all.open': 'रिपॉज़िटरी खोलें',
       },
       /* locale: th */
       'th': {
@@ -9140,6 +9240,11 @@ window.__ModuleLoader__.load({
         'resetHard.confirm': 'ฮาร์ดรีเซ็ตไปที่ {hash}? การเปลี่ยนแปลงที่ยังไม่คอมมิตจะหายไป',
         'resetSoft.confirm': 'ย้าย HEAD ไปที่ {hash} (เก็บเวิร์กทรีไว้)?',
         'checkoutCommit.confirm': 'เช็กเอาต์คอมมิต {hash}? (detached HEAD)',
+        'all.show': 'ทุกที่เก็บ',
+        'all.back': 'ที่เก็บปัจจุบัน',
+        'all.summary': '{repos} ที่เก็บ · {changes} การเปลี่ยนแปลง',
+        'all.retry': 'ลองใหม่',
+        'all.open': 'เปิดที่เก็บ',
       },
     }
 
@@ -9712,6 +9817,23 @@ window.__ModuleLoader__.load({
 
     function writeTreeState(state) {
       try { window.localStorage.setItem(TREE_KEY, JSON.stringify(state)) } catch (error) { void error }
+    }
+
+    /* ---- cross-repo overview (issue #37): which face the panel opens in.
+       GLOBAL like the tree state — a person working across repositories wants
+       every panel to open the same way. Default stays the single repository. ---- */
+    const VIEW_MODE_KEY = 'dsh-ide-git.view.v1'
+
+    function readViewMode() {
+      try {
+        const raw = window.localStorage.getItem(VIEW_MODE_KEY)
+        return raw === 'all' ? 'all' : 'repo'
+      } catch (error) { void error }
+      return 'repo'
+    }
+
+    function writeViewMode(mode) {
+      try { window.localStorage.setItem(VIEW_MODE_KEY, mode === 'all' ? 'all' : 'repo') } catch (error) { void error }
     }
 
     function treeSectionDefaults() {
@@ -11735,6 +11857,9 @@ window.__ModuleLoader__.load({
       grip: ['M5.6 4.6h4.8', 'M5.6 8h4.8', 'M5.6 11.4h4.8'],
       filter: ['M2 3.6h12l-4.6 5.2v4.2l-2.8-1.4V8.8z'],
       check: ['M3.2 8.4 6.4 11.6 12.8 4.6'],
+      /* Cross-repository overview (issue #37): four panes in a 2x2 frame, the
+         shape VS Code's multi-root SCM view and most workspace switchers use. */
+      grid: ['M2.6 2.6h4.4v4.4H2.6z', 'M9 2.6h4.4v4.4H9z', 'M2.6 9h4.4v4.4H2.6z', 'M9 9h4.4v4.4H9z'],
       copy: ['M5.5 5.5h8v8h-8z', 'M10.5 5.5v-3h-8v8h3'],
       // dock actions (official right sidebar): lift a panel out, drop it back into
       // the dock, split the pane, and the full-screen pair reuses expand/collapse.
@@ -15143,6 +15268,377 @@ window.__ModuleLoader__.load({
         : { path: target.path, staged: target.staged, untracked: target.untracked ? true : undefined, cwd: scopeValue.cwd, repoRoot: target.repoRoot, sessionId: scopeValue.sessionId }
     }
 
+    /* ====================== cross-repository overview ====================== */
+    /* Issue #37: every repository in the workspace, side by side, each card
+       owning its own change list, commit box and diff pane — the Source Control
+       view of a multi-root workspace. Host routes already take { cwd, repoRoot },
+       so nothing below the client changes. Cards keep their own grouping /
+       fold / selection state on purpose: one selection shared between two
+       repositories would act on the wrong files. */
+
+    const ALL_SUMMARY_CONCURRENCY = 2
+
+    function summaryChangeTotal(summary) {
+      if (summary === null || summary === undefined) return 0
+      const changes = summary.changes
+      if (changes === null || changes === undefined) return 0
+      return changes.staged.length + changes.unstaged.length + changes.untracked.length + changes.conflicted.length
+    }
+
+    function RepoCard(props) {
+      const t = props.t
+      const repo = props.repo
+      const card = props.card === undefined || props.card === null ? {} : props.card
+      const summary = card.summary === undefined ? null : card.summary
+      const error = card.error === undefined ? null : card.error
+      const loading = card.loading === true
+      const commitSettings = props.commitSettings === undefined
+        ? { model: '', reasoning: '', prompt: '' }
+        : props.commitSettings
+      const [busy, setBusy] = useState(false)
+      const [writeError, setWriteError] = useState(null)
+      const [groupBy, setGroupBy] = useState('flat')
+      const [foldedDirs, setFoldedDirs] = useState({})
+      const [selection, setSelection] = useState(() => new Set())
+      const [diff, setDiff] = useState(null)
+      const [dialog, setDialog] = useState(null)
+      const anchorRef = useRef(null)
+      const base = useMemo(() => ({ cwd: repo.path, repoRoot: repo.path }), [repo.path])
+      const cardRequest = useCallback((method, payload) => request(method, Object.assign({}, base, payload)), [base])
+
+      const run = async (method, payload) => {
+        setBusy(true)
+        setWriteError(null)
+        try {
+          const data = await cardRequest(method, payload)
+          props.onReload(repo)
+          props.onWrote(repo)
+          return data
+        } catch (caught) {
+          setWriteError(caught instanceof Error ? caught.message : String(caught))
+          return undefined
+        } finally {
+          setBusy(false)
+        }
+      }
+
+      /* A discard inside a card is still a working-tree overwrite, so it keeps
+         invariant 15's handle: the toast lives in the panel's stack (this card
+         has no stack of its own), and undoing it runs through THIS repository's
+         base — not the panel's currently bound one. */
+      const cardUndo = async (undoId) => {
+        try {
+          const data = await cardRequest('undoApply', { id: undoId })
+          if (typeof props.onUndoDone === 'function') props.onUndoDone(undoId)
+          props.onReload(repo)
+          if (typeof props.onToast === 'function') {
+            props.onToast({ text: t('toast.restored') + ' · ' + data.label, icon: 'check', tone: 'ok', ttl: 6000 })
+          }
+        } catch (caught) {
+          setWriteError(caught instanceof Error ? caught.message : String(caught))
+        }
+      }
+
+      /* Resolve the selection against the CURRENT summary, exactly like the
+         single-repository panel: paths move between groups on every stage, so
+         the group-prefixed key is the only stable handle. */
+      const selectionGroups = () => {
+        const groups = { staged: [], other: [], tracked: [], untracked: [] }
+        if (summary === null) return groups
+        const changes = summary.changes
+        const byKey = new Map()
+        for (const entry of changes.staged) byKey.set('staged:' + entry.path, entry)
+        for (const entry of changes.unstaged) byKey.set('unstaged:' + entry.path, entry)
+        for (const entry of changes.untracked) byKey.set('untracked:' + entry.path, entry)
+        for (const entry of changes.conflicted) byKey.set('conflicted:' + entry.path, entry)
+        for (const key of selection) {
+          const entry = byKey.get(key)
+          if (entry === undefined) continue
+          if (key.indexOf('staged:') === 0) groups.staged.push(entry.path)
+          else groups.other.push(entry.path)
+          if (key.indexOf('untracked:') === 0) groups.untracked.push(entry.path)
+          else groups.tracked.push(entry.path)
+        }
+        return groups
+      }
+
+      const openDiff = async (item, group) => {
+        const target = { path: item.path, group: group, patch: null, loading: true, error: null }
+        setDiff(target)
+        try {
+          const data = await cardRequest('diff', { path: item.path, staged: group === 'staged', untracked: group === 'untracked' })
+          setDiff((current) => current !== null && current.path === item.path && current.group === group
+            ? { path: item.path, group: group, patch: typeof data.patch === 'string' ? data.patch : '', loading: false, error: null }
+            : current)
+        } catch (caught) {
+          setDiff((current) => current !== null && current.path === item.path && current.group === group
+            ? { path: item.path, group: group, patch: '', loading: false, error: caught instanceof Error ? caught.message : String(caught) }
+            : current)
+        }
+      }
+
+      const changeMenu = (event, item, group) => {
+        if (typeof props.onMenu !== 'function') return
+        const items = [
+          { id: 'dig-diff', icon: 'diff', tone: 'primary', label: t('action.showDiff'), run: () => { void openDiff(item, group) } },
+          group === 'staged'
+            ? { id: 'dig-unstage', icon: 'minus', tone: 'warn', label: t('action.unstage'), run: () => { void run('unstage', { paths: [item.path] }) } }
+            : { id: 'dig-stage', icon: 'plus', tone: 'success', label: t('action.stage'), run: () => { void run('stage', { paths: [item.path] }) } },
+          group === 'ignored' ? null : { id: 'dig-discard', icon: 'undo', tone: 'warn', danger: true, label: t('action.discard'), run: () => setDialog({ kind: 'discard', item: item, group: group }) },
+          { id: 'dig-copy', icon: 'copy', tone: 'secondary', label: t('action.copyPath'), run: () => { if (typeof props.onCopy === 'function') props.onCopy([item.path]) } },
+        ]
+        props.onMenu(event, items)
+      }
+
+      const folderMenu = (event, dir, group) => {
+        if (typeof props.onMenu !== 'function') return
+        /* Folder heads already fold on click (ChangesPanel's own head button);
+           the menu only carries verbs that need a target. */
+        const items = [
+          { id: 'dig-copy-folder', icon: 'copy', tone: 'secondary', label: t('menu.copyFolder'), run: () => { if (typeof props.onCopy === 'function') props.onCopy([dir]) } },
+        ]
+        if (summary !== null) {
+          if (group === 'staged') {
+            const paths = summary.changes.staged.filter((entry) => entry.path === dir || entry.path.indexOf(dir + '/') === 0).map((entry) => entry.path)
+            if (paths.length > 0) items.push({ id: 'dig-unstage-folder', icon: 'minus', tone: 'warn', label: fill(t('menu.unstageFolderN'), { n: paths.length }), run: () => { void run('unstage', { paths: paths }) } })
+          } else {
+            const paths = summary.changes.unstaged.concat(summary.changes.untracked)
+              .filter((entry) => entry.path === dir || entry.path.indexOf(dir + '/') === 0)
+              .map((entry) => entry.path)
+            if (paths.length > 0) items.push({ id: 'dig-stage-folder', icon: 'plus', tone: 'success', label: fill(t('menu.stageFolderN'), { n: paths.length }), run: () => { void run('stage', { paths: paths }) } })
+          }
+        }
+        props.onMenu(event, items)
+      }
+
+      const total = summaryChangeTotal(summary)
+      const discardDialog = dialog === null ? null : E(ConfirmDialog, {
+        t: t,
+        title: t('action.discard'),
+        text: fill(t('discard.confirm'), { path: dialog.item.path }),
+        okLabel: t('confirm.ok'),
+        cancelLabel: t('confirm.cancel'),
+        onConfirm: () => {
+          const target = dialog
+          setDialog(null)
+          void (async () => {
+            const data = await run('discard', { paths: [target.item.path], untracked: target.group === 'untracked', confirm: true })
+            if (data === undefined) return
+            if (typeof props.onToast !== 'function') return
+            if (data.undo === undefined) {
+              if (data.undoBlocked === true) {
+                props.onToast({ text: fill(t('toast.discardNoUndo'), { path: target.item.path }), icon: 'trash', tone: 'warn' })
+              }
+              return
+            }
+            props.onToast({
+              text: fill(t('toast.discarded'), { path: target.item.path }),
+              icon: 'trash',
+              tone: 'warn',
+              undoId: data.undo.id,
+              actionLabel: t('toast.undo'),
+              onAction: () => { void cardUndo(data.undo.id) },
+            })
+          })()
+        },
+        onCancel: () => setDialog(null),
+      })
+
+      const diffPane = diff === null ? null : E('div', { className: 'dig-all-diff' },
+        E('div', { className: 'dig-all-diff-head' },
+          E('span', { className: 'dig-all-diff-path', title: diff.path }, diff.path),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn dig-icon-btn-small', title: t('toast.close'),
+            onClick: () => setDiff(null),
+          }, E(Icon, { name: 'close', size: 12 }))),
+        E(LineDiff, { t: t, patch: diff.patch, loading: diff.loading }),
+        diff.error === null ? null : E('div', { className: 'dig-all-card-error' }, diff.error))
+
+      const notice = error === null && writeError === null ? null : E('div', { className: 'dig-all-card-error', role: 'alert' },
+        E('span', { className: 'dig-all-error-text' }, error === null ? writeError : error),
+        error === null ? null : E('button', { type: 'button', className: 'dig-link', onClick: () => props.onReload(repo) }, t('all.retry')))
+
+      const body = summary === null
+        ? (error === null ? E('div', { className: 'dig-empty' }, t('status.loading')) : null)
+        : E(ChangesPanel, {
+            t: t, ctx: props.ctx, summary: summary, busy: busy, compact: props.compact === true, hideHeader: true,
+            groupBy: groupBy, onGroupBy: setGroupBy,
+            foldedDirs: foldedDirs, onFoldedDirs: setFoldedDirs,
+            request: cardRequest, cwd: repo.path, sessionId: props.sessionId, commitSettings: commitSettings, base: base,
+            /* Commit-and-push carries its confirm flag with it, same contract as
+               the single-repository panel (the label states what it publishes). */
+            onCommit: (message, amend, push) => run('commit', { message: message, amend: amend, push: push === true, confirm: push === true }),
+            onStage: (entry) => { void run('stage', { paths: [entry.path] }) },
+            onUnstage: (entry) => { void run('unstage', { paths: [entry.path] }) },
+            onStageAll: (entries) => { void run('stage', { paths: entries.map((entry) => entry.path) }) },
+            onUnstageAll: () => { void run('unstage', { paths: (summary === null ? [] : summary.changes.staged).map((entry) => entry.path) }) },
+            onDiscard: (entry, group) => setDialog({ kind: 'discard', item: entry, group: group }),
+            onDiff: (entry, group) => { void openDiff(entry, group) },
+            onChangeMenu: changeMenu,
+            onFolderMenu: folderMenu,
+            selection: selection,
+            onSelectionChange: setSelection,
+            anchorRef: anchorRef,
+            onBulkStage: () => { const groups = selectionGroups(); if (groups.other.length > 0) void run('stage', { paths: groups.other }) },
+            onBulkUnstage: () => { const groups = selectionGroups(); if (groups.staged.length > 0) void run('unstage', { paths: groups.staged }) },
+            onCopySelection: () => { const groups = selectionGroups(); if (typeof props.onCopy === 'function') props.onCopy(groups.staged.concat(groups.other)) },
+          })
+
+      return E('div', { className: 'dig-all-card', 'data-repo': repo.path },
+        E('div', { className: 'dig-all-card-head' },
+          E('span', { className: 'dig-all-card-name', title: repo.path }, repo.name),
+          repo.branch === undefined || repo.branch === null ? null : E('span', { className: 'dig-all-card-branch', title: repo.branch },
+            E(Icon, { name: 'branch', size: 11 }),
+            E('span', null, repo.branch)),
+          E('span', { className: 'dig-topbar-spacer' }),
+          summary === null ? null : E('span', { className: 'dig-count' }, String(total)),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+            title: t('toolbar.refresh'), 'data-card-refresh': repo.path,
+            onClick: () => props.onReload(repo),
+          }, E(Icon, { name: 'refresh', size: 12 })),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+            title: t('all.open'), 'data-card-open': repo.path,
+            onClick: () => props.onPick(repo),
+          }, E(Icon, { name: 'checkout', size: 12 }))),
+        loading === true ? E('span', { className: 'dig-all-card-loading' }, t('status.loading')) : null,
+        notice,
+        diffPane,
+        E('div', { className: 'dig-all-card-body' }, body),
+        discardDialog)
+    }
+
+    function AllRepos(props) {
+      const t = props.t
+      const repos = Array.isArray(props.repos) ? props.repos : []
+      const [cards, setCards] = useState({})
+      const mountedRef = useRef(true)
+      const generationRef = useRef(0)
+      const jobsRef = useRef({ active: 0, queued: [], running: [] })
+      const cardsRef = useRef(cards)
+      cardsRef.current = cards
+
+      useEffect(() => () => { mountedRef.current = false }, [])
+
+      const fetchOne = async (path, generation) => {
+        setCards((current) => Object.assign({}, current, {
+          [path]: { loading: true, error: null, summary: current[path] === undefined ? null : current[path].summary },
+        }))
+        try {
+          const data = await request('summary', { cwd: path, repoRoot: path, ignored: false, stats: false })
+          if (mountedRef.current !== true || generationRef.current !== generation) return
+          setCards((current) => Object.assign({}, current, { [path]: { loading: false, error: null, summary: data } }))
+        } catch (caught) {
+          if (mountedRef.current !== true || generationRef.current !== generation) return
+          setCards((current) => Object.assign({}, current, {
+            [path]: {
+              loading: false,
+              error: caught instanceof Error ? caught.message : String(caught),
+              summary: current[path] === undefined ? null : current[path].summary,
+            },
+          }))
+        }
+      }
+
+      /* Concurrency-limited fan-out: a workspace with a dozen repositories must
+         not spawn a dozen git index reads at once (the host queues only WRITE
+         methods per repository). */
+      const pump = () => {
+        const jobs = jobsRef.current
+        const generation = generationRef.current
+        while (jobs.active < ALL_SUMMARY_CONCURRENCY && jobs.queued.length > 0) {
+          const path = jobs.queued.shift()
+          if (jobs.running.indexOf(path) >= 0) continue
+          jobs.running.push(path)
+          jobs.active += 1
+          void fetchOne(path, generation).finally(() => {
+            jobs.active -= 1
+            jobs.running = jobs.running.filter((entry) => entry !== path)
+            if (mountedRef.current === true) pump()
+          })
+        }
+      }
+
+      const enqueue = (path) => {
+        const jobs = jobsRef.current
+        if (jobs.queued.indexOf(path) >= 0 || jobs.running.indexOf(path) >= 0) return
+        jobs.queued.push(path)
+        pump()
+      }
+
+      const signature = repos.map((repo) => repo.path).join('\n')
+      useEffect(() => {
+        for (const repo of repos) {
+          const card = cardsRef.current[repo.path]
+          if (card === undefined || card.summary === undefined || card.summary === null) enqueue(repo.path)
+        }
+      }, [signature])
+
+      const reload = (repo) => { enqueue(repo.path) }
+
+      const refreshAll = () => {
+        generationRef.current += 1
+        jobsRef.current = { active: 0, queued: [], running: [] }
+        cardsRef.current = {}
+        setCards({})
+        for (const repo of repos) jobsRef.current.queued.push(repo.path)
+        pump()
+      }
+
+      /* Totals for the header: how many repositories are dirty, how many
+         changes in all, and how many cards are still reading. */
+      const stats = { repos: repos.length, changes: 0, loading: 0, errors: 0 }
+      for (const repo of repos) {
+        const card = cards[repo.path]
+        if (card === undefined || card.loading === true) stats.loading += 1
+        if (card === undefined) continue
+        if (card.error !== undefined && card.error !== null) stats.errors += 1
+        stats.changes += summaryChangeTotal(card.summary)
+      }
+      useEffect(() => {
+        if (typeof props.onStats === 'function') props.onStats(stats)
+      }, [stats.repos, stats.changes, stats.loading, stats.errors])
+
+      const cardsOut = []
+      const cleanOut = []
+      for (const repo of repos) {
+        const card = cards[repo.path]
+        const total = card === undefined || card.summary === undefined || card.summary === null ? -1 : summaryChangeTotal(card.summary)
+        if (card !== undefined && card.error === undefined || card !== undefined && card.error === null) {
+          if (total === 0) { cleanOut.push(repo); continue }
+        }
+        cardsOut.push(E(RepoCard, {
+          key: repo.path,
+          t: t, ctx: props.ctx, sessionId: props.sessionId, repo: repo, card: card,
+          compact: props.compact, commitSettings: props.commitSettings,
+          onMenu: props.onMenu, onCopy: props.onCopy, onPick: props.onPick, onWrote: props.onWrote,
+          onReload: reload, onToast: props.onToast, onUndoDone: props.onUndoDone,
+        }))
+      }
+
+      return E('div', { className: 'dig-all' },
+        E('div', { className: 'dig-all-head' },
+          E('span', { className: 'dig-all-note' }, stats.loading > 0 ? t('status.loading') : ''),
+          E('span', { className: 'dig-topbar-spacer' }),
+          E('button', {
+            type: 'button', className: 'dig-icon-btn dig-icon-btn-small',
+            title: t('toolbar.refresh'), 'data-all-refresh': '',
+            onClick: refreshAll,
+          }, E(Icon, { name: 'refresh', size: 13 }))),
+        repos.length === 0
+          ? E('div', { className: 'dig-empty' }, t('repo.empty'))
+          : E('div', { className: 'dig-all-list' },
+              E('div', { className: 'dig-all-grid' }, cardsOut),
+              cleanOut.length === 0 ? null : E('div', { className: 'dig-all-clean-list' },
+                cleanOut.map((repo) => E('div', { className: 'dig-all-clean', key: 'clean-' + repo.path },
+                  E(Icon, { name: 'check', size: 12 }),
+                  E('span', { className: 'dig-all-clean-name', title: repo.path }, repo.name),
+                  repo.branch === undefined || repo.branch === null ? null : E('span', { className: 'dig-all-clean-branch' }, repo.branch),
+                  E('span', { className: 'dig-all-clean-note' }, t('changes.empty')),
+                  E('button', { type: 'button', className: 'dig-link', onClick: () => props.onPick(repo) }, t('all.open')))))))
+    }
+
     function Panel(props) {
       const scope = props.scope
       const t = props.t
@@ -15182,6 +15678,13 @@ window.__ModuleLoader__.load({
          mount effect and starts a second full load for the same repository. */
       const remoteReadyRef = useRef(false)
       const [view, setView] = useState('history')
+      /* Issue #37: "current repository" is the default view; "all repositories"
+         is a mode of the same panel, remembered per browser like the tree and
+         pane state are. It never changes which repository the session is bound
+         to — the overview is read/write on every card independently. */
+      const [viewMode, setViewMode] = useState(readViewMode)
+      const allMode = viewMode === 'all'
+      const [allStats, setAllStats] = useState({ repos: 0, changes: 0, loading: 0, errors: 0 })
       /* Pane sizes are remembered per surface (see the pane sizing core). The ref
          is the value the pointer handlers write through: a drag updates state for
          the preview and the ref for the single write that pointerup performs. */
@@ -17082,15 +17585,22 @@ window.__ModuleLoader__.load({
 
       /* ---------- toasts + undo ---------- */
 
+      /* A card's undo runs inside the card (its own repository base), so it asks
+         the panel to retire the toast it handed out — the toast stack is one
+         panel-level surface, not one per card. */
+      const dropUndoToast = useCallback((undoId) => {
+        setToasts((list) => list.filter((item) => item.undoId !== undoId))
+      }, [])
+
       // The delete really happened; the host kept an object id for a while, and this
       // asks it to recreate the branch / stash entry from that id.
       const undoAction = useCallback(async (id) => {
         const data = await guard(() => request('undoApply', Object.assign({}, base, { id: id })))
         if (data === undefined) return
-        setToasts((list) => list.filter((item) => item.undoId !== id))
+        dropUndoToast(id)
         await refresh()
         pushToast({ text: t('toast.restored') + ' · ' + data.label, icon: 'check', tone: 'ok', ttl: 6000 })
-      }, [base, guard, refresh, pushToast, t])
+      }, [base, guard, refresh, pushToast, dropUndoToast, t])
 
       /* Deleting a local branch that is not fully merged is a two-step
          decision: the host answers the plain delete with branch-unmerged, and
@@ -17279,7 +17789,28 @@ window.__ModuleLoader__.load({
         openPickerAt(event, 'branch')
       }, [openPickerAt])
 
-      const topBar = E('div', { className: 'dig-topbar' },
+      /* The overview toggle leads the top bar: it is the one control that stays
+         put when the repository switcher disappears in "all repositories". */
+      const toggleViewMode = () => {
+        const next = allMode === true ? 'repo' : 'all'
+        writeViewMode(next)
+        setViewMode(next)
+        /* The single-repository panes do not refresh while the overview is up,
+           so re-read the current repository when coming back to it. */
+        if (next === 'repo' && repoRoot !== null) void refresh()
+      }
+      const viewModeButton = E('button', {
+        type: 'button',
+        className: 'dig-icon-btn dig-icon-btn-small dig-viewmode' + (allMode === true ? ' dig-viewmode-on' : ''),
+        title: t(allMode === true ? 'all.back' : 'all.show'),
+        'data-view-mode': allMode === true ? 'all' : 'repo',
+        onClick: toggleViewMode,
+      },
+        E(Icon, { name: 'grid', size: 13 }),
+        E('span', { className: 'dig-viewmode-label' }, t(allMode === true ? 'all.back' : 'all.show')))
+
+      const repoTopBar = E('div', { className: 'dig-topbar' },
+        viewModeButton,
         E(RepoSelect, {
           t: t, repos: headerRepos, value: repoRoot,
           loading: repoState === null,
@@ -17305,6 +17836,18 @@ window.__ModuleLoader__.load({
         }, E(Icon, { name: 'undo', size: 13 })),
         E('span', { className: 'dig-topbar-spacer' }),
         busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
+
+      /* Overview header: the same toggle plus the roll-up count. Every control
+         that acts on "the current repository" (switcher, branch, tracking,
+         operation, undo) is gone here — those verbs belong to the cards. */
+      const allTopBar = E('div', { className: 'dig-topbar dig-topbar-all' },
+        viewModeButton,
+        E('span', { className: 'dig-all-count' },
+          fill(t('all.summary'), { repos: String(allStats.repos), changes: String(allStats.changes) })),
+        E('span', { className: 'dig-topbar-spacer' }),
+        busy ? E('span', { className: 'dig-busy' }, t('status.busy')) : null)
+
+      const topBar = allMode === true ? allTopBar : repoTopBar
 
       /* Named git failures get a sentence that says what to do; the raw git
          output stays one hover away in the title. The two recoverable ones
@@ -18002,6 +18545,35 @@ window.__ModuleLoader__.load({
            "no repository found" verdict (that text is reserved for a scan
            that actually came back empty). */
         body = E('div', { className: 'dig-body', ref: bodyRef }, E('div', { className: 'dig-empty' }, t('status.loading')))
+      } else if (allMode === true) {
+        /* Issue #37: the overview owns the whole body. Each card talks to the
+           host with its own { cwd, repoRoot }, so this branch never touches the
+           session's repository binding; it works even with no repository bound,
+           which is exactly the multi-repository case the issue describes. */
+        body = E('div', { className: 'dig-body dig-body-all', ref: bodyRef }, E(AllRepos, {
+          t: t, ctx: props.ctx, sessionId: sessionId, repos: headerRepos, compact: compact,
+          commitSettings: commitSettings,
+          onStats: setAllStats,
+          onMenu: openMenuAt,
+          onCopy: copyValues,
+          onToast: pushToast,
+          onUndoDone: dropUndoToast,
+          /* Opening a card leaves the overview and binds the panel to that
+             repository (the mode is remembered, but the pick wins). */
+          onPick: (repo) => {
+            writeViewMode('repo')
+            setViewMode('repo')
+            if (repo.path !== repoRoot) pickRepo(repo.path)
+          },
+          /* A write in a card can move the branch or HEAD of the repository the
+             panel is bound to; keep that panel's header honest without pulling
+             the overview back into a full refresh. */
+          onWrote: (repo) => {
+            if (repo.path !== repoRoot) return
+            void refresh()
+            notifyBranchSwitched(sessionId, repo.path, 'panel')
+          },
+        }))
       } else if (repoRoot === null) {
         body = E('div', { className: 'dig-body', ref: bodyRef }, E(RepoPicker, {
           t: t, cwd: cwd === undefined ? '' : cwd, repos: repoOptions, onPick: pickRepo, onOpenRepo: openManualRepo,
@@ -18451,11 +19023,13 @@ window.__ModuleLoader__.load({
           + (paneDragging === null ? '' : ' dig-pane-dragging' + (paneByWidth ? '-v' : '-h')),
         ref: hostRef,
       }, topBar,
-        columns === true || repoRoot === null ? null : renderRail(false),
+        /* The rail acts on the bound repository, so the overview hides both
+           orientations of it (issue #37); every card carries its own verbs. */
+        columns === true || repoRoot === null || allMode === true ? null : renderRail(false),
         banner, noteBanner,
         E(LoadTrace, { t: t, trace: traceRef.current, tick: traceTick, request: request, cwd: cwd, repoRoot: repoRoot }),
         E('div', { className: 'dig-shell' },
-          columns === true && repoRoot !== null ? renderRail(true) : null,
+          columns === true && repoRoot !== null && allMode !== true ? renderRail(true) : null,
           body),
         gitOutput === null ? null : E(GitOutputDrawer, {
           t: t, entries: gitOutput,
@@ -18529,6 +19103,40 @@ window.__ModuleLoader__.load({
       '.dig-icon-btn-active{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
       '.dig-banner{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-state-error-primary)}',
       '.dig-note{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;color:var(--dsw-alias-label-secondary)}',
+      /* ---- cross-repository overview (issue #37) ---- */
+      '.dig-viewmode{gap:4px;width:auto;padding:0 6px;flex:none;color:var(--dsw-alias-label-secondary)}',
+      '.dig-viewmode:hover{color:var(--dsw-alias-label-primary)}',
+      '.dig-viewmode-on{background:var(--dsw-alias-interactive-bg-active,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}',
+      '.dig-viewmode-label{font-size:12px;white-space:nowrap}',
+      '.dig-root-narrow .dig-viewmode-label{display:none}',
+      '.dig-topbar-all{gap:8px}',
+      '.dig-all-count{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-secondary);font-variant-numeric:tabular-nums}',
+      '.dig-body-all{padding:8px;overflow:auto}',
+      '.dig-all{display:flex;flex-direction:column;gap:8px;min-height:0;flex:1}',
+      '.dig-all-head{display:flex;align-items:center;gap:8px;flex:none;min-height:20px}',
+      '.dig-all-note{color:var(--dsw-alias-label-tertiary);font-size:12px;white-space:nowrap}',
+      '.dig-all-list{display:flex;flex-direction:column;gap:8px;min-height:0}',
+      '.dig-all-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;align-items:start}',
+      '.dig-root-narrow .dig-all-grid{grid-template-columns:1fr}',
+      '.dig-all-card{position:relative;display:flex;flex-direction:column;min-width:0;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md,12px);background:var(--dsw-alias-bg-layer-1,#22262e);overflow:hidden}',
+      '.dig-all-card-head{display:flex;align-items:center;gap:6px;padding:4px 6px;flex:none;min-width:0;border-bottom:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-all-card-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--dsw-alias-label-primary)}',
+      '.dig-all-card-branch{display:inline-flex;align-items:center;gap:3px;flex:none;max-width:40%;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--dsw-alias-label-secondary)}',
+      '.dig-all-card-branch > span{overflow:hidden;text-overflow:ellipsis}',
+      '.dig-all-card-loading{padding:4px 8px;flex:none;font-size:12px;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-all-card-body{display:flex;flex-direction:column;min-height:0;max-height:420px}',
+      '.dig-all-card-error{display:flex;align-items:center;gap:8px;padding:4px 8px;flex:none;font-size:12px;color:var(--dsw-alias-state-error-primary)}',
+      '.dig-all-error-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.dig-all-diff{display:flex;flex-direction:column;min-height:0;max-height:340px;border-bottom:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-all-diff-head{display:flex;align-items:center;gap:6px;padding:2px 6px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l2)}',
+      '.dig-all-diff-path{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--dsw-alias-label-secondary)}',
+      '.dig-all-diff .dig-lf-body{max-height:300px}',
+      '.dig-all-clean-list{display:flex;flex-direction:column;gap:2px;padding:2px 6px;border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md,12px)}',
+      '.dig-all-clean{display:flex;align-items:center;gap:6px;padding:3px 2px;min-width:0;color:var(--dsw-alias-label-secondary)}',
+      '.dig-all-clean-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-primary)}',
+      '.dig-all-clean-branch{max-width:30%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--dsw-alias-label-tertiary)}',
+      '.dig-all-clean-note{font-size:12px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
+
       '.dig-banner-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}',
       '.dig-shell{flex:1;min-height:0;display:flex;overflow:hidden}',
       '.dig-rail{width:32px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;overflow:hidden;border-right:1px solid var(--dsw-alias-border-l2)}',
