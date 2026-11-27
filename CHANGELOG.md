@@ -3,6 +3,17 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
+## v0.38.0 — 2026-11-27
+
+**类型**:feat(issue #39 的分支操作文案;方案与补丁 by @EdsionGuan)
+
+- **分支菜单直接写出两端分支名(issue #39)**:在 master 上右键 test 时,菜单原先只写「将当前分支变基到此」「合并到当前分支」,读者得自己判断哪个分支会动。现在分别显示「将当前 master 变基到 test」「合并 test 到当前 master 分支」;当前分支未知(游离 HEAD 或分支快照过期)时回退旧文案,不会留下没填的占位符。方向不变:test 是来源 / 基准,master 被移动 / 接收。
+- **合并对话框的按钮也写两端**:合并按钮显示「合并 test 到当前 master 分支」,标题仍是短标题「合并 test」,正文说明当前分支;游离 HEAD 时按钮回退「合并到当前分支」,不硬写一个可能不存在的分支名。
+- **变基有开始提示**:从分支右键菜单或动作条的分支选择器发起变基时,弹出「正在把当前 master 分支变基到 test…」的提示条;操作失败时宿主原本的错误提示照常出现,不会被这条开始提示吞掉。
+- **文案**:新增 3 个键(`action.mergeBranchInto` / `action.rebaseBranchOnto` / `toast.rebaseStarted`),ZH / EN 与 19 个 `LOCALES` 共 21 门同步;中英文 README 的分支右键说明同步改成双端命名。
+- **验证**:`npm test` **167/167**(新增 issue #39 的菜单双端命名、合并弹窗短标题与游离 HEAD 回退、rebase 提示断言);SSR 自检 4/4;`node --check` 与 `git diff --check` 通过。隔离实例(dsh 0.2.2-rc.5 + dsh-better-sidebar 0.33.0,端口 3099)实测:1600px 菜单显示「将当前 master 变基到 test」「合并 test 到当前 master 分支」;380px 窄栏菜单在 371px 内换行、不横向溢出;合并弹窗标题与按钮分工正确;点变基后出现「正在把当前 master 分支变基到 test…」;layout-probe 1600 → 380 共 11 档 `bleed = 0`,全程 0 pageerror。
+- **链接**:[issue #39](https://github.com/KannaKuron/dsh-ide-git/issues/39)
+
 ## v0.37.1 — 2026-11-27
 
 **类型**:chore(宿主性能优化,PR #38 by @BearBin1215)

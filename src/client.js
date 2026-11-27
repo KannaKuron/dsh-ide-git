@@ -208,6 +208,9 @@ window.__ModuleLoader__.load({
       'action.delete': '删除',
       'action.mergeIntoCurrent': '合并到当前分支',
       'action.rebaseCurrentOnto': '将当前分支变基到此',
+      'action.mergeBranchInto': '合并 {branch} 到当前 {current} 分支',
+      'action.rebaseBranchOnto': '将当前 {current} 变基到 {branch}',
+      'toast.rebaseStarted': '正在把当前 {current} 分支变基到 {branch}…',
       'action.compare': '与当前分支比较',
       'action.update': '拉取',
       'action.push': '推送',
@@ -643,6 +646,9 @@ window.__ModuleLoader__.load({
       'action.delete': 'Delete',
       'action.mergeIntoCurrent': 'Merge into current branch',
       'action.rebaseCurrentOnto': 'Rebase current branch onto this',
+      'action.mergeBranchInto': 'Merge {branch} into {current}',
+      'action.rebaseBranchOnto': 'Rebase {current} onto {branch}',
+      'toast.rebaseStarted': 'Rebasing {current} onto {branch}…',
       'action.compare': 'Compare with current branch',
       'action.update': 'Pull',
       'action.push': 'Push',
@@ -1086,6 +1092,9 @@ window.__ModuleLoader__.load({
         'action.delete': '刪除',
         'action.mergeIntoCurrent': '合併到當前分支',
         'action.rebaseCurrentOnto': '將當前分支變基到此',
+        'action.mergeBranchInto': '合併 {branch} 到目前 {current} 分支',
+        'action.rebaseBranchOnto': '將目前 {current} 變基到 {branch}',
+        'toast.rebaseStarted': '正在將目前 {current} 分支變基到 {branch}…',
         'action.compare': '同當前分支比較',
       'action.update': '拉取',
         'action.push': '推送',
@@ -1521,6 +1530,9 @@ window.__ModuleLoader__.load({
         'action.delete': '刪除',
         'action.mergeIntoCurrent': '合併到目前分支',
         'action.rebaseCurrentOnto': '將目前分支變基到此',
+        'action.mergeBranchInto': '合併 {branch} 到目前 {current} 分支',
+        'action.rebaseBranchOnto': '將目前 {current} 變基到 {branch}',
+        'toast.rebaseStarted': '正在將目前 {current} 分支變基到 {branch}…',
         'action.compare': '與目前分支比較',
       'action.update': '拉取',
         'action.push': '推送',
@@ -1956,6 +1968,9 @@ window.__ModuleLoader__.load({
         'action.delete': '刪除',
         'action.mergeIntoCurrent': '合併到當前分支',
         'action.rebaseCurrentOnto': '將當前分支變基到此',
+        'action.mergeBranchInto': '合併 {branch} 到目前 {current} 分支',
+        'action.rebaseBranchOnto': '將目前 {current} 變基到 {branch}',
+        'toast.rebaseStarted': '正在將目前 {current} 分支變基到 {branch}…',
         'action.compare': '同當前分支比較',
       'action.update': '拉取',
         'action.push': '推送',
@@ -2391,6 +2406,9 @@ window.__ModuleLoader__.load({
         'action.delete': '削除',
         'action.mergeIntoCurrent': '現在のブランチにマージ',
         'action.rebaseCurrentOnto': '現在のブランチをここにリベース',
+        'action.mergeBranchInto': '{branch} を {current} にマージ',
+        'action.rebaseBranchOnto': '{current} を {branch} にリベース',
+        'toast.rebaseStarted': '{current} を {branch} にリベースしています…',
         'action.compare': '現在のブランチと比較',
       'action.update': 'プル',
         'action.push': 'プッシュ',
@@ -2826,6 +2844,9 @@ window.__ModuleLoader__.load({
         'action.delete': '삭제',
         'action.mergeIntoCurrent': '현재 브랜치로 병합',
         'action.rebaseCurrentOnto': '현재 브랜치를 여기로 리베이스',
+        'action.mergeBranchInto': '{branch}을(를) {current}에 병합',
+        'action.rebaseBranchOnto': '{current}을(를) {branch}로 리베이스',
+        'toast.rebaseStarted': '{current}을(를) {branch}로 리베이스하는 중…',
         'action.compare': '현재 브랜치와 비교',
       'action.update': '풀',
         'action.push': '푸시',
@@ -3261,6 +3282,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Löschen',
         'action.mergeIntoCurrent': 'In aktuellen Branch mergen',
         'action.rebaseCurrentOnto': 'Aktuellen Branch hierauf rebasen',
+        'action.mergeBranchInto': '{branch} in {current} mergen',
+        'action.rebaseBranchOnto': '{current} auf {branch} rebasen',
+        'toast.rebaseStarted': '{current} wird auf {branch} rebased…',
         'action.compare': 'Mit aktuellem Branch vergleichen',
       'action.update': 'Pull',
         'action.push': 'Push',
@@ -3696,6 +3720,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Supprimer',
         'action.mergeIntoCurrent': 'Fusionner dans la branche courante',
         'action.rebaseCurrentOnto': 'Rebaser la branche courante sur celle-ci',
+        'action.mergeBranchInto': 'Fusionner {branch} dans {current}',
+        'action.rebaseBranchOnto': 'Rebaser {current} sur {branch}',
+        'toast.rebaseStarted': 'Rebasage de {current} sur {branch}…',
         'action.compare': 'Comparer avec la branche courante',
       'action.update': 'Tirer',
         'action.push': 'Pousser',
@@ -4131,6 +4158,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Удалить',
         'action.mergeIntoCurrent': 'Влить в текущую ветку',
         'action.rebaseCurrentOnto': 'Перебазировать текущую ветку сюда',
+        'action.mergeBranchInto': 'Влить {branch} в {current}',
+        'action.rebaseBranchOnto': 'Перебазировать {current} на {branch}',
+        'toast.rebaseStarted': 'Перебазирование {current} на {branch}…',
         'action.compare': 'Сравнить с текущей веткой',
       'action.update': 'Забрать',
         'action.push': 'Отправить',
@@ -4566,6 +4596,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Excluir',
         'action.mergeIntoCurrent': 'Mesclar na branch atual',
         'action.rebaseCurrentOnto': 'Rebasear a branch atual sobre esta',
+        'action.mergeBranchInto': 'Mesclar {branch} em {current}',
+        'action.rebaseBranchOnto': 'Rebasear {current} sobre {branch}',
+        'toast.rebaseStarted': 'Rebaseando {current} sobre {branch}…',
         'action.compare': 'Comparar com a branch atual',
       'action.update': 'Puxar',
         'action.push': 'Enviar',
@@ -5001,6 +5034,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Elimina',
         'action.mergeIntoCurrent': 'Unisci nel branch corrente',
         'action.rebaseCurrentOnto': 'Rebase del branch corrente su questo',
+        'action.mergeBranchInto': 'Unisci {branch} in {current}',
+        'action.rebaseBranchOnto': 'Rebase di {current} su {branch}',
+        'toast.rebaseStarted': 'Rebase di {current} su {branch}…',
         'action.compare': 'Confronta con il branch corrente',
       'action.update': 'Pull',
         'action.push': 'Push',
@@ -5436,6 +5472,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Verwijderen',
         'action.mergeIntoCurrent': 'Samenvoegen in huidige branch',
         'action.rebaseCurrentOnto': 'Huidige branch rebasen op deze',
+        'action.mergeBranchInto': '{branch} samenvoegen in {current}',
+        'action.rebaseBranchOnto': '{current} rebasen op {branch}',
+        'toast.rebaseStarted': '{current} rebasen op {branch}…',
         'action.compare': 'Vergelijken met huidige branch',
       'action.update': 'Pull',
         'action.push': 'Pushen',
@@ -5871,6 +5910,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Usuń',
         'action.mergeIntoCurrent': 'Scal z bieżącą gałęzią',
         'action.rebaseCurrentOnto': 'Zrebase’uj bieżącą gałąź na tę',
+        'action.mergeBranchInto': 'Scal {branch} z {current}',
+        'action.rebaseBranchOnto': 'Zrebase’uj {current} na {branch}',
+        'toast.rebaseStarted': 'Rebasing {current} na {branch}…',
         'action.compare': 'Porównaj z bieżącą gałęzią',
       'action.update': 'Ściągnij',
         'action.push': 'Wypchnij',
@@ -6306,6 +6348,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Ta bort',
         'action.mergeIntoCurrent': 'Sammanfoga in i aktuell gren',
         'action.rebaseCurrentOnto': 'Rebasa aktuell gren mot denna',
+        'action.mergeBranchInto': 'Sammanfoga {branch} i {current}',
+        'action.rebaseBranchOnto': 'Rebasa {current} mot {branch}',
+        'toast.rebaseStarted': 'Rebasar {current} mot {branch}…',
         'action.compare': 'Jämför med aktuell gren',
       'action.update': 'Pull',
         'action.push': 'Pusha',
@@ -6741,6 +6786,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Sil',
         'action.mergeIntoCurrent': 'Geçerli dala birleştir',
         'action.rebaseCurrentOnto': 'Geçerli dalı bunun üzerine rebase et',
+        'action.mergeBranchInto': '{branch} dalını {current} ile birleştir',
+        'action.rebaseBranchOnto': '{current} dalını {branch} üzerine rebase et',
+        'toast.rebaseStarted': '{current} dalı {branch} üzerine rebase ediliyor…',
         'action.compare': 'Geçerli dalla karşılaştır',
       'action.update': 'Pull',
         'action.push': 'Gönder',
@@ -7176,6 +7224,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Hapus',
         'action.mergeIntoCurrent': 'Gabungkan ke branch saat ini',
         'action.rebaseCurrentOnto': 'Rebase branch saat ini ke ini',
+        'action.mergeBranchInto': 'Gabungkan {branch} ke {current}',
+        'action.rebaseBranchOnto': 'Rebase {current} ke {branch}',
+        'toast.rebaseStarted': 'Rebase {current} ke {branch}…',
         'action.compare': 'Bandingkan dengan branch saat ini',
       'action.update': 'Pull',
         'action.push': 'Push',
@@ -7611,6 +7662,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'Xoá',
         'action.mergeIntoCurrent': 'Hợp nhất vào nhánh hiện tại',
         'action.rebaseCurrentOnto': 'Rebase nhánh hiện tại lên nhánh này',
+        'action.mergeBranchInto': 'Hợp nhất {branch} vào {current}',
+        'action.rebaseBranchOnto': 'Rebase {current} lên {branch}',
+        'toast.rebaseStarted': 'Đang rebase {current} lên {branch}…',
         'action.compare': 'So sánh với nhánh hiện tại',
       'action.update': 'Pull',
         'action.push': 'Push',
@@ -8046,6 +8100,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'حذف',
         'action.mergeIntoCurrent': 'الدمج في الفرع الحالي',
         'action.rebaseCurrentOnto': 'إعادة تأسيس الفرع الحالي على هذا',
+        'action.mergeBranchInto': 'دمج {branch} في {current}',
+        'action.rebaseBranchOnto': 'إعادة تأسيس {current} على {branch}',
+        'toast.rebaseStarted': 'إعادة تأسيس {current} على {branch}…',
         'action.compare': 'المقارنة مع الفرع الحالي',
       'action.update': 'سحب',
         'action.push': 'دفع',
@@ -8481,6 +8538,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'हटाएँ',
         'action.mergeIntoCurrent': 'वर्तमान शाखा में मर्ज करें',
         'action.rebaseCurrentOnto': 'वर्तमान शाखा को इस पर रीबेस करें',
+        'action.mergeBranchInto': '{branch} को {current} में मर्ज करें',
+        'action.rebaseBranchOnto': '{current} को {branch} पर रीबेस करें',
+        'toast.rebaseStarted': '{current} को {branch} पर रीबेस किया जा रहा है…',
         'action.compare': 'वर्तमान शाखा से तुलना करें',
       'action.update': 'पुल',
         'action.push': 'पुश',
@@ -8916,6 +8976,9 @@ window.__ModuleLoader__.load({
         'action.delete': 'ลบ',
         'action.mergeIntoCurrent': 'รวมเข้าแบรนช์ปัจจุบัน',
         'action.rebaseCurrentOnto': 'รีเบสแบรนช์ปัจจุบันไปที่นี้',
+        'action.mergeBranchInto': 'รวม {branch} เข้ากับ {current}',
+        'action.rebaseBranchOnto': 'รีเบส {current} ไปที่ {branch}',
+        'toast.rebaseStarted': 'กำลังรีเบส {current} ไปที่ {branch}…',
         'action.compare': 'เปรียบเทียบกับแบรนช์ปัจจุบัน',
       'action.update': 'Pull',
         'action.push': 'พุช',
@@ -13045,6 +13108,11 @@ window.__ModuleLoader__.load({
        the consequences of. */
     function MergeDialog(props) {
       const t = props.t
+      /* The row menu knows both ends, but a detached HEAD (or a stale branches
+         snapshot) leaves `current` empty: keep the generic button instead of
+         naming a branch that may not exist. The title stays short; the button
+         carries the two branch names. */
+      const current = props.current === undefined || props.current === null ? '' : props.current
       const [mode, setMode] = useState('default')
       return E('div', { className: 'dig-overlay' },
         E('div', { className: 'dig-dialog dig-merge-dialog' },
@@ -13063,7 +13131,7 @@ window.__ModuleLoader__.load({
           E('div', { className: 'dig-dialog-text dig-merge-hint' }, fill(t('merge.hint.' + mode), { branch: props.branch })),
           E('div', { className: 'dig-dialog-actions' },
             E('button', { type: 'button', className: 'dig-btn', onClick: props.onCancel }, t('confirm.cancel')),
-            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: () => props.onSubmit(mode) }, t('action.mergeIntoCurrent')))))
+            E('button', { type: 'button', className: 'dig-btn dig-btn-primary', onClick: () => props.onSubmit(mode) }, current === '' ? t('action.mergeIntoCurrent') : fill(t('action.mergeBranchInto'), { branch: props.branch, current: current })))))
     }
 
     /* A draggable divider between two panes. The pane it resizes is the sibling
@@ -17329,8 +17397,8 @@ window.__ModuleLoader__.load({
           // tail placement (their menu is about the ref, not the working tree).
           isLocal ? updateItem : null,
           isLocal ? pushItem : null,
-          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: t('action.rebaseCurrentOnto'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }) } } : null,
-          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: t('action.mergeIntoCurrent'), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => setDialog({ kind: 'merge', branch: entry.name }) } : null,
+          isLocal ? { id: 'rebase', icon: 'compare', tone: 'violet', label: current === '' ? t('action.rebaseCurrentOnto') : fill(t('action.rebaseBranchOnto'), { current: current, branch: entry.name }), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => { void run('rebase', { onto: entry.name }); if (current !== '') pushToast({ text: fill(t('toast.rebaseStarted'), { current: current, branch: entry.name }), icon: 'compare', tone: 'warn' }) } } : null,
+          isLocal ? { id: 'merge', icon: 'compare', tone: 'accent', label: current === '' ? t('action.mergeIntoCurrent') : fill(t('action.mergeBranchInto'), { current: current, branch: entry.name }), disabled: entry.head === true || blocked, reason: blocked ? t('operation.hint') : reason, run: () => setDialog({ kind: 'merge', branch: entry.name }) } : null,
           { id: 'compare', icon: 'filter', tone: 'violet', label: t('action.compare'), disabled: entry.head === true || current === '', reason: reason, run: () => { void compareWith(current, entry.name) } },
           { id: 'send', icon: 'send', tone: 'accent', label: t('menu.sendToChat'), run: () => sendGitSummaryToChat('send.branchText', { name: entry.name, repo: repoLabel }) },
           { id: 'copy', icon: 'tag', tone: 'secondary', label: t('action.copyName'), run: () => copyValues([entry.name]) },
@@ -17374,7 +17442,7 @@ window.__ModuleLoader__.load({
           isLocal ? null : pushItem,
         ].filter((item) => item !== null)
         openMenuAt(event, items)
-      }, [branches, checkout, run, mergeWithMode, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues])
+      }, [branches, checkout, run, mergeWithMode, t, compareWith, toggleFavoriteBranch, openMenuAt, favorites, blocked, sendGitSummaryToChat, repoLabel, copyValues, pushToast])
 
       const commitMenu = useCallback((event, commit) => {
         const shortHash = commit.hash.slice(0, 7)
@@ -17985,7 +18053,7 @@ window.__ModuleLoader__.load({
             if (kind === 'checkout') { void run('checkout', { branch: entry.name }); return }
             if (kind === 'delete') { setDialog({ kind: 'deleteBranch', name: entry.name }); return }
             if (kind === 'merge') { setDialog({ kind: 'merge', branch: entry.name }); return }
-            if (kind === 'rebase') { void run('rebase', { onto: entry.name }); return }
+            if (kind === 'rebase') { void run('rebase', { onto: entry.name }); if (current !== '') pushToast({ text: fill(t('toast.rebaseStarted'), { current: current, branch: entry.name }), icon: 'compare', tone: 'warn' }); return }
             void compareWith(current, entry.name)
           },
         })))
@@ -18714,7 +18782,7 @@ window.__ModuleLoader__.load({
       }
       if (dialog !== null && dialog.kind === 'merge') {
         overlays.push(E(MergeDialog, {
-          key: 'merge', t: t, branch: dialog.branch,
+          key: 'merge', t: t, branch: dialog.branch, current: headBranch,
           onCancel: () => setDialog(null),
           onSubmit: (mode) => { setDialog(null); mergeWithMode(dialog.branch, mode) },
         }))

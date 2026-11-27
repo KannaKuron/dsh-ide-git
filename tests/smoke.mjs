@@ -1599,6 +1599,32 @@ test('the overwrite-draft confirmation carries both button labels in every dicti
   }
 })
 
+test('the branch menu names both ends of merge and rebase (issue #39)', () => {
+  // The menu used to say only "Merge into current branch" / "Rebase current
+  // branch onto this", leaving the reader to work out which branch moves.
+  const menuStart = client.indexOf('const branchMenu = useCallback')
+  const menuEnd = client.indexOf('const commitMenu = useCallback')
+  assert.ok(menuStart > 0 && menuEnd > menuStart, 'the branch menu must stay where the smoke test can see it')
+  const menu = client.slice(menuStart, menuEnd)
+  assert.match(menu, /label: current === '' \? t\('action\.rebaseCurrentOnto'\) : fill\(t\('action\.rebaseBranchOnto'\), \{ current: current, branch: entry\.name \}\)/)
+  assert.match(menu, /label: current === '' \? t\('action\.mergeIntoCurrent'\) : fill\(t\('action\.mergeBranchInto'\), \{ current: current, branch: entry\.name \}\)/)
+  assert.match(menu, /pushToast\(\{ text: fill\(t\('toast\.rebaseStarted'\)/, 'a rebase started from the menu needs its toast')
+
+  const dialogStart = client.indexOf('function MergeDialog')
+  const dialogEnd = client.indexOf('/* A draggable divider')
+  assert.ok(dialogStart > 0 && dialogEnd > dialogStart, 'the merge dialog must stay where the smoke test can see it')
+  const dialog = client.slice(dialogStart, dialogEnd)
+  assert.match(dialog, /const current = props\.current === undefined \|\| props\.current === null \? '' : props\.current/)
+  assert.match(dialog, /fill\(t\('merge\.title'\), \{ branch: props\.branch \}\)/, 'the title stays short instead of repeating the button')
+  assert.match(dialog, /current === '' \? t\('action\.mergeIntoCurrent'\) : fill\(t\('action\.mergeBranchInto'\)/, 'a detached HEAD keeps the generic button')
+  assert.match(client, /branch: dialog\.branch, current: headBranch/, 'the dialog needs the current branch name')
+
+  for (const key of ['action.mergeBranchInto', 'action.rebaseBranchOnto', 'toast.rebaseStarted']) {
+    const occurrences = client.split("'" + key + "'").length - 1
+    assert.ok(occurrences >= 21, key + ' must exist in ZH + EN + every LOCALES entry (saw ' + occurrences + ')')
+  }
+})
+
 test('the settings entry draws a gear, not a sunburst', () => {
   // The rail's settings button used to render a centre dot with eight rays — a
   // brightness glyph users read as "sun" — under the name `settings`. The entry
