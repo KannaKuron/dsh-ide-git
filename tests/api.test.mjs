@@ -8,7 +8,7 @@
  */
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, existsSync, chmodSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, existsSync, chmodSync, realpathSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -150,7 +150,9 @@ async function withChangesFixture(work, { unborn = false } = {}) {
 const changesStatusCommand = 'status --porcelain=v1 -z --untracked-files=all'
 function assertChangesShape(data, root) {
   assert.deepEqual(Object.keys(data).sort(), ['changes', 'cwd', 'repoRoot', 'statsDeferred'])
-  assert.equal(data.repoRoot, root)
+  // macOS resolves /var → /private/var through git's --show-toplevel, so
+  // compare canonical paths; the explicit-root branch keeps the caller's spelling.
+  assert.equal(realpathSync(data.repoRoot), realpathSync(root))
   assert.equal(data.statsDeferred, true)
   assert.deepEqual(Object.keys(data.changes).sort(), ['conflicted', 'ignored', 'ignoredTruncated', 'staged', 'unstaged', 'untracked'])
   assert.deepEqual(data.changes.ignored, [])

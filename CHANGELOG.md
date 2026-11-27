@@ -3,12 +3,16 @@
 > 倒序排列,新版本条目在最上面。条目格式:`## vX.Y.Z — YYYY-MM-DD` + 类型(feat / fix / docs / chore)+ 要点 + 相关链接。
 > 纪律见 AGENTS.md「变更记录纪律」:发版前先更新本文件并随版本提交。
 
-## 未发布 — 2026-11-27
+## v0.38.1 — 2026-11-27
 
-**类型**:chore(全部仓库概览读取优化)
+**类型**:chore(全部仓库概览读取优化,PR #40 by @BearBin1215)
 
-- 全部仓库概览改用只读 `changes` 接口,每张卡从 9 个 git 子进程降到 1 次 `status`,省去卡片未使用的分支、上游、HEAD、stash、worktree 与进行中操作查询。
-- 补充变更分类、路径校验、错误响应和 Git 调用次数测试,以及概览卡片的交互回归探针。
+- 全部仓库概览改用只读 `changes` 接口,每张卡从 9 个 git 子进程降到 1 次 `status`,省去卡片未使用的分支、上游、HEAD、stash、worktree 与进行中操作查询。PR 实测单卡 111ms→36ms,9 卡 668ms→190ms,总子进程 81→9。
+- `changes` 是独立只读方法,不在写队列里;显式传入 `repoRoot` 时不再执行 `rev-parse`,直接校验并使用调用方给的绝对路径。单仓视图的 `summary` / `stats` 行为完全不变,概览卡片只读 `summary.changes`,不会额外补一次 `stats`。
+- 补充变更分类、路径校验、错误响应和 Git 调用次数测试,以及概览卡片的交互回归探针(`scripts/overview-probe.mjs`);覆盖一次 `status`、与 `summary(stats:false)` 等价、混合/重命名/二进制/冲突/特殊路径、513 个未跟踪文件、detached HEAD、unborn、显式 root 优先级、信任围栏与超时。
+- **测试修复(合并时发现)**:macOS 的 `/var` → `/private/var` 符号链接会让新用例的 `repoRoot` 字面断言失败;测试改用 `realpathSync` 比较两侧规范化路径,同时保留「显式 root 保留调用方拼写」的产品语义。
+- **验证**:`npm test` **178/178**;SSR 自检 4/4;`node --check` 与 `git diff --check` 通过。隔离实例(dsh 0.2.2-rc.5,端口 3099)实测两个真实仓库共 5 处改动:概览显示「2 个仓库 · 5 处改动」,alpha / beta 两张卡的暂存、更改、未跟踪分组与计数正确;两卡各自只发一条 `changes` 请求;380px 窄栏单列、无横向溢出;layout-probe 1600→380 共 11 档 `bleed = 0`,overview-probe 14 项 PASS,全程 0 pageerror。
+- **链接**:[PR #40](https://github.com/KannaKuron/dsh-ide-git/pull/40)
 
 ## v0.38.0 — 2026-11-27
 
