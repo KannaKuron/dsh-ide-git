@@ -14,17 +14,17 @@ import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { EventEmitter } from 'node:events'
 import { apply, repoScanCache, REPOS_CACHE_TTL_MS } from '../src/index.js'
-import { gitLog } from '../src/host/git.js'
+import { gitLog, parsePorcelain } from '../src/host/git.js'
 
 let repo = ''
 let route = null
 
 const git = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' })
 
-function call(method, payload, headers) {
+function call(method, payload, headers, httpMethod = 'POST') {
   return new Promise((resolve, reject) => {
     const req = new EventEmitter()
-    req.method = 'POST'
+    req.method = httpMethod
     req.url = '/dsh-ide-git/api/' + method
     req.headers = Object.assign({ host: '127.0.0.1:3080', 'content-type': 'application/json' }, headers)
     req.destroy = () => {}
@@ -130,7 +130,246 @@ test('summary with stats: false defers the diffstats, stats delivers phase two (
   assert.equal(staged[0][1], 1)
 })
 
+// Each changes fixture owns its index and line-ending policy. These tests run
+// sequentially so gitLog captures only the request under measurement.
+async function withChangesFixture(work, { unborn = false } = {}) {
+  const root = mkdtempSync(join(tmpdir(), 'dig-changes-'))
+  const run = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] })
+  try {
+    run('init', '-q', '-b', 'main')
+    for (const [key, value] of Object.entries({ 'user.name': 'Changes Test', 'user.email': 'changes@example.invalid', 'core.autocrlf': 'false', 'core.eol': 'lf', 'commit.gpgsign': 'false', 'core.hooksPath': join(root, 'no-hooks') })) run('config', key, value)
+    if (!unborn) {
+      writeFileSync(join(root, 'base.txt'), 'base\n')
+      run('add', '-A')
+      run('commit', '-q', '-m', 'baseline')
+    }
+    return await work(root, run)
+  } finally { rmSync(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }) }
+}
+
+const changesStatusCommand = 'status --porcelain=v1 -z --untracked-files=all'
+function assertChangesShape(data, root) {
+  assert.deepEqual(Object.keys(data).sort(), ['changes', 'cwd', 'repoRoot', 'statsDeferred'])
+  assert.equal(data.repoRoot, root)
+  assert.equal(data.statsDeferred, true)
+  assert.deepEqual(Object.keys(data.changes).sort(), ['conflicted', 'ignored', 'ignoredTruncated', 'staged', 'unstaged', 'untracked'])
+  assert.deepEqual(data.changes.ignored, [])
+  assert.equal(data.changes.ignoredTruncated, false)
+  for (const group of ['staged', 'unstaged', 'untracked', 'conflicted']) {
+    for (const row of data.changes[group]) {
+      assert.equal(row.additions, 0)
+      assert.equal(row.deletions, 0)
+      assert.equal(row.binary, false, 'false means no binary statistics were read')
+      assert.equal(typeof row.index, 'string')
+      assert.equal(typeof row.worktree, 'string')
+    }
+  }
+}
+
+async function readChanges(root, extra = {}, commands = [changesStatusCommand]) {
+  gitLog.length = 0
+  const result = await call('changes', { cwd: root, repoRoot: root, ...extra })
+  const actualCommands = gitLog.map((entry) => entry.argv)
+  assert.deepEqual(actualCommands, commands)
+  assert.equal(result.status, 200, JSON.stringify(result.body))
+  assert.equal(result.body.ok, true)
+  assertChangesShape(result.body.data, root)
+  return result.body.data
+}
+
+async function equivalentChanges(root, extra = {}) {
+  const reference = await call('summary', { cwd: root, repoRoot: root, stats: false, ignored: false })
+  assert.equal(reference.status, 200, JSON.stringify(reference.body))
+  const data = await readChanges(root, extra)
+  assert.deepEqual(data.changes, reference.body.data.changes)
+  return data
+}
+
+test('changes returns only deferred status groups for a clean repository in one git call', async () => {
+  await withChangesFixture(async (root) => {
+    const data = await equivalentChanges(root)
+    assert.equal(data.cwd, root)
+    for (const group of ['staged', 'unstaged', 'untracked', 'conflicted']) assert.deepEqual(data.changes[group], [])
+  })
+})
+
+test('changes preserves mixed MM/add/delete/rename/binary and special-name rows', async () => {
+  await withChangesFixture(async (root, run) => {
+    const tracked = ['both.txt', 'delete.txt', 'rename before.txt', '中文 空格.txt', 'binary.bin']
+    for (const file of tracked) writeFileSync(join(root, file), file === 'binary.bin' ? Buffer.from([0, 1, 2]) : 'before ' + file + '\n')
+    run('add', '-A'); run('commit', '-q', '-m', 'tracked fixtures')
+    writeFileSync(join(root, 'both.txt'), 'staged\n'); run('add', 'both.txt')
+    writeFileSync(join(root, 'both.txt'), 'worktree\n')
+    run('rm', '-q', 'delete.txt')
+    run('mv', 'rename before.txt', 'rename after.txt')
+    writeFileSync(join(root, 'added.txt'), 'added\n'); run('add', 'added.txt')
+    writeFileSync(join(root, '中文 空格.txt'), 'changed\n')
+    writeFileSync(join(root, 'binary.bin'), Buffer.from([0, 9, 8]))
+    mkdirSync(join(root, 'nested', 'deeper'), { recursive: true })
+    writeFileSync(join(root, 'nested', 'deeper', 'new file.txt'), 'new\n')
+    if (process.platform !== 'win32') {
+      writeFileSync(join(root, 'tab\tname.txt'), 'tab\n')
+      writeFileSync(join(root, 'line\nname.txt'), 'line\n')
+    }
+    const { changes } = await equivalentChanges(root)
+    const both = changes.staged.find((row) => row.path === 'both.txt')
+    assert.equal(both.index, 'M'); assert.equal(both.worktree, 'M')
+    assert.deepEqual(changes.unstaged.find((row) => row.path === 'both.txt'), both)
+    const rename = changes.staged.find((row) => row.path === 'rename after.txt')
+    assert.equal(rename.origPath, 'rename before.txt'); assert.equal(rename.index, 'R'); assert.equal(rename.worktree, ' ')
+    assert.equal(changes.staged.find((row) => row.path === 'added.txt').index, 'A')
+    assert.equal(changes.staged.find((row) => row.path === 'delete.txt').index, 'D')
+    assert.equal(changes.unstaged.find((row) => row.path === 'binary.bin').binary, false)
+    assert(changes.unstaged.some((row) => row.path === '中文 空格.txt'))
+    assert(changes.untracked.some((row) => row.path === 'nested/deeper/new file.txt'))
+    for (const row of changes.staged.filter((item) => item !== rename)) assert(!Object.hasOwn(row, 'origPath'))
+    if (process.platform !== 'win32') for (const path of ['tab\tname.txt', 'line\nname.txt']) assert(changes.untracked.some((row) => row.path === path))
+  })
+})
+
+test('changes shared porcelain parser preserves NUL-delimited control names and rename sources', () => {
+  const rows = parsePorcelain('R  new\t中文.txt\0old\nname.txt\0?? nested/line\nname.txt\0')
+  assert.deepEqual(rows, [
+    { x: 'R', y: ' ', path: 'new\t中文.txt', origPath: 'old\nname.txt' },
+    { x: '?', y: '?', path: 'nested/line\nname.txt', origPath: undefined },
+  ])
+})
+
+test('changes puts a real merge conflict only in conflicted', async () => {
+  await withChangesFixture(async (root, run) => {
+    run('checkout', '-q', '-b', 'topic')
+    writeFileSync(join(root, 'base.txt'), 'topic\n'); run('commit', '-qam', 'topic')
+    run('checkout', '-q', 'main')
+    writeFileSync(join(root, 'base.txt'), 'main\n'); run('commit', '-qam', 'main')
+    assert.throws(() => run('merge', '--no-edit', 'topic'), (error) => error.status === 1)
+    const { changes } = await equivalentChanges(root)
+    assert.deepEqual(changes.conflicted.map((row) => [row.path, row.index, row.worktree]), [['base.txt', 'U', 'U']])
+    assert.deepEqual(changes.staged, []); assert.deepEqual(changes.unstaged, [])
+  })
+})
+
+test('changes does not cap nested untracked files or read ignored/statistics opt-ins', async () => {
+  await withChangesFixture(async (root, run) => {
+    writeFileSync(join(root, '.gitignore'), 'ignored/\n')
+    run('add', '.gitignore'); run('commit', '-q', '-m', 'ignore')
+    mkdirSync(join(root, 'ignored')); writeFileSync(join(root, 'ignored', 'hidden.txt'), 'hidden\n')
+    mkdirSync(join(root, 'nested'))
+    for (let index = 0; index < 513; index += 1) writeFileSync(join(root, 'nested', String(index).padStart(3, '0') + '.txt'), 'new\n')
+    const data = await equivalentChanges(root, { stats: true, ignored: true })
+    assert.equal(data.changes.untracked.length, 513)
+    assert(data.changes.untracked.every((row) => row.path.startsWith('nested/') && row.path.endsWith('.txt')))
+  })
+})
+
+test('changes supports detached HEAD without reading HEAD or branches', async () => {
+  await withChangesFixture(async (root, run) => {
+    run('checkout', '-q', '--detach', 'HEAD')
+    writeFileSync(join(root, 'base.txt'), 'detached edit\n')
+    const data = await equivalentChanges(root)
+    assert.deepEqual(data.changes.unstaged.map((row) => row.path), ['base.txt'])
+  })
+})
+
+test('changes supports an unborn repository before and after staging', async () => {
+  await withChangesFixture(async (root, run) => {
+    const empty = await readChanges(root)
+    for (const group of ['staged', 'unstaged', 'untracked', 'conflicted']) assert.deepEqual(empty.changes[group], [])
+    writeFileSync(join(root, 'added.txt'), 'added\n'); run('add', 'added.txt')
+    writeFileSync(join(root, 'new.txt'), 'new\n')
+    const data = await readChanges(root)
+    assert.deepEqual(data.changes.staged.map((row) => [row.path, row.index, row.worktree]), [['added.txt', 'A', ' ']])
+    assert.deepEqual(data.changes.untracked.map((row) => row.path), ['new.txt'])
+  }, { unborn: true })
+})
+
+test('changes resolves a subdirectory root and keeps explicit-root precedence', async () => {
+  await withChangesFixture(async (root) => {
+    const child = join(root, 'sub'); mkdirSync(child)
+    writeFileSync(join(root, 'base.txt'), 'changed\n')
+    const data = await readChanges(root, { cwd: child, repoRoot: undefined }, ['rev-parse --show-toplevel', changesStatusCommand])
+    assert.equal(data.cwd, child)
+    assert.deepEqual(data.changes.unstaged.map((row) => row.path), ['base.txt'])
+    const explicit = await readChanges(root, { cwd: tmpdir() })
+    assert.equal(explicit.cwd, tmpdir())
+    assert.deepEqual(explicit.changes, data.changes)
+  })
+})
+
+test('changes rejects invalid paths and preserves existing non-repository/spawn error codes', async () => {
+  await withChangesFixture(async (root) => {
+    for (const payload of [{}, { cwd: '' }, { cwd: 'relative' }, { cwd: '', repoRoot: root }, { cwd: root, repoRoot: '' }, { cwd: root, repoRoot: 'relative' }]) {
+      gitLog.length = 0
+      const result = await call('changes', payload)
+      assert.equal(result.status, 400, JSON.stringify(payload)); assert.equal(result.body.error.code, 'bad-request')
+      assert.deepEqual(gitLog, [])
+    }
+    const outside = mkdtempSync(join(tmpdir(), 'dig-changes-outside-'))
+    try {
+      for (const [payload, code, status, commands] of [
+        [{ cwd: outside }, 'not-a-repo', 409, ['rev-parse --show-toplevel']],
+        [{ cwd: root, repoRoot: outside }, 'git-failed', 409, [changesStatusCommand]],
+        [{ cwd: root, repoRoot: join(outside, 'missing') }, 'git-missing', 500, []],
+      ]) {
+        gitLog.length = 0
+        const result = await call('changes', payload)
+        assert.equal(result.status, status, JSON.stringify(result.body)); assert.equal(result.body.error.code, code)
+        assert.deepEqual(gitLog.map((entry) => entry.argv), commands)
+        assert.equal(result.body.data, undefined)
+      }
+    } finally { rmSync(outside, { recursive: true, force: true }) }
+  })
+})
+
+test('changes uses the common trust fence and real POST method guard before git', async () => {
+  await withChangesFixture(async (root) => {
+    for (const headers of [{ host: '127.0.0.1:3080' }, { host: 'localhost:3080' }, { host: 'example.invalid', 'sec-fetch-site': 'same-origin' }, { host: 'example.invalid', 'sec-fetch-site': 'same-site' }]) {
+      const result = await call('changes', { cwd: root, repoRoot: root }, headers)
+      assert.equal(result.status, 200)
+    }
+    for (const [headers, verb, status, code] of [
+      [{ host: 'evil.invalid', 'sec-fetch-site': 'cross-site' }, 'POST', 403, 'forbidden'],
+      [{ host: 'evil.invalid', 'sec-fetch-site': 'cross-site' }, 'GET', 403, 'forbidden'],
+      [{ host: '127.0.0.1:3080' }, 'GET', 405, 'method-error'],
+    ]) {
+      gitLog.length = 0
+      const result = await call('changes', { cwd: root, repoRoot: root }, headers, verb)
+      assert.equal(result.status, status); assert.equal(result.body.error.code, code)
+      assert.deepEqual(gitLog, [])
+    }
+  })
+})
+
+test('changes preserves the executor timeout response instead of returning empty groups', async (t) => {
+  await withChangesFixture(async (root) => {
+    // Node runs the fixture's `status` script with the git flags as script args.
+    // Advance only JS timers; exercise the real spawn/timeout/HTTP error path.
+    writeFileSync(join(root, 'status'), 'setInterval(() => {}, 1000)\n')
+    const previous = process.env.DSH_IDE_GIT_BIN
+    process.env.DSH_IDE_GIT_BIN = process.execPath
+    t.mock.timers.enable({ apis: ['setTimeout'] })
+    try {
+      gitLog.length = 0
+      const pending = call('changes', { cwd: root, repoRoot: root })
+      await new Promise(setImmediate)
+      t.mock.timers.tick(30000)
+      const result = await pending
+      assert.equal(result.status, 504)
+      assert.equal(result.body.error.code, 'git-timeout')
+      assert.equal(result.body.data, undefined)
+      assert.deepEqual(gitLog.map((entry) => [entry.argv, entry.code]), [[changesStatusCommand, 'timeout']])
+    } finally {
+      t.mock.timers.reset()
+      if (previous === undefined) delete process.env.DSH_IDE_GIT_BIN
+      else process.env.DSH_IDE_GIT_BIN = previous
+    }
+  })
+})
+
 test('gitLogs records runs and clone validates its inputs (v0.15 more-menu)', async () => {
+  /* Earlier tests clear the ring and leave their own exit codes behind, so
+     produce one completed run first: this test must not depend on which test
+     ran before it (a mocked timeout would otherwise leave `code: 'timeout'`). */
+  await call('branches', { cwd: repo })
   const logs = await call('gitLogs', {})
   assert.equal(logs.status, 200)
   assert.ok(Array.isArray(logs.body.data.entries))

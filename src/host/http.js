@@ -2,7 +2,7 @@
 
 import { PanelError, badRequest, messageOf, WRITE_METHODS, withRepoLock, lockKeyOf } from './core.js'
 
-import { summary, stats, branches, log, me, mergePoint, commitDetail, diff, compare, gitLogs } from './read.js'
+import { summary, changes, stats, branches, log, me, mergePoint, commitDetail, diff, compare, gitLogs } from './read.js'
 
 import {
 
@@ -40,6 +40,7 @@ const METHODS = {
   repos,
   openRepo,
   summary,
+  changes,
   stats,
   branches,
   log,

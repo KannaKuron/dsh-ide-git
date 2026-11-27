@@ -774,7 +774,7 @@ test('host half keeps the destructive-confirm guards', () => {
 })
 
 test('host half exposes the method table the client calls', () => {
-  const methods = ['summary', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'gitignoreAdd', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version', 'diagnostics']
+  const methods = ['summary', 'changes', 'stats', 'branches', 'log', 'me', 'merge-point', 'commitDetail', 'diff', 'compare', 'repos', 'openRepo', 'stage', 'unstage', 'discard', 'gitignoreAdd', 'commit', 'checkout', 'branchCreate', 'branchRename', 'branch-upstream', 'branchDelete', 'worktreeAdd', 'worktreeRemove', 'worktreePrune', 'merge', 'mergeAbort', 'rebase', 'cherryPick', 'revert', 'reset', 'fetch', 'pull', 'push', 'stashList', 'stashPush', 'stashApply', 'stashDrop', 'tagCreate', 'tagDelete', 'tagDeleteRemote', 'pushTags', 'clone', 'gitLogs', 'remoteAdd', 'remoteRemove', 'branchDeleteRemote', 'rebaseAbort', 'stashClear', 'undoList', 'undoApply', 'version', 'diagnostics']
   for (const method of methods) {
     if (method === 'merge-point') { assert.match(host, /^  'merge-point': mergePoint,$/m, 'host method missing: merge-point'); continue }
     if (method === 'branch-upstream') { assert.match(host, /^  'branch-upstream': branchUpstream,$/m, 'host method missing: branch-upstream'); continue }
@@ -2550,8 +2550,12 @@ test('every repository in the workspace gets its own card (issue #37)', () => {
 
   const all = client.slice(client.indexOf('function AllRepos(props)'), client.indexOf('function Panel(props)'))
   assert.ok(all.length > 0, 'AllRepos sits before Panel')
-  assert.match(all, /request\('summary', \{ cwd: path, repoRoot: path, ignored: false, stats: false \}\)/,
-    'the overview reads each repository by path')
+  assert.match(all, /request\('changes', \{ cwd: path, repoRoot: path \}\)/,
+    'the overview reads only status rows for each repository')
+  assert.doesNotMatch(all, /request\('(summary|stats)'/, 'the overview does not request full summary or deferred stats')
+  const writes = /const WRITE_METHODS = new Set\(\[([\s\S]*?)\]\)/.exec(host)
+  assert.ok(writes !== null, 'the host write-method table exists')
+  assert.doesNotMatch(writes[1], /['"]changes['"]/, 'the read-only changes method does not enter the write queue')
   assert.match(all, /jobs\.active < ALL_SUMMARY_CONCURRENCY/, 'the fan-out is bounded')
   assert.match(all, /jobs\.queued\.indexOf\(path\) >= 0 \|\| jobs\.running\.indexOf\(path\) >= 0/,
     'a manual refresh and the schedule never double-read one repository')
