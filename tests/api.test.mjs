@@ -14,6 +14,7 @@ import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { EventEmitter } from 'node:events'
 import { apply, repoScanCache, REPOS_CACHE_TTL_MS } from '../src/index.js'
+import { gitLog } from '../src/host/git.js'
 
 let repo = ''
 let route = null
@@ -165,6 +166,95 @@ test('branches reports locals, remotes, tags and HEAD', async () => {
   assert.equal(head[0].name, 'main')
   assert.deepEqual(body.data.tags.map((tag) => tag.name), ['v1'])
   assert.ok(Array.isArray(body.data.remotes))
+})
+
+test('branches reports upstream ahead/behind from %(upstream:track) without rev-list', async () => {
+  const at = (cwd, ...args) => execFileSync('git', [
+    '-c', 'core.autocrlf=false',
+    '-c', 'user.name=Check',
+    '-c', 'user.email=check@example.com',
+    ...args,
+  ], { cwd, encoding: 'utf8' })
+  const root = mkdtempSync(join(tmpdir(), 'dsh-ide-git-track-'))
+  const origin = join(root, 'origin.git')
+  const local = join(root, 'local')
+  const peer = join(root, 'peer')
+  const rowOf = (body, name) => body.data.local.find((row) => row.name === name)
+  const topicOf = (body) => rowOf(body, 'topic')
+  try {
+    at(root, 'init', '-q', '--bare', '-b', 'main', origin)
+    at(root, 'clone', '-q', origin, local)
+    writeFileSync(join(local, 'base.txt'), 'base\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'base')
+    at(local, 'push', '-q', '-u', 'origin', 'main')
+    at(local, 'checkout', '-q', '-b', 'topic')
+    writeFileSync(join(local, 'topic.txt'), 'topic\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'topic change')
+    at(local, 'push', '-q', '-u', 'origin', 'topic')
+    at(local, 'tag', 'v1')
+    at(local, 'push', '-q', 'origin', 'v1')
+
+    const clean = await call('branches', { cwd: local })
+    assert.equal(topicOf(clean.body).ahead, 0)
+    assert.equal(topicOf(clean.body).behind, 0)
+    assert.equal(topicOf(clean.body).upstream, 'origin/topic')
+    assert.equal(rowOf(clean.body, 'main').ahead, 0)
+    assert.equal(rowOf(clean.body, 'main').behind, 0)
+
+    writeFileSync(join(local, 'local.txt'), 'local\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'local change')
+    const ahead = await call('branches', { cwd: local })
+    assert.equal(topicOf(ahead.body).ahead, 1)
+    assert.equal(topicOf(ahead.body).behind, 0)
+
+    at(local, 'push', '-q', 'origin', 'topic')
+    at(root, 'clone', '-q', origin, peer)
+    at(peer, 'checkout', '-q', 'topic')
+    writeFileSync(join(peer, 'peer.txt'), 'peer\n')
+    at(peer, 'add', '-A')
+    at(peer, 'commit', '-q', '-m', 'peer change')
+    at(peer, 'push', '-q', 'origin', 'topic')
+    at(local, 'fetch', '-q')
+    const behind = await call('branches', { cwd: local })
+    assert.equal(topicOf(behind.body).ahead, 0)
+    assert.equal(topicOf(behind.body).behind, 1)
+
+    writeFileSync(join(local, 'local2.txt'), 'local2\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'local change 2')
+    writeFileSync(join(local, 'local3.txt'), 'local3\n')
+    at(local, 'add', '-A')
+    at(local, 'commit', '-q', '-m', 'local change 3')
+
+    gitLog.length = 0
+    const diverged = await call('branches', { cwd: local })
+    assert.equal(topicOf(diverged.body).ahead, 2)
+    assert.equal(topicOf(diverged.body).behind, 1)
+    assert.ok(gitLog.every((entry) => !entry.argv.startsWith('rev-list')))
+    assert.equal(gitLog.filter((entry) => entry.argv.startsWith('for-each-ref')).length, 1)
+
+    // A deleted upstream reads 0/0 under [gone] but keeps its name.
+    at(local, 'push', '-q', 'origin', '--delete', 'topic')
+    at(local, 'fetch', '-q', '--prune')
+    const gone = await call('branches', { cwd: local })
+    assert.equal(topicOf(gone.body).ahead, 0)
+    assert.equal(topicOf(gone.body).behind, 0)
+    assert.equal(topicOf(gone.body).upstream, 'origin/topic')
+
+    // Tag rows carry no ahead/behind fields.
+    for (const row of gone.body.data.tags) {
+      assert.equal(row.ahead, undefined)
+      assert.equal(row.behind, undefined)
+    }
+  } finally {
+    for (const dir of [origin, local, peer]) {
+      if (existsSync(dir)) rmSync(dir, { recursive: true, force: true })
+    }
+    if (existsSync(root)) rmSync(root, { recursive: true, force: true })
+  }
 })
 
 test('log parses hash, parents and paginates', async () => {
